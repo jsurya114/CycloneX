@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/frontend/imgs/logos/cyclonelogo.png">
+    <!-- Template CSS -->
+    <link href="/backend/css/main.css" rel="stylesheet" type="text/css" />
+
+
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100 bg-no-repeat bg-cover">
+
+    <!-- Main Content -->
+    <div class="bg-gradient-to-r from-blue-50 to-purple-50 shadow-2xl rounded-lg p-8 w-[700px] flex relative z-10 bg-white border border-gray-200">
+        <!-- Image on the Left -->
+        <div class="w-1/2 flex items-center justify-center">
+            <img src="<%= logoPath %>" alt="Signup" class="w-64 h-64" style="height: 10rem; width: 23rem;">
+        </div>
+        
+        <!-- Form on the Right -->
+        <div class="w-1/2 flex flex-col items-center">
+            <h2 class="text-2xl font-bold mb-6 text-gray-700">Create Your Account</h2>
+            
+            <!-- Signup Form -->
+            <form action="/signup" method="POST" class="w-full flex flex-col items-center">
+                <!-- Full Name -->
+                <input type="text" name="fullname" placeholder="Full Name" 
+                    class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
+                
+                <!-- Email -->
+                <input type="email" name="email" placeholder="Email" 
+                    class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
+                
+                <!-- Phone Number -->
+                <input type="tel" name="phone" placeholder="Phone Number" 
+                    class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
+                
+                <!-- Password -->
+                <input type="password" name="password" placeholder="Password" 
+                    class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
+                
+                <!-- Confirm Password -->
+                <input type="password" name="confirm_password" placeholder="Confirm Password" 
+                    class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
+                
+                <button type="submit" class="w-3/4 py-2 text-white font-bold rounded-md 
+                    bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg">
+                    Signup
+                </button>
+            </form>
+            
+            <!-- Divider -->
+            <div class="my-4 w-full flex items-center justify-center">
+                <span class="text-gray-400">OR</span>
+            </div>
+            
+            <!-- Social Signup -->
+            <div class="w-full flex flex-row items-center justify-center space-x-4">
+                <a href="/auth/google" class="w-1/2 flex items-center justify-center py-2 border rounded-md 
+                    bg-gradient-to-r from-[#DB4437] to-[#C1351E] text-white font-bold hover:from-[#E84537] hover:to-[#D9321F] shadow-lg">
+                    <i class="fab fa-google text-white mr-2"></i> Google
+                </a>
+                <a href="/auth/facebook" class="w-1/2 flex items-center justify-center py-2 border rounded-md 
+                    bg-gradient-to-r from-[#1877F2] to-[#1259A1] text-white font-bold hover:from-[#1A78E0] hover:to-[#0F4C81] shadow-lg">
+                    <i class="fab fa-facebook-f text-white mr-2"></i> Facebook
+                </a>
+            </div>
+            
+        </div>
+    </div>
+
+</body>
+</html>
