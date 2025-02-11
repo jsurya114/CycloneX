@@ -6,7 +6,8 @@ router.get('/',authController.logins)
 router.post('/',authController.loginspost)
 router.get('/signup',authController.signup)
 router.post('/signup', authController.createUser);
-router.post('/verify-otp', authController.verifyOtp);
+router.post('/verify-otp', authController.verifyOTP);
+router.post('/resend-otp',authController.resendOTP)
 router.get('/home',authController.home)
 
 module.exports = router

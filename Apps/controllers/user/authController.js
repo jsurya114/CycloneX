@@ -1,11 +1,20 @@
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const User = require('../../models/userModel');
+
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
+const generateOTP = require('../../services/otp');
 
 // Check if email credentials exist
 if (!process.env.EMAIL || !process.env.EMAIL_PASSWORD) {
     console.error("❌ Email credentials are missing. Check your .env file!");
+    process.exit(1);
+}
+
+// Ensure JWT secret is available
+if (!process.env.JWT_SECRET) {
+    console.error("❌ JWT secret is missing. Please add JWT_SECRET to your .env file!");
     process.exit(1);
 }
 
@@ -20,8 +29,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Generate a random 6-digit OTP
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+
 
 // Function to send email
 const sendEmail = async (to, subject, htmlContent) => {
@@ -64,9 +72,21 @@ const authController = {
                 return res.status(400).send("Invalid credentials");
             }
 
-            req.session.user = user;
-            res.redirect('/home');
+            // Generate JWT token with payload and expiration
+            const token = jwt.sign(
+                { id: user._id, email: user.email },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
 
+            // Set the token as an HTTP-only cookie
+            res.cookie('token', token, { 
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production', 
+                maxAge: 3600000  // 1 hour in milliseconds
+            });
+
+            res.redirect('/home');
         } catch (error) {
             console.error("Login error:", error);
             res.status(500).send("Internal Server Error");
@@ -100,7 +120,8 @@ const authController = {
             const hashedPassword = await bcrypt.hash(password, salt);
 
             const otp = generateOTP();
-            const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+            const otpExpires = new Date(Date.now() + (1 * 60 * 1000))
+
 
             const newUser = new User({
                 fullName: fullname,
@@ -116,7 +137,7 @@ const authController = {
 
             // Send OTP Email
             await sendEmail(email, 'Your OTP for Account Verification', 
-                `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in 10 minutes.</p>`
+                `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in  1 minute.</p>`
             );
 
             res.status(200).json({ message: 'Signup successful. OTP sent to email.' });
@@ -127,84 +148,64 @@ const authController = {
         }
     },
 
-    resendOtp: async (req, res) => {
+verifyOTP: async (req, res) => {
+        try {
+const {email, otp }=req.body
+const user =await User.findOne({email})
+if(!user){
+    return res.status(400).json({message:"User not found"})
+}
+if (user.isVerified) {
+    return res.status(400).json({ message: 'User is already verified.' });
+}
+if (!user.otp) {
+    return res.status(400).json({ message: 'No OTP found. Please request a new OTP.' });
+}
+
+if(user.otp!==otp){
+return res.status(400).json({message:'Invalid otp'})
+}
+if(user.otpExpires&&new Date(user.otpExpires)<new Date()){
+    return res.status(400).json({message:'OTP expired'})
+}
+user.isVerified = true
+user.otp = null
+user.otpExpires = null
+await user.save()
+res.status(200).json({message:'OTP verified successfully'})
+
+        } catch (error) {
+            console.log('Error verifying OTP',error)
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    },
+
+    resendOTP: async (req, res) => {
         try {
             const { email } = req.body;
-console.log(email)
             const user = await User.findOne({ email });
             if (!user) {
-                console.log('user not found')
                 return res.status(400).json({ message: 'User not found' });
             }
 
-            const newOtp = generateOTP();
-            const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
-            console.log(newOtp)
-            console.log(otpExpires)
-       // Update the user's OTP and expiry time in the database
-            await User.findOneAndUpdate({ email }, { otp: newOtp, otpExpires });
+            const otp = generateOTP();
+            user.otp = otp;
+            const otpExpires = new Date(Date.now() + (1 * 60 * 1000) );
 
-            // Send the new OTP via email
-            await sendEmail(email, 'Resend OTP for Account Verification', 
-                `<p>Your new OTP is: <strong>${newOtp}</strong></p><p>It will expire in 10 minutes.</p>`
+
+            user.otpExpires=otpExpires
+            await user.save();
+
+            await sendEmail(email, 'Your new OTP for Account Verification', 
+                `<p>Your new OTP is: <strong>${otp}</strong></p><p>It will expire in 30 seconds.</p>`
             );
-console.log('success')
-            res.status(200).json({ message: 'New OTP sent successfully' });
 
+            res.status(200).json({ message: 'New OTP sent to email' });
         } catch (error) {
             console.error('Error resending OTP:', error);
             res.status(500).json({ message: 'Internal Server Error' });
         }
     },
-
-    verifyOtp: async (req, res) => {
-        try {
-           
-            const { email, otp } = req.body;
-            console.log(otp)
-            console.log(email)
-          
-            const enteredOtp = otp.trim();
- console.log(enteredOtp)
-           
-            const user = await User.findOne({ email });
-            console.log(user)
-
-            if (!user) {
-                console.log('user not found')
-                return res.status(400).json({ message: 'User not found' });
-            }
-    
-console.log(user.otp)
-console.log(user.otpExpires)
-
-
-            // Check if OTP exists and is not expired
-            if (!user.otp || user.otpExpires < new Date()) {
-                console.log('invalid or exipred otp')
-                return res.status(400).json({ message: 'Invalid or expired OTP' });
-            }
-    
-            // Convert stored OTP and entered OTP to string before comparing
-            if (user.otp.toString() !== enteredOtp) {
-                console.log('mismatch')
-                return res.status(400).json({ message: 'Invalid OTP' });
-            }
-    
-            // If OTP is valid, mark user as verified
-            await User.findOneAndUpdate(
-                { email },
-                { isVerified: true, otp: null, otpExpires: null }
-            );
-    console.log('verified')
-            res.status(200).json({ message: 'OTP verified successfully' });
-    
-        } catch (error) {
-            console.error('Error verifying OTP:', error);
-            res.status(500).json({ message: 'Internal Server Error' });
-        }
-    },
-    
 
     home: async (req, res) => {
         res.render('home', {

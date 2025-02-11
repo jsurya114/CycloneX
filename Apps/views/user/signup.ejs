@@ -86,7 +86,7 @@
         </div>
         
         <div class="flex justify-between items-center mb-4">
-            <button id="resendOtpButton" class="text-blue-500 hover:underline" disabled>
+            <button id="resendOtpButton" class="text-blue-500 hover:underline" >
                 Resend OTP
             </button>
             <span id="otpTimer" class="text-gray-500"></span>
@@ -132,7 +132,7 @@
 
         // Set the userEmail variable here
         userEmail = formData.email;
-        console.log('User Email:', userEmail); // Debugging
+        console.log('User Email:', userEmail); 
 
         try {
             const response = await fetch('/signup', {
@@ -189,35 +189,53 @@
             const result = await response.json();
             if (response.ok) {
                 alert('New OTP sent successfully');
-                startOtpTimer();
+                otpInputs.forEach(input=>input.value='')
+                startOtpTimer(); 
             } else {
                 alert(result.message);
             }
         } catch (error) {
             console.error('Resend OTP Error:', error);
+            alert('Error resending OTP. Please try again.');
         }
     });
 
     function startOtpTimer() {
-        let timeLeft = 120;
-        resendOtpButton.disabled = true;
+    let timeLeft = 60; // Reduced from 60 to 30 seconds
+    resendOtpButton.disabled = true;
 
-        const countdown = setInterval(() => {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            otpTimer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    const countdown = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        otpTimer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                otpTimer.textContent = 'OTP Expired';
-                resendOtpButton.disabled = false;
-            } else {
-                timeLeft--;
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            otpTimer.textContent = 'OTP Expired';
+            resendOtpButton.disabled = false;
+        } else {
+            timeLeft--;
+        }
+    }, 1000);
+}
+
+
+    // Autofocus handling for OTP inputs
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', (event) => {
+            if (event.target.value.length === 1 && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus(); // Move to the next input
             }
-        }, 1000);
-    }
+        });
+
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Backspace' && index > 0 && !event.target.value) {
+                otpInputs[index - 1].focus(); // Move to the previous input on backspace
+            }
+        });
+    });
 });
- </script>
+</script>
  
 </body>
 </html>
