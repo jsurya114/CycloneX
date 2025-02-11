@@ -9,7 +9,9 @@ const UserSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date }
+    updatedAt: { type: Date },
+    otp: { type: String }, // Add this field for storing OTP
+    otpExpires: { type: Date } // Add this field for storing OTP expiry time
 });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const userController = require('../controllers/userController')
+const authController = require('../controllers/user/authController')
 
-router.get('/',userController.logins)
-router.post('/',userController.loginspost)
-router.get('/signup',userController.signup)
-router.post('/signup',userController.createuser)
-router.get('/home',userController.home)
+router.get('/',authController.logins)
+router.post('/',authController.loginspost)
+router.get('/signup',authController.signup)
+router.post('/signup', authController.createUser);
+router.post('/verify-otp', authController.verifyOtp);
+router.get('/home',authController.home)
 
 module.exports = router

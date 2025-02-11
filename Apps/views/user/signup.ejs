@@ -6,15 +6,10 @@
     <title>Signup</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/frontend/imgs/logos/cyclonelogo.png">
-    <!-- Template CSS -->
     <link href="/backend/css/main.css" rel="stylesheet" type="text/css" />
-
-
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100 bg-no-repeat bg-cover">
-
     <!-- Main Content -->
     <div class="bg-gradient-to-r from-blue-50 to-purple-50 shadow-2xl rounded-lg p-8 w-[700px] flex relative z-10 bg-white border border-gray-200">
         <!-- Image on the Left -->
@@ -27,28 +22,28 @@
             <h2 class="text-2xl font-bold mb-6 text-gray-700">Create Your Account</h2>
             
             <!-- Signup Form -->
-            <form action="/signup" method="POST" class="w-full flex flex-col items-center">
+            <form id="signupForm" class="w-full flex flex-col items-center" onsubmit="return false;">
                 <!-- Full Name -->
-                <input type="text" name="fullname" placeholder="Full Name" 
+                <input type="text" name="fullname" placeholder="Full Name" required
                     class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
                 
                 <!-- Email -->
-                <input type="email" name="email" placeholder="Email" 
+                <input type="email" name="email" placeholder="Email" required
                     class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
                 
                 <!-- Phone Number -->
-                <input type="tel" name="phone" placeholder="Phone Number" 
+                <input type="tel" name="phone" placeholder="Phone Number" required
                     class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
                 
                 <!-- Password -->
-                <input type="password" name="password" placeholder="Password" 
+                <input type="password" name="password" placeholder="Password" required
                     class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
                 
                 <!-- Confirm Password -->
-                <input type="password" name="confirm_password" placeholder="Confirm Password" 
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required
                     class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
                 
-                <button type="submit" class="w-3/4 py-2 text-white font-bold rounded-md 
+                <button type="button" id="signupButton" class="w-3/4 py-2 text-white font-bold rounded-md 
                     bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg">
                     Signup
                 </button>
@@ -70,9 +65,159 @@
                     <i class="fab fa-facebook-f text-white mr-2"></i> Facebook
                 </a>
             </div>
-            
         </div>
     </div>
 
+   <!-- OTP Verification Modal -->
+   <div id="otpModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-96">
+        <h3 class="text-lg font-semibold mb-4 text-center">OTP Verification</h3>
+        <p class="text-sm text-gray-600 mb-4 text-center">
+            Enter the 6-digit OTP sent to your email
+        </p>
+        
+        <div class="flex justify-center space-x-2 mb-4">
+            <input type="text" maxlength="1" class="w-10 h-10 text-center border rounded focus:ring-2 focus:ring-blue-500 otp-input">
+            <input type="text" maxlength="1" class="w-10 h-10 text-center border rounded focus:ring-2 focus:ring-blue-500 otp-input">
+            <input type="text" maxlength="1" class="w-10 h-10 text-center border rounded focus:ring-2 focus:ring-blue-500 otp-input">
+            <input type="text" maxlength="1" class="w-10 h-10 text-center border rounded focus:ring-2 focus:ring-blue-500 otp-input">
+            <input type="text" maxlength="1" class="w-10 h-10 text-center border rounded focus:ring-2 focus:ring-blue-500 otp-input">
+            <input type="text" maxlength="1" class="w-10 h-10 text-center border rounded focus:ring-2 focus:ring-blue-500 otp-input">
+        </div>
+        
+        <div class="flex justify-between items-center mb-4">
+            <button id="resendOtpButton" class="text-blue-500 hover:underline" disabled>
+                Resend OTP
+            </button>
+            <span id="otpTimer" class="text-gray-500"></span>
+        </div>
+
+        <button id="verifyOtpButton" class="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            Verify OTP
+        </button>
+    </div>
+</div>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    const signupButton = document.getElementById('signupButton');
+    const otpModal = document.getElementById('otpModal');
+    const verifyOtpButton = document.getElementById('verifyOtpButton');
+    const resendOtpButton = document.getElementById('resendOtpButton');
+    const otpTimer = document.getElementById('otpTimer');
+    const otpInputs = document.querySelectorAll('.otp-input');
+
+    let userEmail = ''; // Declare userEmail variable
+
+    signupButton.addEventListener('click', async function(event) {
+        event.preventDefault(); // Prevent the default button behavior
+
+        const formData = {
+            fullname: document.querySelector('input[name="fullname"]').value,
+            email: document.querySelector('input[name="email"]').value,
+            phone: document.querySelector('input[name="phone"]').value,
+            password: document.querySelector('input[name="password"]').value,
+            confirm_password: document.querySelector('input[name="confirm_password"]').value
+        };
+
+        if (!formData.fullname || !formData.email || !formData.phone || !formData.password || !formData.confirm_password) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        if (formData.password !== formData.confirm_password) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        // Set the userEmail variable here
+        userEmail = formData.email;
+        console.log('User Email:', userEmail); // Debugging
+
+        try {
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                otpModal.classList.remove('hidden');
+                startOtpTimer();
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Signup Error:', error);
+            alert('An error occurred. Please try again.');
+        }
+    });
+
+    verifyOtpButton.addEventListener('click', async function() {
+        const otp = Array.from(otpInputs).map(input => input.value).join('');
+
+        try {
+            const response = await fetch('/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail, otp })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                otpModal.classList.add('hidden');
+                alert('Account verified successfully');
+                window.location.href = '/'; // Redirect to home or login
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('OTP Verification Error:', error);
+            alert('Error verifying OTP.');
+        }
+    });
+
+    resendOtpButton.addEventListener('click', async function() {
+        try {
+            const response = await fetch('/resend-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: userEmail }) // Use userEmail here
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('New OTP sent successfully');
+                startOtpTimer();
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Resend OTP Error:', error);
+        }
+    });
+
+    function startOtpTimer() {
+        let timeLeft = 120;
+        resendOtpButton.disabled = true;
+
+        const countdown = setInterval(() => {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            otpTimer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                otpTimer.textContent = 'OTP Expired';
+                resendOtpButton.disabled = false;
+            } else {
+                timeLeft--;
+            }
+        }, 1000);
+    }
+});
+ </script>
+ 
 </body>
 </html>
