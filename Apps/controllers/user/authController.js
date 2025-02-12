@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const generateOTP = require('../../services/otp');
 
+
 // Check if email credentials exist
 if (!process.env.EMAIL || !process.env.EMAIL_PASSWORD) {
     console.error("❌ Email credentials are missing. Check your .env file!");

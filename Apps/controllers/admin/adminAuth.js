@@ -19,7 +19,7 @@ loginPost: async (req, res) => {
 
     try {
         // Find the admin by email
-        const admin = await Admin.findOne({ email });
+        const admin = await Admin.findOne({ email ,isAdmin:true});
 
         if (!admin) {
             return res.status(401).render('login', {
