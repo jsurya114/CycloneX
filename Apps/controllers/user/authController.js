@@ -73,14 +73,14 @@ const authController = {
                 return res.status(400).send("Invalid credentials");
             }
 
-            // Generate JWT token with payload and expiration
+           
             const token = jwt.sign(
                 { id: user._id, email: user.email },
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
 
-            // Set the token as an HTTP-only cookie
+          
             res.cookie('token', token, { 
                 httpOnly: true, 
                 secure: process.env.NODE_ENV === 'production', 
@@ -209,6 +209,8 @@ res.status(200).json({message:'OTP verified successfully'})
     },
 
     home: async (req, res) => {
+        console.log('invoked home');
+        
         res.render('home', {
             logoPath: '/frontend/imgs/logos/cyclonelogo.png'
         });

@@ -4,11 +4,14 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport'); // Import Passport
 const path = require('path');
+const cookieParser =require('cookie-parser')
 const app = express();
 const PORT = process.env.PORT || 3000;
-const adminRouter = require("./Apps/routes/adminRoute");
-const userRouter = require('./Apps/routes/userRoute');
+const adminRouter = require("./Apps/routes/admin/adminRoute");
+const userRouter = require('./Apps/routes/user/userRoute');
+const productRouter = require('./Apps/routes/admin/productRoutes')
 const connectDB = require("./Apps/config/db");
+
 
 // Connect Database
 connectDB();
@@ -16,6 +19,8 @@ connectDB();
 // Middleware for parsing JSON and form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
+
 
 // Middleware to serve static files
 app.use(express.static('public'));
@@ -35,6 +40,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 // Set view engine and views directory
 app.set('views', [
     path.join(__dirname, 'Apps', 'views', 'admin'),
@@ -45,6 +51,7 @@ app.set('view engine', 'ejs');
 // Basic route
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
+app.use("/admin",productRouter)
 // Start the server
 app.listen(PORT, () => {
     console.log(`CycloneX on http://127.0.0.1:${PORT}`);

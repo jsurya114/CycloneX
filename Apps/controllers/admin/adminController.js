@@ -4,31 +4,32 @@ const bcrypt = require('bcryptjs');
 const adminController = {
    
 
-    dashboard: async (req, res) => {
+    dashboard:  (req, res) => {
         res.render('dashboard');
     },
-    category:async (req,res)=>{
+    category: (req,res)=>{
       res.render('category')
     },
-    product: async (req,res)=>{
+    product: (req,res)=>{
         res.render('product-list')
     },
-    product2: async (req,res)=>{
+    product2:  (req,res)=>{
         res.render('product-list2')
     },
-   addproduct: async (req,res)=>{
-        res.status(200).render('addproduct')
-    },
-   brands: async (req,res)=>{
+  
+   brands:  (req,res)=>{
         res.render('brands')
+    },
+    addbrand:(req,res)=>{
+        res.render('addbrand')
     },
    
 
-    adduser: async (req, res) => {
+    adduser: (req, res) => {
         res.send('This is the add user page');
     },
 
-    deleteuser: async (req, res) => {
+    deleteuser: (req, res) => {
         res.send('This is the delete user page');
     },
 

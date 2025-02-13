@@ -1,6 +1,13 @@
+require('dotenv').config()
 const Admin = require('../../models/adminModel');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken')
 
+// Ensure JWT secret is available
+if (!process.env.JWT_SECRET) {
+    console.error("❌ JWT secret is missing. Please add JWT_SECRET to your .env file!");
+    process.exit(1);
+}
 const adminAuth={
 login: async (req, res) => {
     res.render('login', {
@@ -46,6 +53,15 @@ loginPost: async (req, res) => {
                 error: 'Invalid email or password'
             });
         }
+        const token = jwt.sign({id:admin._id,email:admin.email},
+            process.env.JWT_SECRET,
+            {expiresIn:'1h'}
+        )
+        res.cookie('token',token,{
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production', 
+            maxAge: 3600000  // 1 hour in milliseconds
+        })
 
         // If credentials are valid, redirect to the dashboard
         res.status(200).redirect('/admin/dashboard');
@@ -62,6 +78,12 @@ loginPost: async (req, res) => {
             error: 'An error occurred during login'
         });
     }
+},
+logout:(req,res)=>{
+    res.cookie('token','',{httpOnly:true,
+        secure:process.env.NODE_ENV==='production',
+        expires:new Date(0)})
+    res.status(200).redirect('/admin/login')
 }
 }
 module.exports = adminAuth
