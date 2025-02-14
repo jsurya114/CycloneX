@@ -98,25 +98,26 @@
                 </header> <!-- card-header end// -->
                 <div class="card-body">
                   <div class="row gx-3">
-                    <% brands.forEach(brand => { %>
-                      <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                        <figure class="card border-1">
-                          <div class="card-header bg-white text-center">
-                            <img height="76" src="<%= brand.image %>" class="img-fluid" alt="<%= brand.name %>">
-                          </div>
-                          <figcaption class="card-body text-center">
-                            <h6 class="card-title m-0"><%= brand.name %></h6>
-                            <p><%= brand.description %></p>
-                            <div class="mt-2">
-                              <!-- Edit button: links to GET /admin/editbrand/:id -->
-                              <a href="/admin/editbrand/<%= brand.id %>" class="btn btn-sm btn-info editBrandForm" data-id="<%= brand.id %>">Edit</a>
-                              <!-- Delete button: triggers DELETE request via JavaScript -->
-                              <button data-id="<%= brand.id %>" class="btn btn-sm btn-danger delete-brand">Delete</button>
-                            </div>
-                          </figcaption>
-                        </figure>
-                      </div>
-                    <% }); %>
+                    <% brands.forEach(brand => { 
+                        if (!brand.isBlocked) { // Show only active brands
+                    %>
+                        <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                            <figure class="card border-1">
+                                <div class="card-header bg-white text-center">
+                                    <img height="76" src="<%= brand.image %>" class="img-fluid" alt="<%= brand.name %>">
+                                </div>
+                                <figcaption class="card-body text-center">
+                                    <h6 class="card-title m-0"><%= brand.name %></h6>
+                                    <p><%= brand.description %></p>
+                                    <div class="mt-2">
+                                        <a href="/admin/editbrand/<%= brand.id %>" class="btn btn-sm btn-info editBrandForm" data-id="<%= brand.id %>">Edit</a>
+                                        <button data-id="<%= brand.id %>" class="btn btn-sm btn-danger delete-brand">Delete</button>
+                                    </div>
+                                </figcaption>
+                            </figure>
+                        </div>
+                    <% }}); %>
+                    
                   </div> <!-- row.// -->
                 </div> <!-- card-body end// -->
               </div><!-- card end// -->
@@ -125,13 +126,28 @@
     </main>
     <%- include('partials/scripts') %>
     <script>
-        document.querySelectorAll(".editBrandForm").forEach(button => {
-          button.addEventListener("click", function (event) {
+        document.querySelectorAll(".delete-brand").forEach(button => {
+          button.addEventListener("click", async function (event) {
             event.preventDefault();
             const brandId = this.getAttribute("data-id");
             
             if (confirm("Are you sure you want to edit this brand?")) {
-              window.location.href = `/admin/editbrand/${brandId}`;
+             try {
+                const response = await fetch(`/admin/deletebrand/${brandId}`,{
+                    method:"DELETE"
+                })
+                const data = await response.json()
+                if(response.ok && data.success){
+alert('brand deleted successfully')
+location.reload()
+                }
+                else{
+                alert(`error:${data.message}`)
+                }
+             } catch (error) {
+                    console.error("Error deleting brand:", error);
+                    alert("An error occurred. Please try again.");
+                }
             }
           });
         });

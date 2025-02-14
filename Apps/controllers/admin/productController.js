@@ -131,11 +131,25 @@ editbrand:async (req,res)=>{
 deletebrand:async (req, res) => {
     try {
         const brandId = req.params.id
-        await Brand.findByIdAndDelete(brandId)
-        res.status(201).render('addbrand',{message:'Brand deleted succesfulyy'})
+       const brand = await Brand.findById(brandId)
+       if(!brand){
+        return res.status(404).json({
+            success:false,
+            message:'brand not found'
+        })
+       }
+       brand.isBlocked=true
+       await brand.save()
+       res.status(200).json({
+        success:true,
+        message:'brand is deleted successfully'
+       })
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error deleting brand' });
+        res.status(500).json({
+            success: false,
+            message: "Error deleting brand"
+        })
       }
 },
 
