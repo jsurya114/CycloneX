@@ -17,7 +17,12 @@ router.get('/addproduct',productController.showAddProductPage)
 router.post('/addproduct',productController.addproduct)
 router.get('/brands', productController.showAddBrandPage);
 router.get('/addbrand',productController.addBrand)
+
 router.post('/addbrand',upload.single('brandLogo') ,productController.addBrand);
+router.get('/editbrand/:id',productController.showEditBrandPage)
+router.put('/editbrand/:id', upload.single('brandLogo'), productController.editbrand);
+router.delete('/deletebrand/:id', productController.deletebrand);
+
 router.get('/category',adminController.category)
 
 

@@ -3,6 +3,8 @@ const Brand = require('../../models/brandModel')
 const uploads = require('../../config/multer')
 const { error } = require('console')
 const { addbrand, brands } = require('./adminController')
+const { text } = require('stream/consumers')
+const { type } = require('os')
 
 const productController ={
     showAddProductPage: async (req,res)=>{
@@ -68,7 +70,75 @@ const productController ={
             console.error(error);
             res.status(500).render("addbrand",{message:'internal server eroor'})
         }
-}
+},
+showEditBrandPage:async (req,res)=>{
+try {
+    const brandId =req.params.id 
+    const brand = await Brand.findById(brandId)
+    if(!brand){
+        return res.status(404).redirect('/admin/brands')
+    }
+    res.status(201).render('editbrand',{brand,message:null})
+} catch (error) {
+    console.error(error);
+    resres.status(500).redirect('/admin/brands');
+  }
+},
+editbrand:async (req,res)=>{
+    console.log("invoked edit brand");
+    
+    try {
+        
+        const brandId = req.params.id;
+        const { brandName, brandDescription } = req.body;
+    
+       
+        if (!brandName || !brandDescription) {
+          return res.status(400).json({
+            success:false,
+            message:'brand name and description are required'
+          })
+        }
+    
+        let brand = await Brand.findById(brandId);
+        if (!brand) {
+          return res.status(404).json({
+            success:false,
+            message:'brand not found'
+          })
+        }
+    
+        
+        brand.name = brandName;
+        brand.description = brandDescription;
+        if (req.file) {
+          brand.image = `/backend/imgs/editbrand/${req.file.filename}`;
+        }
+    
+        await brand.save();
+        res.status(200).json({
+            success:true,
+            message:'brand updated successfully'
+        })
+      } catch (error) {
+        console.error(error);
+        res.status(500).status(500).json({
+            success:false,
+            message:'error updating brand'
+        })
+      }
+},
+deletebrand:async (req, res) => {
+    try {
+        const brandId = req.params.id
+        await Brand.findByIdAndDelete(brandId)
+        res.status(201).render('addbrand',{message:'Brand deleted succesfulyy'})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error deleting brand' });
+      }
+},
+
 }
 
 

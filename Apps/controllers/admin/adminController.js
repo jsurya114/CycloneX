@@ -29,9 +29,6 @@ const adminController = {
         res.send('This is the add user page');
     },
 
-    deleteuser: (req, res) => {
-        res.send('This is the delete user page');
-    },
 
   
 };

@@ -74,51 +74,70 @@
             </div>
             <div class="card mb-4">
                 <header class="card-header">
-                    <div class="row gx-3">
-                        <div class="col-lg-4 mb-lg-0 mb-15 me-auto">
-                            <input type="text" placeholder="Search..." class="form-control">
-                        </div>
-                        <div class="col-lg-2 col-6">
-                            <div class="custom_select">
-                                <select class="form-select select-nice">
-                                    <option selected>Categories</option>
-                                    <option>Technology</option>
-                                    <option>Fashion</option>
-                                    <option>Home Decor</option>
-                                    <option>Healthy</option>
-                                    <option>Travel</option>
-                                    <option>Auto-car</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-6">
-                            <input type="date" class="form-control" name="">
-                        </div>
+                  <div class="row gx-3">
+                    <div class="col-lg-4 mb-lg-0 mb-15 me-auto">
+                      <input type="text" placeholder="Search..." class="form-control">
                     </div>
+                    <div class="col-lg-2 col-6">
+                      <div class="custom_select">
+                        <select class="form-select select-nice">
+                          <option selected>Categories</option>
+                          <option>Technology</option>
+                          <option>Fashion</option>
+                          <option>Home Decor</option>
+                          <option>Healthy</option>
+                          <option>Travel</option>
+                          <option>Auto-car</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-2 col-6">
+                      <input type="date" class="form-control" name="">
+                    </div>
+                  </div>
                 </header> <!-- card-header end// -->
                 <div class="card-body">
-                    <div class="row gx-3">
-                        <% brands.forEach(brand => { %>
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                                <figure class="card border-1">
-                                    <div class="card-header bg-white text-center">
-                                        <img height="76" src="<%= brand.image %>" class="img-fluid" alt="<%= brand.name %>">
-                                    </div>
-                                    <figcaption class="card-body text-center">
-                                        <h6 class="card-title m-0"><%= brand.name %></h6>
-                                        <a href="#"> <%= brand.itemCount %> items </a>
-                                    </figcaption>
-                                </figure>
+                  <div class="row gx-3">
+                    <% brands.forEach(brand => { %>
+                      <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                        <figure class="card border-1">
+                          <div class="card-header bg-white text-center">
+                            <img height="76" src="<%= brand.image %>" class="img-fluid" alt="<%= brand.name %>">
+                          </div>
+                          <figcaption class="card-body text-center">
+                            <h6 class="card-title m-0"><%= brand.name %></h6>
+                            <p><%= brand.description %></p>
+                            <div class="mt-2">
+                              <!-- Edit button: links to GET /admin/editbrand/:id -->
+                              <a href="/admin/editbrand/<%= brand.id %>" class="btn btn-sm btn-info editBrandForm" data-id="<%= brand.id %>">Edit</a>
+                              <!-- Delete button: triggers DELETE request via JavaScript -->
+                              <button data-id="<%= brand.id %>" class="btn btn-sm btn-danger delete-brand">Delete</button>
                             </div>
-                        <% }); %>
-                        
-                    </div> <!-- row.// -->
+                          </figcaption>
+                        </figure>
+                      </div>
+                    <% }); %>
+                  </div> <!-- row.// -->
                 </div> <!-- card-body end// -->
-            </div> <!-- card end// -->
+              </div><!-- card end// -->
         </section> <!-- content-main end// -->
         <%- include('partials/footer') %>
     </main>
     <%- include('partials/scripts') %>
+    <script>
+        document.querySelectorAll(".editBrandForm").forEach(button => {
+          button.addEventListener("click", function (event) {
+            event.preventDefault();
+            const brandId = this.getAttribute("data-id");
+            
+            if (confirm("Are you sure you want to edit this brand?")) {
+              window.location.href = `/admin/editbrand/${brandId}`;
+            }
+          });
+        });
+      </script>
+      
+   
 </body>
 
 </html>

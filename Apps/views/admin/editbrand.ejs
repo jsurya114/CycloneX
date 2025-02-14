@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body>
+  <main class="main-wrap">
+    <section class="content-main">
+      <div class="content-header">
+        <h2 class="content-title">Edit Brand</h2>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <% if (message) { %>
+            <div class="alert alert-<%= message.type %>">
+              <%= message.text %>
+            </div>
+          <% } %>
+          
+          <!-- Edit Brand Form -->
+          <form id="editBrandForm" enctype="multipart/form-data">
+            <input type="hidden" id="brandId" value="<%= brand.id %>">
+            <div class="mb-3">
+              <label for="brandName" class="form-label">Brand Name</label>
+              <input type="text" class="form-control" id="brandName" name="brandName" value="<%= brand.name %>" required>
+            </div>
+            <div class="mb-3">
+              <label for="brandDescription" class="form-label">Brand Description</label>
+              <textarea class="form-control" id="brandDescription" name="brandDescription" rows="3" required><%= brand.description %></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="brandLogo" class="form-label">Brand Logo</label>
+              <input type="file" class="form-control" id="brandLogo" name="brandLogo" accept="image/*">
+              <% if (brand.image) { %>
+                <div class="mt-2">
+                  <img src="<%= brand.image %>" alt="Current Brand Logo" class="img-thumbnail" style="max-width: 100px;">
+                  <p class="text-muted mt-1">Current Logo</p>
+                </div>
+              <% } %>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary">Update Brand</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+ 
+  <script>
+    document.getElementById("editBrandForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const brandId = document.getElementById("brandId").value;
+      const brandName = document.getElementById("brandName").value;
+      const brandDescription = document.getElementById("brandDescription").value;
+      const brandLogo = document.getElementById("brandLogo").files[0];
+
+      const formData = new FormData();
+      console.log('this is form data'+formData)
+      formData.append("brandName", brandName);
+      formData.append("brandDescription", brandDescription);
+      if (brandLogo) {
+        formData.append("brandLogo", brandLogo);
+      }
+
+      try {
+        const response = await fetch(`/admin/editbrand/${brandId}`, {
+          method: "PUT",
+          body: formData
+        })
+        const data = await response.json()
+
+        if (response.ok && data.success) {
+          window.location.href = "/admin/brands";
+        } else {
+          alert(`Failed to update brand ${data.message}`);
+        }
+      } catch (error) {
+        console.error("Error updating brand:", error);
+      }
+    });
+  </script>
+
+  <%- include('partials/scripts') %>
+</body>
+</html>
