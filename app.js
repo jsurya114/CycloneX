@@ -59,5 +59,5 @@ app.use("/admin", adminRouter);
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`CycloneX on http://127.0.0.1:${PORT}`);
+    console.log(`CycloneX running on http://127.0.0.1:${PORT}`);
 });

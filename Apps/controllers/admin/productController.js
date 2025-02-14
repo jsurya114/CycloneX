@@ -52,7 +52,7 @@ const productController ={
                 return res.status(400).render('addbrand',{message:'brand logo is required'})
             }
             const {brandName,brandDescription}=req.body
-            const brandLogo = `/backend/imgs/${req.file.filename}`;
+            const brandLogo = `/backend/imgs/addbrand/${req.file.filename}`;
             const existingBrand = await Brand.findOne({ name: brandName });
             if (existingBrand) {
                 return res.status(400).render('addbrand', { message: 'Brand already exists' });

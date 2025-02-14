@@ -7,8 +7,9 @@ const allowedTypes = /\.(jpeg|jpg|png|gif|webp)$/i;
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        
-        cb(null, path.join(__dirname, '../../public/backend/imgs')); 
+        const module = req.originalUrl.split('/')[2]
+        const uploadPath = `public/backend/imgs/${module}`
+        cb(null, uploadPath); 
 
         if (req.body.type === 'product') {
             uploadPath = path.join(uploadPath, 'products');
