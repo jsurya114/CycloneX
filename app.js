@@ -11,6 +11,7 @@ const adminRouter = require("./Apps/routes/admin/adminRoute");
 const userRouter = require('./Apps/routes/user/userRoute');
 const productRouter = require('./Apps/routes/admin/productRoutes')
 const connectDB = require("./Apps/config/db");
+const MongoStore = require("connect-mongo");
 
 
 // Connect Database
@@ -30,13 +31,17 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
+    store:MongoStore.create({
+        mongoUrl:process.env.MONGO_URI,
+        ttl:24*60*60
+    }),
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV,
         maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
 }));
 
-// Initialize Passport
+// Initialize Passport 
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -51,7 +56,7 @@ app.set('view engine', 'ejs');
 // Basic route
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
-app.use("/admin",productRouter)
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`CycloneX on http://127.0.0.1:${PORT}`);

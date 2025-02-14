@@ -16,6 +16,7 @@ router.post('/resend-otp', authController.resendOTP);
 // Google authentication routes
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
+  console.log('Google OAuth successful, user:', req.user);
   res.redirect('/home');
 });
 router.get('/home', verifyUser,authController.home);
