@@ -16,7 +16,7 @@ login: async (req, res) => {
         slogan: 'RIDE BEYOND LIMITS',
         loginAction: '/admin/login',
         rightImage: '/images/bicycle-illustration.png',
-        logoPath: '/backend/imgs/logos/cyclonelogo.png'
+        logoPath: '/backend/imgs/logos/cyclonelogo.png' 
     });
 },
 
@@ -43,6 +43,8 @@ loginPost: async (req, res) => {
         // Compare the entered password with the hashed password
         const isMatch = await bcrypt.compare(password, admin.password);
         if (!isMatch) {
+
+
             return res.status(401).render('login', {
                 pageTitle: 'Admin Login - Cyclone',
                 brandName: 'CYCLONE',

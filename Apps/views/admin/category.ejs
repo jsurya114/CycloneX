@@ -1,305 +1,309 @@
 <!DOCTYPE HTML>
 <html lang="en">
-
-
 <%- include('partials/head') %>
 <body>
-    <div class="screen-overlay"></div>
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-            <a href="" class="brand-wrap">
-                <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-            </a>
-            <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
-            </div>
+  <div class="screen-overlay"></div>
+  <aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top">
+      <a href="" class="brand-wrap">
+        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+      </a>
+      <div>
+        <button class="btn btn-icon btn-aside-minimize">
+          <i class="text-muted material-icons md-menu_open"></i>
+        </button>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu-aside">
+        <li class="menu-item ">
+          <a class="menu-link" href="/admin/dashboard">
+            <i class="icon material-icons md-home"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item ">
+          <a class="menu-link" href="/admin/product-list2">
+            <i class="icon material-icons md-shopping_bag"></i>
+            <span class="text">Products</span>
+          </a>
+        </li>
+        <li class="menu-item ">
+          <a class="menu-link" href="/admin/addproduct">
+            <i class="icon material-icons md-add_box"></i>
+            <span class="text">Add product</span>
+          </a>
+        </li>
+        <li class="menu-item active">
+          <a class="menu-link" href="/admin/category">
+            <i class="icon material-icons md-category"></i>
+            <span class="text">Category</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/brands">
+            <i class="icon material-icons md-stars"></i>
+            <span class="text">Brands</span>
+          </a>
+        </li>
+      </ul>
+      <hr>
+      <ul class="menu-aside">
+        <li class="menu-item has-submenu">
+          <a class="menu-link" href="page-settings-1.html">
+            <i class="icon material-icons md-settings"></i>
+            <span class="text">Settings</span>
+          </a>
+        </li>
+      </ul>
+      <br><br>
+    </nav>
+  </aside>
+  <main class="main-wrap">
+    <%- include('partials/header') %>
+    <section class="content-main">
+      <div class="content-header">
+        <div>
+          <h2 class="content-title card-title">Categories</h2>
+          <p>Add, edit or delete a category</p>
         </div>
-        <nav>
-            <ul class="menu-aside">
-                <li class="menu-item ">
-                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="menu-item ">
-                    <a class="menu-link " href="/admin/product-list2"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Products</span>
-                    </a>
-                </li>
-    
-                
-                <li class="menu-item ">
-                    <a class="menu-link" href="/admin/addproduct"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Add product</span>
-                    </a>
-                  
-                </li>
-                
-                <li class="menu-item active">
-                    <a class="menu-link" href="/admin/category">  <i class="icon material-icons md-category"></i>
-                        <span class="text">category</span>
-                    </a>
-                </li>
-    
-    
-    
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/brands"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
-               
-            </ul>
-            <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-settings-1.html"> <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                </li>
-            </ul>
-            <br>
-            <br>
-        </nav>
-    </aside>
-    <main class="main-wrap">
-        <%- include('partials/header') %>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Categories </h2>
-                    <p>Add, edit or delete a category</p>
+        <div>
+          <input type="text" placeholder="Search Categories" class="form-control bg-white">
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <!-- Delete Selected Button -->
+          <div class="mb-3">
+            <button id="deleteSelectedBtn" class="btn btn-danger">Delete Selected</button>
+          </div>
+          <div class="row">
+            <!-- Add Category Form -->
+            <div class="col-md-3">
+              <form id="addCategoryForm" enctype="multipart/form-data">
+                <div class="mb-4">
+                  <label for="product_name" class="form-label">Name</label>
+                  <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required />
                 </div>
-                <div>
-                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
+                <div class="mb-4">
+                  <label for="product_slug" class="form-label">Slug</label>
+                  <input type="text" name="slug" placeholder="Type here" class="form-control" id="product_slug" required />
                 </div>
+                <div class="mb-4">
+                  <label class="form-label">Description</label>
+                  <textarea name="description" placeholder="Type here" class="form-control" required></textarea>
+                </div>
+                <div class="mb-4">
+                  <label class="form-label">Image</label>
+                  <input type="file" name="image" class="form-control" required />
+                </div>
+                <div class="d-grid">
+                  <button type="submit" class="btn btn-primary">Create Category</button>
+                </div>
+              </form>
             </div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <form>
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_name" />
-                                </div>
-                                <div class="mb-4">
-                                    <label for="product_slug" class="form-label">Slug</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Parent</label>
-                                    <select class="form-select">
-                                        <option>Clothes</option>
-                                        <option>T-Shirts</option>
-                                    </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control"></textarea>
-                                </div>
-                                <div class="d-grid">
-                                    <button class="btn btn-primary">Create category</button>
-                                </div>
-                            </form>
+            <!-- Categories Table -->
+            <div class="col-md-9">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th class="text-center">
+                        <div class="form-check">
+                          <!-- "Select All" checkbox for deletion -->
+                          <input class="form-check-input delete-checkbox-all" type="checkbox" />
                         </div>
-                        <div class="col-md-9">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </th>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <th>Slug</th>
-                                            <th>Order</th>
-                                            <th class="text-end">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td>21</td>
-                                            <td><b>Men clothes</b></td>
-                                            <td>Men clothes</td>
-                                            <td>/men</td>
-                                            <td>1</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td>2</td>
-                                            <td><b>Women fashion</b></td>
-                                            <td>Fashions for Women</td>
-                                            <td>/women</td>
-                                            <td>2</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td>3</td>
-                                            <td><b>Kids clothes</b></td>
-                                            <td>Clothes for kids</td>
-                                            <td>/kids</td>
-                                            <td>3</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center"><i class="material-icons md-subdirectory_arrow_right text-muted"></i></td>
-                                            <td>4</td>
-                                            <td><b>Hot Gifts</b></td>
-                                            <td>Hot Gifts</td>
-                                            <td>/gifts</td>
-                                            <td>4</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center"><i class="material-icons md-subdirectory_arrow_right text-muted"></i></td>
-                                            <td>5</td>
-                                            <td><b>Electronics</b></td>
-                                            <td>Electronics</td>
-                                            <td>/electr</td>
-                                            <td>5</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td>6</td>
-                                            <td><b>Accessories</b></td>
-                                            <td>Accessories</td>
-                                            <td>/accessories</td>
-                                            <td>6</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td>7</td>
-                                            <td><b>Jewellery</b></td>
-                                            <td>Jewellery</td>
-                                            <td>/jewel</td>
-                                            <td>7</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td>8</td>
-                                            <td><b>Interiors</b></td>
-                                            <td>Interiors</td>
-                                            <td>/interior</td>
-                                            <td>8</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div> <!-- .col// -->
-                    </div> <!-- .row // -->
-                </div> <!-- card body .// -->
-            </div> <!-- card .// -->
-        </section> <!-- content-main end// -->
-        <%- include('partials/footer') %>
-    </main>
-    <%- include('partials/scripts') %>
+                      </th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Slug</th>
+                      <th>Image</th>
+                      <th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% category.forEach(category => { %>
+                      <tr>
+                        <td class="text-center">
+                          <div class="form-check">
+                            <!-- Each deletion checkbox has a data-id -->
+                            <input class="form-check-input delete-checkbox" type="checkbox" data-id="<%= category._id %>" />
+                          </div>
+                        </td>
+                        <td><b><%= category.name %></b></td>
+                        <td><%= category.description %></td>
+                        <td><%= category.slug %></td>
+                        <td>
+                          <img src="<%= category.image %>" alt="<%= category.name %>" style="width: 50px; height: 50px; object-fit: cover;">
+                        </td>
+                        <td class="text-end">
+                          <a href="/admin/category/edit/<%= category._id %>" class="btn btn-sm btn-info">Edit</a>
+                          <div class="form-check form-switch d-inline-block ms-3">
+                            <input class="form-check-input toggle-category" type="checkbox" data-id="<%= category._id %>" <%= category.isBlocked ? '' : 'checked' %>>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div> <!-- .col// -->
+          </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+      </div> <!-- card .// -->
+    </section> <!-- content-main end// -->
+    <%- include('partials/footer') %>
+  </main>
+  
+  <!-- Include SweetAlert2 script from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <%- include('partials/scripts') %>
+  <script>
+    // Handle form submission for adding a category using fetch
+    document.getElementById('addCategoryForm').addEventListener('submit', async function (e) {
+      e.preventDefault(); // Prevent default form submission
+      const formData = new FormData(this); // Create FormData from the form
+      try {
+        console.log('invoked cat fetch log');
+        const response = await fetch('/admin/category/add', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: data.message,
+            confirmButtonText: 'OK'
+          }).then(() => {
+            location.reload(); // Reload page to show the new category
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: data.message,
+            confirmButtonText: 'OK'
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'An error occurred. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+    
+    // Handle toggle functionality for blocking/unblocking categories
+    document.querySelectorAll('.toggle-category').forEach(toggle => {
+      toggle.addEventListener("change", async function () {
+        const categoryId = this.getAttribute("data-id");
+        const action = this.checked ? 'unblock' : 'block';
+        Swal.fire({
+          title: `Are you sure you want to ${action} this category?`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, proceed!"
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const response = await fetch(`/admin/category/listing/${categoryId}`, {
+                method: "PUT"
+              });
+              const data = await response.json();
+              if (response.ok && data.success) {
+                Swal.fire("Success!", `Category ${action}ed successfully`, "success").then(() => {
+                  location.reload()
+                });
+              } else {
+                Swal.fire("Error!", data.message, "error");
+              }
+            } catch (error) {
+              Swal.fire("Error!", "An error occurred. Please try again.", "error");
+            }
+          } else {
+            this.checked = !this.checked;
+          }
+        });
+      });
+    });
+    
+    // Handle "Select All" functionality for deletion checkboxes
+    document.querySelector('.delete-checkbox-all').addEventListener('change', function () {
+      const isChecked = this.checked;
+      document.querySelectorAll('.delete-checkbox').forEach(cb => {
+        cb.checked = isChecked;
+      });
+    });
+    
+    // Handle "Delete Selected" functionality
+    document.getElementById('deleteSelectedBtn').addEventListener('click', async function () {
+      // Get all checked deletion checkboxes
+      const selectedCheckboxes = document.querySelectorAll('.delete-checkbox:checked:not(:disabled)');
+      if (selectedCheckboxes.length === 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'No Selection',
+          text: 'Please select at least one category to delete.',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+      // Collect the category IDs from the checkboxes
+      const ids = Array.from(selectedCheckboxes).map(cb => cb.getAttribute('data-id'));
+      Swal.fire({
+        title: 'Confirm Deletion',
+        text: 'Are you sure you want to delete the selected categories?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete them!',
+        cancelButtonText: 'Cancel'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            const response = await fetch('/admin/category/delete', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ ids })
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: data.message,
+                confirmButtonText: 'OK'
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: data.message,
+                confirmButtonText: 'OK'
+              });
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'An error occurred. Please try again.',
+              confirmButtonText: 'OK'
+            });
+          }
+        }
+      });
+    });
+  </script>
 </body>
-
 </html>

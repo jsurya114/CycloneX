@@ -7,9 +7,7 @@ const adminController = {
     dashboard:  (req, res) => {
         res.render('dashboard');
     },
-    category: (req,res)=>{
-      res.render('category')
-    },
+   
     product: (req,res)=>{
         res.render('product-list')
     },

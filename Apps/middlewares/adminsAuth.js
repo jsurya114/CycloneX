@@ -21,7 +21,7 @@ if(!isAdmin){
    return  res.status(404).redirect('/admin/login')
 }
 
-req,admin=isAdmin
+req.admin=isAdmin
 next()
 
     } catch (error) {

@@ -1,6 +1,7 @@
 const Product = require('../../models/productModel')
 const Brand = require('../../models/brandModel')
 const uploads = require('../../config/multer')
+const category = require('./categoryController')
 const { error } = require('console')
 const { addbrand, brands } = require('./adminController')
 const { text } = require('stream/consumers')
@@ -39,6 +40,8 @@ const productController ={
             res.status(500).send('internal server error')
         }
     },
+
+
     showAddBrandPage: async (req, res) => {
         try {
             const brands=await Brand.find();
@@ -72,6 +75,7 @@ const productController ={
         }
 },
 showEditBrandPage:async (req,res)=>{
+
 try {
     const brandId =req.params.id 
     const brand = await Brand.findById(brandId)
@@ -138,11 +142,11 @@ deletebrand:async (req, res) => {
             message:'brand not found'
         })
        }
-       brand.isBlocked=true
+       brand.isBlocked=!brand.isBlocked
        await brand.save()
        res.status(200).json({
         success:true,
-        message:'brand is deleted successfully'
+          message: `Brand ${brand.isBlocked ? 'blocked' : 'unblocked'} successfully`
        })
     } catch (error) {
         console.error(error);

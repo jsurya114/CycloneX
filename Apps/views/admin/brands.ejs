@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML> 
 <html lang="en">
     <%- include('partials/head') %>
 
@@ -25,28 +25,20 @@
                         <span class="text">Products</span>
                     </a>
                 </li>
-    
-                
                 <li class="menu-item ">
                     <a class="menu-link" href="/admin/addproduct"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add product</span>
                     </a>
-                  
                 </li>
-                
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/category">  <i class="icon material-icons md-category"></i>
-                        <span class="text">category</span>
+                        <span class="text">Category</span>
                     </a>
                 </li>
-    
-    
-    
                 <li class="menu-item active">
                     <a class="menu-link" href="/admin/brands"> <i class="icon material-icons md-stars"></i>
                         <span class="text">Brands</span> </a>
                 </li>
-               
             </ul>
             <hr>
             <ul class="menu-aside">
@@ -56,8 +48,7 @@
                     </a>
                 </li>
             </ul>
-            <br>
-            <br>
+            <br><br>
         </nav>
     </aside>
     <main class="main-wrap">
@@ -78,82 +69,82 @@
                     <div class="col-lg-4 mb-lg-0 mb-15 me-auto">
                       <input type="text" placeholder="Search..." class="form-control">
                     </div>
-                    <div class="col-lg-2 col-6">
-                      <div class="custom_select">
-                        <select class="form-select select-nice">
-                          <option selected>Categories</option>
-                          <option>Technology</option>
-                          <option>Fashion</option>
-                          <option>Home Decor</option>
-                          <option>Healthy</option>
-                          <option>Travel</option>
-                          <option>Auto-car</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-lg-2 col-6">
-                      <input type="date" class="form-control" name="">
-                    </div>
                   </div>
-                </header> <!-- card-header end// -->
+                </header>
                 <div class="card-body">
-                  <div class="row gx-3">
-                    <% brands.forEach(brand => { 
-                        if (!brand.isBlocked) { // Show only active brands
-                    %>
-                        <div class="col-xl-2 col-lg-3 col-md-4 col-6">
-                            <figure class="card border-1">
-                                <div class="card-header bg-white text-center">
-                                    <img height="76" src="<%= brand.image %>" class="img-fluid" alt="<%= brand.name %>">
-                                </div>
-                                <figcaption class="card-body text-center">
-                                    <h6 class="card-title m-0"><%= brand.name %></h6>
-                                    <p><%= brand.description %></p>
-                                    <div class="mt-2">
-                                        <a href="/admin/editbrand/<%= brand.id %>" class="btn btn-sm btn-info editBrandForm" data-id="<%= brand.id %>">Edit</a>
-                                        <button data-id="<%= brand.id %>" class="btn btn-sm btn-danger delete-brand">Delete</button>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </div>
-                    <% }}); %>
-                    
-                  </div> <!-- row.// -->
-                </div> <!-- card-body end// -->
-              </div><!-- card end// -->
-        </section> <!-- content-main end// -->
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Logo</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% brands.forEach(brand => { %>
+                                <tr class="<%= brand.isBlocked ? 'table-danger' : '' %>">
+                                    <td><img height="50" src="<%= brand.image %>" alt="<%= brand.name %>"></td>
+                                    <td><%= brand.name %></td>
+                                    <td><%= brand.description %></td>
+                                    <td>
+                                        <span class="badge <%= brand.isBlocked ? 'bg-danger' : 'bg-success' %>">
+                                            <%= brand.isBlocked ? 'Blocked' : 'Active' %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/editbrand/<%= brand.id %>" class="btn btn-sm btn-info" style="margin-right: 35px;">Edit</a>
+                                        <div class="form-check form-switch" style="display: inline-block; transform: scale(1.5);">
+                                            <input class="form-check-input toggle-brand" type="checkbox" data-id="<%= brand.id %>" <%= brand.isBlocked ? '' : 'checked' %> style="background-color: green; border-color: green;">
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
         <%- include('partials/footer') %>
     </main>
     <%- include('partials/scripts') %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.querySelectorAll(".delete-brand").forEach(button => {
-          button.addEventListener("click", async function (event) {
-            event.preventDefault();
+        document.querySelectorAll(".toggle-brand").forEach(toggle => {
+          toggle.addEventListener("change", async function () {
             const brandId = this.getAttribute("data-id");
-            
-            if (confirm("Are you sure you want to edit this brand?")) {
-             try {
-                const response = await fetch(`/admin/deletebrand/${brandId}`,{
-                    method:"DELETE"
-                })
-                const data = await response.json()
-                if(response.ok && data.success){
-alert('brand deleted successfully')
-location.reload()
+            const action = this.checked ? 'unblock' : 'block';
+            Swal.fire({
+                title: `Are you sure you want to ${action} this brand?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, proceed!"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`/admin/deletebrand/${brandId}`, {
+                            method: "DELETE"
+                        });
+                        const data = await response.json();
+                        if (response.ok && data.success) {
+                            Swal.fire("Success!", `Brand ${action}ed successfully`, "success").then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Error!", data.message, "error");
+                        }
+                    } catch (error) {
+                        Swal.fire("Error!", "An error occurred. Please try again.", "error");
+                    }
+                } else {
+                    this.checked = !this.checked;
                 }
-                else{
-                alert(`error:${data.message}`)
-                }
-             } catch (error) {
-                    console.error("Error deleting brand:", error);
-                    alert("An error occurred. Please try again.");
-                }
-            }
+            });
           });
         });
-      </script>
-      
-   
+    </script>
 </body>
-
 </html>
