@@ -6,4 +6,4 @@
 // router.post('/addproduct',productController.addproduct)
 // router.get('/brands', productController.showAddBrandPage);
 // router.post('/addbrand',upload.single('brandLogo') ,productController.addBrand);
-// module.exports=router
+// module.exports=router  

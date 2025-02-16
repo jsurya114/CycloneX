@@ -20,10 +20,10 @@ passport.use(new GoogleStrategy({
                     email: profile.emails[0].value,
                     fullName: profile.displayName,
                     isVerified: true
-                });
-                await user.save();
+                })
+                await user.save()
             }
-            return done(null, user);
+            return done(null, user)
         } catch (error) {
             return done(error, null);
         }

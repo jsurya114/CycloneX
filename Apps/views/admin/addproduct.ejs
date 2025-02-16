@@ -5,58 +5,7 @@
 <body>
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-            <a href="" class="brand-wrap">
-                <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-            </a>
-            <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
-            </div>
-        </div>
-        <nav>
-            <ul class="menu-aside ">
-                <li class="menu-item ">
-                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="menu-item ">
-                    <a class="menu-link " href="/admin/product-list2"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Products</span>
-                    </a>
-                </li>
-    
-                
-                <li class="menu-item active  active">
-                    <a class="menu-link" href="/admin/addproduct"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Add product</span>
-                    </a>
-                  
-                </li>
-                
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/category">  <i class="icon material-icons md-category"></i>
-                        <span class="text">category</span>
-                    </a>
-                </li>
-    
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/brands"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
-               
-            </ul>
-            <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-settings-1.html"> <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                </li>
-            </ul>
-            <br>
-            <br>
-        </nav>
+        <!-- Your existing aside content -->
     </aside>
     <main class="main-wrap">
         <%- include('partials/header') %>
@@ -70,108 +19,40 @@
             </div>
             <div class="row">
                 <div class="col-lg-6">
-                    <form action="/admin/addproduct" method="POST" enctype="multipart/form-data">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <h6>1. General info</h6>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="mb-4">
-                                            <label class="form-label">Product title</label>
-                                            <input type="text" name="productTitle" placeholder="Type here" class="form-control" required>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label">Description</label>
-                                            <textarea name="productDescription" placeholder="Type here" class="form-control" rows="4" required></textarea>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label">Brand name</label>
-                                            <select class="form-select" name="brandName" required>
-                                                <option value="Adidas">Adidas</option>
-                                                <option value="Nike">Nike</option>
-                                                <option value="Puma">Puma</option>
-                                            </select>
-                                        </div>
-                                    </div> <!-- col.// -->
-                                </div> <!-- row.// -->
-                                <hr class="mb-4 mt-0">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <h6>2. Pricing</h6>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="mb-4">
-                                            <label class="form-label">Cost in USD</label>
-                                            <input type="text" name="productCost" placeholder="$00.0" class="form-control" required>
-                                        </div>
-                                    </div> <!-- col.// -->
-                                </div> <!-- row.// -->
-                                <hr class="mb-4 mt-0">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <h6>3. Category</h6>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="mb-4">
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Clothes" checked>
-                                                <span class="form-check-label">Clothes</span>
-                                            </label>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Electronics">
-                                                <span class="form-check-label">Electronics</span>
-                                            </label>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Sports">
-                                                <span class="form-check-label">Sports</span>
-                                            </label>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Automobiles">
-                                                <span class="form-check-label">Automobiles</span>
-                                            </label>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Home interior">
-                                                <span class="form-check-label">Home interior</span>
-                                            </label>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Smartphones">
-                                                <span class="form-check-label">Smartphones</span>
-                                            </label>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Books">
-                                                <span class="form-check-label">Books</span>
-                                            </label>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Kids item">
-                                                <span class="form-check-label">Kids item</span>
-                                            </label>
-                                            <label class="mb-2 form-check form-check-inline" style="width: 45%;">
-                                                <input class="form-check-input" name="productCategory" type="radio" value="Others">
-                                                <span class="form-check-label">Others</span>
-                                            </label>
-                                        </div>
-                                    </div> <!-- col.// -->
-                                </div> <!-- row.// -->
-                                <hr class="mb-4 mt-0">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <h6>4. Media</h6>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="mb-4">
-                                            <label class="form-label">Images</label>
-                                            <input class="form-control" type="file" name="productImage" required>
-                                        </div>
-                                    </div> <!-- col.// -->
-                                </div> <!-- .row end// -->
-                            </div>
+                    <form id="addProductForm" action="/admin/addproduct" method="POST" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label class="form-label">Product title</label>
+                            <input type="text" name="productName" placeholder="Type here" class="form-control" required>
                         </div>
-                        <div>
-                            <button type="submit" class="btn btn-light rounded font-sm mr-5 text-body hover-up">Add Product</button>
-                            <button type="reset" class="btn btn-md rounded font-sm hover-up">Cancel</button>
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" placeholder="Type here" class="form-control" rows="4" required></textarea>
                         </div>
+                        <div class="mb-4">
+                            <label class="form-label">Brand</label>
+                            <select class="form-select" name="brands" required>
+                                <% brands.forEach(brand => { %>
+                                    <option value="<%= brand._id %>"><%= brand.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" name="category" required>
+                                <% category.forEach(category => { %>
+                                    <option value="<%= category._id %>"><%= category.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Price</label>
+                            <input type="number" name="price" placeholder="00.0" class="form-control" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Images</label>
+                            <input class="form-control" type="file" name="productImage" multiple required>
+                        </div>
+                        <button type="submit" class="btn btn-light rounded font-sm mr-5 text-body hover-up">Add Product</button>
                     </form>
                 </div>
             </div>
@@ -179,6 +60,37 @@
         <%- include('partials/footer') %>
     </main>
     <%- include('partials/scripts') %>
+    <script>
+        document.getElementById('addProductForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to add a new product!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, add it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }
+            });
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        if (success === 'true') {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Product added successfully!',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location.href = '/admin/product-list2';
+            });
+        }
+    </script>
 </body>
 
 </html>

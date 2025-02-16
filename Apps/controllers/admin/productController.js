@@ -1,42 +1,63 @@
 const Product = require('../../models/productModel')
 const Brand = require('../../models/brandModel')
+const Category = require('../../models/categoryModel')
 const uploads = require('../../config/multer')
-const category = require('./categoryController')
+const category = require('../admin/categoryController')
 const { error } = require('console')
 const { addbrand, brands } = require('./adminController')
 const { text } = require('stream/consumers')
 const { type } = require('os')
+const upload = require('../../config/multer')
 
 const productController ={
+
     showAddProductPage: async (req,res)=>{
-        res.status(200).render('addproduct')
+     try { 
+        const brands = await Brand.find()
+        const category = await Category.find()
+       res.status(200).render('addproduct',{brands,category})}
+       catch(error){
+console.log(error)
+res.status(500).send('internal server error')
+       }
     },
     addproduct:async (req,res) => {
+        console.log('invoked add prod 1');
+        
         try {
-           uploads(req,res,async function(err) {
+           upload.array('productImage')(req,res,async function(err) {
             if(err){
+                console.log('invoked add prod 2');
+                console.log(err)
                 return res.status(400).json({error:err.message})
             }
-            const {productName,description,price,brands,offer,category}=req.body
+            console.log(req.body)
+            console.log(req.files)
+            const {productName,description,price,brands,category}=req.body
             if(!req.files||req.files.length===0){
+                console.log('invoked add prod 3');
                 return res.status(400).send('atleast one image is required')
             }
-            const imagePaths = req.files.map(file.filename)
+            const imagePaths = req.files.map(file=>file.filename)
+console.log(imagePaths)
             const newProduct = new Product({
                 productName,
                 description,
-                price,
+                price:Number(price),
                 images:imagePaths,
                 brands,
-                offer,
                 category
             })
             await newProduct.save()
-            res.status(201).send(`${newProduct} is added successfully`)
+            console.log('invoked add prod 4');
+            res.status(201).redirect('/admin/addproduct?success=true')
            }) 
           
 
         } catch (error) {
+            console.log('error add prod invoked');
+            
+            console.log(error)
             res.status(500).send('internal server error')
         }
     },
@@ -61,12 +82,13 @@ const productController ={
             const existingBrand = await Brand.findOne({ name: brandName });
             if (existingBrand) {
                 return res.status(400).render('addbrand', { message: 'Brand already exists' });
-            }
+            } 
             const newBrand = new Brand({
                 name:brandName,
                 description:brandDescription,
                 image:brandLogo
             })
+
             await newBrand.save()
             res.status(201).render('addbrand',{message:'Brand added succesfulyy'})
         } catch (error) {

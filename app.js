@@ -24,9 +24,9 @@ app.use(cookieParser())
 
 
 // Middleware to serve static files
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Configure express-session
+
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,

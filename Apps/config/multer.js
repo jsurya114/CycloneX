@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const module = req.originalUrl.split('/')[2]
         const uploadPath = `public/backend/imgs/${module}`
-        cb(null, uploadPath); 
+      
 
         if (req.body.type === 'product') {
             uploadPath = path.join(uploadPath, 'products');
@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
         } else if (req.body.type === 'brand') {
             uploadPath = path.join(uploadPath, 'brands');
         }
+        cb(null, uploadPath); 
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));

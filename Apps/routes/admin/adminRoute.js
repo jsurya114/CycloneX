@@ -5,20 +5,24 @@ const adminAuth = require('../../controllers/admin/adminAuth');
 const verifyAdmin = require('../../middlewares/adminsAuth')
 const productController = require('../../controllers/admin/productController')
 const upload = require('../../config/multer');
-const categoryController = require('../../controllers/admin/categoryController');
+const categoryController = require('../../controllers/admin/categoryController')
+const productloader = require('../../controllers/admin/productloader')
 router.get('/login', adminAuth.login);
 router.post('/login', adminAuth.loginPost); // Handle login form submission
 router.get('/dashboard',verifyAdmin, adminController.dashboard);
 router.get('/logout',adminAuth.logout)
 
-router.get('/product-list',adminController.product)
+// router.get('/product-list',adminController.product)
 router.get('/product-list2',adminController.product2)
 
 router.get('/addproduct',productController.showAddProductPage)
 router.post('/addproduct',productController.addproduct)
+router.get('/editproduct/:id',productloader.showeditProduct)
+router.put('/editproduct/:id',upload.single('productImage'),productloader.editProduct)
+router.put('/toggle-product/:id', productloader.productsoftdelete);
+
 router.get('/brands', productController.showAddBrandPage);
 router.get('/addbrand',productController.addBrand)
-
 router.post('/addbrand',upload.single('brandLogo') ,productController.addBrand);
 router.get('/editbrand/:id',productController.showEditBrandPage)
 router.put('/editbrand/:id', upload.single('brandLogo'), productController.editbrand);
@@ -30,5 +34,5 @@ router.put('/category/update/:id',upload.single('image'),categoryController.edit
 router.put('/category/listing/:id', categoryController.listing)
 router.delete('/category/delete', categoryController.deleteCategories);
 
-
+ 
 module.exports = router;
