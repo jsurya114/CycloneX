@@ -77,8 +77,10 @@ if(existingCategory){
       listing:async (req,res)=>{
         try {
           const categoryId = req.params.id 
+          console.log(categoryId)
           const category = await Category.findById(categoryId)
           if(!category){
+            console.error(categoryId)
             return res.status(404).json({
                 success:false,
                 message:'category not found'
@@ -86,13 +88,14 @@ if(existingCategory){
           }  
           category.isBlocked=!category.isBlocked
           await category.save()
+          console.log(`Category ${category.name} is now ${category.isBlocked ? "Blocked" : "Unblocked"}`);
           res.status(200).json({
             success:true,
             message:`Category ${category.isBlocked ? 'blocked' : 'unblocked'} successfully`
           })
         } catch (error) {
             console.error(error)
-    res.status(500).json({ success: false, message: 'Error toggling category status' }) 
+    res.status(500).json({ success: false, message: 'Error listing category status' }) 
         }
       },
       deleteCategories:async(req,res)=>{

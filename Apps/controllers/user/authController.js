@@ -68,6 +68,10 @@ const authController = {
                 return res.status(400).send("Please verify your email before logging in.");
             }
 
+            if (!user.password) {
+                return res.status(400).send("This account was registered using social login. Please use the social login option.");
+            }
+
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
                 return res.status(400).send("Invalid credentials");

@@ -31,7 +31,7 @@ router.get('/category',categoryController.category)
 router.post('/category/add',upload.single('image'),categoryController.addCategory)
 router.get('/category/edit/:id',categoryController.showEditCategrory)
 router.put('/category/update/:id',upload.single('image'),categoryController.editcategory)
-router.put('/category/listing/:id', categoryController.listing)
+router.put('/listing/:id', categoryController.listing)
 router.delete('/category/delete', categoryController.deleteCategories);
 
  

@@ -14,7 +14,7 @@ const adminController = {
     product2: async (req, res) => {
         try {
             const products = await Product.find()
-                .populate({ path: 'brands', strictPopulate: false }) // Ensure proper population
+                .populate({ path: 'brands', strictPopulate: false })
                 .populate({ path: 'category', strictPopulate: false });
 
             res.render('product-list2', { product: products });

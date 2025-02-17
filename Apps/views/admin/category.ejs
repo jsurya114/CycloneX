@@ -139,11 +139,24 @@
                           <img src="<%= category.image %>" alt="<%= category.name %>" style="width: 50px; height: 50px; object-fit: cover;">
                         </td>
                         <td class="text-end">
-                          <a href="/admin/category/edit/<%= category._id %>" class="btn btn-sm btn-info">Edit</a>
-                          <div class="form-check form-switch d-inline-block ms-3">
-                            <input class="form-check-input toggle-category" type="checkbox" data-id="<%= category._id %>" <%= category.isBlocked ? '' : 'checked' %>>
-                          </div>
+                          <!-- <a href="/admin/category/edit/<%= category._id %>" > <i class="fas fa-pencil-alt text-primary"></i></a> -->
+                          <a href="/admin/category/edit/<%= category._id %>" class="edit-category" data-id="<%= category._id %>" data-name="<%= category.name %>" data-slug="<%= category.slug %>" data-description="<%= category.description %>">
+                            <i class="fas fa-pencil-alt text-primary"></i>
+                          </a>
+                          
                         </td>
+                        <td>
+                          <span class="badge status-badge <%= category.isBlocked ? 'bg-danger' : 'bg-success' %>">
+                              <%= category.isDeleted ? 'Deactive' : 'Active' %>
+                          </span>
+                      </td>
+                      <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input toggle-status" type="checkbox" 
+                                data-id="<%= category._id %>"
+                                <%= category.isBlocked ? '' : 'checked' %>>
+                        </div>
+                    </td>
                       </tr>
                     <% }) %>
                   </tbody>
@@ -179,7 +192,7 @@
             text: data.message,
             confirmButtonText: 'OK'
           }).then(() => {
-            location.reload(); // Reload page to show the new category
+            location.reload();
           });
         } else {
           Swal.fire({
@@ -201,41 +214,54 @@
     });
     
     // Handle toggle functionality for blocking/unblocking categories
-    document.querySelectorAll('.toggle-category').forEach(toggle => {
-      toggle.addEventListener("change", async function () {
-        const categoryId = this.getAttribute("data-id");
-        const action = this.checked ? 'unblock' : 'block';
-        Swal.fire({
-          title: `Are you sure you want to ${action} this category?`,
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, proceed!"
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            try {
-              const response = await fetch(`/admin/category/listing/${categoryId}`, {
-                method: "PUT"
-              });
-              const data = await response.json();
-              if (response.ok && data.success) {
-                Swal.fire("Success!", `Category ${action}ed successfully`, "success").then(() => {
-                  location.reload()
+    document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.toggle-status').forEach(switchElement => {
+                switchElement.addEventListener('change', async (event) => {
+                    const category = event.target.dataset.id;
+                    const isChecked = event.target.checked;
+                    const statusBadge = event.target.closest('tr').querySelector('.status-badge');
+
+                    const result = await Swal.fire({
+                        title: isChecked ? 'Activate Product?' : 'Unlist this Product?',
+                        text: isChecked ? "You can unlist it anytime." : "You can list it anytime.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, continue',
+                        cancelButtonText: 'Cancel'
+                    });
+
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await fetch(`/admin/listing/${category}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' }
+                            });
+
+                            const data = await response.json();
+                            if (data.success) {
+                                Swal.fire('Updated!', data.message, 'success');
+
+                                // Update status badge dynamically
+                                if (statusBadge) {
+                                    statusBadge.textContent = isChecked ? 'Active' : 'Deactive';
+                                    statusBadge.classList.toggle('bg-success', isChecked);
+                                    statusBadge.classList.toggle('bg-danger', !isChecked);
+                                }
+                            } else {
+                                Swal.fire('Error', data.message, 'error');
+                                event.target.checked = !isChecked;
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            Swal.fire('Error', 'Something went wrong', 'error')
+                            event.target.checked = !isChecked
+                        }
+                    } else {
+                        event.target.checked = !isChecked
+                    }
                 });
-              } else {
-                Swal.fire("Error!", data.message, "error");
-              }
-            } catch (error) {
-              Swal.fire("Error!", "An error occurred. Please try again.", "error");
-            }
-          } else {
-            this.checked = !this.checked;
-          }
+            });
         });
-      });
-    });
-    
     // Handle "Select All" functionality for deletion checkboxes
     document.querySelector('.delete-checkbox-all').addEventListener('change', function () {
       const isChecked = this.checked;
