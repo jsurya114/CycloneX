@@ -71,101 +71,157 @@
           <input type="text" placeholder="Search Categories" class="form-control bg-white">
         </div>
       </div>
-      <div class="card">
-        <div class="card-body">
+      <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+        <div class="p-6">
           <!-- Delete Selected Button -->
-          <div class="mb-3">
-            <button id="deleteSelectedBtn" class="btn btn-danger">Delete Selected</button>
-          </div>
-          <div class="row">
+      
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Add Category Form -->
-            <div class="col-md-3">
-              <form id="addCategoryForm" enctype="multipart/form-data">
-                <div class="mb-4">
-                  <label for="product_name" class="form-label">Name</label>
-                  <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required />
+            <div class="col-span-1">
+              <form id="addCategoryForm" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                  <label for="product_name" class="block text-sm font-medium text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Type here"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="product_name"
+                    required
+                  />
                 </div>
-                <div class="mb-4">
-                  <label for="product_slug" class="form-label">Slug</label>
-                  <input type="text" name="slug" placeholder="Type here" class="form-control" id="product_slug" required />
+                <div>
+                  <label for="product_slug" class="block text-sm font-medium text-gray-700">Slug</label>
+                  <input
+                    type="text"
+                    name="slug"
+                    placeholder="Type here"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="product_slug"
+                    required
+                  />
                 </div>
-                <div class="mb-4">
-                  <label class="form-label">Description</label>
-                  <textarea name="description" placeholder="Type here" class="form-control" required></textarea>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Description</label>
+                  <textarea
+                    name="description"
+                    placeholder="Type here"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  ></textarea>
                 </div>
-                <div class="mb-4">
-                  <label class="form-label">Image</label>
-                  <input type="file" name="image" class="form-control" required />
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Image</label>
+                  <input
+                    type="file"
+                    name="image"
+                    class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    required
+                  />
                 </div>
-                <div class="d-grid">
-                  <button type="submit" class="btn btn-primary">Create Category</button>
+                <div>
+                  <button
+                    type="submit"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    Create Category
+                  </button>
                 </div>
               </form>
             </div>
+      
             <!-- Categories Table -->
-            <div class="col-md-9">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
+            <div class="col-span-3">
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200">
+                  <thead class="bg-gray-50">
                     <tr>
-                      <th class="text-center">
-                        <div class="form-check">
-                          <!-- "Select All" checkbox for deletion -->
-                          <input class="form-check-input delete-checkbox-all" type="checkbox" />
+                      <th class="p-3 text-center">
+                        <div class="flex justify-center">
+                          <input
+                            class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            type="checkbox"
+                          />
                         </div>
                       </th>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Slug</th>
-                      <th>Image</th>
-                      <th class="text-end">Action</th>
-                      <th>Status</th>
-                      <th>Listing</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Description</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Slug</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Image</th>
+                      <th class="p-3 text-right text-sm font-semibold text-gray-700">Action</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Listing</th>
                     </tr>
                   </thead>
                   <tbody>
                     <% category.forEach(category => { %>
-                      <tr>
-                        <td class="text-center">
-                          <div class="form-check">
-                            <!-- Each deletion checkbox has a data-id -->
-                            <input class="form-check-input delete-checkbox" type="checkbox" data-id="<%= category._id %>" />
+                      <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="p-3 text-center">
+                          <div class="flex justify-center">
+                            <input
+                              class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                              type="checkbox"
+                              data-id="<%= category._id %>"
+                            />
                           </div>
                         </td>
-                        <td><b><%= category.name %></b></td>
-                        <td><%= category.description %></td>
-                        <td><%= category.slug %></td>
-                        <td>
-                          <img src="<%= category.image %>" alt="<%= category.name %>" style="width: 50px; height: 50px; object-fit: cover;">
+                        <td class="p-3 text-sm text-gray-700"><b><%= category.name %></b></td>
+                        <td class="p-3 text-sm text-gray-700"><%= category.description %></td>
+                        <td class="p-3 text-sm text-gray-700"><%= category.slug %></td>
+                        <td class="p-3">
+                          <img
+                            src="<%= category.image %>"
+                            alt="<%= category.name %>"
+                            class="w-12 h-12 object-cover rounded-md"
+                          />
                         </td>
-                        <td class="text-end">
-                          <!-- <a href="/admin/category/edit/<%= category._id %>" > <i class="fas fa-pencil-alt text-primary"></i></a> -->
-                          <a href="/admin/category/edit/<%= category._id %>" class="edit-category" data-id="<%= category._id %>" data-name="<%= category.name %>" data-slug="<%= category.slug %>" data-description="<%= category.description %>">
-                            <i class="fas fa-pencil-alt text-primary"></i>
+                        <td class="p-3 text-right">
+                          <a
+                            href="/admin/category/edit/<%= category._id %>"
+                            class="text-blue-500 hover:text-blue-700"
+                            data-id="<%= category._id %>"
+                            data-name="<%= category.name %>"
+                            data-slug="<%= category.slug %>"
+                            data-description="<%= category.description %>"
+                          >
+                            <i class="fas fa-pencil-alt" style="font-size: 1.2rem;"></i>
                           </a>
-                          
                         </td>
-                        <td>
-                          <span class="badge status-badge <%= category.isBlocked ? 'bg-danger' : 'bg-success' %>">
-                              <%= category.isDeleted ? 'Deactive' : 'Active' %>
-                          </span>
-                      </td>
-                      <td>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input toggle-status" type="checkbox" 
-                                data-id="<%= category._id %>"
-                                <%= category.isBlocked ? '' : 'checked' %>>
-                        </div>
-                    </td>
+                        <td class="p-3">
+                          <% if (category.isBlocked) { %>
+                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
+                              Deactivated
+                            </span>
+                          <% } else { %>
+                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                              Active
+                            </span>
+                          <% } %>
+                        </td>
+                        
+                        <td class="p-3">
+                          <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+                            <input
+                              type="checkbox"
+                              data-id="<%= category._id %>"
+                              class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-gray-300 appearance-none cursor-pointer checked:right-0 checked:bg-blue-600 checked:border-blue-600"
+                              <%= category.isBlocked ? '' : 'checked' %>
+                            />
+                            <label
+                              for="toggle"
+                              class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                            ></label>
+                          </div>
+                        </td>
                       </tr>
                     <% }) %>
                   </tbody>
                 </table>
               </div>
-            </div> <!-- .col// -->
-          </div> <!-- .row // -->
-        </div> <!-- card body .// -->
-      </div> <!-- card .// -->
+            </div>
+          </div>
+        </div>
+      </div><!-- card .// -->
     </section> <!-- content-main end// -->
     <%- include('partials/footer') %>
   </main>
@@ -174,8 +230,8 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <%- include('partials/scripts') %>
   <script>
-    // Handle form submission for adding a category using fetch
-    document.getElementById('addCategoryForm').addEventListener('submit', async function (e) {
+
+document.getElementById('addCategoryForm').addEventListener('submit', async function (e) {
       e.preventDefault(); // Prevent default form submission
       const formData = new FormData(this); // Create FormData from the form
       try {
@@ -212,126 +268,50 @@
         });
       }
     });
-    
-    // Handle toggle functionality for blocking/unblocking categories
-    document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.toggle-status').forEach(switchElement => {
-                switchElement.addEventListener('change', async (event) => {
-                    const category = event.target.dataset.id;
-                    const isChecked = event.target.checked;
-                    const statusBadge = event.target.closest('tr').querySelector('.status-badge');
 
-                    const result = await Swal.fire({
-                        title: isChecked ? 'Activate Product?' : 'Unlist this Product?',
-                        text: isChecked ? "You can unlist it anytime." : "You can list it anytime.",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, continue',
-                        cancelButtonText: 'Cancel'
-                    });
 
-                    if (result.isConfirmed) {
-                        try {
-                            const response = await fetch(`/admin/listing/${category}`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' }
-                            });
+    // Toggle Category Status
+    document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
+        switchElement.addEventListener('change', async function () {
+            const categoryId = this.getAttribute('data-id');
+            const newStatus = this.checked;
 
-                            const data = await response.json();
-                            if (data.success) {
-                                Swal.fire('Updated!', data.message, 'success');
+if(!categoryId){
+  console.error('category id not found')
+  return
+}
 
-                                // Update status badge dynamically
-                                if (statusBadge) {
-                                    statusBadge.textContent = isChecked ? 'Active' : 'Deactive';
-                                    statusBadge.classList.toggle('bg-success', isChecked);
-                                    statusBadge.classList.toggle('bg-danger', !isChecked);
-                                }
-                            } else {
-                                Swal.fire('Error', data.message, 'error');
-                                event.target.checked = !isChecked;
-                            }
-                        } catch (error) {
-                            console.error(error);
-                            Swal.fire('Error', 'Something went wrong', 'error')
-                            event.target.checked = !isChecked
-                        }
-                    } else {
-                        event.target.checked = !isChecked
-                    }
+            try {
+                const response = await fetch(`/admin/category/listing/${categoryId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
                 });
-            });
-        });
-    // Handle "Select All" functionality for deletion checkboxes
-    document.querySelector('.delete-checkbox-all').addEventListener('change', function () {
-      const isChecked = this.checked;
-      document.querySelectorAll('.delete-checkbox').forEach(cb => {
-        cb.checked = isChecked;
-      });
-    });
-    
-    // Handle "Delete Selected" functionality
-    document.getElementById('deleteSelectedBtn').addEventListener('click', async function () {
-      // Get all checked deletion checkboxes
-      const selectedCheckboxes = document.querySelectorAll('.delete-checkbox:checked:not(:disabled)');
-      if (selectedCheckboxes.length === 0) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'No Selection',
-          text: 'Please select at least one category to delete.',
-          confirmButtonText: 'OK'
-        });
-        return;
-      }
-      // Collect the category IDs from the checkboxes
-      const ids = Array.from(selectedCheckboxes).map(cb => cb.getAttribute('data-id'));
-      Swal.fire({
-        title: 'Confirm Deletion',
-        text: 'Are you sure you want to delete the selected categories?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete them!',
-        cancelButtonText: 'Cancel'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          try {
-            const response = await fetch('/admin/category/delete', {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ ids })
-            });
-            const data = await response.json();
-            if (response.ok && data.success) {
-              Swal.fire({
-                icon: 'success',
-                title: 'Deleted!',
-                text: data.message,
-                confirmButtonText: 'OK'
-              }).then(() => {
-                location.reload();
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: data.message,
-                confirmButtonText: 'OK'
-              });
+console.log(response)
+                if (!response.ok) {
+
+                    throw new Error('Failed to update status');
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: 'Category status has been updated.',
+                     confirmButtonText: 'OK'
+                });
+window.location.reload()
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Failed to update category status.',
+                    confirmButtonText: 'OK'
+                });
+                this.checked = !newStatus; // Revert toggle if failed
             }
-          } catch (error) {
-            console.error('Error:', error);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'An error occurred. Please try again.',
-              confirmButtonText: 'OK'
-            });
-          }
-        }
-      });
+        });
     });
+
   </script>
 </body>
 </html>

@@ -65,51 +65,62 @@ console.log(imagePaths)
 
     showAddBrandPage: async (req, res) => {
         try {
-            const brands=await Brand.find();
-            res.render('brands',{brands}); 
+          const brands = await Brand.find();
+          res.render('brands', { brands });
         } catch (error) {
-            res.status(500).send('Internal server error');
+          res.status(500).send('Internal server error');
         }
-    },
+      },
 
-    addBrand:async (req,res) => {
+
+      addBrand: async (req, res) => {
         try {
-            if(!req.file){
-                return res.status(400).render('addbrand',{message:'brand logo is required'})
-            }
-            const {brandName,brandDescription}=req.body
-            const brandLogo = `/backend/imgs/addbrand/${req.file.filename}`;
-            const existingBrand = await Brand.findOne({ name: brandName });
-            if (existingBrand) {
-                return res.status(400).render('addbrand', { message: 'Brand already exists' });
-            } 
-            const newBrand = new Brand({
-                name:brandName,
-                description:brandDescription,
-                image:brandLogo
-            })
+          if (!req.file) {
+            return res.status(400).json({ success: false, message: 'Brand logo is required' });
+          }
+    
+          const { name, description } = req.body;
+          if (!name || !description) {
+            return res.status(400).json({message:'brand name and description are required'})
+          }
 
-            await newBrand.save()
-            res.status(201).render('addbrand',{message:'Brand added succesfulyy'})
+    
+          // Check if the brand already exists
+          const existingBrand = await Brand.findOne({ name });
+          if (existingBrand) {
+            return res.status(400).json({ success: false, message: 'Brand already exists' });
+          }
+          const brandLogo = `/backend/imgs/addbrand/${req.file.filename}`;
+          const newBrand = new Brand({
+            name,
+            description,
+            image: brandLogo,
+          });
+    
+          await newBrand.save();
+          res.status(201).json({ success: true, message: 'Brand added successfully' });
         } catch (error) {
-            console.error(error);
-            res.status(500).render("addbrand",{message:'internal server eroor'})
+          console.error(error);
+          res.status(500).json({ success: false, message: 'Internal server error' });
         }
-},
-showEditBrandPage:async (req,res)=>{
-
-try {
-    const brandId =req.params.id 
-    const brand = await Brand.findById(brandId)
-    if(!brand){
-        return res.status(404).redirect('/admin/brands')
-    }
-    res.status(201).render('editbrand',{brand,message:null})
-} catch (error) {
-    console.error(error);
-    resres.status(500).redirect('/admin/brands');
-  }
-},
+      },
+      showEditBrandPage: async (req, res) => {
+        try {
+          const brandId = req.params.id;
+          const brand = await Brand.findById(brandId);
+    
+          if (!brand) {
+            return res.status(404).redirect('/admin/brands');
+          }
+    
+          res.status(200).render('editbrand', { brand, message: null });
+        } catch (error) {
+          console.error(error);
+          res.status(500).redirect('/admin/brands');
+        }
+      },
+    
+    
 editbrand:async (req,res)=>{
     console.log("invoked edit brand");
     
@@ -154,9 +165,10 @@ editbrand:async (req,res)=>{
         })
       }
 },
-deletebrand:async (req, res) => {
+listing:async (req, res) => {
     try {
         const brandId = req.params.id
+        const {status} = req.body
        const brand = await Brand.findById(brandId)
        if(!brand){
         return res.status(404).json({

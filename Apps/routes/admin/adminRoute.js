@@ -22,16 +22,16 @@ router.put('/editproduct/:id',upload.single('productImage'),productloader.editPr
 router.put('/toggle-product/:id', productloader.productsoftdelete);
 
 router.get('/brands', productController.showAddBrandPage);
-router.get('/addbrand',productController.addBrand)
+
 router.post('/addbrand',upload.single('brandLogo') ,productController.addBrand);
 router.get('/editbrand/:id',productController.showEditBrandPage)
 router.put('/editbrand/:id', upload.single('brandLogo'), productController.editbrand);
-router.delete('/deletebrand/:id', productController.deletebrand);
+router.put('/brand/listing/:id', productController.listing);
 router.get('/category',categoryController.category)
 router.post('/category/add',upload.single('image'),categoryController.addCategory)
 router.get('/category/edit/:id',categoryController.showEditCategrory)
 router.put('/category/update/:id',upload.single('image'),categoryController.editcategory)
-router.put('/listing/:id', categoryController.listing)
+router.put('/category/listing/:id', categoryController.listing)
 router.delete('/category/delete', categoryController.deleteCategories);
 
  

@@ -1,150 +1,294 @@
-<!DOCTYPE HTML> 
+<!DOCTYPE HTML>
 <html lang="en">
-    <%- include('partials/head') %>
-
+<%- include('partials/head') %>
 <body>
-    <div class="screen-overlay"></div>
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-            <a href="" class="brand-wrap">
-                <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-            </a>
-            <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
-            </div>
+  <div class="screen-overlay"></div>
+  <aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top">
+      <a href="" class="brand-wrap">
+        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+      </a>
+      <div>
+        <button class="btn btn-icon btn-aside-minimize">
+          <i class="text-muted material-icons md-menu_open"></i>
+        </button>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu-aside">
+        <li class="menu-item ">
+          <a class="menu-link" href="/admin/dashboard">
+            <i class="icon material-icons md-home"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item ">
+          <a class="menu-link" href="/admin/product-list2">
+            <i class="icon material-icons md-shopping_bag"></i>
+            <span class="text">Products</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/category">
+            <i class="icon material-icons md-category"></i>
+            <span class="text">Category</span>
+          </a>
+        </li>
+        <li class="menu-item active">
+          <a class="menu-link" href="/admin/brands">
+            <i class="icon material-icons md-stars"></i>
+            <span class="text">Brands</span>
+          </a>
+        </li>
+      </ul>
+      <hr>
+      <ul class="menu-aside">
+        <li class="menu-item has-submenu">
+          <a class="menu-link" href="page-settings-1.html">
+            <i class="icon material-icons md-settings"></i>
+            <span class="text">Settings</span>
+          </a>
+        </li>
+      </ul>
+      <br><br>
+    </nav>
+  </aside>
+  <main class="main-wrap">
+    <%- include('partials/header') %>
+    <section class="content-main">
+      <div class="content-header">
+        <div>
+          <h2 class="content-title card-title">Brands</h2>
+          <p>Add, edit or delete a brand</p>
         </div>
-        <nav>
-            <ul class="menu-aside">
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="menu-item ">
-                    <a class="menu-link " href="/admin/product-list2"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Products</span>
-                    </a>
-                </li>
-                <!-- <li class="menu-item ">
-                    <a class="menu-link" href="/admin/addproduct"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Add product</span>
-                    </a>
-                </li> -->
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/category">  <i class="icon material-icons md-category"></i>
-                        <span class="text">Category</span>
-                    </a>
-                </li>
-                <li class="menu-item active">
-                    <a class="menu-link" href="/admin/brands"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
-            </ul>
-            <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-settings-1.html"> <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                </li>
-            </ul>
-            <br><br>
-        </nav>
-    </aside>
-    <main class="main-wrap">
-        <%- include('partials/header') %>
-        <section class="content-main">
-            <div class="content-header">
+        <div>
+          <input type="text" placeholder="Search Brands" class="form-control bg-white">
+        </div>
+      </div>
+      <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+        <div class="p-6">
+          <!-- Delete Selected Button -->
+          <div class="mb-4">
+            <button id="deleteSelectedBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+              Delete Selected
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Add Brand Form -->
+            <div class="col-span-1">
+              <form id="addBrandForm" enctype="multipart/form-data" class="space-y-4">
                 <div>
-                    <h2 class="content-title card-title">Brand </h2>
-                    <p>Brand and vendor management</p>
+                  <label for="brand_name" class="block text-sm font-medium text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Type here"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="brand_name"
+                    required
+                  />
                 </div>
                 <div>
-                    <a href="/admin/addbrand" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Add New Brand</a>
+                  <label class="block text-sm font-medium text-gray-700">Description</label>
+                  <textarea
+                    name="description"
+                    placeholder="Type here"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  ></textarea>
                 </div>
-            </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                  <div class="row gx-3">
-                    <div class="col-lg-4 mb-lg-0 mb-15 me-auto">
-                      <input type="text" placeholder="Search..." class="form-control">
-                    </div>
-                  </div>
-                </header>
-                <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Logo</th>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% brands.forEach(brand => { %>
-                                <tr class="<%= brand.isBlocked ? 'table-danger' : '' %>">
-                                    <td><img height="50" src="<%= brand.image %>" alt="<%= brand.name %>"></td>
-                                    <td><%= brand.name %></td>
-                                    <td><%= brand.description %></td>
-                                    <td>
-                                        <span class="badge <%= brand.isBlocked ? 'bg-danger' : 'bg-success' %>">
-                                            <%= brand.isBlocked ? 'Blocked' : 'Active' %>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="/admin/editbrand/<%= brand.id %>" class="btn btn-sm btn-info" style="margin-right: 35px;">Edit</a>
-                                        <div class="form-check form-switch" style="display: inline-block; transform: scale(1.5);">
-                                            <input class="form-check-input toggle-brand" type="checkbox" data-id="<%= brand.id %>" <%= brand.isBlocked ? '' : 'checked' %> style="background-color: green; border-color: green;">
-                                        </div>
-                                    </td>
-                                </tr>
-                            <% }); %>
-                        </tbody>
-                    </table>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Image</label>
+                  <input
+                    type="file"
+                    name="brandLogo"
+                    class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    required
+                  />
                 </div>
+                <div>
+                  <button
+                    type="submit"
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    Create Brand
+                  </button>
+                </div>
+              </form>
             </div>
-        </section>
-        <%- include('partials/footer') %>
-    </main>
-    <%- include('partials/scripts') %>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.querySelectorAll(".toggle-brand").forEach(toggle => {
-          toggle.addEventListener("change", async function () {
-            const brandId = this.getAttribute("data-id");
-            const action = this.checked ? 'unblock' : 'block';
-            Swal.fire({
-                title: `Are you sure you want to ${action} this brand?`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, proceed!"
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const response = await fetch(`/admin/deletebrand/${brandId}`, {
-                            method: "DELETE"
-                        });
-                        const data = await response.json();
-                        if (response.ok && data.success) {
-                            Swal.fire("Success!", `Brand ${action}ed successfully`, "success").then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire("Error!", data.message, "error");
-                        }
-                    } catch (error) {
-                        Swal.fire("Error!", "An error occurred. Please try again.", "error");
-                    }
-                } else {
-                    this.checked = !this.checked;
-                }
-            });
-          });
+
+            <!-- Brands Table -->
+            <div class="col-span-3">
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="p-3 text-center">
+                        <div class="flex justify-center">
+                          <input
+                            class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            type="checkbox"
+                          />
+                        </div>
+                      </th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Description</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Image</th>
+                      <th class="p-3 text-right text-sm font-semibold text-gray-700">Action</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Listing</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% brands.forEach(brand => { %>
+                      <tr class="border-b border-gray-200 hover:bg-gray-50">
+                        <td class="p-3 text-center">
+                          <div class="flex justify-center">
+                            <input
+                              class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                              type="checkbox"
+                              data-id="<%= brand._id %>"
+                            />
+                          </div>
+                        </td>
+                        <td class="p-3 text-sm text-gray-700"><b><%= brand.name %></b></td>
+                        <td class="p-3 text-sm text-gray-700"><%= brand.description %></td>
+                        <td class="p-3">
+                          <img
+                            src="<%= brand.image %>"
+                            alt="<%= brand.name %>"
+                            class="w-12 h-12 object-cover rounded-md"
+                          />
+                        </td>
+                        <td class="p-3 text-right">
+                          <a
+                            href="/admin/addbrand/<%= brand._id %>"
+                            class="text-blue-500 hover:text-blue-700"
+                            data-id="<%= brand._id %>"
+                            data-name="<%= brand.name %>"
+                            data-description="<%= brand.description %>"
+                          >
+                            <i class="fas fa-pencil-alt" style="font-size: 1.2rem;"></i>
+                          </a>
+                        </td>
+                        <td class="p-3">
+                          <% if (brand.isBlocked) { %>
+                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
+                              Deactivated
+                            </span>
+                          <% } else { %>
+                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                              Active
+                            </span>
+                          <% } %>
+                        </td>
+                        <td class="p-3">
+                          <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+                            <input
+                              type="checkbox"
+                              data-id="<%= brand._id %>"
+                              class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-gray-300 appearance-none cursor-pointer checked:right-0 checked:bg-blue-600 checked:border-blue-600"
+                              <%= brand.isBlocked ? '' : 'checked' %>
+                            />
+                            <label
+                              for="toggle"
+                              class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                            ></label>
+                          </div>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- card .// -->
+    </section> <!-- content-main end// -->
+    <%- include('partials/footer') %>
+  </main>
+
+  <!-- Include SweetAlert2 script from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <%- include('partials/scripts') %>
+  <script>
+    document.getElementById('addBrandForm').addEventListener('submit', async function (e) {
+      e.preventDefault(); // Prevent default form submission
+      const formData = new FormData(this); // Create FormData from the form
+      try {
+        const response = await fetch('/admin/addbrand', {
+          method: 'POST',
+          body: formData
         });
-    </script>
+        const data = await response.json();
+        if (response.ok && data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: data.message,
+            confirmButtonText: 'OK'
+          }).then(() => {
+            location.reload();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: data.message,
+            confirmButtonText: 'OK'
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'An error occurred. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+
+    // Toggle Brand Status
+    document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
+      switchElement.addEventListener('change', async function () {
+        const brandId = this.getAttribute('data-id');
+        const newStatus = this.checked;
+
+        if (!brandId) {
+          console.error('Brand ID not found');
+          return;
+        }
+
+        try {
+          const response = await fetch(`/admin/brand/listing/${brandId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+          });
+          if (!response.ok) {
+            throw new Error('Failed to update status');
+          }
+          Swal.fire({
+            icon: 'success',
+            title: 'Updated!',
+            text: 'Brand status has been updated.',
+            confirmButtonText: 'OK'
+          });
+          window.location.reload();
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to update brand status.',
+            confirmButtonText: 'OK'
+          });
+          this.checked = !newStatus; // Revert toggle if failed
+        }
+      });
+    });
+  </script>
 </body>
 </html>
