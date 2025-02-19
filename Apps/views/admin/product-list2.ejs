@@ -1,187 +1,219 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <%- include('partials/head') %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
 <body>
-    <div class="screen-overlay"></div>
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-            <a href="" class="brand-wrap">
-                <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+  <div class="screen-overlay"></div>
+  <aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top">
+      <a href="" class="brand-wrap">
+        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+      </a>
+      <div>
+        <button class="btn btn-icon btn-aside-minimize">
+          <i class="text-muted material-icons md-menu_open"></i>
+        </button>
+      </div>
+    </div>
+    <nav>
+      <ul class="menu-aside">
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/dashboard">
+            <i class="icon material-icons md-home"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item has-submenu active">
+            <a class="menu-link" href="#">
+              <i class="icon material-icons md-shopping_bag"></i>
+              <span class="text">Products</span>
+              <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
             </a>
-            <div>
-                <button class="btn btn-icon btn-aside-minimize">
-                    <i class="text-muted material-icons md-menu_open"></i>
-                </button>
-            </div>
+            <ul class="submenu">
+              <!-- <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li> -->
+              <li><a href="/admin/addproduct" class="submenu-link">Add Product</a></li>
+            </ul>
+          </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/category">
+            <i class="icon material-icons md-category"></i>
+            <span class="text">Category</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/brands">
+            <i class="icon material-icons md-stars"></i>
+            <span class="text">Brands</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="main-wrap">
+    <%- include('partials/header') %>
+    <section class="content-main">
+      <div class="content-header flex justify-between">
+        <h2 class="content-title card-title text-4xl">Product List</h2>
+        <div class="flex gap-4">
+          <input type="text" placeholder="Search Products" class="form-control bg-white" id="searchProducts">
+          <select class="form-control bg-white" id="categoryFilter">
+            <option value="">All Categories</option>
+            <% categories.forEach(category => { %>
+              <option value="<%= category.name %>"><%= category.name %></option>
+            <% }) %>
+          </select>
+          <select class="form-control bg-white" id="brandFilter">
+            <option value="">All Brands</option>
+            <% brands.forEach(brand => { %>
+              <option value="<%= brand.name %>"><%= brand.name %></option>
+            <% }) %>
+          </select>
+          <!-- <a href="/admin/addproduct" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-medium hover:bg-blue-700 transition duration-300">
+            + Add Product
+          </a> -->
         </div>
-        <nav>
-            <ul class="menu-aside">
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/dashboard">
-                        <i class="icon material-icons md-home"></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="menu-item active">
-                    <a class="menu-link" href="/admin/product-list2">
-                        <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Products</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/category">
-                        <i class="icon material-icons md-category"></i>
-                        <span class="text">Category</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="/admin/brands">
-                        <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span>
-                    </a>
-                </li>
-            </ul>
-            <hr>
-            <ul class="menu-aside">
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-settings-1.html">
-                        <i class="icon material-icons md-settings"></i>
-                        <span class="text">Settings</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </aside>
+      </div>
+      <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+        <div class="p-6">
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="p-3 text-left">Product Name</th>
+                  <th class="p-3 text-left">Category</th>
+                  <th class="p-3 text-left">Brand</th>
+                  <th class="p-3 text-right">Action</th>
+                  <th class="p-3 text-left">Status</th>
+                  <th class="p-3 text-left">Listing</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% products.forEach(product => { %>
+                  <tr class="border-b border-gray-200 hover:bg-gray-50">
+                    <td class="p-3 text-sm text-gray-700">
+                        <a href="/admin/product/<%= product._id %>" class="font-bold text-blue-600 hover:text-blue-800">
+                          <%= product.productName %>
+                        </a>
+                      </td>
+                    <td class="p-3 text-sm text-gray-700 category-column"><%= product.category.name %></td>
+                    <td class="p-3 text-sm text-gray-700"><%= product.brands.name %></td>
+                    <td class="p-3 text-right">
+                      <a href="/admin/editproduct/<%= product._id %>" class="text-blue-500 hover:text-blue-700">
+                        <i class="fas fa-pencil-alt" style="font-size: 1.2rem;"></i>
+                      </a>
+                    </td>
+                    <td class="p-3">
+                      <% if (product.isDeleted) { %>
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
+                          Deactivated
+                        </span>
+                      <% } else { %>
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      <% } %>
+                    </td>
+                    <!-- Updated Toggle Switch -->
+                    <td class="p-3">
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" 
+                               class="sr-only peer toggle-checkbox" 
+                               data-id="<%= product._id %>" 
+                               <%= product.isDeleted ? '' : 'checked' %> />
+                        <div class="w-11 h-6 rounded-full bg-red-200 
+                                    peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 
+                                    dark:peer-focus:ring-red-800
+                                    peer-checked:bg-green-600 relative
+                                    after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                                    after:border-gray-300 after:border after:rounded-full 
+                                    after:h-5 after:w-5 after:transition-all 
+                                    peer-checked:after:translate-x-full peer-checked:after:border-white">
+                        </div>
+                      </label>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    <%- include('partials/footer') %>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <%- include('partials/scripts') %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check URL parameters for success message
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('added') === 'true') {
+          Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Product added successfully!',
+              showConfirmButton: false,
+              timer: 1500
+          });
+          // Clean up URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+      }
 
-    <main class="main-wrap">
-        <%- include('partials/header') %>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Products Listing</h2>
-                    <p>Manage your products easily.</p>
-                </div>
-                <div>
-                    <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Add new</a>
-                </div>
-            </div>
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Image</th>
-                                    <th>Product Name</th>
-                                    <th>Description</th>
-                                    <th>Price</th>
-                                    <th>Brand</th>
-                                    <th>Category</th>
-                                    <th>Actions</th>
-                                    <th>Status</th>
-                                    <th>Listing</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% if (product && product.length > 0) { %>
-                                    <% product.forEach(product => { %>
-                                        <tr>
-                                            <td>
-                                                <img src="/backend/imgs/addproduct/<%= product.images[0] %>"
-                                                    alt="<%= product.productName %>"
-                                                    style="width: 50px; height: 50px;">
-                                            </td>
-                                            <td><%= product.productName %></td>
-                                            <td><%= product.description %></td>
-                                            <td>$<%= product.price %></td>
-                                            <td><%= product.brands ? product.brands.name : 'No Brand' %></td>
-                                            <td><%= product.category ? product.category.name : 'No Category' %></td>
-                                            <td>
-                                                <a href="/admin/editproduct/<%= product._id %>">
-                                                    <i class="fas fa-pencil-alt text-primary"></i>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <span class="badge status-badge <%= product.isDeleted ? 'bg-danger' : 'bg-success' %>">
-                                                    <%= product.isDeleted ? 'Deactive' : 'Active' %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input toggle-status" type="checkbox" 
-                                                        data-id="<%= product._id %>"
-                                                        <%= product.isDeleted ? '' : 'checked' %>>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="9" class="text-center">No products found.</td>
-                                    </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <%- include('partials/footer') %>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.toggle-status').forEach(switchElement => {
-                switchElement.addEventListener('change', async (event) => {
-                    const productId = event.target.dataset.id;
-                    const isChecked = event.target.checked;
-                    const statusBadge = event.target.closest('tr').querySelector('.status-badge');
-
-                    const result = await Swal.fire({
-                        title: isChecked ? 'Activate Product?' : 'Unlist this Product?',
-                        text: isChecked ? "You can unlist it anytime." : "You can list it anytime.",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, continue',
-                        cancelButtonText: 'Cancel'
-                    });
-
-                    if (result.isConfirmed) {
-                        try {
-                            const response = await fetch(`/admin/toggle-product/${productId}`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' }
-                            });
-
-                            const data = await response.json();
-                            if (data.success) {
-                                Swal.fire('Updated!', data.message, 'success');
-
-                                // Update status badge dynamically
-                                if (statusBadge) {
-                                    statusBadge.textContent = isChecked ? 'Active' : 'Deactive';
-                                    statusBadge.classList.toggle('bg-success', isChecked);
-                                    statusBadge.classList.toggle('bg-danger', !isChecked);
-                                }
-                            } else {
-                                Swal.fire('Error', data.message, 'error');
-                                event.target.checked = !isChecked;
-                            }
-                        } catch (error) {
-                            console.error(error);
-                            Swal.fire('Error', 'Something went wrong', 'error');
-                            event.target.checked = !isChecked;
-                        }
-                    } else {
-                        event.target.checked = !isChecked;
-                    }
-                });
-            });
+      // Search functionality
+      document.getElementById('searchProducts').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        document.querySelectorAll('tbody tr').forEach(row => {
+          const name = row.cells[0].textContent.toLowerCase();
+          const category = row.cells[1].textContent.toLowerCase();
+          const brand = row.cells[2].textContent.toLowerCase();
+          row.style.display = name.includes(searchTerm) || category.includes(searchTerm) || brand.includes(searchTerm) ? '' : 'none';
         });
-    </script>
+      });
 
-    <%- include('partials/scripts') %>
+      // Category filter functionality
+      document.getElementById('categoryFilter').addEventListener('change', function() {
+        const selectedCategory = this.value.toLowerCase();
+        document.querySelectorAll('tbody tr').forEach(row => {
+          const category = row.querySelector('.category-column').textContent.toLowerCase();
+          row.style.display = selectedCategory === "" || category === selectedCategory ? '' : 'none';
+        });
+      });
+
+      // Toggle switch functionality with SweetAlert confirmation
+      document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
+        switchElement.addEventListener('change', async function () {
+          const productId = this.getAttribute('data-id');
+          const newStatus = this.checked;
+
+          const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: `You are about to ${newStatus ? 'list' : 'unlist'} this product.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, proceed!'
+          });
+
+          if (result.isConfirmed) {
+            try {
+              const response = await fetch(`/admin/toggle-product/${productId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+              });
+              if (!response.ok) throw new Error('Failed to update status');
+              Swal.fire({ icon: 'success', title: 'Updated!', text: 'Product status has been updated.', confirmButtonText: 'OK' });
+              window.location.reload();
+            } catch (error) {
+              Swal.fire({ icon: 'error', title: 'Error!', text: 'Failed to update product status.', confirmButtonText: 'OK' });
+              this.checked = !newStatus;
+            }
+          } else {
+            this.checked = !newStatus;
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

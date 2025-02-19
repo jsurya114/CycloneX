@@ -125,6 +125,7 @@ const authController = {
             const hashedPassword = await bcrypt.hash(password, salt);
 
             const otp = generateOTP();
+            console.log(otp)
             const otpExpires = new Date(Date.now() + (1 * 60 * 1000))
 
 

@@ -2,87 +2,248 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+          },
+          boxShadow: {
+            'custom': '0 0 50px -12px rgb(0 0 0 / 0.25)',
+          }
+        }
+      }
+    }
+  </script>
 </head>
-<body>
-  <main class="main-wrap">
-    <section class="content-main">
-      <div class="content-header">
-        <h2 class="content-title">Edit Brand</h2>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100">
+  <aside class="navbar-aside" id="offcanvas_aside">
+    <div class="aside-top">
+      <a href="" class="brand-wrap">
+        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+      </a>
+      <div>
+        <button class="btn btn-icon btn-aside-minimize">
+          <i class="text-muted material-icons md-menu_open"></i>
+        </button>
       </div>
-      <div class="card">
-        <div class="card-body">
-          <% if (message) { %>
-            <div class="alert alert-<%= message.type %>">
-              <%= message.text %>
-            </div>
-          <% } %>
-          
-          <!-- Edit Brand Form -->
-          <form id="editBrandForm" enctype="multipart/form-data">
-            <input type="hidden" id="brandId" value="<%= brand.id %>">
-            <div class="mb-3">
-              <label for="brandName" class="form-label">Brand Name</label>
-              <input type="text" class="form-control" id="brandName" name="brandName" value="<%= brand.name %>" required>
-            </div>
-            <div class="mb-3">
-              <label for="brandDescription" class="form-label">Brand Description</label>
-              <textarea class="form-control" id="brandDescription" name="brandDescription" rows="3" required><%= brand.description %></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="brandLogo" class="form-label">Brand Logo</label>
-              <input type="file" class="form-control" id="brandLogo" name="brandLogo" accept="image/*">
+    </div>
+    <nav>
+      <ul class="menu-aside">
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/dashboard">
+            <i class="icon material-icons md-home"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+        <li class="menu-item has-submenu active">
+            <a class="menu-link" href="#">
+              <i class="icon material-icons md-shopping_bag"></i>
+              <span class="text">Products</span>
+              <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
+            </a>
+            <ul class="submenu">
+              <!-- <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li> -->
+              <li><a href="/admin/addproduct" class="submenu-link">Add Product</a></li>
+            </ul>
+          </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/category">
+            <i class="icon material-icons md-category"></i>
+            <span class="text">Category</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/brands">
+            <i class="icon material-icons md-stars"></i>
+            <span class="text">Brands</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+  <main class="min-h-screen p-4">
+   <!-- Improved Header Section -->
+   <header class="bg-white shadow-md py-4 mb-6">
+    <div class="container mx-auto flex justify-between items-center px-4">
+      <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+      <nav>
+        <ul class="flex space-x-6">
+          <li><a href="/admin/dashboard" class="text-gray-600 hover:text-blue-600">Dashboard</a></li>
+          <li><a href="/admin/brands" class="text-gray-600 hover:text-blue-600">Brands</a></li>
+          <li><a href="/admin/logout" class="text-gray-600 hover:text-blue-600">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+    <div class="max-w-2xl mx-auto">
+      <!-- Back Button and Header -->
+      <div class="flex items-center mb-4 space-x-3">
+        <a href="/admin/brands" 
+           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white shadow-md hover:bg-gray-50 hover:shadow-lg transition-all duration-300 text-gray-700"
+        >
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </a>
+        <h2 class="text-xl font-bold text-gray-900 drop-shadow-sm">Edit Brand</h2>
+      </div>
+
+      <!-- Main Card -->
+      <div class="bg-white rounded-lg shadow-custom hover:shadow-lg transition-shadow duration-300 p-4">
+        <% if (message) { %>
+          <div class="mb-4 p-3 rounded-md shadow-sm <%= message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700' %>">
+            <%= message.text %>
+          </div>
+        <% } %>
+
+        <!-- Edit Brand Form -->
+        <form id="editBrandForm" enctype="multipart/form-data" class="space-y-4">
+          <!-- Name Field -->
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input 
+              type="text" 
+              name="name" 
+              id="name"
+              value="<%= brand.name %>" 
+              class="w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
+            >
+          </div>
+
+          <!-- Description Field -->
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea 
+              name="description" 
+              id="description"
+              rows="2"
+              class="w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
+            ><%= brand.description %></textarea>
+          </div>
+
+          <!-- Image Section with Enhanced Size -->
+          <div class="space-y-3">
+            <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
+            <div class="flex gap-6 items-center">
+              <!-- Image Upload -->
+              <div class="flex-1">
+                <input 
+                  type="file" 
+                  name="image" 
+                  id="image"
+                  class="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:shadow-sm"
+                >
+                <p class="mt-1 text-xs text-gray-500">Recommended size: 300x300px</p>
+              </div>
+
+              <!-- Image Preview -->
               <% if (brand.image) { %>
-                <div class="mt-2">
-                  <img src="<%= brand.image %>" alt="Current Brand Logo" class="img-thumbnail" style="max-width: 100px;">
-                  <p class="text-muted mt-1">Current Logo</p>
+                <div class="flex-shrink-0">
+                  <div class="relative group">
+                    <img 
+                      src="<%= brand.image %>" 
+                      alt="Brand Image" 
+                      class="w-24 h-24 object-cover rounded-lg border-2 border-gray-200 shadow-md group-hover:border-blue-400 transition-all duration-300"
+                    >
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 rounded-lg transition-all duration-300"></div>
+                  </div>
                 </div>
               <% } %>
             </div>
-            <div>
-              <button type="submit" class="btn btn-primary">Update Brand</button>
-              <button type="reset" class="btn btn-secondary">Reset</button>
-            </div>
-          </form>
-        </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-3 pt-3">
+            <button 
+              type="button" 
+              id="updateBrandBtn"
+              class="px-4 py-1.5 bg-blue-600 text-white text-sm rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300"
+            >
+              Update Brand
+            </button>
+            <!-- <button 
+              type="button" 
+              onclick="window.location.href='/admin/brands'"
+              class="px-4 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-md shadow-md hover:shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-300"
+            >
+              Cancel
+            </button> -->
+          </div>
+        </form>
       </div>
-    </section>
+    </div>
   </main>
- 
-  <script>
-    document.getElementById("editBrandForm").addEventListener("submit", async function (event) {
-      event.preventDefault();
-
-      const brandId = document.getElementById("brandId").value;
-      const brandName = document.getElementById("brandName").value;
-      const brandDescription = document.getElementById("brandDescription").value;
-      const brandLogo = document.getElementById("brandLogo").files[0];
-
-      const formData = new FormData();
-      console.log('this is form data'+formData)
-      formData.append("brandName", brandName);
-      formData.append("brandDescription", brandDescription);
-      if (brandLogo) {
-        formData.append("brandLogo", brandLogo);
-      }
-
-      try {
-        const response = await fetch(`/admin/editbrand/${brandId}`, {
-          method: "PUT",
-          body: formData
-        })
-        const data = await response.json()
-
-        if (response.ok && data.success) {
-          window.location.href = "/admin/brands";
-        } else {
-          alert(`Failed to update brand ${data.message}`);
-        }
-      } catch (error) {
-        console.error("Error updating brand:", error);
-      }
-    });
-  </script>
 
   <%- include('partials/scripts') %>
+  <!-- Initialize Lucide Icons -->
+  <script>
+    lucide.createIcons();
+  </script>
+  <script>
+    document.getElementById("updateBrandBtn").addEventListener("click", async function () {
+      Swal.fire({
+        title: "Confirm Update",
+        text: "Are you sure you want to update this brand?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, update it!",
+        cancelButtonText: "Cancel",
+        customClass: {
+          popup: 'shadow-xl',
+          confirmButton: 'bg-blue-600 text-white px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 text-sm',
+          cancelButton: 'bg-gray-100 text-gray-700 px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-gray-200 text-sm'
+        }
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const form = document.getElementById("editBrandForm");
+          const formData = new FormData(form);
+          try {
+            const response = await fetch(`/admin/editbrand/<%= brand._id %>`, {
+              method: "PUT",
+              body: formData
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+              Swal.fire({
+                title: "Success!",
+                text: data.message,
+                icon: "success",
+                customClass: {
+                  popup: 'shadow-xl',
+                  confirmButton: 'bg-blue-600 text-white px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 text-sm'
+                }
+              }).then(() => {
+                window.location.href = "/admin/brands";
+              });
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: data.message || "Failed to update brand",
+                icon: "error",
+                customClass: {
+                  popup: 'shadow-xl',
+                  confirmButton: 'bg-blue-600 text-white px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 text-sm'
+                }
+              });
+            }
+          } catch (error) {
+            console.error("Error updating brand:", error);
+            Swal.fire({
+              title: "Error!",
+              text: "An error occurred while updating the brand.",
+              icon: "error",
+              customClass: {
+                popup: 'shadow-xl',
+                confirmButton: 'bg-blue-600 text-white px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 text-sm'
+              }
+            });
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>

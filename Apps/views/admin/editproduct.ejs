@@ -2,86 +2,152 @@
 <html lang="en">
 
 <%- include('partials/head') %>
-<body>
-    <div class="screen-overlay"></div>
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <!-- Your existing aside content -->
-    </aside>
-    <main class="main-wrap">
-        <%- include('partials/header') %>
-        <section class="content-main">
-            <div class="row">
-                <div class="col-6">
-                    <div class="content-header">
-                        <h2 class="content-title">Edit Product</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <form id="editProductForm" action="/admin/edit-product/<%= product._id %>" method="POST" enctype="multipart/form-data">
-                        <!-- Hidden input for product ID -->
-                        <input type="hidden" name="productId" value="<%= product._id %>">
+<body class="bg-gray-100">
 
-                        <div class="mb-4">
-                            <label class="form-label">Product title</label>
-                            <input type="text" name="productName" placeholder="Type here" class="form-control" value="<%= product.productName %>" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Description</label>
-                            <textarea name="description" placeholder="Type here" class="form-control" rows="4" required><%= product.description %></textarea>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Brand</label>
-                            <select class="form-select" name="brands" required>
-                                <% brands.forEach(brand => { %>
-                                    <option value="<%= brand._id %>" <%= brand._id.toString() === product.brands._id.toString() ? 'selected' : '' %>>
-                                        <%= brand.name %>
-                                    </option>
-                                <% }) %>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Category</label>
-                            <select class="form-select" name="category" required>
-                                <% category.forEach(cat => { %>
-                                    <option value="<%= cat._id %>" <%= product.category&&product.category._id.toString() === product.category._id.toString() ? 'selected' : '' %>>
-                                        <%= cat.name %>
-                                    </option>
-                                <% }) %>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Price</label>
-                            <input type="number" name="price" placeholder="00.0" class="form-control" value="<%= product.price %>" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Images</label>
-                            <input class="form-control" type="file" name="productImage" multiple>
-                            <!-- Display existing images -->
-                            <% if (product.images && product.images.length > 0) { %>
-                                <div class="mt-3">
-                                    <p>Current Images:</p>
-                                    <% product.images.forEach(image => { %>
-                                        <img src="/backend/imgs/addproduct/<%= image %>" alt="Product Image" style="width: 100px; height: 100px; margin-right: 10px;">
-                                    <% }) %>
-                                </div>
-                            <% } %>
-                        </div>
-                        <button type="submit" class="btn btn-light rounded font-sm mr-5 text-body hover-up">Update Product</button>
-                    </form>
-                </div>
+    <div class="screen-overlay"></div>
+
+    <!-- Sidebar -->
+  
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+          <a href="" class="brand-wrap">
+            <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+          </a>
+          <div>
+            <button class="btn btn-icon btn-aside-minimize">
+              <i class="text-muted material-icons md-menu_open"></i>
+            </button>
+          </div>
+        </div>
+        <nav>
+          <ul class="menu-aside">
+            <li class="menu-item">
+              <a class="menu-link" href="/admin/dashboard">
+                <i class="icon material-icons md-home"></i>
+                <span class="text">Dashboard</span>
+              </a>
+            </li>
+            <li class="menu-item has-submenu active">
+                <a class="menu-link" href="#">
+                  <i class="icon material-icons md-shopping_bag"></i>
+                  <span class="text">Products</span>
+                  <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
+                </a>
+                <ul class="submenu">
+                  <!-- <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li> -->
+                  <li><a href="/admin/addproduct" class="submenu-link">Add Product</a></li>
+                </ul>
+              </li>
+            <li class="menu-item">
+              <a class="menu-link" href="/admin/category">
+                <i class="icon material-icons md-category"></i>
+                <span class="text">Category</span>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a class="menu-link" href="/admin/brands">
+                <i class="icon material-icons md-stars"></i>
+                <span class="text">Brands</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-wrap ml-64 p-6">
+      
+
+        <section class="content-main bg-white shadow-md rounded-lg p-6">
+            <div class="flex justify-between items-center border-b pb-4 mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Edit Product</h2>
             </div>
-        </section> <!-- content-main end// -->
+
+            <form id="editProductForm" action="/admin/edit-product/<%= product._id %>" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <input type="hidden" name="productId" value="<%= product._id %>">
+
+                <!-- Product Title -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Product Title</label>
+                    <input type="text" name="productName" placeholder="Enter product name"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.productName %>" required>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Description</label>
+                    <textarea name="description" placeholder="Enter description" rows="4"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" required><%= product.description %></textarea>
+                </div>
+
+                <!-- Brand Selection -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Brand</label>
+                    <select name="brands" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" required>
+                        <% brands.forEach(brand => { %>
+                            <option value="<%= brand._id %>" <%= brand._id.toString() === product.brands._id.toString() ? 'selected' : '' %>><%= brand.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <!-- Category Selection -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Category</label>
+                    <select name="category" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" required>
+                        <% category.forEach(cat => { %>
+                            <option value="<%= cat._id %>" <%= product.category && product.category._id.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <!-- Price -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Price</label>
+                    <input type="number" name="price" placeholder="00.0"
+                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.price %>" required>
+                </div>
+
+                <!-- Image Upload -->
+                <div>
+                    <label class="block text-gray-700 font-medium mb-1">Images</label>
+                    <input type="file" name="productImage" multiple class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300">
+                    
+                    <% if (product.images && product.images.length > 0) { %>
+                        <div class="mt-3">
+                            <p class="text-gray-600">Current Images:</p>
+                            <div class="flex gap-2 mt-2">
+                                <% product.images.forEach(image => { %>
+                                    <img src="/<%= image %>" class="w-24 h-24 object-cover rounded-lg shadow-md">
+                                <% }) %>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex items-center gap-4">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                        Update Product
+                    </button>
+                    <a href="/admin/product-list2" class="text-gray-600 hover:text-gray-800 transition">Cancel</a>
+                </div>
+            </form>
+        </section>
+
         <%- include('partials/footer') %>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <%- include('partials/scripts') %>
+
     <script>
         document.getElementById('editProductForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-        
+
             const formData = new FormData(this);
             const productId = formData.get('productId');
-        
+
             const result = await Swal.fire({
                 title: 'Confirm Update?',
                 text: "Do you want to save these changes?",
@@ -90,7 +156,7 @@
                 confirmButtonText: 'Yes, update it!',
                 cancelButtonText: 'Cancel'
             });
-        
+
             if (result.isConfirmed) {
                 fetch(`/admin/editproduct/${productId}`, {
                     method: 'PUT',
@@ -102,7 +168,7 @@
                         Swal.fire('Updated!', 'Product updated successfully.', 'success')
                         .then(() => window.location.href = '/admin/product-list2');
                     } else {
-                        Swal.fire('Error', 'Failed to update product.', 'error');
+                        Swal.fire('Error',data.message|| 'Failed to update product.', 'error');
                     }
                 })
                 .catch(error => {
@@ -111,10 +177,7 @@
                 });
             }
         });
-        </script>
-        
-    <%- include('partials/scripts') %>
-    
-</body>
+    </script>
 
+</body>
 </html>

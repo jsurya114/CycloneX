@@ -14,10 +14,14 @@ const adminController = {
     product2: async (req, res) => {
         try {
             const products = await Product.find()
-                .populate({ path: 'brands', strictPopulate: false })
-                .populate({ path: 'category', strictPopulate: false });
-
-            res.render('product-list2', { product: products });
+                .populate('brands')
+                .populate('category').sort({createdAt:-1})
+const categories = await Category.find()
+const brands =await Brand.find()
+            res.render('product-list2', { products,
+                categories ,
+                brands,
+            success:req.query.added==='true'});
         } catch (error) {
             console.log('invoked error product list');
             console.error(error);
@@ -25,6 +29,21 @@ const adminController = {
         }
     },
 
+    showproductDetails:async (req,res) => {
+        try{
+            const productId = req.params.id
+            const product =await Product.findById(productId).populate('category').populate('brands')
+            if(!product){
+                return res.status(404).redirect('/admin/product-list2')
+            }
+            res.render('product-details',{product})
+        }catch(error){
+            console.error('Error fetching product details:', error);
+            res.status(500).redirect('/admin/product-list2');
+    
+        }
+    },
+    
     brands: (req, res) => {
         res.render('brands');
     },

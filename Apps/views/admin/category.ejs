@@ -28,12 +28,6 @@
             <span class="text">Products</span>
           </a>
         </li>
-        <!-- <li class="menu-item ">
-          <a class="menu-link" href="/admin/addproduct">
-            <i class="icon material-icons md-add_box"></i>
-            <span class="text">Add product</span>
-          </a>
-        </li> -->
         <li class="menu-item active">
           <a class="menu-link" href="/admin/category">
             <i class="icon material-icons md-category"></i>
@@ -64,8 +58,7 @@
     <section class="content-main">
       <div class="content-header">
         <div>
-          <h2 class="content-title card-title">Categories</h2>
-          <p>Add, edit or delete a category</p>
+          <h2 class="content-title card-title text-4xl">Category</h2>
         </div>
         <div>
           <input type="text" placeholder="Search Categories" class="form-control bg-white">
@@ -73,10 +66,8 @@
       </div>
       <div class="bg-white shadow-sm rounded-lg overflow-hidden">
         <div class="p-6">
-          <!-- Delete Selected Button -->
-      
+          <!-- Add Category Form -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <!-- Add Category Form -->
             <div class="col-span-1">
               <form id="addCategoryForm" enctype="multipart/form-data" class="space-y-4">
                 <div>
@@ -110,15 +101,7 @@
                     required
                   ></textarea>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Image</label>
-                  <input
-                    type="file"
-                    name="image"
-                    class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                    required
-                  />
-                </div>
+                <!-- Image input removed -->
                 <div>
                   <button
                     type="submit"
@@ -136,18 +119,11 @@
                 <table class="min-w-full bg-white border border-gray-200">
                   <thead class="bg-gray-50">
                     <tr>
-                      <th class="p-3 text-center">
-                        <div class="flex justify-center">
-                          <input
-                            class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                            type="checkbox"
-                          />
-                        </div>
-                      </th>
+                      <!-- Removed checkbox header column -->
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Description</th>
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Slug</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Image</th>
+                      <!-- Removed image header -->
                       <th class="p-3 text-right text-sm font-semibold text-gray-700">Action</th>
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Status</th>
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Listing</th>
@@ -156,25 +132,11 @@
                   <tbody>
                     <% category.forEach(category => { %>
                       <tr class="border-b border-gray-200 hover:bg-gray-50">
-                        <td class="p-3 text-center">
-                          <div class="flex justify-center">
-                            <input
-                              class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                              type="checkbox"
-                              data-id="<%= category._id %>"
-                            />
-                          </div>
-                        </td>
+                        <!-- Removed checkbox cell -->
                         <td class="p-3 text-sm text-gray-700"><b><%= category.name %></b></td>
                         <td class="p-3 text-sm text-gray-700"><%= category.description %></td>
                         <td class="p-3 text-sm text-gray-700"><%= category.slug %></td>
-                        <td class="p-3">
-                          <img
-                            src="<%= category.image %>"
-                            alt="<%= category.name %>"
-                            class="w-12 h-12 object-cover rounded-md"
-                          />
-                        </td>
+                        <!-- Removed image display cell -->
                         <td class="p-3 text-right">
                           <a
                             href="/admin/category/edit/<%= category._id %>"
@@ -198,7 +160,6 @@
                             </span>
                           <% } %>
                         </td>
-                        
                         <td class="p-3">
                           <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
                             <input
@@ -230,8 +191,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <%- include('partials/scripts') %>
   <script>
-
-document.getElementById('addCategoryForm').addEventListener('submit', async function (e) {
+    document.getElementById('addCategoryForm').addEventListener('submit', async function (e) {
       e.preventDefault(); // Prevent default form submission
       const formData = new FormData(this); // Create FormData from the form
       try {
@@ -268,50 +228,125 @@ document.getElementById('addCategoryForm').addEventListener('submit', async func
         });
       }
     });
-
-
+    
     // Toggle Category Status
     document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
-        switchElement.addEventListener('change', async function () {
-            const categoryId = this.getAttribute('data-id');
-            const newStatus = this.checked;
+      switchElement.addEventListener('change', async function () {
+        const categoryId = this.getAttribute('data-id');
+        const newStatus = this.checked;
 
-if(!categoryId){
-  console.error('category id not found')
-  return
-}
+        if (!categoryId) {
+          console.error('category id not found');
+          return;
+        }
 
-            try {
-                const response = await fetch(`/admin/category/listing/${categoryId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: newStatus })
-                });
-console.log(response)
-                if (!response.ok) {
-
-                    throw new Error('Failed to update status');
-                }
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Updated!',
-                    text: 'Category status has been updated.',
-                     confirmButtonText: 'OK'
-                });
-window.location.reload()
-            } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Failed to update category status.',
-                    confirmButtonText: 'OK'
-                });
-                this.checked = !newStatus; // Revert toggle if failed
-            }
-        });
+        try {
+          const response = await fetch(`/admin/category/listing/${categoryId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+          });
+          console.log(response);
+          if (!response.ok) {
+            throw new Error('Failed to update status');
+          }
+          Swal.fire({
+            icon: 'success',
+            title: 'Updated!',
+            text: 'Category status has been updated.',
+            confirmButtonText: 'OK'
+          });
+          window.location.reload();
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to update category status.',
+            confirmButtonText: 'OK'
+          });
+          this.checked = !newStatus; // Revert toggle if failed
+        }
+      });
     });
 
+    // Live Search Implementation
+    const searchInput = document.querySelector('input[placeholder="Search Categories"]');
+    const tableBody = document.querySelector('tbody');
+    const tableRows = Array.from(tableBody.querySelectorAll('tr'));
+
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      
+      tableRows.forEach(row => {
+        // With the checkbox column removed, the indices for Name, Description, and Slug are 0, 1, and 2 respectively.
+        const name = row.cells[0].textContent.toLowerCase();
+        const description = row.cells[1].textContent.toLowerCase();
+        const slug = row.cells[2].textContent.toLowerCase();
+        
+        // Check if any of the fields contain the search term
+        const matches = name.includes(searchTerm) || 
+                        description.includes(searchTerm) || 
+                        slug.includes(searchTerm);
+        
+        // Show/hide the row based on match
+        row.style.display = matches ? '' : 'none';
+      });
+    });
+
+    // Clear search on Escape key and add cancel button functionality
+    searchInput.addEventListener('keyup', function(e) {
+      if (e.key === 'Escape') {
+        this.value = '';
+        tableRows.forEach(row => {
+          row.style.display = '';
+        });
+      }
+    });
+
+    // Modify the search input container to add a cancel button
+    const searchContainer = searchInput.parentElement;
+    searchContainer.style.position = 'relative';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.innerHTML = '&times;';
+    cancelButton.style.cssText = `
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #666;
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+      transition: color 0.2s ease;
+    `;
+    searchContainer.appendChild(cancelButton);
+    searchInput.style.paddingRight = '30px';
+
+    function clearSearch() {
+      searchInput.value = '';
+      cancelButton.style.display = 'none';
+      tableRows.forEach(row => {
+        row.style.display = '';
+      });
+      searchInput.focus();
+    }
+
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      cancelButton.style.display = searchTerm.length > 0 ? 'block' : 'none';
+    });
+
+    cancelButton.addEventListener('click', clearSearch);
+    cancelButton.addEventListener('mouseenter', function() {
+      this.style.color = '#333';
+    });
+    cancelButton.addEventListener('mouseleave', function() {
+      this.style.color = '#666';
+    });
   </script>
 </body>
 </html>

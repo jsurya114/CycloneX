@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
-<%- include('partials/head') %>
+  <%- include('partials/head') %>
 <body>
   <div class="screen-overlay"></div>
   <aside class="navbar-aside" id="offcanvas_aside">
@@ -58,22 +58,16 @@
     <section class="content-main">
       <div class="content-header">
         <div>
-          <h2 class="content-title card-title">Brands</h2>
-          <p>Add, edit or delete a brand</p>
+          <h2 class="content-title card-title text-4xl">Brands</h2>
         </div>
         <div>
           <input type="text" placeholder="Search Brands" class="form-control bg-white">
         </div>
       </div>
-      <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+      <!-- Card Container with max width adjusted -->
+      <div class="bg-white shadow-sm rounded-lg overflow-hidden max-w-6xl mx-auto">
         <div class="p-6">
-          <!-- Delete Selected Button -->
-          <div class="mb-4">
-            <button id="deleteSelectedBtn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-              Delete Selected
-            </button>
-          </div>
-
+          <!-- Grid layout: Form on left, Brands Table on right -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- Add Brand Form -->
             <div class="col-span-1">
@@ -86,27 +80,22 @@
                     placeholder="Type here"
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     id="brand_name"
-                    required
                   />
+                  <!-- Inline error for name -->
+                  <p id="brand_name_error" class="text-red-500 text-sm hidden"></p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700">Description</label>
+                  <label for="brand_description" class="block text-sm font-medium text-gray-700">Description</label>
                   <textarea
                     name="description"
                     placeholder="Type here"
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
+                    id="brand_description"
                   ></textarea>
+                  <!-- Inline error for description -->
+                  <p id="brand_description_error" class="text-red-500 text-sm hidden"></p>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Image</label>
-                  <input
-                    type="file"
-                    name="brandLogo"
-                    class="mt-1 block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                    required
-                  />
-                </div>
+                <!-- Removed the Image input field -->
                 <div>
                   <button
                     type="submit"
@@ -124,17 +113,8 @@
                 <table class="min-w-full bg-white border border-gray-200">
                   <thead class="bg-gray-50">
                     <tr>
-                      <th class="p-3 text-center">
-                        <div class="flex justify-center">
-                          <input
-                            class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                            type="checkbox"
-                          />
-                        </div>
-                      </th>
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Description</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Image</th>
                       <th class="p-3 text-right text-sm font-semibold text-gray-700">Action</th>
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Status</th>
                       <th class="p-3 text-left text-sm font-semibold text-gray-700">Listing</th>
@@ -143,27 +123,11 @@
                   <tbody>
                     <% brands.forEach(brand => { %>
                       <tr class="border-b border-gray-200 hover:bg-gray-50">
-                        <td class="p-3 text-center">
-                          <div class="flex justify-center">
-                            <input
-                              class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                              type="checkbox"
-                              data-id="<%= brand._id %>"
-                            />
-                          </div>
-                        </td>
                         <td class="p-3 text-sm text-gray-700"><b><%= brand.name %></b></td>
                         <td class="p-3 text-sm text-gray-700"><%= brand.description %></td>
-                        <td class="p-3">
-                          <img
-                            src="<%= brand.image %>"
-                            alt="<%= brand.name %>"
-                            class="w-12 h-12 object-cover rounded-md"
-                          />
-                        </td>
                         <td class="p-3 text-right">
                           <a
-                            href="/admin/addbrand/<%= brand._id %>"
+                            href="/admin/editbrand/<%= brand._id %>"
                             class="text-blue-500 hover:text-blue-700"
                             data-id="<%= brand._id %>"
                             data-name="<%= brand.name %>"
@@ -184,18 +148,24 @@
                           <% } %>
                         </td>
                         <td class="p-3">
-                          <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
-                            <input
-                              type="checkbox"
-                              data-id="<%= brand._id %>"
-                              class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-gray-300 appearance-none cursor-pointer checked:right-0 checked:bg-blue-600 checked:border-blue-600"
+                          <!-- Tailwind Toggle Switch -->
+                          <label class="relative inline-flex items-center cursor-pointer">
+                            <input 
+                              type="checkbox" 
+                              data-id="<%= brand._id %>" 
+                              class="sr-only peer toggle-checkbox" 
                               <%= brand.isBlocked ? '' : 'checked' %>
                             />
-                            <label
-                              for="toggle"
-                              class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-                            ></label>
-                          </div>
+                            <div class="w-11 h-6 rounded-full bg-red-200 
+                                        peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 
+                                        dark:peer-focus:ring-red-800
+                                        peer-checked:bg-green-600 relative
+                                        after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                                        after:border-gray-300 after:border after:rounded-full 
+                                        after:h-5 after:w-5 after:transition-all 
+                                        peer-checked:after:translate-x-full peer-checked:after:border-white">
+                            </div>
+                          </label>
                         </td>
                       </tr>
                     <% }) %>
@@ -205,7 +175,7 @@
             </div>
           </div>
         </div>
-      </div><!-- card .// -->
+      </div><!-- End card -->
     </section> <!-- content-main end// -->
     <%- include('partials/footer') %>
   </main>
@@ -214,9 +184,73 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <%- include('partials/scripts') %>
   <script>
+    // Create a SweetAlert mixin configured as a toast at the top right corner
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        popup: 'bg-white p-2 rounded shadow-md text-sm',
+        confirmButton: 'bg-blue-600 text-white px-2 py-1 rounded text-sm'
+      },
+      buttonsStyling: false,
+    });
+  
     document.getElementById('addBrandForm').addEventListener('submit', async function (e) {
       e.preventDefault(); // Prevent default form submission
-      const formData = new FormData(this); // Create FormData from the form
+      
+      // Clear any previous inline errors
+      document.getElementById('brand_name_error').classList.add('hidden');
+      document.getElementById('brand_description_error').classList.add('hidden');
+      
+      // Retrieve form field values
+      const nameField = document.getElementById('brand_name');
+      const descriptionField = document.getElementById('brand_description');
+      const name = nameField.value.trim();
+      const description = descriptionField.value.trim();
+      
+      let hasError = false;
+      
+      // Validate the "Name" field is not empty
+      if (!name) {
+        const nameError = document.getElementById('brand_name_error');
+        nameError.textContent = 'Brand name is required';
+        nameError.classList.remove('hidden');
+        hasError = true;
+      } else if (!/[A-Z]/.test(name)) {
+        // Validate that the brand name contains at least one uppercase letter
+        const nameError = document.getElementById('brand_name_error');
+        nameError.textContent = 'Brand name must contain at least one uppercase letter';
+        nameError.classList.remove('hidden');
+        hasError = true;
+      }
+      
+      // Validate the "Description" field
+      if (!description) {
+        const descriptionError = document.getElementById('brand_description_error');
+        descriptionError.textContent = 'Brand description is required';
+        descriptionError.classList.remove('hidden');
+        hasError = true;
+      } else if (description.length < 10) {
+        const descriptionError = document.getElementById('brand_description_error');
+        descriptionError.textContent = 'Brand description must be at least 10 characters long';
+        descriptionError.classList.remove('hidden');
+        hasError = true;
+      }
+      
+      // If there are validation errors, show a toast alert and abort submission
+      if (hasError) {
+        Toast.fire({
+          icon: 'error',
+          title: 'Please fix the errors in the form.'
+        });
+        return;
+      }
+      
+      // Create FormData from the form
+      const formData = new FormData(this);
       try {
         const response = await fetch('/admin/addbrand', {
           method: 'POST',
@@ -224,44 +258,39 @@
         });
         const data = await response.json();
         if (response.ok && data.success) {
-          Swal.fire({
+          Toast.fire({
             icon: 'success',
-            title: 'Success!',
-            text: data.message,
-            confirmButtonText: 'OK'
+            title: data.message,
           }).then(() => {
             location.reload();
           });
         } else {
-          Swal.fire({
+          Toast.fire({
             icon: 'error',
-            title: 'Error!',
-            text: data.message,
-            confirmButtonText: 'OK'
+            title: data.message || 'An error occurred'
           });
         }
       } catch (error) {
         console.error('Error:', error);
-        Swal.fire({
+        Toast.fire({
           icon: 'error',
-          title: 'Error!',
-          text: 'An error occurred. Please try again.',
-          confirmButtonText: 'OK'
+          title: 'An error occurred. Please try again.'
         });
       }
     });
-
+  
+    // (Toggle and search code remains unchanged below)
     // Toggle Brand Status
     document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
       switchElement.addEventListener('change', async function () {
         const brandId = this.getAttribute('data-id');
         const newStatus = this.checked;
-
+  
         if (!brandId) {
           console.error('Brand ID not found');
           return;
         }
-
+  
         try {
           const response = await fetch(`/admin/brand/listing/${brandId}`, {
             method: 'PUT',
@@ -271,24 +300,91 @@
           if (!response.ok) {
             throw new Error('Failed to update status');
           }
-          Swal.fire({
-            icon: 'success',
-            title: 'Updated!',
-            text: 'Brand status has been updated.',
-            confirmButtonText: 'OK'
-          });
-          window.location.reload();
+          Toast.fire({
+        icon: 'success',
+        title: 'Brand status has been updated.',
+        timer: 5000, // Updated to 5 seconds
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000); //  page reload happens after 5 seconds
+
         } catch (error) {
-          Swal.fire({
+          Toast.fire({
             icon: 'error',
-            title: 'Error!',
-            text: 'Failed to update brand status.',
-            confirmButtonText: 'OK'
+            title: 'Failed to update brand status.'
           });
           this.checked = !newStatus; // Revert toggle if failed
         }
       });
     });
+    
+    // Search functionality for Brands with cancel button
+    const searchContainer = document.querySelector('input[placeholder="Search Brands"]').parentElement;
+    searchContainer.style.position = 'relative';
+  
+    // Create and add the cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.innerHTML = '&times;';
+    cancelButton.style.cssText = `
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        font-size: 18px;
+        color: #666;
+        cursor: pointer;
+        padding: 4px;
+        display: none;
+    `;
+    searchContainer.appendChild(cancelButton);
+  
+    // Update the search input styles to accommodate the cancel button
+    const searchInput = document.querySelector('input[placeholder="Search Brands"]');
+    searchInput.style.paddingRight = '30px';
+  
+    // Live Search Implementation
+    const tableBody = document.querySelector('tbody');
+    const tableRows = Array.from(tableBody.querySelectorAll('tr'));
+  
+    function clearSearch() {
+      searchInput.value = '';
+      cancelButton.style.display = 'none';
+      tableRows.forEach(row => {
+        row.style.display = '';
+      });
+      searchInput.focus();
+    }
+  
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      cancelButton.style.display = searchTerm.length > 0 ? 'block' : 'none';
+      tableRows.forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        const description = row.cells[1].textContent.toLowerCase();
+        row.style.display = name.includes(searchTerm) || description.includes(searchTerm) ? '' : 'none';
+      });
+    });
+  
+    cancelButton.addEventListener('click', clearSearch);
+  
+    searchInput.addEventListener('keyup', function(e) {
+      if (e.key === 'Escape') {
+        clearSearch();
+      }
+    });
+  
+    cancelButton.addEventListener('mouseenter', function() {
+      this.style.color = '#333';
+    });
+    cancelButton.addEventListener('mouseleave', function() {
+      this.style.color = '#666';
+    });
   </script>
+  
+  
 </body>
 </html>

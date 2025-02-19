@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const BrandSchema = new mongoose.Schema({
     name: { type: String, required: true }, 
     description: { type: String, required: true }, // Brand description
-    image: { type: String, required: true }, 
+    image: { type: String, }, 
     isBlocked: { type: Boolean, default: false } 
 },{timestamps:true});
 
