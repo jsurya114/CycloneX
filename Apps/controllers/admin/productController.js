@@ -3,6 +3,9 @@ const Brand = require('../../models/brandModel');
 const Category = require('../../models/categoryModel');
 const uploads = require('../../config/multer');
 const category = require('../admin/categoryController');
+const { buffer } = require('stream/consumers');
+const sharp = require('sharp')
+const fs = require('fs')
 
 const productController = {
   showAddProductPage: async (req, res) => {
@@ -18,35 +21,94 @@ const productController = {
   addproduct: async (req, res) => {
     console.log('invoked add prod 1');
     try {
-      // Extract form data
-      const { productName, description, price, brands, category } = req.body;
-      const images = req.processedFiles || [];
+      let errors = {};
+      const { productName, description, price, brands, category, stock } = req.body;
+      
+      // Validate each field
+      if (!productName) {
+        errors.productName = "Product Name is required.";
+      } else if (!/[A-Z]/.test(productName)) {
+        errors.productName = "Product Name must contain at least one uppercase letter.";
+      }
+      
+      if (!description) {
+        errors.description = "Description is required.";
+      } else if (description.trim().length < 10) {
+        errors.description = "Description must be at least 10 characters long.";
+      }
+      
+      if (!price) {
+        errors.price = "Price is required.";
+      } else if (isNaN(price) || Number(price) <= 0) {
+        errors.price = "Price must be a positive number.";
+      }
+      
+      if (!category) {
+        errors.category = "Category is required.";
+      }
+      
+      if (!brands) {
+        errors.brands = "Brand is required.";
+      }
+      
+      if (!req.files || !req.files.mainImage || req.files.mainImage.length === 0) {
+        errors.mainImage = "Main image is required.";
+      }
+      
+      if (!req.files || !req.files.images || req.files.images.length === 0) {
+        errors.images = "At least one additional image is required.";
+      } else if (req.files.images.length > 4) {
+        errors.images = "You can upload up to 4 additional images.";
+      }
+      
+      // Return errors if any validations failed
+      if (Object.keys(errors).length > 0) {
+        return res.status(400).json({ success: false, errors });
+      }
+      
+      // Check for unique product name
+      const existingProduct = await Product.findOne({ productName });
+      if (existingProduct) {
+        errors.productName = "A product with this name already exists.";
+        return res.status(400).json({ success: false, errors });
+      }
+      // Main image is stored as-is.
+      const mainImagePath = `backend/imgs/products/${req.files.mainImage[0].filename}`;
 
-      if (!productName || !description || !price || !brands || !category) {
-        return res.status(400).json({ success: false, message: 'All fields are required' });
+      // Process each additional image using Sharp.
+      // We write the processed image to a temporary file, then rename it back.
+      for (const file of req.files.images) {
+        const filePath = file.path;
+        const tmpFilePath = filePath + '.tmp';
+        console.log("Processing additional image:", filePath);
+        // Wait briefly to ensure the file is fully released by Multer.
+        await new Promise(resolve => setTimeout(resolve, 100));
+        await sharp(filePath)
+          .resize(1000, 1000, { fit: 'cover' })
+          .toFile(tmpFilePath);
+        await fs.promises.rename(tmpFilePath, filePath);
       }
 
-      // Validate the number of uploaded images
-      if (!req.files || req.files.length === 0 || req.files.length > 4) {
-        console.log('invoked add prod 3');
-        return res.status(400).send('At least one image is required');
-      }
+      // Map additional images to their relative paths.
+      const imagePaths = req.files.images.map(file => `backend/imgs/products/${file.filename}`);
+      console.log("Additional Images:", imagePaths);
+      console.log("Main Image:", mainImagePath);
 
-      // Map uploaded files to their paths
-      const imagePaths = req.files.map(file => `backend/imgs/products/${file.filename}`);
-      console.log(imagePaths);
+      // Create and save the new product.
       const newProduct = new Product({
         productName,
         description,
         price: Number(price),
-        images,
+        mainImage: mainImagePath,
+        images: imagePaths,
         brands,
-        category
+        category,
+        stock
       });
       await newProduct.save();
       console.log('invoked add prod 4');
 
-      // Redirect to the addproduct page with a success message
+      // Redirect with a success message.
       res.status(201).redirect('/admin/addproduct?success=true');
 
     } catch (error) {

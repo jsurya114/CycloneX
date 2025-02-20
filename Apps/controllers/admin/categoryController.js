@@ -20,21 +20,25 @@ const categoryController = {
       if (!name || !slug || !description) {
         return res.status(400).json({ success: false, field:'all', message: "All fields are required."  });
       }
-      if(!/[A-Z]/.test(name)){
+      if(!/[A-Za-z\s]/.test(name)){
         return res.status(400).json({ success: false, field: "name", message: "Name must contain at least one uppercase letter." })
             }
+if(!/^[a-z0-9]+$/.test(slug)){
+  return res.status(400).json({success:false,field:'slug',message:"Slug must contain only lowercase letters, numbers, and hyphens"})
+}
+
             if(description.length<10){
               return res.status(400).json({ success: false, field: "description", message: "Description must be at least 10 characters long." })
             }
       
    
 
-      const existingCategory = await Category.findOne({$or:[{name},{slug}]});
+      const existingCategory = await Category.findOne({$or:[{name:{$regex:new RegExp(`^${name}$`,'i')}},{slug:{$regex:new RegExp(`^${slug}$`,'i')}}]});
    if(existingCategory) {  
-      if (existingCategory.name===name) {
+      if (existingCategory.name.toLowerCase()===name.toLowerCase()) {
         return res.status(400).json({ success: false, message: 'category already exists' });
       }
-      if(existingCategory.slug===slug){
+      if(existingCategory.slug.toLowerCase()===slug.toLowerCase()){
         return res.status(400).json({ success: false, field: "slug", message: "Slug already exists." });
       
       }
@@ -71,24 +75,38 @@ const categoryController = {
      const {name,slug,description} =req.body
      const categoryId =req.params.id
      if(!name||!slug||!description){
-      return res.status(400).json({success:false,field:'all',message: "All fields are required." })
+      return res.status(400).json({success:false,
+        field:'all',
+        message: "All fields are required." })
      }
-     if (!/[A-Z]/.test(name)) {
-      return res.status(400).json({ success: false, field: "name", message: "Name must contain at least one uppercase letter." });
+     if (!/[A-Za-z]\s]+$/.test(name)) {
+      return res.status(400).json({ success: false,
+         field: "name", 
+         message: "Name must contain at least one uppercase letter." });
+    }
+
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+      return res.status(400).json({ success: false, 
+        field: 'slug', 
+        message: 'Slug must contain only lowercase letters, numbers, and hyphens.' });
     }
     if (description.length < 10) {
-      return res.status(400).json({ success: false, field: "description", message: "Description must be at least 10 characters long." });
+      return res.status(400).json({ success: false, 
+        field: "description", 
+        message: "Description must be at least 10 characters long." });
     }
 
     // Check for duplicate category name and slug
-    const existingCategory = await Category.findOne({ _id: { $ne: categoryId }, $or: [{ name }, { slug }] });
+    const existingCategory = await Category.findOne({ _id: { $ne: categoryId }, $or: [{ name: { $regex: new RegExp(`^${name}$`, 'i') } }, // Case-insensitive match
+      { slug: { $regex: new RegExp(`^${slug}$`, 'i') } }] });
     if (existingCategory) {
-      if (existingCategory.name === name) {
-        return res.status(400).json({ success: false, field: "name", message: "Category name already exists." });
+      if (existingCategory.name.toLowerCase() === name.toLowerCase()) {
+        return res.status(400).json({ success: false, field: 'name', message: 'Category name already exists.' });
       }
-      if (existingCategory.slug === slug) {
-        return res.status(400).json({ success: false, field: "slug", message: "Slug already exists." });
+      if (existingCategory.slug.toLowerCase() === slug.toLowerCase()) {
+        return res.status(400).json({ success: false, field: 'slug', message: 'Slug already exists.' });
       }
+    
     }
 
     await Category.findByIdAndUpdate(categoryId, { name, slug, description });
@@ -114,10 +132,10 @@ const categoryController = {
       }
       category.isBlocked = !category.isBlocked;
       await category.save();
-      console.log(`Category ${category.name} is now ${category.isBlocked ? "Blocked" : "Unblocked"}`);
+      console.log(`Category ${category.name} is now ${category.isBlocked ? "deactivated" : "activated"} successfully`);
       res.status(200).json({
         success: true,
-        message: `Category ${category.isBlocked ? 'blocked' : 'unblocked'} successfully`
+        message: `Category ${category.isBlocked ? 'deactivated' : 'activated'} successfully`
       });
     } catch (error) {
       console.error(error);

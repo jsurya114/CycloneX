@@ -16,14 +16,15 @@ login: async (req, res) => {
         slogan: 'RIDE BEYOND LIMITS',
         loginAction: '/admin/login',
         rightImage: '/images/bicycle-illustration.png',
-        logoPath: '/backend/imgs/logos/cyclonelogo.png' 
+        logoPath: '/backend/imgs/logos/cyclonelogo.png', 
+        error:null
     });
 },
 
 loginPost: async (req, res) => {
     console.log(req.body);
     const { email, password } = req.body;
-
+    
     try {
         // Find the admin by email
         const admin = await Admin.findOne({ email ,isAdmin:true});
@@ -82,9 +83,7 @@ loginPost: async (req, res) => {
     }
 },
 logout:(req,res)=>{
-    res.cookie('token','',{httpOnly:true,
-        secure:process.env.NODE_ENV==='production',
-        expires:new Date(0)})
+    res.clearCookie('token')
     res.status(200).redirect('/admin/login')
 }
 }

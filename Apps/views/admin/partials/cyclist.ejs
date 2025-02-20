@@ -1,0 +1,91 @@
+<!-- Cyclist Loader -->
+<div id="cyclist-loader" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="relative">
+      <div class="cyclist-container">
+        <span class="cyclist-emoji">🚴‍♂️</span>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+    /* Animate the cyclist along a circular path */
+    @keyframes circulate {
+      0% {
+        transform: rotate(0deg) translateX(40px) rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg) translateX(40px) rotate(-360deg);
+      }
+    }
+    
+    .cyclist-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+    }
+    
+    .cyclist-emoji {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-size: 3rem;
+      transform: translate(-50%, -50%);
+      animation: circulate 10s linear infinite;
+    }
+  </style>
+  
+  <script>
+    let activeRequests = 0;
+  
+    function showLoader() {
+      activeRequests++;
+      document.getElementById('cyclist-loader').classList.remove('hidden');
+    }
+  
+    function hideLoader() {
+      activeRequests = Math.max(0, activeRequests - 1);
+      if (activeRequests === 0) {
+        document.getElementById('cyclist-loader').classList.add('hidden');
+      }
+    }
+  
+    // Intercept XMLHttpRequest (AJAX) to show/hide loader
+    (function() {
+      const originalXHR = window.XMLHttpRequest;
+      window.XMLHttpRequest = function() {
+        const xhr = new originalXHR();
+        xhr.addEventListener('loadstart', showLoader);
+        xhr.addEventListener('loadend', hideLoader);
+        return xhr;
+      };
+    })();
+  
+    // Intercept fetch requests to show/hide loader
+    (function() {
+      const originalFetch = window.fetch;
+      window.fetch = function(...args) {
+        showLoader();
+        return originalFetch.apply(this, args)
+          .then(response => {
+            hideLoader();
+            return response;
+          })
+          .catch(error => {
+            hideLoader();
+            throw error;
+          });
+      };
+    })();
+  
+    // Handle browser back/forward navigation events
+    window.addEventListener("popstate", () => {
+      hideLoader();
+    });
+  
+    // Ensure loader is cleared when the page unloads
+    window.addEventListener("beforeunload", () => {
+      hideLoader();
+      activeRequests = 0;
+    });
+  </script>
+  

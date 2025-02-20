@@ -28,8 +28,8 @@ res.render('editproduct',{product,brands,category})
     },
     editProduct:async (req,res) => {
         try {
-            const {productId,productName,description,price,brands,category}=req.body
-            const updateData = {productName,description,price,brands,category}
+            const {productId,productName,description,price,brands,category,stock}=req.body
+            const updateData = {productName,description,price,brands,category,stock}
             if(req.file&&req.files.length>0){
                 updateData.images=req.files.map(file=>file.filename)
 

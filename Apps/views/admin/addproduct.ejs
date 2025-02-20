@@ -1,212 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('partials/head') %>
+  <%- include('partials/head') %>
 </head>
 <body class="bg-gray-100">
-    <div class="min-h-screen flex flex-col">
-        <%- include('partials/header') %>
-        <main class="flex-1 p-6">
-            <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
-                <!-- Success Message -->
-                <% if (typeof success !== 'undefined' && success) { %>
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        <strong class="font-bold">Success!</strong>
-                        <span class="block sm:inline">Product added successfully.</span>
-                    </div>
-                <% } %>
+  <div class="min-h-screen flex flex-col">
+    <%- include('partials/header') %>
+    <main class="flex-1 p-6">
+      <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline">Product added successfully.</span>
+          </div>
+        <% } %>
 
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Product</h2>
-                
-                <form action="/admin/addproduct" method="POST" enctype="multipart/form-data" class="space-y-4">
-                    <!-- Product Name -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold">Product Name</label>
-                        <input type="text" name="productName" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    
-                    <!-- Description -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold">Description</label>
-                        <textarea name="description" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required></textarea>
-                    </div>
-                    
-                    <!-- Price -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold">Price ($)</label>
-                        <input type="number" name="price" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    
-                    <!-- Category Selection -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold">Category</label>
-                        <select name="category" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                            <option value="">Select Category</option>
-                            <% category.forEach(category => { %>
-                                <option value="<%= category._id %>"><%= category.name %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-                    
-                    <!-- Brand Selection -->
-                    <div>
-                        <label class="block text-gray-700 font-semibold">Brand</label>
-                        <select name="brands" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                            <option value="">Select Brand</option>
-                            <% brands.forEach(brand => { %>
-                                <option value="<%= brand._id %>"><%= brand.name %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-gray-700 font-semibold">Product Images (Max 5)</label>
-                        <input type="file" id="imageInput" name="images" multiple accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required>
-                        <p class="text-sm text-gray-500 mt-1">You can upload up to 5 images.</p>
-                    </div>
-                    
-                    <!-- Image Preview and Cropping Modal -->
-                    <div id="cropperModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center">
-                        <div class="bg-white p-6 rounded-lg w-11/12 max-w-2xl">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-xl font-bold">Crop Image</h3>
-                                <button id="closeCropperModal" class="text-gray-700 hover:text-gray-900">&times;</button>
-                            </div>
-                            <div class="cropper-container">
-                                <img id="cropperImage" src="#" alt="Image to Crop" class="max-w-full max-h-96">
-                            </div>
-                            <div class="mt-4 flex justify-end">
-                                <button id="cropButton" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Crop</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Submit Button -->
-                    <div>
-                        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">Add Product</button>
-                    </div>
-                </form>
-            </div>
-        </main>
-        <%- include('partials/footer') %>
-
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Add these to your <head> section -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-    <script>
-    document.querySelector('form').addEventListener('submit', async function(e) {
-        e.preventDefault();
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Product</h2>
         
-        // Show confirmation dialog
-        const result = await Swal.fire({
-            title: 'Add New Product?',
-            text: 'Are you sure you want to add this product?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, add it!',
-            cancelButtonText: 'Cancel',
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33'
-        });
-    
-        if (result.isConfirmed) {
-            const formData = new FormData(this);
-            try {
-                const response = await fetch('/admin/addproduct', {
-                    method: 'POST',
-                    body: formData
-                });
-    
-                if (response.ok) {
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Product added successfully!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        window.location.href = '/admin/product-list2';
-                    });
-                } else {
-                    throw new Error('Failed to add product');
+        <form action="/admin/addproduct" method="POST" enctype="multipart/form-data" class="space-y-4" id="addProductForm">
+            <!-- Product Name -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Product Name</label>
+              <input type="text" name="productName" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <span id="error-productName" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Description -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Description</label>
+              <textarea name="description" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+              <span id="error-description" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Price -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Price ($)</label>
+              <input type="number" name="price" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <span id="error-price" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Category Selection -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Category</label>
+              <select name="category" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select Category</option>
+                <% category.forEach(category => { %>
+                  <option value="<%= category._id %>"><%= category.name %></option>
+                <% }) %>
+              </select>
+              <span id="error-category" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Brand Selection -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Brand</label>
+              <select name="brands" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select Brand</option>
+                <% brands.forEach(brand => { %>
+                  <option value="<%= brand._id %>"><%= brand.name %></option>
+                <% }) %>
+              </select>
+              <span id="error-brands" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Main Image (without cropping) -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Main Image (No Cropping)</label>
+              <input type="file" name="mainImage" accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <p class="text-sm text-gray-500 mt-1">Upload the main image without cropping.</p>
+              <span id="error-mainImage" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Additional Images (to be cropped in backend) -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Product Images (Max 4)</label>
+              <input type="file" name="images" multiple accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <p class="text-sm text-gray-500 mt-1">You can upload up to 4 additional images (these will be cropped automatically).</p>
+              <span id="error-images" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Submit Button -->
+            <div>
+              <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">Add Product</button>
+            </div>
+          </form>
+          
+          
+      </div>
+    </main>
+    <%- include('partials/footer') %>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.getElementById('addProductForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Clear any previous error messages
+      document.querySelectorAll('.text-red-500').forEach(el => el.textContent = "");
+      
+      // Ask for confirmation before submitting the form
+      const result = await Swal.fire({
+        title: 'Add New Product?',
+        text: 'Are you sure you want to add this product?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, add it!',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
+      });
+      
+      if (result.isConfirmed) {
+        const formData = new FormData(this);
+        try {
+          const response = await fetch('/admin/addproduct', {
+            method: 'POST',
+            body: formData
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            // If backend validation errors are returned, display them next to the appropriate fields.
+            if (data.errors) {
+              for (const field in data.errors) {
+                const errorElement = document.getElementById(`error-${field}`);
+                if (errorElement) {
+                  errorElement.textContent = data.errors[field];
                 }
-            } catch (error) {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'error',
-                    title: 'Failed to add product',
-                    text: error.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+              }
+            } else {
+              // Otherwise, show a generic error alert.
+              Swal.fire({
+                icon: 'error',
+                title: 'Failed to add product',
+                text: data.message || 'An error occurred'
+              });
             }
+            return;
+          }
+          // On success, show a success alert and then redirect.
+          Swal.fire({
+            icon: 'success',
+            title: 'Product added successfully!'
+          }).then(() => {
+            window.location.href = '/admin/product-list2';
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to add product',
+            text: error.message
+          });
         }
+      }
     });
-    document.addEventListener('DOMContentLoaded', function () {
-    const imageInput = document.getElementById('imageInput');
-    const cropperModal = document.getElementById('cropperModal');
-    const cropperImage = document.getElementById('cropperImage');
-    const closeCropperModal = document.getElementById('closeCropperModal');
-    const cropButton = document.getElementById('cropButton');
-    let cropper;
-
-    // Open Cropper Modal when an image is selected
-    imageInput.addEventListener('change', function (e) {
-        const files = e.target.files;
-        if (files && files.length > 0) {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                cropperImage.src = event.target.result;
-                cropperModal.classList.remove('hidden');
-
-                // Initialize Cropper.js
-                cropper = new Cropper(cropperImage, {
-                    aspectRatio: 1, // Set aspect ratio (e.g., 1:1 for square)
-                    viewMode: 1, // Restrict crop box to the image size
-                    autoCropArea: 1, // Automatically set the crop area
-                });
-            };
-            reader.readAsDataURL(files[0]);
-        }
-    });
-
-    // Close Cropper Modal
-    closeCropperModal.addEventListener('click', function () {
-        cropperModal.classList.add('hidden');
-        if (cropper) {
-            cropper.destroy(); // Destroy the cropper instance
-        }
-    });
-
-    // Crop the image and update the file input
-    cropButton.addEventListener('click', function () {
-        if (cropper) {
-            // Get the cropped canvas
-            const canvas = cropper.getCroppedCanvas({
-                width: 800, // Set desired width
-                height: 800, // Set desired height
-            });
-
-            // Convert the canvas to a Blob
-            canvas.toBlob(function (blob) {
-                // Create a new File from the Blob
-                const file = new File([blob], 'cropped-image.png', { type: 'image/png' });
-
-                // Update the file input with the cropped image
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                imageInput.files = dataTransfer.files;
-
-                // Close the modal
-                cropperModal.classList.add('hidden');
-                cropper.destroy();
-            }, 'image/png');
-        }
-    });
-});
-    </script>
-
+  </script>
+  
+  
+  
+  
 </body>
 </html>

@@ -68,7 +68,7 @@
             <!-- Image Gallery -->
             <div class="space-y-4">
               <div class="border rounded-lg overflow-hidden bg-white">
-                <img id="mainImage" src="/<%= product.images[0] %>" 
+                <img id="mainImage" src="/<%= product.mainImage %>" 
                      alt="<%= product.productName %>"
                      class="w-full h-96 object-contain">
               </div>
@@ -77,12 +77,23 @@
                 <% product.images.forEach((image, index) => { %>
                   <div class="border rounded-lg overflow-hidden cursor-pointer 
                               hover:border-blue-500 transition-colors bg-white">
+
                     <img src="/<%= image %>" 
                          alt="Product thumbnail <%= index + 1 %>"
                          class="w-full h-24 object-contain thumbnail"
                          onclick="updateMainImage(this.src)">
                   </div>
                 <% }) %>
+              </div>
+              <div class="grid grid-cols-4 gap-2">
+                  <div class="border rounded-lg overflow-hidden cursor-pointer 
+                              hover:border-blue-500 transition-colors bg-white">
+
+                    <img src="/<%= product.mainImage %>" 
+                         alt="Product thumbnail "
+                         class="w-full h-24 object-contain thumbnail"
+                         onclick="updateMainImage(this.src)">
+                  </div>
               </div>
             </div>
 
@@ -99,7 +110,7 @@
                   </span>
                   <span class="flex items-center gap-1">
                     <i class="material-icons md-stars text-lg"></i>
-                    <%= product.brands.name %>
+                    <%= product.brands ? product.brands.name:'No Brand' %> 
                   </span>
                 </div>
               </div>
@@ -107,6 +118,10 @@
               <div class="border-t border-b py-4">
                 <div class="text-2xl font-bold text-gray-900 mb-2">
                   $<%= product.price.toFixed(2) %>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-medium">Stock:</span>
+                  <span class="text-sm"><%= product.stock %> items in stock</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="text-sm font-medium">Status:</span>
