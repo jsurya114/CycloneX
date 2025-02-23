@@ -21,3 +21,53 @@
 <!-- Template  JS -->
 <script src="./frontend/js/main.js?v=3.4"></script>
 <script src="./frontend/js/shop.js?v=3.4"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    const swiper = new Swiper('.thumbnail-slider', {
+        slidesPerView: 'auto',
+        spaceBetween: 16, // Gap between slides
+        loop: true,
+        autoplay: {
+            delay: 3000, // Auto slide every 3 seconds
+            disableOnInteraction: false,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+            // Mobile
+            320: {
+                slidesPerView: 2,
+                spaceBetween: 8
+            },
+            // Tablet
+            640: {
+                slidesPerView: 3,
+                spaceBetween: 12
+            },
+            // Desktop
+            1024: {
+                slidesPerView: 5,
+                spaceBetween: 16
+            }
+        }
+    });
+</script>
+
+<!-- Optional: Custom navigation button styles -->
+<style>
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #333;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 50%;
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+        font-size: 20px;
+    }
+</style>

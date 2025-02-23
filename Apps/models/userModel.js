@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: function () { return !this.googleId; } },
     mobile: { type: String, required: function () { return !this.googleId; } },
     profileImage: { type: String },
+    status:{type:String},
     isVerified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now },

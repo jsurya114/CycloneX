@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<%- include('partials/head') %>
+
+<body>
+    <div class="screen-overlay"></div>
+    
+
+
+
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="" class="brand-wrap">
+                <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link " href="/admin/product-list2"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Products</span>
+                    </a>
+                </li>
+    
+<!--                 
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/addproduct"> <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Add product</span>
+                    </a>
+                  
+                </li> -->
+                
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/category">  <i class="icon material-icons md-category"></i>
+                        <span class="text">category</span>
+                    </a>
+                </li>
+    
+    
+    
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/brands"> <i class="icon material-icons md-stars"></i>
+                        <span class="text">Brands</span> </a>
+                </li>
+                <li class="menu-item has-submenu active">
+                    <a class="menu-link" href="/admin/userlist">
+                      <i class="icon material-icons md-store"></i>
+                      <span class="text">Users</span>
+                      <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
+                    </a>
+                    <ul class="submenu">
+                      
+                      <li><a href="/admin/userlist" class="submenu-link">Users list</a></li>
+                      <li><a href="/admin/userdetails" class="submenu-link">Product details</a></li>
+                    </ul>
+                  </li>
+            </ul>
+        
+
+            <br>
+            <br>
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <%- include('partials/header') %>
+        <section class="content-main">
+            <div class="content-header">
+                <h1 class="content-title">Users list</h1>
+               
+            </div>
+            <div class="card mb-4">
+              <header class="card-header">
+                <div class="row gx-3">
+                    <!-- Search Input -->
+                  <!-- Search Input with Clear Button -->
+<div class="col-lg-4 col-md-6 me-auto d-flex align-items-center">
+  <input type="text" id="searchInput" placeholder="Search..." class="form-control">
+  
+</div>
+
+            
+                    <!-- Status Filter -->
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <select id="statusFilter" class="form-select">
+                            <option value="">Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Disabled">Disabled</option>
+                            <option value="">Show all</option>
+                        </select>
+                    </div>
+            
+                    <!-- Pagination Limit -->
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <select id="limitSelect" class="form-select">
+                            <option value="20">Show 20</option>
+                            <option value="30">Show 30</option>
+                            <option value="40">Show 40</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Users List Table -->
+            <table class="table" id="usersTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortUsers('name')">Name</th>
+                        <th>Email</th>
+                        <th onclick="sortUsers('status')">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="usersList"></tbody>
+            </table>
+            <!-- card-header end// -->
+
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Registered</th>
+                                <th class="text-end">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% if (user && user.length > 0) { %>
+                                <% user.forEach(user => { %>
+                                  <tr>
+                                    <td width="40%">
+                                      <a href="#" class="itemside">
+                                        <div class="left">
+                                          <img src="<%= user.profileImage ? user.profileImage : '/backend/imgs/logos/download.png' %>" class="img-sm img-avatar" alt="Userpic">
+                                        </div>
+                                        <div class="info pl-3">
+                                          <h6 class="mb-0 title"><%= user.fullName %></h6>
+                                          <small class="text-muted">User ID: <%= user._id %></small>
+                                        </div>
+                                      </a>
+                                    </td>
+                                    <td><%= user.email %></td>
+                                    <td>
+                                      <% if (user.isActive) { %>
+                                        <span class="badge rounded-pill alert-success">Active</span>
+                                      <% } else { %>
+                                        <span class="badge rounded-pill alert-danger">Disabled</span>
+                                      <% } %>
+                                    </td>
+                                    <td><%= new Date(user.createdAt).toLocaleDateString() %></td>
+                                    <td class="text-end">
+                                      <a href="/admin/userdetails/<%= user._id %>" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
+                                    </td>
+                                  </tr>
+                                <% }); %>
+                              <% } else { %>
+                                <tr>
+                                  <td colspan="5">No users found.</td>
+                                </tr>
+                              <% } %>
+                            </tbody>
+                          </table><!-- table-responsive.// -->
+                    </div>
+                </div> <!-- card-body end// -->
+            </div> <!-- card end// -->
+            <div class="pagination-area mt-15 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                        <li class="page-item"><a class="page-link" href="#">02</a></li>
+                        <li class="page-item"><a class="page-link" href="#">03</a></li>
+                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">16</a></li>
+                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                    </ul>
+                </nav>
+            </div>
+        </section> <!-- content-main end// -->
+        <%- include('partials/footer') %>
+    </main>
+    <%- include('partials/scripts') %>
+
+    <script>
+      let sortField = "fullName"; 
+      let sortOrder = "asc";
+      let searchTimeout = null; 
+    
+      document.addEventListener("DOMContentLoaded", () => {
+          fetchUsers();
+    
+          document.getElementById("searchInput").addEventListener("input", handleSearch);
+          document.getElementById("clearSearchBtn").addEventListener("click", clearSearch);
+          document.getElementById("statusFilter").addEventListener("change", fetchUsers);
+          document.getElementById("limitSelect").addEventListener("change", fetchUsers);
+      });
+    
+      function handleSearch() {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(fetchUsers, 300);
+          document.getElementById("clearSearchBtn").style.display = document.getElementById("searchInput").value ? "inline-block" : "none";
+      }
+    
+      function fetchUsers() {
+          const searchQuery = document.getElementById("searchInput").value.trim();
+          const statusFilter = document.getElementById("statusFilter").value;
+          const limit = document.getElementById("limitSelect").value;
+          const url = `/api/users?search=${encodeURIComponent(searchQuery)}&status=${statusFilter}&limit=${limit}&sort=${sortField}&order=${sortOrder}`;
+    
+          fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                  renderUsers(data, searchQuery);
+              })
+              .catch(error => console.error("Error fetching users:", error));
+      }
+    
+      function renderUsers(users, searchQuery) {
+          const usersList = document.getElementById("usersList");
+          usersList.innerHTML = "";
+    
+          if (users.length === 0) {
+              usersList.innerHTML = `<tr><td colspan="3">No users found.</td></tr>`;
+              return;
+          }
+    
+          users.forEach(user => {
+              const highlightedName = highlightMatch(user.fullName, searchQuery);
+              const highlightedEmail = highlightMatch(user.email, searchQuery);
+    
+              usersList.innerHTML += `
+                  <tr>
+                      <td>${highlightedName}</td>
+                      <td>${highlightedEmail}</td>
+                      <td>${user.isActive ? 
+                            '<span class="badge rounded-pill alert-success">Active</span>' : 
+                            '<span class="badge rounded-pill alert-danger">Disabled</span>'}
+                      </td>
+                  </tr>
+              `;
+          });
+      }
+    
+      function highlightMatch(text, searchQuery) {
+          if (!searchQuery) return text;
+          const regex = new RegExp(`(${searchQuery})`, "gi");
+          return text.replace(regex, `<mark>$1</mark>`);
+      }
+    
+      function sortUsers(field) {
+          if (sortField === field) {
+              sortOrder = sortOrder === "asc" ? "desc" : "asc";
+          } else {
+              sortField = field;
+              sortOrder = "asc";
+          }
+          fetchUsers();
+      }
+    
+      function clearSearch() {
+          document.getElementById("searchInput").value = "";
+          document.getElementById("clearSearchBtn").style.display = "none";
+          fetchUsers();
+      }
+    </script>
+
+
+</body>
+
+</html>

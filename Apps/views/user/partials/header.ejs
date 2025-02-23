@@ -10,13 +10,14 @@
                 <div class="header-nav">
                     <div class="main-menu main-menu-padding-1 main-menu-lh-2">
                         <nav>
-                            <ul class="d-flex justify-content-end">
+                            <ul class="d-flex align-items-center justify-content-end">
                                 <li><a href="/">Home</a></li>
                                 <li><a href="/about">About</a></li>
                                 <li><a href="/shop">Shop</a></li>
                                 <li><a href="/order">Order</a></li>
                                 <li><a href="/contact">Contact</a></li>
                                 <li><a href="/profile">Profile</a></li>
+                                <li class="ms-3 fw-bold text-danger"><a href="/logout">Logout</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -30,5 +31,20 @@
     .logo img {
         width: 200px; /* Adjust width as needed */
         height: auto; /* Maintain aspect ratio */
+    }
+
+    .main-menu ul li {
+        list-style: none;
+        margin: 0 10px;
+    }
+
+    .main-menu ul li a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .main-menu ul li.text-danger {
+        cursor: pointer;
     }
 </style>

@@ -56,15 +56,19 @@ loginPost: async (req, res) => {
                 error: 'Invalid email or password'
             });
         }
-        const token = jwt.sign({id:admin._id,email:admin.email},
+        const token = jwt.sign(
+            { id: admin._id, email: admin.email },
             process.env.JWT_SECRET,
-            {expiresIn:'1h'}
-        )
-        res.cookie('token',token,{
+            { expiresIn: '7d' } // Token expires in 7 days
+        );
+        console.log('Generated Token:', token);
+        
+        res.cookie('token', token, { 
             httpOnly: true, 
             secure: process.env.NODE_ENV === 'production', 
-            maxAge: 3600000  // 1 hour in milliseconds
-        })
+            maxAge: 7 * 60 * 60 * 1000 // Corrected to 7 days (in milliseconds)
+        });
+        
 
         // If credentials are valid, redirect to the dashboard
         res.status(200).redirect('/admin/dashboard');

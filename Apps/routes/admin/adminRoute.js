@@ -44,6 +44,8 @@ router.get('/category/edit/:id',adminAuths,categoryController.showEditCategrory)
 router.put('/category/update/:id',upload.single('image'),categoryController.editcategory)
 router.put('/category/listing/:id', categoryController.listing)
 router.delete('/category/delete', categoryController.deleteCategories);
-
- 
+router.get('/userlist',verifyAdmin,adminController.userlist)
+router.get('/userdetails/:id', adminController.showUserdetails);
+router.put('/toggle-user/:id',adminController.listinguser)
+router.get('/api/users',adminController.filtering)
 module.exports = router;

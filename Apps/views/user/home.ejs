@@ -1,14 +1,14 @@
 ﻿<!DOCTYPE html>
 <html class="no-js" lang="en">
 
-<%- include('partials/head') %>
 
+<%-include('partials/head')%>
 <body>
     <!-- Quick view -->
     <div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-        <div class="modal-content">              
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>       
+            <div class="modal-content">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6 col-sm-12 col-xs-12">
@@ -16,98 +16,56 @@
                                 <span class="zoom-icon"><i class="fi-rs-search"></i></span>
                                 <!-- MAIN SLIDES -->
                                 <div class="product-image-slider">
-                                    <figure class="border-radius-10">
-                                        <img src="frontend/imgs/shop/product-16-2.jpg" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="frontend/imgs/shop/product-16-1.jpg" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="frontend/imgs/shop/product-16-3.jpg" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="frontend/imgs/shop/product-16-4.jpg" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="frontend/imgs/shop/product-16-5.jpg" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="frontend/imgs/shop/product-16-6.jpg" alt="product image">
-                                    </figure>
-                                    <figure class="border-radius-10">
-                                        <img src="frontend/imgs/shop/product-16-7.jpg" alt="product image">
-                                    </figure>
+                                    <% if (product.images && Array.isArray(product.images)) { %>
+                                        <% product.images.forEach((image, index) => { %>
+                                            <figure class="border-radius-10">
+                                                <img src="/<%= image %>" alt="<%= product.productName %>">
+                                            </figure>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <p>No images available for this product.</p>
+                                    <% } %>
                                 </div>
                                 <!-- THUMBNAILS -->
                                 <div class="slider-nav-thumbnails pl-15 pr-15">
-                                    <div><img src="frontend/imgs/shop/thumbnail-3.jpg" alt="product image"></div>
-                                    <div><img src="frontend/imgs/shop/thumbnail-4.jpg" alt="product image"></div>
-                                    <div><img src="frontend/imgs/shop/thumbnail-5.jpg" alt="product image"></div>
-                                    <div><img src="frontend/imgs/shop/thumbnail-6.jpg" alt="product image"></div>
-                                    <div><img src="frontend/imgs/shop/thumbnail-7.jpg" alt="product image"></div>
-                                    <div><img src="frontend/imgs/shop/thumbnail-8.jpg" alt="product image"></div>
-                                    <div><img src="frontend/imgs/shop/thumbnail-9.jpg" alt="product image"></div>
+                                    <% if (product.images && Array.isArray(product.images)) { %>
+                                        <% product.images.forEach((image, index) => { %>
+                                            <div><img src="/<%= image %>" alt="<%= product.productName %>"></div>
+                                        <% }) %>
+                                    <% } %>
                                 </div>
                             </div>
                             <!-- End Gallery -->
-                            <div class="social-icons single-share">
-                                <ul class="text-grey-5 d-inline-block">
-                                    <li><strong class="mr-10">Share this:</strong></li>
-                                    <li class="social-facebook"><a href="#"><img src="frontend/imgs/theme/icons/icon-facebook.svg" alt=""></a></li>
-                                    <li class="social-twitter"> <a href="#"><img src="frontend/imgs/theme/icons/icon-twitter.svg" alt=""></a></li>
-                                    <li class="social-instagram"><a href="#"><img src="frontend/imgs/theme/icons/icon-instagram.svg" alt=""></a></li>
-                                    <li class="social-linkedin"><a href="#"><img src="frontend/imgs/theme/icons/icon-pinterest.svg" alt=""></a></li>
-                                </ul>
-                            </div>
                         </div>
                         <div class="col-md-6 col-sm-12 col-xs-12">
                             <div class="detail-info">
-                                <h3 class="title-detail mt-30">Colorful Pattern Shirts HD450</h3>
+                                <h3 class="title-detail mt-30"><%= product.productName %></h3>
                                 <div class="product-detail-rating">
                                     <div class="pro-details-brand">
-                                        <span> Brands: <a href="shop-grid-right.html">Bootstrap</a></span>
+                                        <span> Brands: 
+                                            <% if (product.brands && product.brands.name) { %>
+                                                <a href="shop-grid-right.html"><%= product.brands.name %></a>
+                                            <% } else { %>
+                                                <span>No brand available</span>
+                                            <% } %>
+                                        </span>
                                     </div>
                                     <div class="product-rate-cover text-end">
                                         <div class="product-rate d-inline-block">
-                                            <div class="product-rating" style="width:90%">
-                                            </div>
+                                            <div class="product-rating" style="width:90%"></div>
                                         </div>
                                         <span class="font-small ml-5 text-muted"> (25 reviews)</span>
                                     </div>
                                 </div>
                                 <div class="clearfix product-price-cover">
                                     <div class="product-price primary-color float-left">
-                                        <ins><span class="text-brand">$120.00</span></ins>
-                                        <ins><span class="old-price font-md ml-15">$200.00</span></ins>
-                                        <span class="save-price  font-md color3 ml-15">25% Off</span>
+                                        <ins><span class="text-brand">$<%= product.price %></span></ins>
+                                        <!-- <span class="save-price font-md color3 ml-15">25% Off</span> -->
                                     </div>
                                 </div>
                                 <div class="bt-1 border-color-1 mt-15 mb-15"></div>
                                 <div class="short-desc mb-30">
-                                    <p class="font-sm">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam rem officia, corrupti reiciendis minima nisi modi,!</p>
-                                </div>
-                                
-                                <div class="attr-detail attr-color mb-15">
-                                    <strong class="mr-10">Color</strong>
-                                    <ul class="list-filter color-filter">
-                                        <li><a href="#" data-color="Red"><span class="product-color-red"></span></a></li>
-                                        <li><a href="#" data-color="Yellow"><span class="product-color-yellow"></span></a></li>
-                                        <li class="active"><a href="#" data-color="White"><span class="product-color-white"></span></a></li>
-                                        <li><a href="#" data-color="Orange"><span class="product-color-orange"></span></a></li>
-                                        <li><a href="#" data-color="Cyan"><span class="product-color-cyan"></span></a></li>
-                                        <li><a href="#" data-color="Green"><span class="product-color-green"></span></a></li>
-                                        <li><a href="#" data-color="Purple"><span class="product-color-purple"></span></a></li>
-                                    </ul>
-                                </div>
-                                <div class="attr-detail attr-size">
-                                    <strong class="mr-10">Size</strong>
-                                    <ul class="list-filter size-filter font-small">
-                                        <li><a href="#">S</a></li>
-                                        <li class="active"><a href="#">M</a></li>
-                                        <li><a href="#">L</a></li>
-                                        <li><a href="#">XL</a></li>
-                                        <li><a href="#">XXL</a></li>
-                                    </ul>
+                                    <p class="font-sm"><%= product.description %></p>
                                 </div>
                                 <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                                 <div class="detail-extralink">
@@ -123,103 +81,171 @@
                                     </div>
                                 </div>
                                 <ul class="product-meta font-xs color-grey mt-50">
-                                    <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                                    <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">Women</a>, <a href="#" rel="tag">Dress</a> </li>
-                                    <li>Availability:<span class="in-stock text-success ml-5">8 Items In Stock</span></li>
+                                    <li>Availability: <span class="in-stock text-success ml-5"><%= product.stock %> Items In Stock</span></li>
                                 </ul>
                             </div>
                             <!-- Detail Info -->
                         </div>
                     </div>
-                </div>        
-        </div>
-        </div>
-    </div>
-  <%- include('partials/header') %>
-    <div class="mobile-header-active mobile-header-wrapper-style">
-        <div class="mobile-header-wrapper-inner">
-            <div class="mobile-header-top">
-                <div class="mobile-header-logo">
-                    <a href="index.html"><img src="frontend/imgs/theme/logo.svg" alt="logo"></a>
-                </div>
-                <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
-                    <button class="close-style search-close">
-                        <i class="icon-top"></i>
-                        <i class="icon-bottom"></i>
-                    </button>
                 </div>
             </div>
-            <div class="mobile-header-content-area">
-                <div class="mobile-search search-style-3 mobile-header-border">
-                    <form action="#">
-                        <input type="text" placeholder="Search for items…">
-                        <button type="submit"><i class="fi-rs-search"></i></button>
-                    </form>
-                </div>
-                <div class="mobile-menu-wrap mobile-header-border">
-                    <div class="main-categori-wrap mobile-header-border">
-                        <a class="categori-button-active-2" href="#">
-                            <span class="fi-rs-apps"></span> Browse Categories
-                        </a>
-                        <div class="categori-dropdown-wrap categori-dropdown-active-small">
-                            <ul>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-dress"></i>Women's Clothing</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-tshirt"></i>Men's Clothing</a></li>
-                                <li> <a href="shop-grid-right.html"><i class="evara-font-smartphone"></i> Cellphones</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-desktop"></i>Computer & Office</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-cpu"></i>Consumer Electronics</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-home"></i>Home & Garden</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-high-heels"></i>Shoes</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-teddy-bear"></i>Mother & Kids</a></li>
-                                <li><a href="shop-grid-right.html"><i class="evara-font-kite"></i>Outdoor fun</a></li>
-                            </ul>
+        </div>
+    </div>
+   <%-include('partials/header')%>
+   
+   <main class="main">
+    <section class="home-slider position-relative mb-30">
+        <div class="container mx-auto">
+            <div class="home-slide-cover bg-gray-100 mt-8 rounded-lg overflow-hidden">
+                <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1">
+                    <!-- Slider 1 -->
+                    <div class="single-hero-slider single-animation-wrap">
+                        <div class="container mx-auto">
+                            <div class="flex flex-col lg:flex-row items-center">
+                                <div class="lg:w-5/12 md:w-6/12 p-6">
+                                    <div class="hero-slider-content-2">
+                                        <h4 class="text-lg font-semibold text-gray-700">Trade-In Offer</h4>
+                                        <h3 class="text-3xl font-black text-gray-900 mt-2">Supper Value Deals</h3>
+                                        <h2 class="text-4xl font-black text-brand mt-2">On All Products</h2>
+                                        <p class="text-gray-600 mt-4">Save more with coupons & up to 70% off</p>
+                                        <a class="inline-block mt-6 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors" href="shop-product-right.html">Shop Now</a>
+                                    </div>
+                                </div>
+                                <div class="lg:w-7/12 md:w-6/12">
+                                    <div class="single-slider-img w-full h-[300px] md:h-[400px] lg:h-[500px] border-4 border-white rounded-lg overflow-hidden">
+                                        <img class="w-full h-full object-cover" src="frontend/imgs/slider/slider-2.jpg" alt="">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- mobile menu start -->
-<%- include('partials/nav') %>
-                    <!-- mobile menu end -->
+                    <!-- Slider 2 -->
+                    <div class="single-hero-slider single-animation-wrap">
+                        <div class="container mx-auto">
+                            <div class="flex flex-col lg:flex-row items-center">
+                                <div class="lg:w-5/12 md:w-6/12 p-6">
+                                    <div class="hero-slider-content-2">
+                                        <h4 class="text-lg font-semibold text-gray-700">Hot promotions</h4>
+                                        <h3 class="text-3xl font-black text-gray-900 mt-2">Fashion Trending</h3>
+                                        <h2 class="text-4xl font-black text-brand mt-2">Great Collection</h2>
+                                        <p class="text-gray-600 mt-4">Save more with coupons & up to 20% off</p>
+                                        <a class="inline-block mt-6 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark transition-colors" href="shop-product-right.html">Get It Now</a>
+                                    </div>
+                                </div>
+                                <div class="lg:w-7/12 md:w-6/12">
+                                    <div class="single-slider-img w-full h-[300px] md:h-[400px] lg:h-[500px] border-4 border-white rounded-lg overflow-hidden">
+                                        <img class="w-full h-full object-cover" src="frontend/imgs/slider/slider-1.jpg" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="mobile-header-info-wrap mobile-header-border">
-                    <div class="single-mobile-header-info mt-30">
-                        <a  href="page-contact.html"> Our location </a>
-                    </div>
-                    <div class="single-mobile-header-info">
-                        <a href="page-login-register.html">Log In / Sign Up </a>
-                    </div>
-                    <div class="single-mobile-header-info">
-                        <a href="#">(+01) - 2345 - 6789 </a>
-                    </div>
+                <div class="slider-arrow hero-slider-1-arrow"></div>
+            </div>
+        </div>
+    </section>
+    <section class="product-tabs pt-25 pb-20 wow fadeIn animated">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                   
+                    
+                   
+                   
                 </div>
-                <div class="mobile-social-icon">
-                    <h5 class="mb-15 text-grey-4">Follow Us</h5>
-                    <a href="#"><img src="frontend/imgs/theme/icons/icon-facebook.svg" alt=""></a>
-                    <a href="#"><img src="frontend/imgs/theme/icons/icon-twitter.svg" alt=""></a>
-                    <a href="#"><img src="frontend/imgs/theme/icons/icon-instagram.svg" alt=""></a>
-                    <a href="#"><img src="frontend/imgs/theme/icons/icon-pinterest.svg" alt=""></a>
-                    <a href="#"><img src="frontend/imgs/theme/icons/icon-youtube.svg" alt=""></a>
+                <div class="col-lg-9">
+                    <div class="tab-header">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="nav-tab-one" data-bs-toggle="tab" data-bs-target="#tab-one" type="button" role="tab" aria-controls="tab-one" aria-selected="true">Featured</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="nav-tab-two" data-bs-toggle="tab" data-bs-target="#tab-two" type="button" role="tab" aria-controls="tab-two" aria-selected="false">Popular</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="nav-tab-three" data-bs-toggle="tab" data-bs-target="#tab-three" type="button" role="tab" aria-controls="tab-three" aria-selected="false">New added</button>
+                            </li>
+                        </ul>
+                        <!-- <a href="#" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a> -->
+                    </div>
+                    <!--End nav-tabs-->
+                    <div class="tab-content wow fadeIn animated" id="myTabContent">
+                        <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
+                            <div class="row product-grid-4">
+                                <% if (product.length > 0) { %>
+                                    <% product.forEach(product => { %>
+                                        <div class="col-lg-4 col-md-4 col-12 col-sm-6">
+                                            <div class="product-cart-wrap mb-30">
+                                                <div class="product-img-action-wrap">
+                                                    <div class="product-img product-img-zoom">
+                                                        <a href="/productdetails/<%= product._id%>">
+                                                            <img class="default-img" src="/<%= product.mainImage %>" alt="<%= product.productName %>">
+                                                            <img class="hover-img" src="/<%= product.images[0] %>" alt="<%= product.productName %>">
+                                                        </a>
+                                                    </div>
+                                                    <div class="product-action-1">
+                                                        <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                                                            <i class="fi-rs-eye"></i>
+                                                        </a>
+                                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#">
+                                                            <i class="fi-rs-heart"></i>
+                                                        </a>
+                                                        <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html">
+                                                            <i class="fi-rs-shuffle"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="product-badges product-badges-position product-badges-mrg">
+                                                        <span class="hot"><%= product.brands.name%></span>
+                                                    </div>
+                                                </div>
+                                                <div class="product-content-wrap">
+                                                    <div class="product-category">
+                                                        <a href="shop-grid-right.html"><%= product.category.name %></a>
+                                                    </div>
+                                                    <h2><a href="/productdetails/<%= product._id%>"><%= product.productName %></a></h2>
+                                                    <div class="rating-result" title="90%">
+                                                        <!-- <span>
+                                                            <span>90%</span>
+                                                        </span> -->
+                                                    </div>
+                                                    <div class="product-price">
+                                                        <span>$<%= product.price %></span>
+                                                        <!-- <span class="old-price">$245.8</span> -->
+                                                    </div>
+                                                    <div class="product-action-1 show">
+                                                        <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html">
+                                                            <i class="fi-rs-shopping-bag-add"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                <% } else { %>
+                                    <div class="col-12">
+                                        <p>No products found.</p>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <!--End product-grid-4-->
+                        </div>
+                        <!--End tab one (Featured)-->
+                    </div>
+                    <!--End tab-content-->
                 </div>
             </div>
         </div>
-    </div>
-   <%- include('partials/main') %>
-   <%- include('partials/footer') %>
+    </section>
+
+</main>
+
+    
+  <%-include('partials/footer') %>
     <!-- Preloader Start -->
-    <div id="preloader-active">
-        <div class="preloader d-flex align-items-center justify-content-center">
-            <div class="preloader-inner position-relative">
-                <div class="text-center">
-                    <h5 class="mb-5">Now Loading</h5>
-                    <div class="loader">
-                        <div class="bar bar1"></div>
-                        <div class="bar bar2"></div>
-                        <div class="bar bar3"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <%-include('partials/loader') %>
     <!-- Vendor JS-->
-<%- include('partials/script') %>
+   <%-include('partials/script') %>
 </body>
 
 </html>

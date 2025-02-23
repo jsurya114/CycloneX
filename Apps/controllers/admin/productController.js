@@ -109,7 +109,7 @@ const productController = {
       console.log('invoked add prod 4');
 
       // Redirect with a success message.
-      res.status(201).redirect('/admin/addproduct?success=true');
+      res.status(201).json({success:true,message:'product added successfully'})
 
     } catch (error) {
       console.log('error add prod invoked');

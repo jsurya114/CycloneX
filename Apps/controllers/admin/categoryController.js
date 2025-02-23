@@ -79,11 +79,11 @@ if(!/^[a-z0-9]+$/.test(slug)){
         field:'all',
         message: "All fields are required." })
      }
-     if (!/[A-Za-z]\s]+$/.test(name)) {
-      return res.status(400).json({ success: false,
-         field: "name", 
-         message: "Name must contain at least one uppercase letter." });
-    }
+    //  if (!/[A-Za-z]\s]+$/.test(name)) {
+    //   return res.status(400).json({ success: false,
+    //      field: "name", 
+    //      message: "Name must contain at least one uppercase letter." });
+    // }
 
     if (!/^[a-z0-9-]+$/.test(slug)) {
       return res.status(400).json({ success: false, 

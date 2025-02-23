@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Cyclone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        .logo {
+            width: 180px;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .sign-up-btn {
+            width: 100%;
+            padding: 12px;
+            background: #40E0D0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+
+        .divider {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #666;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-logo {
+            width: 150px;
+            margin-bottom: 16px;
+        }
+
+        .footer-section h3 {
+            color: #40E0D0;
+            margin-bottom: 16px;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #999;
+            text-decoration: none;
+            line-height: 1.6;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-transparent-png-XcxuuivOjUa5cXvhVw8kTpFS5Bi9aC.png" alt="Cyclone Logo" class="logo">
+        <h1>Create your account</h1>
+
+        <form id="signupForm" class="'space-y-4" onsubmit="return false">
+            <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm-password" required>
+            </div>
+
+            <button type="button" id="signupButton"  class="sign-up-btn">Sign Up</button>
+        </form>
+
+        <div class="divider">Or</div>
+
+        <button class="google-btn" onclick="authenticateWithGoogle()">
+            <img src="https://www.google.com/favicon.ico" alt="" width="20">
+            <a href="/auth/google/callback" >Sign up with Google</a>
+        </button>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo-transparent-png-XcxuuivOjUa5cXvhVw8kTpFS5Bi9aC.png" alt="Cyclone Logo" class="footer-logo">
+                <p>Ride Beyond Limits with Cyclone - Your premier destination for high-quality bikes and cycling accessories.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Returns & Exchanges</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Size Guide</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: support@cyclone.com</p>
+                <p>Phone: (555) 123-4567</p>
+                <p>Address: 123 Bike Street<br>Cycling City, CC 12345</p>
+            </div>
+        </div>
+    </footer>
+    <div id="otpModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-[400px] transform transition-all">
+            <h3 class="text-2xl font-bold mb-2 text-center text-gray-800">Verify Your Email</h3>
+            <p class="text-gray-600 mb-6 text-center">
+                Enter the 6-digit code sent to your email
+            </p>
+            
+            <div class="flex justify-center space-x-3 mb-6">
+                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+            </div>
+            
+            <div class="flex justify-between items-center mb-6">
+                <button id="resendOtpButton" class="text-blue-600 hover:text-blue-700 font-medium hover:underline transition-all">
+                    Resend Code
+                </button>
+                <span id="otpTimer" class="text-gray-600 font-medium"></span>
+            </div>
+
+            <button id="verifyOtpButton" class="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 
+                text-white font-bold rounded-lg hover:from-blue-700 hover:to-purple-700 
+                transform hover:scale-[1.02] transition-all duration-200 shadow-lg">
+                Verify Email
+            </button>
+        </div>
+    </div>
+    <script>
+        function authenticateWithGoogle() {
+            // Implement Google Authentication here
+            // You'll need to set up Google OAuth and use their JavaScript SDK
+            console.log('Google Authentication clicked');
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+         const signupButton = document.getElementById('signupButton');
+         const otpModal = document.getElementById('otpModal');
+         const verifyOtpButton = document.getElementById('verifyOtpButton');
+         const resendOtpButton = document.getElementById('resendOtpButton');
+         const otpTimer = document.getElementById('otpTimer');
+         const otpInputs = document.querySelectorAll('.otp-input');
+     
+         let userEmail = ''; // Declare userEmail variable
+     
+         signupButton.addEventListener('click', async function(event) {
+             event.preventDefault(); // Prevent the default button behavior
+     
+             const formData = {
+                 fullname: document.querySelector('input[name="fullname"]').value,
+                 email: document.querySelector('input[name="email"]').value,
+                 phone: document.querySelector('input[name="phone"]').value,
+                 password: document.querySelector('input[name="password"]').value,
+                 confirm_password: document.querySelector('input[name="confirm_password"]').value
+             };
+     
+             if (!formData.fullname || !formData.email || !formData.phone || !formData.password || !formData.confirm_password) {
+                 alert("Please fill all fields!");
+                 return;
+             }
+     
+             if (formData.password !== formData.confirm_password) {
+                 alert("Passwords do not match!");
+                 return;
+             }
+     
+             // Set the userEmail variable here
+             userEmail = formData.email;
+             console.log('User Email:', userEmail); 
+     
+             try {
+                 const response = await fetch('/signup', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify(formData)
+                 });
+     
+                 const result = await response.json();
+                 if (response.ok) {
+                     otpModal.classList.remove('hidden');
+                     startOtpTimer();
+                 } else {
+                     alert(result.message);
+                 }
+             } catch (error) {
+                 console.error('Signup Error:', error);
+                 alert('An error occurred. Please try again.');
+             }
+         });
+     
+         verifyOtpButton.addEventListener('click', async function() {
+             const otp = Array.from(otpInputs).map(input => input.value).join('');
+     
+             try {
+                 const response = await fetch('/verify-otp', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify({ email: userEmail, otp })
+                 });
+     
+                 const result = await response.json();
+                 if (response.ok) {
+                     otpModal.classList.add('hidden');
+                     alert('Account verified successfully');
+                     window.location.href = '/'; // Redirect to home or login
+                 } else {
+                     alert(result.message);
+                 }
+             } catch (error) {
+                 console.error('OTP Verification Error:', error);
+                 alert('Error verifying OTP.');
+             }
+         });
+     
+         resendOtpButton.addEventListener('click', async function() {
+             try {
+                 const response = await fetch('/resend-otp', {
+                     method: 'POST',
+                     headers: { 'Content-Type': 'application/json' },
+                     body: JSON.stringify({ email: userEmail }) // Use userEmail here
+                 });
+     
+                 const result = await response.json();
+                 if (response.ok) {
+                     alert('New OTP sent successfully');
+                     otpInputs.forEach(input=>input.value='')
+                     startOtpTimer(); 
+                 } else {
+                     alert(result.message);
+                 }
+             } catch (error) {
+                 console.error('Resend OTP Error:', error);
+                 alert('Error resending OTP. Please try again.');
+             }
+         });
+     
+         function startOtpTimer() {
+         let timeLeft = 60; // Reduced from 60 to 30 seconds
+         resendOtpButton.disabled = true;
+     
+         const countdown = setInterval(() => {
+             const minutes = Math.floor(timeLeft / 60);
+             const seconds = timeLeft % 60;
+             otpTimer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+     
+             if (timeLeft <= 0) {
+                 clearInterval(countdown);
+                 otpTimer.textContent = 'OTP Expired';
+                 resendOtpButton.disabled = false;
+             } else {
+                 timeLeft--;
+             }
+         }, 1000);
+     }
+     
+     
+         // Autofocus handling for OTP inputs
+         otpInputs.forEach((input, index) => {
+             input.addEventListener('input', (event) => {
+                 if (event.target.value.length === 1 && index < otpInputs.length - 1) {
+                     otpInputs[index + 1].focus(); // Move to the next input
+                 }
+             });
+     
+             input.addEventListener('keydown', (event) => {
+                 if (event.key === 'Backspace' && index > 0 && !event.target.value) {
+                     otpInputs[index - 1].focus(); // Move to the previous input on backspace
+                 }
+             });
+         });
+     });
+    </script>
+</body>
+</html>

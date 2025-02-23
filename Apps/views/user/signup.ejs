@@ -7,162 +7,127 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <link rel="shortcut icon" type="image/x-icon" href="/frontend/imgs/logos/cyclonelogo.png">
-    <link href="/backend/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="/frontend/css/main.css" rel="stylesheet" type="text/css" />
 </head>
 <body class="min-h-screen bg-gray-100">
-    <!-- Background Image with Overlay -->
-    <div class="fixed inset-0 -z-10">
-        <img src="/api/placeholder/1920/1080" alt="background" class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-purple-900/80 to-black/70"></div>
+    <!-- Background Image - Bicycle Image -->
+    <div class="fixed inset-0 -z-10 bg-gray-100">
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200"></div>
     </div>
 
     <!-- Main Content -->
     <div class="min-h-screen flex flex-col">
         <!-- Signup Section -->
-        <main class="flex-1 flex items-center justify-center px-4 py-16">
-            <div class="bg-white/95 backdrop-blur-md w-[400px] rounded-2xl shadow-2xl p-6 border border-white/20">
-                <!-- Logo -->
-                <div class="flex justify-center mb-6">
-                    <img src="<%= logoPath %>" alt="Logo" class="h-16">
-                </div>
-                
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Create Account</h2>
-                    <p class="text-gray-600 text-sm mt-1">Join our community today</p>
-                </div>
-                
-                <!-- Signup Form -->
-                <form id="signupForm" class="space-y-4" onsubmit="return false;">
-                    <input type="text" name="fullname" placeholder="Full Name" required
-                        class="w-full px-4 py-2.5 rounded-lg bg-gray-50/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white text-sm transition-all">
+        <main class="flex-1 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-4xl rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                <!-- Two-column layout -->
+                <div class="flex flex-col md:flex-row">
+                    <!-- Left column - Bicycle Image -->
+                    <div class="hidden md:block md:w-1/2 relative">
+                        <img src="/frontend/imgs/logos/sign.jpg" alt="Bicycle" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/30"></div>
+                    </div>
                     
-                    <input type="email" name="email" placeholder="Email" required
-                        class="w-full px-4 py-2.5 rounded-lg bg-gray-50/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white text-sm transition-all">
-                    
-                    <input type="tel" name="phone" placeholder="Phone Number" required
-                        class="w-full px-4 py-2.5 rounded-lg bg-gray-50/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white text-sm transition-all">
-                    
-                    <input type="password" name="password" placeholder="Password" required
-                        class="w-full px-4 py-2.5 rounded-lg bg-gray-50/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white text-sm transition-all">
-                    
-                    <input type="password" name="confirm_password" placeholder="Confirm Password" required
-                        class="w-full px-4 py-2.5 rounded-lg bg-gray-50/50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white text-sm transition-all">
-                    
-                    <button type="button" id="signupButton" 
-                        class="w-full py-2.5 text-white font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 
-                        hover:from-blue-700 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg">
-                        Sign Up
-                    </button>
-                </form>
-                
-                <!-- Divider -->
-                <div class="my-6 flex items-center">
-                    <div class="flex-1 border-t border-gray-300"></div>
-                    <span class="px-3 text-gray-500 text-xs uppercase">Or continue with</span>
-                    <div class="flex-1 border-t border-gray-300"></div>
-                </div>
-                
-                <!-- Social Signup -->
-                <div class="flex space-x-3">
-                    <a href="/auth/google/callback" 
-                        class="flex-1 py-2.5 flex items-center justify-center rounded-lg bg-red-600 text-white text-sm font-semibold
-                        hover:bg-red-700 transform hover:scale-[1.02] transition-all duration-200 shadow-md">
-                        <i class="fab fa-google mr-2"></i> Google
-                    </a>
-                    <a href="/auth/facebook/callback" 
-                        class="flex-1 py-2.5 flex items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-semibold
-                        hover:bg-blue-700 transform hover:scale-[1.02] transition-all duration-200 shadow-md">
-                        <i class="fab fa-facebook-f mr-2"></i> Facebook
-                    </a>
+                    <!-- Right column - Signup Form -->
+                    <div class="w-full md:w-1/2 p-8 bg-white">
+                        <!-- Logo -->
+                        <div class="flex items-center mb-8">
+                            <img src="<%= logoPath %>" alt="Cyclone" class="h-30 w-30">
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                        
+                        <h2 class="text-xl font-bold text-gray-800 mb-6">Create Account</h2>
+                        
+                        <!-- Social Signup -->
+                        <div class="flex gap-3 mb-6">
+                            <a href="/auth/google/callback" 
+                                class="flex-1 py-2 flex items-center justify-center rounded border border-gray-300 text-sm font-medium
+                                hover:bg-gray-50 transition-colors">
+                                <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" class="w-5 h-5 mr-2">
+                                Sign up with Google
+                            </a>
+                          
+                        </div>
+                        
+                        <!-- Divider -->
+                        <div class="relative flex items-center mb-6">
+                            <div class="flex-grow border-t border-gray-300"></div>
+                            <span class="flex-shrink mx-3 text-gray-500 text-sm">OR</span>
+                            <div class="flex-grow border-t border-gray-300"></div>
+                        </div>
+                        
+                        <!-- Signup Form -->
+                        <form id="signupForm" class="space-y-4" onsubmit="return false;">
+                            <div>
+                                <input type="text" name="fullname" placeholder="Full Name" 
+                                    class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm">
+                                    <span id="error-name" class="text-red-500 text-sm"></span>
+                            </div>
+                            
+                            <div>
+                                <input type="email" name="email" placeholder="Email Address" 
+                                    class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm">
+                                    <span id="error-email" class="text-red-500 text-sm"></span>
+                            </div>
+                            <div>
+                                <input type="tel" name="phone" placeholder="Phone Number" 
+                                   class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm">
+                                   <span id="error-phone" class="text-red-500 text-sm"></span>
+                                </div>
+                           
+                            
+                            <div class="relative">
+                                <input type="password" name="password" placeholder="Password" 
+                                    class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm">
+                                    <span id="error-password" class="text-red-500 text-sm"></span>
+                                <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                                    <i class="fas fa-eye-slash"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="relative">
+                                <input type="password" name="confirm_password" placeholder="Confirm Password" 
+                                    class="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm">
+                                    <span id="error-confirm_password" class="text-red-500 text-sm"></span>
+                                    <button type="button" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                                    <i class="fas fa-eye-slash"></i>
+                                </button>
+                            </div>
+                            
+                            <div>
+                                <button type="button" id="signupButton" 
+                                    class="w-full py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition-colors">
+                                    Create Account
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- Login Link -->
+                        <div class="mt-6 text-center text-sm">
+                            Already have an account? <a href="/" class="text-blue-600 hover:underline">Log in</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
-
-        <!-- Footer -->
-        <footer class="bg-white/10 backdrop-blur-md border-t border-white/10 text-white">
-            <div class="max-w-7xl mx-auto px-4 py-12">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <!-- Company Info -->
-                    <div class="space-y-4">
-                        <img src="<%= logoPath %>" alt="Logo" class="h-8">
-                        <p class="text-sm text-gray-300">
-                            Your trusted partner in digital innovation and e-commerce solutions.
-                        </p>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-gray-300 hover:text-white transition-colors">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="text-gray-300 hover:text-white transition-colors">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="text-gray-300 hover:text-white transition-colors">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="text-gray-300 hover:text-white transition-colors">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Quick Links -->
-                    <div>
-                        <h3 class="font-semibold mb-4">Quick Links</h3>
-                        <ul class="space-y-2 text-sm text-gray-300">
-                            <li><a href="#" class="hover:text-white transition-colors">Home</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Shop</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Categories</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Customer Service -->
-                    <div>
-                        <h3 class="font-semibold mb-4">Customer Service</h3>
-                        <ul class="space-y-2 text-sm text-gray-300">
-                            <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Shipping Policy</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Returns & Exchanges</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">FAQs</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- Newsletter -->
-                    <div>
-                        <h3 class="font-semibold mb-4">Newsletter</h3>
-                        <p class="text-sm text-gray-300 mb-4">Subscribe to receive updates and exclusive offers</p>
-                        <form class="flex">
-                            <input type="email" placeholder="Your email" 
-                                class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-white text-sm">
-                            <button class="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 transition-colors">
-                                Subscribe
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Bottom Footer -->
-                <div class="mt-12 pt-8 border-t border-white/10 text-center text-sm text-gray-300">
-                    <p>&copy; 2025 Your Company. All rights reserved.</p>
-                </div>
-            </div>
-        </footer>
     </div>
 
     <!-- OTP Verification Modal -->
     <div id="otpModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-[400px] transform transition-all">
-            <h3 class="text-2xl font-bold mb-2 text-center text-gray-800">Verify Your Email</h3>
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-[400px] transform transition-all">
+            <h3 class="text-xl font-bold mb-2 text-center text-gray-800">Verify Your Email</h3>
             <p class="text-gray-600 mb-6 text-center">
                 Enter the 6-digit code sent to your email
             </p>
             
             <div class="flex justify-center space-x-3 mb-6">
-                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
-                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
-                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
-                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
-                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
-                <input type="text" maxlength="1" class="w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text"  maxlength="1" class="w-10 h-12 text-center text-xl font-bold border-2 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border-2 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border-2 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border-2 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border-2 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
+                <input type="text" maxlength="1" class="w-10 h-12 text-center text-xl font-bold border-2 rounded focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all otp-input">
             </div>
             
             <div class="flex justify-between items-center mb-6">
@@ -172,156 +137,239 @@
                 <span id="otpTimer" class="text-gray-600 font-medium"></span>
             </div>
 
-            <button id="verifyOtpButton" class="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 
-                text-white font-bold rounded-lg hover:from-blue-700 hover:to-purple-700 
-                transform hover:scale-[1.02] transition-all duration-200 shadow-lg">
+            <button id="verifyOtpButton" class="w-full py-3 bg-blue-600 
+                text-white font-medium rounded hover:bg-blue-700
+                transition-all duration-200">
                 Verify Email
             </button>
         </div>
+
     </div>
+    
+      <%- include('partials/footer')%>  
+</body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          // Clear any previous error messages in the form
+          document.querySelectorAll('.text-red-500').forEach(el => el.textContent = "");
+        });
+        
         document.addEventListener('DOMContentLoaded', function() {
-         const signupButton = document.getElementById('signupButton');
-         const otpModal = document.getElementById('otpModal');
-         const verifyOtpButton = document.getElementById('verifyOtpButton');
-         const resendOtpButton = document.getElementById('resendOtpButton');
-         const otpTimer = document.getElementById('otpTimer');
-         const otpInputs = document.querySelectorAll('.otp-input');
-     
-         let userEmail = ''; // Declare userEmail variable
-     
-         signupButton.addEventListener('click', async function(event) {
-             event.preventDefault(); // Prevent the default button behavior
-     
-             const formData = {
-                 fullname: document.querySelector('input[name="fullname"]').value,
-                 email: document.querySelector('input[name="email"]').value,
-                 phone: document.querySelector('input[name="phone"]').value,
-                 password: document.querySelector('input[name="password"]').value,
-                 confirm_password: document.querySelector('input[name="confirm_password"]').value
-             };
-     
-             if (!formData.fullname || !formData.email || !formData.phone || !formData.password || !formData.confirm_password) {
-                 alert("Please fill all fields!");
-                 return;
-             }
-     
-             if (formData.password !== formData.confirm_password) {
-                 alert("Passwords do not match!");
-                 return;
-             }
-     
-             // Set the userEmail variable here
-             userEmail = formData.email;
-             console.log('User Email:', userEmail); 
-     
-             try {
-                 const response = await fetch('/signup', {
-                     method: 'POST',
-                     headers: { 'Content-Type': 'application/json' },
-                     body: JSON.stringify(formData)
-                 });
-     
-                 const result = await response.json();
-                 if (response.ok) {
-                     otpModal.classList.remove('hidden');
-                     startOtpTimer();
-                 } else {
-                     alert(result.message);
-                 }
-             } catch (error) {
-                 console.error('Signup Error:', error);
-                 alert('An error occurred. Please try again.');
-             }
-         });
-     
-         verifyOtpButton.addEventListener('click', async function() {
-             const otp = Array.from(otpInputs).map(input => input.value).join('');
-     
-             try {
-                 const response = await fetch('/verify-otp', {
-                     method: 'POST',
-                     headers: { 'Content-Type': 'application/json' },
-                     body: JSON.stringify({ email: userEmail, otp })
-                 });
-     
-                 const result = await response.json();
-                 if (response.ok) {
-                     otpModal.classList.add('hidden');
-                     alert('Account verified successfully');
-                     window.location.href = '/'; // Redirect to home or login
-                 } else {
-                     alert(result.message);
-                 }
-             } catch (error) {
-                 console.error('OTP Verification Error:', error);
-                 alert('Error verifying OTP.');
-             }
-         });
-     
-         resendOtpButton.addEventListener('click', async function() {
-             try {
-                 const response = await fetch('/resend-otp', {
-                     method: 'POST',
-                     headers: { 'Content-Type': 'application/json' },
-                     body: JSON.stringify({ email: userEmail }) // Use userEmail here
-                 });
-     
-                 const result = await response.json();
-                 if (response.ok) {
-                     alert('New OTP sent successfully');
-                     otpInputs.forEach(input=>input.value='')
-                     startOtpTimer(); 
-                 } else {
-                     alert(result.message);
-                 }
-             } catch (error) {
-                 console.error('Resend OTP Error:', error);
-                 alert('Error resending OTP. Please try again.');
-             }
-         });
-     
-         function startOtpTimer() {
-         let timeLeft = 60; // Reduced from 60 to 30 seconds
-         resendOtpButton.disabled = true;
-     
-         const countdown = setInterval(() => {
-             const minutes = Math.floor(timeLeft / 60);
-             const seconds = timeLeft % 60;
-             otpTimer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-     
-             if (timeLeft <= 0) {
-                 clearInterval(countdown);
-                 otpTimer.textContent = 'OTP Expired';
-                 resendOtpButton.disabled = false;
-             } else {
-                 timeLeft--;
-             }
-         }, 1000);
-     }
-     
-     
-         // Autofocus handling for OTP inputs
-         otpInputs.forEach((input, index) => {
-             input.addEventListener('input', (event) => {
-                 if (event.target.value.length === 1 && index < otpInputs.length - 1) {
-                     otpInputs[index + 1].focus(); // Move to the next input
-                 }
-             });
-     
-             input.addEventListener('keydown', (event) => {
-                 if (event.key === 'Backspace' && index > 0 && !event.target.value) {
-                     otpInputs[index - 1].focus(); // Move to the previous input on backspace
-                 }
-             });
-         });
-     });
-     </script>
-</body>
+          const signupButton = document.getElementById('signupButton');
+          const otpModal = document.getElementById('otpModal');
+          const verifyOtpButton = document.getElementById('verifyOtpButton');
+          const resendOtpButton = document.getElementById('resendOtpButton');
+          const otpTimer = document.getElementById('otpTimer');
+          const otpInputs = document.querySelectorAll('.otp-input');
+        
+          signupButton.addEventListener('click', async function(event) {
+            event.preventDefault();
+        
+            // Clear any inline error messages
+            document.getElementById('error-name').textContent = "";
+            document.getElementById('error-email').textContent = "";
+            document.getElementById('error-phone').textContent = "";
+            document.getElementById('error-password').textContent = "";
+            document.getElementById('error-confirm_password').textContent = "";
+        
+            // Gather form data
+            const formData = {
+              fullname: document.querySelector('input[name="fullname"]').value,
+              email: document.querySelector('input[name="email"]').value,
+              phone: document.querySelector('input[name="phone"]').value, // using actual phone field
+              password: document.querySelector('input[name="password"]').value,
+              confirm_password: document.querySelector('input[name="confirm_password"]').value
+            };
+        
+            // Basic client-side check: all fields required
+            let hasError = false;
+            if (!formData.fullname || formData.fullname.trim() === "") {
+              document.getElementById('error-name').textContent = "Full name is required";
+              hasError = true;
+            }
+            if (!formData.email || formData.email.trim() === "") {
+              document.getElementById('error-email').textContent = "Email is required";
+              hasError = true;
+            }
+            if (!formData.phone || formData.phone.trim() === "") {
+              document.getElementById('error-phone').textContent = "Phone number is required";
+              hasError = true;
+            }
+            if (!formData.password || formData.password.trim() === "") {
+              document.getElementById('error-password').textContent = "Password is required";
+              hasError = true;
+            }
+            if (!formData.confirm_password || formData.confirm_password.trim() === "") {
+              document.getElementById('error-confirm_password').textContent = "Confirm password is required";
+              hasError = true;
+            }
+            if (hasError) return;
+        
+            // Also check if passwords match (client-side check)
+            if (formData.password !== formData.confirm_password) {
+              document.getElementById('error-confirm_password').textContent = "Passwords do not match";
+              return;
+            }
+        
+            // Store email in localStorage for later use (e.g. OTP verification)
+            const userEmail = formData.email;
+            localStorage.setItem('userEmail', userEmail);
+        
+            try {
+              const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+              });
+              const result = await response.json();
+              if (response.ok) {
+                otpModal.classList.remove('hidden');
+                startOtpTimer();
+              } else {
+                // Based on the error message from the backend, update inline errors
+                const msg = result.message.toLowerCase();
+                if (msg.includes("fullname")) {
+                  document.getElementById('error-name').textContent = result.message;
+                } else if (msg.includes("email")) {
+                  document.getElementById('error-email').textContent = result.message;
+                } else if (msg.includes("phone")) {
+                  document.getElementById('error-phone').textContent = result.message;
+                } else if (msg.includes("confirm")) {
+                  document.getElementById('error-confirm_password').textContent = result.message;
+                } else if (msg.includes("password")) {
+                  document.getElementById('error-password').textContent = result.message;
+                } else {
+                  // If no specific field is detected, assign the error to the full name field (or add a general error element)
+                  document.getElementById('error-name').textContent = result.message;
+                }
+              }
+            } catch (error) {
+              console.error('Signup Error:', error);
+              // Optionally update a general error field if available
+              document.getElementById('error-name').textContent = "An error occurred. Please try again.";
+            }
+          });
+        
+          verifyOtpButton.addEventListener('click', async function() {
+    const otp = Array.from(otpInputs).map(input => input.value).join('');
+    const userEmail = localStorage.getItem("userEmail");
+
+    try {
+        const response = await fetch('/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: userEmail, otp })
+        });
+        const result = await response.json();
+        if (response.ok) {
+            otpModal.classList.add('hidden');
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: result.message,
+                showConfirmButton: false,
+                timer: 1500,
+                width: '300px'
+            }).then(() => {
+                window.location.href = '/';
+            });
+        } else {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: result.message,
+                showConfirmButton: false,
+                timer: 1500,
+                width: '300px'
+            });
+        }
+    } catch (error) {
+        console.error('OTP Verification Error:', error);
+        Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error verifying OTP.',
+            showConfirmButton: false,
+            timer: 1500,
+            width: '300px'
+        });
+    }
+});
+resendOtpButton.addEventListener('click', async function() {
+    try {
+        const response = await fetch('/resend-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: localStorage.getItem("userEmail") })
+        });
+        const result = await response.json();
+        if (response.ok) {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: result.message,
+                showConfirmButton: false,
+                timer: 1500,
+                width: '300px'
+            });
+            otpInputs.forEach(input => input.value = '');
+            startOtpTimer(); 
+        } else {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: result.message,
+                showConfirmButton: false,
+                timer: 1500,
+                width: '300px'
+            });
+        }
+    } catch (error) {
+        console.error('Resend OTP Error:', error);
+        Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error resending OTP. Please try again.',
+            showConfirmButton: false,
+            timer: 1500,
+            width: '300px'
+        });
+    }
+});
+
+          function startOtpTimer() {
+            let timeLeft = 60;
+            resendOtpButton.disabled = true;
+            const countdown = setInterval(() => {
+              const minutes = Math.floor(timeLeft / 60);
+              const seconds = timeLeft % 60;
+              otpTimer.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+              if (timeLeft <= 0) {
+                clearInterval(countdown);
+                otpTimer.textContent = 'OTP Expired';
+                resendOtpButton.disabled = false;
+              } else {
+                timeLeft--;
+              }
+            }, 1000);
+          }
+        
+          // Autofocus handling for OTP inputs
+          otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (event) => {
+              if (event.target.value.length === 1 && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+              }
+            });
+            input.addEventListener('keydown', (event) => {
+              if (event.key === 'Backspace' && index > 0 && !event.target.value) {
+                otpInputs[index - 1].focus();
+              }
+            });
+          });
+        });
+        </script>
 </html>
-
-
-
-
-  

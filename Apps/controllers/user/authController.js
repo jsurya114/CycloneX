@@ -81,15 +81,16 @@ const authController = {
             const token = jwt.sign(
                 { id: user._id, email: user.email },
                 process.env.JWT_SECRET,
-                { expiresIn: '1h' }
+                { expiresIn: '7d' } // Token expires in 7 days
             );
-
-          
+            console.log('Generated Token:', token);
+            
             res.cookie('token', token, { 
                 httpOnly: true, 
                 secure: process.env.NODE_ENV === 'production', 
-                maxAge: 3600000  // 1 hour in milliseconds
+                maxAge: 7 * 24 * 60 * 60 * 1000 // Corrected to 7 days (in milliseconds)
             });
+            
 
             res.redirect('/home');
         } catch (error) {
@@ -106,70 +107,104 @@ const authController = {
 
     createUser: async (req, res) => {
         try {
-            console.log('Request Body:', req.body);
-            const { fullname, email, phone, password, confirm_password } = req.body;
-
-            if (!password || !confirm_password) {
-                return res.status(400).json({ message: 'Password fields are required' });
-            }
-            if (password !== confirm_password) {
-                return res.status(400).json({ message: 'Passwords do not match' });
-            }
-
-            const userExist = await User.findOne({ email });
-            if (userExist) {
-                return res.status(400).json({ message: 'User already exists' });
-            }
-
-            const salt = await bcrypt.genSalt(5);
-            const hashedPassword = await bcrypt.hash(password, salt);
-
-            const otp = generateOTP();
-            console.log(otp)
-            const otpExpires = new Date(Date.now() + (1 * 60 * 1000))
-
-
-            const newUser = new User({
-                fullName: fullname,
-                email,
-                mobile: phone,
-                password: hashedPassword,
-                isVerified: false,
-                otp,
-                otpExpires
+          console.log('Request Body:', req.body);
+          const { fullname, email, phone, password, confirm_password } = req.body;
+      
+          if (/\d/.test(fullname)) {
+            return res.status(400).json({ success: false, message: 'Fullname cannot contain numbers' });
+          }
+          if (fullname === null || fullname.trim() === '') {
+            return res.status(400).json({ success: false, message: 'name field is required' });
+          }
+          if (email === null || email.trim() === '') {
+            return res.status(400).json({ success: false, message: 'email is required' });
+          }
+          if (phone === null || phone.trim() === '') {
+            return res.status(400).json({ success: false, message: 'phone number is required' });
+          }
+          if (password === null || password.trim() === '') {
+            return res.status(400).json({ success: false, message: 'password is required' });
+          }
+          if (confirm_password === null || confirm_password.trim() === '') {
+            return res.status(400).json({ success: false, message: 'Confirm password is required' });
+          }
+          if (!/^\d{10}$/.test(phone)) {
+            return res.status(400).json({ success: false, message: 'Phone number must be exactly 10 digits and contain only numbers' });
+          }
+          if (password !== confirm_password) {
+            return res.status(400).json({ success: false, message: 'Passwords do not match' });
+          }
+          const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
+          if (!passwordRegex.test(password)) {
+            return res.status(400).json({ 
+              success: false, 
+              message: 'Password must be at least 8 characters and include at least one letter, one number, and one special character.' 
             });
-
-            await newUser.save();
-
-            // Send OTP Email
-            await sendEmail(email, 'Your OTP for Account Verification', 
-                `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in  1 minute.</p>`
-            );
-
-            res.status(200).json({ message: 'Signup successful. OTP sent to email.' });
-
+          }
+      
+          const userExist = await User.findOne({ email });
+          if (userExist) {
+            return res.status(400).json({ success: false, message: 'User already exists' });
+          }
+      
+          const salt = await bcrypt.genSalt(5);
+          const hashedPassword = await bcrypt.hash(password, salt);
+          const otp = generateOTP();
+          console.log(otp);
+          const otpExpires = new Date(Date.now() + (1 * 60 * 1000));
+      
+          const newUser = new User({
+            fullName: fullname,
+            email,
+            mobile: phone,
+            password: hashedPassword,
+            isVerified: false,
+            otp,
+            otpExpires
+          });
+      
+          await newUser.save();
+      
+          await sendEmail(email, 'Your OTP for Account Verification', 
+            `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in 1 minute.</p>`
+          );
+      
+          res.status(200).json({ success: true, message: 'Signup successful. OTP sent to email.' });
+      
         } catch (error) {
-            console.error('Error during signup:', error);
-            res.status(500).json({ message: 'Internal Server Error' });
+          console.error('Error during signup:', error);
+          res.status(500).json({ message: 'Internal Server Error' });
         }
-    },
+      },
+      
 
 verifyOTP: async (req, res) => {
         try {
+            console.log("verrrr");
+            
 const {email, otp }=req.body
 const user =await User.findOne({email})
+console.log(email,otp+'this is rq');
+
 if(!user){
     return res.status(400).json({message:"User not found"})
 }
 if (user.isVerified) {
     return res.status(400).json({ message: 'User is already verified.' });
 }
+console.log('verified');
+
 if (!user.otp) {
     return res.status(400).json({ message: 'No OTP found. Please request a new OTP.' });
 }
-
+console.log('verified1');
 if(user.otp!==otp){
 return res.status(400).json({message:'Invalid otp'})
+}
+console.log('verified2');
+if(String(user.otp)!==String(otp)){
+    console.log(user.otp,otp)
+    return res.status(400).json({message:'invalid opt'})
 }
 if(user.otpExpires&&new Date(user.otpExpires)<new Date()){
     return res.status(400).json({message:'OTP expired'})
@@ -213,13 +248,7 @@ res.status(200).json({message:'OTP verified successfully'})
         }
     },
 
-    home: async (req, res) => {
-        console.log('invoked home');
-        
-        res.render('home', {
-            logoPath: '/frontend/imgs/logos/cyclonelogo.png'
-        });
-    }
+
 };
 
 module.exports = authController;

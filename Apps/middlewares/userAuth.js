@@ -7,23 +7,25 @@ const verifyUser = async (req, res, next) => {
     try {
       // Check for JWT token
       const token = req.cookies.token;
-      if (token) {
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decodedToken.id;
-        const isExistingUser = await User.findById(userId);
-        if (isExistingUser) {
-          req.user = isExistingUser; // Attach user to request
-          return next();
-        }
-      }
-  
-      // Check for Passport session
-      if (req.isAuthenticated()) {
-        return next();
-      }
-  
-      // If neither is present, redirect to login
-      return res.status(401).redirect('/');
+     if(!token){
+      console.log('usertoken missing')
+      return res.status(401).redirect('/')
+     }
+     const decodedToken=jwt.verify(token,process.env.jwt_SECRET)
+
+if(!decodedToken){
+  console.log('invalid user token')
+  return res.status(403).redirect('/')
+}
+const userId = decodedToken.id 
+const isUser = await User.findById(userId)
+if(!isUser){
+  console.log('verify user')
+  return res.status(404).redirect('/')
+}
+req.user=isUser
+next()
+
     } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');
