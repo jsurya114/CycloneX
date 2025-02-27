@@ -24,7 +24,7 @@ const productController = {
       let errors = {};
       const { productName, description, price, brands, category, stock } = req.body;
       
-      // Validate each field
+      // Validate fields
       if (!productName) {
         errors.productName = "Product Name is required.";
       } else if (!/[A-Z]/.test(productName)) {
@@ -72,28 +72,52 @@ const productController = {
         errors.productName = "A product with this name already exists.";
         return res.status(400).json({ success: false, errors });
       }
+      
       // Main image is stored as-is.
       const mainImagePath = `backend/imgs/products/${req.files.mainImage[0].filename}`;
-
-      // Process each additional image using Sharp.
-      // We write the processed image to a temporary file, then rename it back.
-      for (const file of req.files.images) {
+      
+      // Parse crop data sent from the frontend (as JSON)
+      let cropData = [];
+      if (req.body.cropData) {
+        try {
+          cropData = JSON.parse(req.body.cropData);
+        } catch (err) {
+          cropData = [];
+        }
+      }
+      
+      // Process each additional image using Sharp and crop data if provided.
+      for (let i = 0; i < req.files.images.length; i++) {
+        const file = req.files.images[i];
         const filePath = file.path;
         const tmpFilePath = filePath + '.tmp';
-        console.log("Processing additional image:", filePath);
-        // Wait briefly to ensure the file is fully released by Multer.
+        
+        // Wait briefly to ensure file is fully released by Multer.
         await new Promise(resolve => setTimeout(resolve, 100));
-        await sharp(filePath)
-          .resize(1000, 1000, { fit: 'cover' })
-          .toFile(tmpFilePath);
+        
+        if (cropData[i]) {
+          const { x, y, width, height } = cropData[i];
+          await sharp(filePath)
+            .extract({ 
+              left: Math.round(x), 
+              top: Math.round(y), 
+              width: Math.round(width), 
+              height: Math.round(height) 
+            })
+            .resize(1000, 1000, { fit: 'cover' })
+            .toFile(tmpFilePath);
+        } else {
+          // If no crop data is provided, use a default resize.
+          await sharp(filePath)
+            .resize(1000, 1000, { fit: 'cover' })
+            .toFile(tmpFilePath);
+        }
         await fs.promises.rename(tmpFilePath, filePath);
       }
-
+      
       // Map additional images to their relative paths.
       const imagePaths = req.files.images.map(file => `backend/imgs/products/${file.filename}`);
-      console.log("Additional Images:", imagePaths);
-      console.log("Main Image:", mainImagePath);
-
+      
       // Create and save the new product.
       const newProduct = new Product({
         productName,
@@ -106,22 +130,54 @@ const productController = {
         stock
       });
       await newProduct.save();
-      console.log('invoked add prod 4');
-
-      // Redirect with a success message.
-      res.status(201).json({success:true,message:'product added successfully'})
-
+      
+      // Return success response.
+      res.status(201).json({ success: true, message: 'product added successful' });
+      
     } catch (error) {
-      console.log('error add prod invoked');
       console.log(error);
       res.status(500).send('internal server error');
     }
   },
+  
 
   showAddBrandPage: async (req, res) => {
     try {
-      const brands = await Brand.find();
-      res.render('brands', { brands });
+const {search,statusFilter,page,limit}=req.query
+let filter={}
+if(search){
+  filter.$or=[
+    {name:{$regex:search,$options:'i'}},
+   
+  ]
+}
+if(statusFilter==='active'){
+  filter.isBlocked=false
+}else if(statusFilter==='deactive'){
+  filter.isBlocked=true
+}
+
+let currentPage=parseInt(page)||1
+let itemsPerPage=parseInt(limit)||3
+let skip = (currentPage-1)*itemsPerPage
+let totalProducts =await Brand.countDocuments(filter)
+
+
+
+      const brands = await Brand.find(filter).skip(skip)
+      .limit(itemsPerPage)
+
+      let totalPages = Math.ceil(totalProducts/itemsPerPage)
+      res.render('brands', { brands ,
+        currentPage,
+        totalPages,
+        hasNextPage: currentPage < totalPages,
+        hasPrevPage: currentPage > 1,
+        nextPage: currentPage < totalPages ? currentPage + 1 : null,
+        prevPage: currentPage > 1 ? currentPage - 1 : null,
+    });
+
+     
     } catch (error) {
       res.status(500).send('Internal server error');
     }
@@ -193,7 +249,7 @@ const productController = {
   },
 
   editbrand: async (req, res) => {
-    console.log("invoked edit brand");
+
     try {
       const brandId = req.params.id;
       const { name, description } = req.body;

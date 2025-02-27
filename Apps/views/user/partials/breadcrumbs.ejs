@@ -1,0 +1,56 @@
+<!-- Breadcrumbs -->
+<div class="breadcrumbs-container container mx-auto mt-4 mb-4">
+    <div class="breadcrumbs py-2 px-4 bg-white shadow-sm rounded-lg">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb flex flex-wrap items-center m-0 p-0">
+                <% breadcrumbs.forEach((crumb, index) => { %>
+                    <li class="breadcrumb-item flex items-center <%= index === breadcrumbs.length - 1 ? 'active' : '' %>">
+                        <% if (index !== breadcrumbs.length - 1) { %>
+                            <!-- Not the last item -->
+                            <a href="<%= crumb.url %>" class="text-blue-600 hover:text-blue-800 transition-colors text-sm font-medium">
+                                <%= crumb.name %>
+                            </a>
+                            <!-- Separator -->
+                            <span class="mx-2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right">
+                                    <path d="m9 18 6-6-6-6"/>
+                                </svg>
+                            </span>
+                        <% } else { %>
+                            <!-- Last item (current page) -->
+                            <span class="text-gray-500 text-sm font-medium">
+                                <%= crumb.name %>
+                            </span>
+                        <% } %>
+                    </li>
+                <% }); %>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- End Breadcrumbs -->
+ <style>
+    .breadcrumbs {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.breadcrumb {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item.active {
+    color: #6B7280;
+}
+ </style>

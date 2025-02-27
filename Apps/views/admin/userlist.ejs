@@ -51,17 +51,12 @@
                     <a class="menu-link" href="/admin/brands"> <i class="icon material-icons md-stars"></i>
                         <span class="text">Brands</span> </a>
                 </li>
-                <li class="menu-item has-submenu active">
+                <li class="menu-item  active">
                     <a class="menu-link" href="/admin/userlist">
                       <i class="icon material-icons md-store"></i>
                       <span class="text">Users</span>
                       <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
                     </a>
-                    <ul class="submenu">
-                      
-                      <li><a href="/admin/userlist" class="submenu-link">Users list</a></li>
-                      <li><a href="/admin/userdetails" class="submenu-link">Product details</a></li>
-                    </ul>
                   </li>
             </ul>
         
@@ -82,30 +77,51 @@
                 <div class="row gx-3">
                     <!-- Search Input -->
                   <!-- Search Input with Clear Button -->
-<div class="col-lg-4 col-md-6 me-auto d-flex align-items-center">
-  <input type="text" id="searchInput" placeholder="Search..." class="form-control">
-  
-</div>
-
-            
-                    <!-- Status Filter -->
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <select id="statusFilter" class="form-select">
-                            <option value="">Status</option>
-                            <option value="Active">Active</option>
-                            <option value="Disabled">Disabled</option>
-                            <option value="">Show all</option>
-                        </select>
-                    </div>
-            
-                    <!-- Pagination Limit -->
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <select id="limitSelect" class="form-select">
-                            <option value="20">Show 20</option>
-                            <option value="30">Show 30</option>
-                            <option value="40">Show 40</option>
-                        </select>
-                    </div>
+                  <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-4">
+                    <!-- Search Input -->
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search Products"
+                        class="bg-white px-3 py-2 border rounded-md w-full sm:max-w-xs"
+                    />
+                    
+                    <!-- Search Button -->
+                    <button
+                        id="searchBtn"
+                        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        Search
+                    </button>
+                    
+                    <!-- Clear Button -->
+                    <button
+                        id="clearBtn"
+                        class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    >
+                        Clear
+                    </button>
+                
+                    <!-- Status Filter Dropdown -->
+                    <select id="statusFilter" class="bg-white px-3 py-2 border rounded-md">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="deactive">Deactivated</option>
+                    </select>
+                
+                  
+                
+                 
+                
+                    <!-- Sort Dropdown -->
+                    <select id="sortBy" class="bg-white px-3 py-2 border rounded-md">
+                        <option value="">Sort By</option>
+                        <option value="date_asc">Registered Date:old to new </option>
+                        <option value="date_desc">Registered Date:new to old</option>
+                        <option value="name_asc">Name: A to Z</option>
+                        <option value="name_desc">Name: Z to A</option>
+                    </select>
+                </div>
                 </div>
             </header>
             
@@ -171,108 +187,90 @@
                               <% } %>
                             </tbody>
                           </table><!-- table-responsive.// -->
+                        <%-include('partials/pagination')%>
                     </div>
                 </div> <!-- card-body end// -->
             </div> <!-- card end// -->
-            <div class="pagination-area mt-15 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
-            </div>
+           
         </section> <!-- content-main end// -->
         <%- include('partials/footer') %>
     </main>
     <%- include('partials/scripts') %>
 
-    <script>
-      let sortField = "fullName"; 
-      let sortOrder = "asc";
-      let searchTimeout = null; 
+  <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all filter elements
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const statusFilter = document.getElementById("statusFilter");
+    const sortSelect = document.getElementById("sortBy");
+
+    // Add event listeners
+    document.getElementById("searchBtn").addEventListener("click", applyFilters);
+    document.getElementById("clearBtn").addEventListener("click", clearFilters);
     
-      document.addEventListener("DOMContentLoaded", () => {
-          fetchUsers();
-    
-          document.getElementById("searchInput").addEventListener("input", handleSearch);
-          document.getElementById("clearSearchBtn").addEventListener("click", clearSearch);
-          document.getElementById("statusFilter").addEventListener("change", fetchUsers);
-          document.getElementById("limitSelect").addEventListener("change", fetchUsers);
-      });
-    
-      function handleSearch() {
-          clearTimeout(searchTimeout);
-          searchTimeout = setTimeout(fetchUsers, 300);
-          document.getElementById("clearSearchBtn").style.display = document.getElementById("searchInput").value ? "inline-block" : "none";
-      }
-    
-      function fetchUsers() {
-          const searchQuery = document.getElementById("searchInput").value.trim();
-          const statusFilter = document.getElementById("statusFilter").value;
-          const limit = document.getElementById("limitSelect").value;
-          const url = `/api/users?search=${encodeURIComponent(searchQuery)}&status=${statusFilter}&limit=${limit}&sort=${sortField}&order=${sortOrder}`;
-    
-          fetch(url)
-              .then(response => response.json())
-              .then(data => {
-                  renderUsers(data, searchQuery);
-              })
-              .catch(error => console.error("Error fetching users:", error));
-      }
-    
-      function renderUsers(users, searchQuery) {
-          const usersList = document.getElementById("usersList");
-          usersList.innerHTML = "";
-    
-          if (users.length === 0) {
-              usersList.innerHTML = `<tr><td colspan="3">No users found.</td></tr>`;
-              return;
-          }
-    
-          users.forEach(user => {
-              const highlightedName = highlightMatch(user.fullName, searchQuery);
-              const highlightedEmail = highlightMatch(user.email, searchQuery);
-    
-              usersList.innerHTML += `
-                  <tr>
-                      <td>${highlightedName}</td>
-                      <td>${highlightedEmail}</td>
-                      <td>${user.isActive ? 
-                            '<span class="badge rounded-pill alert-success">Active</span>' : 
-                            '<span class="badge rounded-pill alert-danger">Disabled</span>'}
-                      </td>
-                  </tr>
-              `;
-          });
-      }
-    
-      function highlightMatch(text, searchQuery) {
-          if (!searchQuery) return text;
-          const regex = new RegExp(`(${searchQuery})`, "gi");
-          return text.replace(regex, `<mark>$1</mark>`);
-      }
-    
-      function sortUsers(field) {
-          if (sortField === field) {
-              sortOrder = sortOrder === "asc" ? "desc" : "asc";
-          } else {
-              sortField = field;
-              sortOrder = "asc";
-          }
-          fetchUsers();
-      }
-    
-      function clearSearch() {
-          document.getElementById("searchInput").value = "";
-          document.getElementById("clearSearchBtn").style.display = "none";
-          fetchUsers();
-      }
-    </script>
+    // Add change listeners to all filter dropdowns
+    [ statusFilter, sortSelect].forEach(element => {
+        if (element) {
+            element.addEventListener('change', applyFilters);
+        }
+    });
+
+    // Add enter key listener to search input
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyFilters();
+        }
+    });
+
+    function applyFilters() {
+        const queryParams = new URLSearchParams();
+        
+        // Get all filter values
+        const search = searchInput.value.trim();
+
+        const status = statusFilter.value;
+        const sort = sortSelect?.value;
+
+        // Add non-empty filters to query params
+        if (search) queryParams.append("search", search);
+
+        if (status) queryParams.append("statusFilter", status);
+        if (sort) queryParams.append("sortBy", sort);
+
+        // Navigate to filtered URL
+        window.location.href = `/admin/userlist?${queryParams.toString()}`;
+    }
+
+    function clearFilters() {
+        // Reset all filter inputs
+        searchInput.value = "";
+       
+        statusFilter.value = "";
+        if (sortSelect) sortSelect.value = "";
+
+        // Apply cleared filters
+        applyFilters();
+    }
+
+    // Restore filter values from URL on page load
+    function restoreFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        
+        searchInput.value = params.get("search") || "";
+       
+        statusFilter.value = params.get("statusFilter") || "";
+        if (sortSelect) {
+            sortSelect.value = params.get("sortBy") || "";
+        }
+    }
+
+    // Initialize filters from URL
+    restoreFiltersFromURL();
+});
+
+  </script>
 
 
 </body>

@@ -50,17 +50,13 @@
                 <span class="text">Brands</span>
               </a>
             </li>
-            <li class="menu-item has-submenu active">
+            <li class="menu-item  active">
               <a class="menu-link" href="#">
                 <i class="icon material-icons md-store"></i>
                 <span class="text">Users</span>
                 <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
               </a>
-              <ul class="submenu">
-                
-                <li><a href="" class="submenu-link">Users list</a></li>
-                <li><a href="" class="submenu-link">Product details</a></li>
-              </ul>
+           
             </li>
           </ul>
         </nav>
@@ -83,20 +79,20 @@
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Product Title</label>
                     <input type="text" name="productName" placeholder="Enter product name"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.productName %>" required>
+                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.productName %>" >
                 </div>
 
                 <!-- Description -->
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Description</label>
                     <textarea name="description" placeholder="Enter description" rows="4"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" required><%= product.description %></textarea>
+                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" ><%= product.description %></textarea>
                 </div>
 
                 <!-- Brand Selection -->
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Brand</label>
-                    <select name="brands" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" required>
+                    <select name="brands" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" >
                         <% brands.forEach(brand => { %>
                             <option value="<%= brand._id %>" <%= brand._id.toString() === product.brands._id.toString() ? 'selected' : '' %>><%= brand.name %></option>
                         <% }) %>
@@ -106,7 +102,7 @@
                 <!-- Category Selection -->
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Category</label>
-                    <select name="category" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" required>
+                    <select name="category" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" >
                         <% category.forEach(cat => { %>
                             <option value="<%= cat._id %>" <%= product.category && product.category._id.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.name %></option>
                         <% }) %>
@@ -117,7 +113,7 @@
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Price</label>
                     <input type="number" name="price" placeholder="00.0"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.price %>" required>
+                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.price %>" >
                 </div>  
                   <!-- Stock (New Field) -->
         <div>

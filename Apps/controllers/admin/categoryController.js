@@ -4,13 +4,53 @@ const Category = require('../../models/categoryModel');
 const categoryController = {
   category: async (req, res) => {
     try {
-      const category = await Category.find();
-      res.render('category', { category, message: null });
+        const { search,  statusFilter ,page,limit} = req.query;
+
+        let filter = {};
+
+        // Search functionality
+        if (search) {
+            filter.$or = [
+                { category: { $regex: search, $options: 'i' } },
+                { slug: { $regex: search, $options: 'i' } },
+              
+            ];
+        }
+
+        // Filter by status
+        if (statusFilter === "active") {
+            filter.isBlocked = false;
+        } else if (statusFilter === "deactive") {
+            filter.isBlocked = true;
+        }
+
+
+let currentPage=parseInt(page)||1
+let itemsPerPage = parseInt(limit)||3
+let skip=(currentPage-1)*itemsPerPage
+let totalProducts =await Category.countDocuments(filter)
+
+
+ 
+
+        const category = await Category.find(filter).skip(skip)
+        .limit(itemsPerPage)
+
+        let totalPages =Math.ceil(totalProducts/itemsPerPage)
+        
+        res.render('category', { category, message: null ,
+          currentPage,
+                totalPages,
+                hasNextPage: currentPage < totalPages,
+                hasPrevPage: currentPage > 1,
+                nextPage: currentPage < totalPages ? currentPage + 1 : null,
+                prevPage: currentPage > 1 ? currentPage - 1 : null,
+        });
     } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
+        console.error(error);
+        res.status(500).send('Internal Server Error');
     }
-  },
+},
 
   addCategory: async (req, res) => {
     console.log('invoked add cat');
@@ -143,19 +183,7 @@ if(!/^[a-z0-9]+$/.test(slug)){
     }
   },
 
-  deleteCategories: async (req, res) => {
-    try {
-      const { ids } = req.body;
-      if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        return res.status(400).json({ success: false, message: 'no categories selected' });
-      }
-      await Category.deleteMany({ _id: { $in: ids } });
-      res.status(200).json({ success: true, message: "categories deleted successfully" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Error deleting categories' });
-    }
-  }
+
 };
 
 module.exports = categoryController;

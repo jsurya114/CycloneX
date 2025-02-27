@@ -92,7 +92,7 @@
         </div>
     </div>
    <%-include('partials/header')%>
-   
+   <%-include('partials/breadcrumbs')%>
    <main class="main">
     <section class="home-slider position-relative mb-30">
         <div class="container mx-auto">
@@ -145,89 +145,168 @@
             </div>
         </div>
     </section>
-    <section class="product-tabs pt-25 pb-20 wow fadeIn animated">
+    <section class="product-tabs pt-6 pb-6 wow fadeIn animated">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3">
-                   
-                    
-                   
-                   
-                </div>
-                <div class="col-lg-9">
-                    <div class="tab-header">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="nav-tab-one" data-bs-toggle="tab" data-bs-target="#tab-one" type="button" role="tab" aria-controls="tab-one" aria-selected="true">Featured</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="nav-tab-two" data-bs-toggle="tab" data-bs-target="#tab-two" type="button" role="tab" aria-controls="tab-two" aria-selected="false">Popular</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="nav-tab-three" data-bs-toggle="tab" data-bs-target="#tab-three" type="button" role="tab" aria-controls="tab-three" aria-selected="false">New added</button>
-                            </li>
-                        </ul>
-                        <!-- <a href="#" class="view-more d-none d-md-flex">View More<i class="fi-rs-angle-double-small-right"></i></a> -->
+                <div class="col-lg-12">
+                    <!-- Search Bar with Enhanced Tailwind UI -->
+                    <div class="tab-header flex flex-wrap items-center p-6 bg-white rounded-xl shadow-md border border-gray-100 gap-4 mb-8 transition-all duration-300 hover:shadow-lg">
+                        <!-- Search Bar and Buttons Container -->
+                        <div class="flex flex-wrap items-center gap-4 w-full">
+                            <!-- Search Input with Icon -->
+                            <div class="relative flex items-center flex-grow max-w-md">
+                                <span class="absolute left-3 text-gray-400">
+                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <path d="m21 21-4.3-4.3"/>
+                                    </svg> -->
+                                </span>
+                                <input type="text" id="searchInput" placeholder="Search products..."
+                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm">
+                                
+                                <!-- Cancel Button -->
+                                <button id="clearBtn"
+                                    class="ml-2 px-4 py-3 bg-gray-500 text-white rounded-lg text-sm hover:bg-gray-600 transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                        <path d="M18 6 6 18"/>
+                                        <path d="m6 6 12 12"/>
+                                    </svg>
+                                    Clear
+                                </button>
+                            </div>
+                        
+                            <!-- Filters and Sorting -->
+                            <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                                <!-- Sort Dropdown -->
+                                <div class="flex items-center gap-2 w-full sm:w-auto">
+                                    <label for="sortBy" class="text-sm text-gray-700 font-medium whitespace-nowrap">Sort by:</label>
+                                    <select id="sortBy"
+                                        class="w-full sm:w-48 px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-no-repeat bg-right pr-8"
+                                        style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%236B7280\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m6 9 6 6 6-6\"/></svg>'); background-position: right 10px center;">
+                                        <option value="">Sort By</option>
+                                        <option value="priceLowHigh">Price: Low to High</option>
+                                        <option value="priceHighLow">Price: High to Low</option>
+                                        <option value="aToZ">A-Z</option>
+                                        <option value="zToA">Z-A</option>
+                                    </select>
+                                </div>
+                        
+                                <!-- Category Filter -->
+                                <div class="flex items-center gap-2 w-full sm:w-auto">
+                                    <label for="categoryFilter" class="text-sm text-gray-700 font-medium whitespace-nowrap">Category:</label>
+                                    <select id="categoryFilter"
+                                        class="w-full sm:w-48 px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-no-repeat bg-right pr-8"
+                                        style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%236B7280\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m6 9 6 6 6-6\"/></svg>'); background-position: right 10px center;">
+                                        <option value="">All Categories</option>
+                                        <% categories.forEach(cat => { %>
+                                            <option value="<%= cat.name %>"><%= cat.name %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                        
+                                <!-- Brand Filter -->
+                                <div class="flex items-center gap-2 w-full sm:w-auto">
+                                    <label for="brandFilter" class="text-sm text-gray-700 font-medium whitespace-nowrap">Brand:</label>
+                                    <select id="brandFilter"
+                                        class="w-full sm:w-48 px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-no-repeat bg-right pr-8"
+                                        style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%236B7280\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m6 9 6 6 6-6\"/></svg>'); background-position: right 10px center;">
+                                        <option value="">All Brands</option>
+                                        <% brands.forEach(brand => { %>
+                                            <option value="<%= brand.name %>"><%= brand.name %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    
                     <!--End nav-tabs-->
                     <div class="tab-content wow fadeIn animated" id="myTabContent">
                         <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
+                            
+                            <!-- Product Grid with Fixed Height/Width -->
                             <div class="row product-grid-4">
                                 <% if (product.length > 0) { %>
-                                    <% product.forEach(product => { %>
-                                        <div class="col-lg-4 col-md-4 col-12 col-sm-6">
-                                            <div class="product-cart-wrap mb-30">
-                                                <div class="product-img-action-wrap">
-                                                    <div class="product-img product-img-zoom">
-                                                        <a href="/productdetails/<%= product._id%>">
-                                                            <img class="default-img" src="/<%= product.mainImage %>" alt="<%= product.productName %>">
-                                                            <img class="hover-img" src="/<%= product.images[0] %>" alt="<%= product.productName %>">
+                                    <% product.forEach(pro => { %>
+                                        <div class="col-lg-3 col-md-4 col-6 col-sm-6">
+                                            <!-- Fixed height product card container -->
+                                            <div class="product-cart-wrap mb-30 bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 hover:shadow-lg border border-gray-100 hover:border-blue-200 h-full flex flex-col">
+                                                <!-- Fixed height for image section -->
+                                                <div class="product-img-action-wrap p-2 relative" style="height: 220px;">
+                                                    <div class="product-img product-img-zoom overflow-hidden rounded-lg h-full">
+                                                        <a href="/productdetails/<%= pro._id%>" class="block h-full">
+                                                            <img class="default-img w-full h-full object-cover transform transition-transform duration-700 hover:scale-110" src="/<%= pro.mainImage %>" alt="<%= product.productName %>">
+                                                            <img class="hover-img w-full h-full object-cover absolute top-0 left-0 opacity-0 transition-opacity duration-700 hover:opacity-100" src="/<%= pro.images[0] %>" alt="<%= product.productName %>">
                                                         </a>
                                                     </div>
-                                                    <div class="product-action-1">
-                                                        <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-                                                            <i class="fi-rs-eye"></i>
+                                                    <div class="product-action-1 absolute top-4 right-4 flex flex-col gap-2">
+                                                        <a aria-label="Quick view" class="action-btn bg-white p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-blue-50" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                                                            <i class="fi-rs-eye text-gray-600"></i>
                                                         </a>
-                                                        <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#">
-                                                            <i class="fi-rs-heart"></i>
+                                                        <a aria-label="Add To Wishlist" class="action-btn bg-white p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-blue-50" href="#">
+                                                            <i class="fi-rs-heart text-gray-600"></i>
                                                         </a>
-                                                        <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html">
-                                                            <i class="fi-rs-shuffle"></i>
+                                                        <a aria-label="Compare" class="action-btn bg-white p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-blue-50" href="shop-compare.html">
+                                                            <i class="fi-rs-shuffle text-gray-600"></i>
                                                         </a>
                                                     </div>
-                                                    <div class="product-badges product-badges-position product-badges-mrg">
-                                                        <span class="hot"><%= product.brands.name%></span>
+                                                    <div class="product-badges product-badges-position product-badges-mrg absolute top-4 left-4">
+                                                        <span class="hot bg-blue-600 text-white text-xs py-1 px-2 rounded-full"><%= pro.brands.name%></span>
                                                     </div>
                                                 </div>
-                                                <div class="product-content-wrap">
-                                                    <div class="product-category">
-                                                        <a href="shop-grid-right.html"><%= product.category.name %></a>
+                                                <!-- Fixed height content section -->
+                                                <div class="product-content-wrap p-4 flex flex-col flex-grow">
+                                                    <div class="product-category mb-1">
+                                                        <a href="shop-grid-right.html" class="text-xs text-gray-500 hover:text-blue-600 transition-colors"><%= pro.category.name %></a>
                                                     </div>
-                                                    <h2><a href="/productdetails/<%= product._id%>"><%= product.productName %></a></h2>
-                                                    <div class="rating-result" title="90%">
-                                                        <!-- <span>
-                                                            <span>90%</span>
-                                                        </span> -->
+                                                    <!-- Fixed height for title with truncation -->
+                                                    <h2 class="mb-2 h-12 overflow-hidden">
+                                                        <a href="/productdetails/<%= pro._id%>" class="text-base font-medium text-gray-800 hover:text-blue-600 transition-colors line-clamp-2"><%= pro.productName %></a>
+                                                    </h2>
+                                                    <div class="rating-result mb-2" title="90%">
+                                                       
                                                     </div>
-                                                    <div class="product-price">
-                                                        <span>$<%= product.price %></span>
-                                                        <!-- <span class="old-price">$245.8</span> -->
+                                                    <!-- Spacer to push the add to cart button to the bottom -->
+                                                    <div class="flex-grow"></div>
+                                                    <div class="product-price mb-4">
+                                                        <span class="text-lg font-bold text-blue-600">$<%= pro.price %></span>
                                                     </div>
                                                     <div class="product-action-1 show">
-                                                        <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html">
+                                                        <a aria-label="Add To Cart" class="action-btn hover-up w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2" href="shop-cart.html">
                                                             <i class="fi-rs-shopping-bag-add"></i>
+                                                            <span>Add to Cart</span>
                                                         </a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     <% }) %>
+                         
+                            </div>
+                                                        <%- include('partials/pagination')%>
                                 <% } else { %>
                                     <div class="col-12">
-                                        <p>No products found.</p>
+                                        <div class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-search mx-auto mb-4">
+                                                <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+                                                <path d="M16.5 9.4 7.55 4.24"/>
+                                                <polyline points="3.29 7 12 12 20.71 7"/>
+                                                <line x1="12" y1="22" x2="12" y2="12"/>
+                                                <circle cx="18.5" cy="15.5" r="2.5"/>
+                                                <path d="M20.27 17.27 22 19"/>
+                                            </svg>
+                                            <p class="text-gray-500 text-lg mb-4">No products found.</p>
+                                            <button onclick="window.location.href='/'" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2 mx-auto">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="m15 18-6-6 6-6"/>
+                                                </svg>
+                                                Back to All Products
+                                            </button>
+                                        </div>
                                     </div>
                                 <% } %>
                             </div>
+
                             <!--End product-grid-4-->
                         </div>
                         <!--End tab one (Featured)-->
@@ -246,6 +325,114 @@
     <%-include('partials/loader') %>
     <!-- Vendor JS-->
    <%-include('partials/script') %>
-</body>
-
-</html>
+   <!-- Lucide Icons -->
+   <script src="https://unpkg.com/lucide@latest"></script>
+   <script>
+       document.addEventListener('DOMContentLoaded', function () {
+           const searchInput = document.getElementById("searchInput");
+           const brandFilter = document.getElementById("brandFilter");
+           const categoryFilter = document.getElementById("categoryFilter");
+           const sortSelect = document.getElementById("sortBy");
+           const clearBtn = document.getElementById("clearBtn");
+   
+           // Ensure all product cards have equal height
+           function equalizeCardHeights() {
+               const productCards = document.querySelectorAll('.product-cart-wrap');
+               let maxHeight = 0;
+               
+               // Reset heights first
+               productCards.forEach(card => {
+                   card.style.height = 'auto';
+                   const height = card.offsetHeight;
+                   maxHeight = Math.max(maxHeight, height);
+               });
+               
+               // Set all cards to the height of the tallest
+               productCards.forEach(card => {
+                   card.style.height = `${maxHeight}px`;
+               });
+           }
+   
+           // Debounce function to delay execution
+           function debounce(func, delay) {
+               let timer;
+               return function (...args) {
+                   clearTimeout(timer);
+                   timer = setTimeout(() => func.apply(this, args), delay);
+               };
+           }
+   
+           // Apply filters when input changes (debounced)
+           function applyFilters() {
+               const queryParams = new URLSearchParams();
+   
+               // Get all filter values
+               const search = searchInput.value.trim();
+               const brand = brandFilter.value;
+               const category = categoryFilter.value;
+               const sort = sortSelect?.value;
+   
+               // Add non-empty filters to query params
+               if (search) queryParams.append("search", search);
+               if (brand) queryParams.append("brandsFilter", brand);
+               if (category) queryParams.append("categoryFilter", category);
+               if (sort) queryParams.append("sortBy", sort);
+   
+               // Navigate to filtered URL
+               window.location.href = `/home?${queryParams.toString()}`;
+           }
+   
+           // Clear all filters
+           function clearFilters() {
+               searchInput.value = "";
+               brandFilter.value = "";
+               categoryFilter.value = "";
+               if (sortSelect) sortSelect.value = "";
+               window.location.href = '/home';
+           }
+   
+           // Debounced function for search input
+           const debouncedSearch = debounce(applyFilters, 500); // Adjust delay as needed
+   
+           // Add event listeners
+           searchInput.addEventListener("input", debouncedSearch);
+           brandFilter.addEventListener("change", applyFilters);
+           categoryFilter.addEventListener("change", applyFilters);
+           sortSelect?.addEventListener("change", applyFilters);
+           clearBtn.addEventListener("click", clearFilters);
+   
+           // Restore filter values from URL on page load
+           function restoreFiltersFromURL() {
+               const params = new URLSearchParams(window.location.search);
+               searchInput.value = params.get("search") || "";
+               brandFilter.value = params.get("brandsFilter") || "";
+               categoryFilter.value = params.get("categoryFilter") || "";
+               if (sortSelect) sortSelect.value = params.get("sortBy") || "";
+           }
+   
+           // Initialize filters from URL
+           restoreFiltersFromURL();
+           
+           // Add animation to product cards
+           const productCards = document.querySelectorAll('.product-cart-wrap');
+           productCards.forEach(card => {
+               card.addEventListener('mouseenter', () => {
+                   card.classList.add('transform', 'translate-y-[-5px]');
+               });
+               card.addEventListener('mouseleave', () => {
+                   card.classList.remove('transform', 'translate-y-[-5px]');
+               });
+           });
+   
+           // Run equalize heights on page load and window resize
+           equalizeCardHeights();
+           window.addEventListener('resize', debounce(equalizeCardHeights, 200));
+           
+           // Run again after images load for more accurate heights
+           window.addEventListener('load', equalizeCardHeights);
+       });
+   </script>
+   
+   </body>
+   
+   </html>

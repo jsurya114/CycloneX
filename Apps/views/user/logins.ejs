@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="/frontend/imgs/logos/cyclonelogo.png">
+  <link rel="shortcut icon" type="image/x-icon" href="/frontend/imgs/logos/cyclonelogo.png" />
   <!-- Template CSS -->
   <link href="/frontend/css/main.css" rel="stylesheet" type="text/css" />
 </head>
@@ -16,34 +16,37 @@
   <div class="bg-gradient-to-r from-blue-50 to-purple-50 shadow-2xl rounded-lg p-8 w-[700px] flex relative z-10 bg-white border border-gray-200">
     <!-- Image on the Left -->
     <div class="w-1/2 flex items-center justify-center">
-      <img src="<%= logoPath %>" alt="Login" class="w-64 h-64" style="height: 10rem; width: 23rem;">
+      <img src="<%= logoPath %>" alt="Login" class="w-64 h-64" style="height: 10rem; width: 23rem;" />
     </div>
     
-    <!-- Form on the Right -->
+    <!-- Login Panel on the Right -->
     <div class="w-1/2 flex flex-col items-center">
       <h2 class="text-2xl font-bold mb-6 text-gray-700">Login to Your Account</h2>
       
-      <!-- Login Form -->
-      <form action="/" method="POST" class="w-full flex flex-col items-center">
-        <input type="email" name="email" placeholder="Email" 
-          class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
+      <!-- Error Message Display -->
+      <div id="errorField" class="text-red-600 mb-4"></div>
+      
+      <!-- Login Inputs (No form element, just inputs) -->
+      <div class="w-full flex flex-col items-center">
+        <input id="emailInput" type="email" name="email" placeholder="Email" 
+          class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm" />
         
-        <input type="password" name="password" placeholder="Password" 
-          class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
+        <input id="passwordInput" type="password" name="password" placeholder="Password" 
+          class="w-3/4 px-4 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm" />
         
         <div class="w-3/4 flex justify-between">
-          <button type="submit" class="w-1/2 py-2 text-white font-bold rounded-md bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg mr-2">
+          <button id="loginBtn" class="w-1/2 py-2 text-white font-bold rounded-md bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 shadow-lg mr-2">
             Login
           </button>
           <a href="/signup" class="w-1/2 text-center py-2 text-white font-bold rounded-md bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-lg">
             Signup
           </a>
         </div>
-      </form>
+      </div>
       
       <!-- Forgot Password -->
       <div class="my-4 w-full text-center">
-        <a href="/forgot-password" class="text-blue-600 hover:underline">Forgot Password?</a>
+        <a href="/forgotpassword" class="text-blue-600 hover:underline">Forgot Password?</a>
       </div>
       
       <!-- Divider -->
@@ -56,9 +59,45 @@
         <a href="/auth/google" class="w-1/2 flex items-center justify-center py-2 border rounded-md bg-gradient-to-r from-[#DB4437] to-[#C1351E] text-white font-bold hover:from-[#E84537] hover:to-[#D9321F] shadow-lg">
           <i class="fab fa-google text-white mr-2"></i> Google
         </a>
-        <!-- Additional social logins can be added here -->
       </div>
     </div>
   </div>
+
+  <script>
+    // Listen for the click on the login button
+    document.getElementById('loginBtn').addEventListener('click', async function() {
+      const errorField = document.getElementById('errorField');
+      errorField.innerText = ''; // Clear any previous errors
+      
+      // Retrieve values from the inputs
+      const email = document.getElementById('emailInput').value.trim();
+      const password = document.getElementById('passwordInput').value;
+      
+      // Prepare the data object
+      const data = { email, password };
+      
+      try {
+        const response = await fetch('/', { // Assuming your login endpoint is "/"
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (!response.ok) {
+          // Display the error message returned by the server in the error field
+          errorField.innerText = result.error;
+        } else {
+          // On success, redirect to the home page or any desired route
+          window.location.href = '/home';
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        errorField.innerText = 'An unexpected error occurred.';
+      }
+    });
+  </script>
+  
 </body>
 </html>

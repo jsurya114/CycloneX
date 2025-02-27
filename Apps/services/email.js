@@ -26,7 +26,4 @@ const sendEmail = async (to, subject, htmlContent) => {
         console.error("❌ Error sending email:", error);
     }
 };
-module.exports ={
-    transporter,
-    sendEmail
-}
+module.exports = sendEmail

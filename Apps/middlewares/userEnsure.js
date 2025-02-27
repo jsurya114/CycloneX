@@ -14,7 +14,7 @@ const userEnsure = async (req, res, next) => {
             decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
-                console.error('Token expired:', error.expiredAt);
+               
                 res.clearCookie('token');
                 return res.redirect('/');
             }
@@ -29,7 +29,7 @@ const userEnsure = async (req, res, next) => {
         req.user = user;
 
         // Redirect authenticated user from root or signup to home
-        if (req.path === '/' || req.path === '/signup' || req.path.includes('admin')) {
+        if (req.path === '/' || req.path === '/signup' ||req.path==='/resetpassword'||req.path==='/forgotpassword'|| req.path.includes('admin')) {
             return res.redirect('/home');
         }
 

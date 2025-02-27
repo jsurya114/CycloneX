@@ -40,17 +40,13 @@
             <span class="text">Brands</span>
           </a>
         </li>
-        <li class="menu-item has-submenu ">
+        <li class="menu-item  ">
           <a class="menu-link" href="/admin/userlist">
             <i class="icon material-icons md-store"></i>
             <span class="text">Users</span>
             <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
           </a>
-          <ul class="submenu">
-            
-            <li><a href="/admin/userlist" class="submenu-link">Users list</a></li>
-            <li><a href="" class="submenu-link">Product details</a></li>
-          </ul>
+         
         </li>
       </ul>
      
@@ -65,8 +61,38 @@
         <div>
           <h2 class="content-title card-title text-4xl">Brands</h2>
         </div>
-        <div>
-          <input type="text" placeholder="Search Brands" class="form-control bg-white">
+        <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-4">
+          <!-- Search Input -->
+          <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Search Brands" 
+              class="bg-white px-3 py-2 border rounded-md w-full sm:max-w-xs"
+          />
+          <!-- Search Button -->
+          <button 
+            id="searchBtn" 
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Search
+          </button>
+          <!-- Clear Button -->
+          <button 
+            id="clearBtn" 
+            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          >
+            Clear
+          </button>
+        
+     
+      
+
+          <!-- Status Filter Dropdown -->
+          <select id="statusFilter" class="bg-white px-3 py-2 border rounded-md">
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="deactive">Deactivated</option>
+          </select>
         </div>
       </div>
       <!-- Card Container with max width adjusted -->
@@ -126,6 +152,7 @@
                     </tr>
                   </thead>
                   <tbody>
+                    <% if(brands && brands.length > 0){ %>
                     <% brands.forEach(brand => { %>
                       <tr class="border-b border-gray-200 hover:bg-gray-50">
                         <td class="p-3 text-sm text-gray-700"><b><%= brand.name %></b></td>
@@ -174,8 +201,45 @@
                         </td>
                       </tr>
                     <% }) %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="6" class="text-center p-3">No brands found</td>
+                      </tr>
+                  <% } %>
                   </tbody>
                 </table>
+                <div class="pagination-area mt-15 mb-50">
+                  <nav aria-label="Page navigation">
+                      <ul class="pagination flex flex-wrap items-center justify-center gap-2">
+                          <!-- Previous Button -->
+                          <% if (currentPage > 1) { %>
+                              <li class="page-item">
+                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm" href="?page=<%= prevPage %>&limit=4">
+                                      &laquo;
+                                  </a>
+                              </li>
+                          <% } %>
+              
+                          <!-- Page Numbers -->
+                          <% for (let i = 1; i <= totalPages; i++) { %>
+                              <li class="page-item">
+                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm <%= i === currentPage ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600 hover:border-blue-600' : '' %>" href="?page=<%= i %>&limit=3">
+                                      <%= i %>
+                                  </a>
+                              </li>
+                          <% } %>
+              
+                          <!-- Next Button -->
+                          <% if (currentPage < totalPages) { %>
+                              <li class="page-item">
+                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm" href="?page=<%= nextPage %>&limit=3">
+                                      &raquo;
+                                  </a>
+                              </li>
+                          <% } %>
+                      </ul>
+                  </nav>
+              </div>
               </div>
             </div>
           </div>
@@ -353,68 +417,50 @@ document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
 });
     
     // Search functionality for Brands with cancel button
-    const searchContainer = document.querySelector('input[placeholder="Search Brands"]').parentElement;
-    searchContainer.style.position = 'relative';
-  
-    // Create and add the cancel button
-    const cancelButton = document.createElement('button');
-    cancelButton.innerHTML = '&times;';
-    cancelButton.style.cssText = `
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        font-size: 18px;
-        color: #666;
-        cursor: pointer;
-        padding: 4px;
-        display: none;
-    `;
-    searchContainer.appendChild(cancelButton);
-  
-    // Update the search input styles to accommodate the cancel button
-    const searchInput = document.querySelector('input[placeholder="Search Brands"]');
-    searchInput.style.paddingRight = '30px';
-  
-    // Live Search Implementation
-    const tableBody = document.querySelector('tbody');
-    const tableRows = Array.from(tableBody.querySelectorAll('tr'));
-  
-    function clearSearch() {
-      searchInput.value = '';
-      cancelButton.style.display = 'none';
-      tableRows.forEach(row => {
-        row.style.display = '';
-      });
-      searchInput.focus();
+    document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById("searchBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const statusFilter = document.getElementById("statusFilter");
+
+  searchBtn.addEventListener("click", applyFilters);
+  clearBtn.addEventListener("click", clearFilters);
+  statusFilter.addEventListener('change', applyFilters);
+
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      applyFilters();
     }
-  
-    searchInput.addEventListener('input', function(e) {
-      const searchTerm = e.target.value.toLowerCase();
-      cancelButton.style.display = searchTerm.length > 0 ? 'block' : 'none';
-      tableRows.forEach(row => {
-        const name = row.cells[0].textContent.toLowerCase();
-        const description = row.cells[1].textContent.toLowerCase();
-        row.style.display = name.includes(searchTerm) || description.includes(searchTerm) ? '' : 'none';
-      });
-    });
-  
-    cancelButton.addEventListener('click', clearSearch);
-  
-    searchInput.addEventListener('keyup', function(e) {
-      if (e.key === 'Escape') {
-        clearSearch();
-      }
-    });
-  
-    cancelButton.addEventListener('mouseenter', function() {
-      this.style.color = '#333';
-    });
-    cancelButton.addEventListener('mouseleave', function() {
-      this.style.color = '#666';
-    });
+  });
+
+  function applyFilters() {
+    const queryParams = new URLSearchParams();
+
+    const search = searchInput.value.trim();
+    const status = statusFilter.value;
+
+    if (search) queryParams.append("search", search);
+    if (status) queryParams.append("statusFilter", status);
+
+    // Corrected typo: using 'window' instead of 'indow'
+    window.location.href = `/admin/brands?${queryParams.toString()}`;
+  }
+
+  function clearFilters() {
+    searchInput.value = "";
+    statusFilter.value = "";
+    applyFilters();
+  }
+
+  function restoreFiltersFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    searchInput.value = params.get("search") || "";
+    statusFilter.value = params.get("statusFilter") || "";
+  }
+
+  restoreFiltersFromURL();
+});
+
   </script>
   
   

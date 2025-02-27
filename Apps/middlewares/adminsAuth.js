@@ -15,7 +15,7 @@ const verifyAdmin = async (req, res, next) => {
             decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
-                console.error('Token expired:', error.expiredAt);
+           
                 res.clearCookie('token');
                 return res.redirect('/admin/login');
             }

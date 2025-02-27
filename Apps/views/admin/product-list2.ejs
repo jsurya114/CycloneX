@@ -45,44 +45,82 @@
             <span class="text">Brands</span>
           </a>
         </li>
-        <li class="menu-item has-submenu ">
+        <li class="menu-item  ">
           <a class="menu-link" href="/admin/userlist">
             <i class="icon material-icons md-store"></i>
             <span class="text">Users</span>
             <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
           </a>
-          <ul class="submenu">
-            
-            <li><a href="/admin/userlist" class="submenu-link">Users list</a></li>
-            <li><a href="" class="submenu-link">User details</a></li>
-          </ul>
+       
         </li>
       </ul>
     </nav>
   </aside>
   <main class="main-wrap">
     <%- include('partials/header') %>
+    <h2 class="content-title card-title text-4xl mt-3">Products</h2>
     <section class="content-main">
       <div class="content-header flex justify-between">
-        <h2 class="content-title card-title text-4xl">Product List</h2>
-        <div class="flex gap-4">
-          <input type="text" placeholder="Search Products" class="form-control bg-white" id="searchProducts">
-          <select class="form-control bg-white" id="categoryFilter">
-            <option value="">All Categories</option>
-            <% categories.forEach(category => { %>
-              <option value="<%= category.name %>"><%= category.name %></option>
-            <% }) %>
+        
+        <br>
+        <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-4">
+          <!-- Search Input -->
+          <input
+              type="text"
+              id="searchInput"
+              placeholder="Search Products"
+              class="bg-white px-3 py-2 border rounded-md w-full sm:max-w-xs"
+          />
+          
+          <!-- Search Button -->
+          <button
+              id="searchBtn"
+              class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+              Search
+          </button>
+          
+          <!-- Clear Button -->
+          <button
+              id="clearBtn"
+              class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
+          >
+              Clear
+          </button>
+     
+
+          <!-- Status Filter Dropdown -->
+          <select id="statusFilter" class="bg-white px-3 py-2 border rounded-md">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="deactive">Deactivated</option>
           </select>
-          <select class="form-control bg-white" id="brandFilter">
-            <option value="">All Brands</option>
-            <% brands.forEach(brand => { %>
-              <option value="<%= brand.name %>"><%= brand.name %></option>
-            <% }) %>
+      
+          <!-- Category Filter Dropdown -->
+          <select id="categoryFilter" class="bg-white px-3 py-2 border rounded-md">
+              <option value="">All Categories</option>
+              <% categories.forEach(cat => { %>
+                  <option value="<%= cat.name %>"><%= cat.name %></option>
+              <% }); %>
           </select>
-          <!-- <a href="/admin/addproduct" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-lg font-medium hover:bg-blue-700 transition duration-300">
-            + Add Product
-          </a> -->
-        </div>
+      
+          <!-- Brand Filter Dropdown -->
+          <select id="brandFilter" class="bg-white px-3 py-2 border rounded-md">
+              <option value="">All Brands</option>
+              <% brands.forEach(brand => { %>
+                  <option value="<%= brand.name %>"><%= brand.name %></option>
+              <% }); %>
+          </select>
+      
+          <!-- Sort Dropdown -->
+          <select id="sortBy" class="bg-white px-3 py-2 border rounded-md">
+              <option value="">Sort By</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="name_asc">Name: A to Z</option>
+              <option value="name_desc">Name: Z to A</option>
+          </select>
+      </div>
       </div>
       <div class="bg-white shadow-sm rounded-lg overflow-hidden">
         <div class="p-6">
@@ -93,12 +131,14 @@
                   <th class="p-3 text-left">Product Name</th>
                   <th class="p-3 text-left">Category</th>
                   <th class="p-3 text-left">Brand</th>
+                  <th class="p-3 text-left">Price</th>
                   <th class="p-3 text-right">Action</th>
                   <th class="p-3 text-left">Status</th>
                   <th class="p-3 text-left">Listing</th>
                 </tr>
               </thead>
               <tbody>
+                <% if(products && products.length> 0){ %>
                 <% products.forEach(product => { %>
                   <tr class="border-b border-gray-200 hover:bg-gray-50">
                     <td class="p-3 text-sm text-gray-700">
@@ -108,6 +148,7 @@
                       </td>
                     <td class="p-3 text-sm text-gray-700 category-column"><%= product.category.name %></td>
                     <td class="p-3 text-sm text-gray-700"><%= product.brands ? product.brands.name :'No Brands' %></td>
+                    <td class="p-3 text-sm text-gray-700">₹<%= product.price ? product.price :'No product available' %></td>
                     <td class="p-3 text-right">
                       <a href="/admin/editproduct/<%= product._id %>" class="text-blue-500 hover:text-blue-700">
                         <i class="fas fa-pencil-alt" style="font-size: 1.2rem;"></i>
@@ -144,54 +185,31 @@
                     </td>
                   </tr>
                 <% }) %>
+              
+                <% } else { %>
+                  <tr>
+                    <td colspan="6" class="text-center p-3">No products found</td>
+                  </tr>
+              <% } %>
               </tbody>
             </table>
+          
+           
+            <%- include('partials/pagination') %> 
           </div>
         </div>
       </div>
+      
     </section>
+    
     <%- include('partials/footer') %>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <%- include('partials/scripts') %>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check URL parameters for success message
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('added') === 'true') {
-          Swal.fire({
-              position: 'top-end',
-              icon: 'success',
-              title: 'Product added successfully!',
-              showConfirmButton: false,
-              timer: 1500
-          });
-          // Clean up URL
-          window.history.replaceState({}, document.title, window.location.pathname);
-      }
-
-      // Search functionality
-      document.getElementById('searchProducts').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        document.querySelectorAll('tbody tr').forEach(row => {
-          const name = row.cells[0].textContent.toLowerCase();
-          const category = row.cells[1].textContent.toLowerCase();
-          const brand = row.cells[2].textContent.toLowerCase();
-          row.style.display = name.includes(searchTerm) || category.includes(searchTerm) || brand.includes(searchTerm) ? '' : 'none';
-        });
-      });
-
-      // Category filter functionality
-      document.getElementById('categoryFilter').addEventListener('change', function() {
-        const selectedCategory = this.value.toLowerCase();
-        document.querySelectorAll('tbody tr').forEach(row => {
-          const category = row.querySelector('.category-column').textContent.toLowerCase();
-          row.style.display = selectedCategory === "" || category === selectedCategory ? '' : 'none';
-        });
-      });
-
-      // Toggle switch functionality with SweetAlert confirmation
-      document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
+   
+   // Toggle switch functionality with SweetAlert confirmation
+   document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
         switchElement.addEventListener('change', async function () {
           const productId = this.getAttribute('data-id');
           const newStatus = this.checked;
@@ -225,7 +243,83 @@
           }
         });
       });
+   // Frontend JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all filter elements
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const brandFilter = document.getElementById("brandFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const statusFilter = document.getElementById("statusFilter");
+    const sortSelect = document.getElementById("sortBy");
+
+    // Add event listeners
+    document.getElementById("searchBtn").addEventListener("click", applyFilters);
+    document.getElementById("clearBtn").addEventListener("click", clearFilters);
+    
+    // Add change listeners to all filter dropdowns
+    [brandFilter, categoryFilter, statusFilter, sortSelect].forEach(element => {
+        if (element) {
+            element.addEventListener('change', applyFilters);
+        }
     });
+
+    // Add enter key listener to search input
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyFilters();
+        }
+    });
+
+    function applyFilters() {
+        const queryParams = new URLSearchParams();
+        
+        // Get all filter values
+        const search = searchInput.value.trim();
+        const brand = brandFilter.value;
+        const category = categoryFilter.value;
+        const status = statusFilter.value;
+        const sort = sortSelect?.value;
+
+        // Add non-empty filters to query params
+        if (search) queryParams.append("search", search);
+        if (brand) queryParams.append("brandsFilter", brand);
+        if (category) queryParams.append("categoryFilter", category);
+        if (status) queryParams.append("statusFilter", status);
+        if (sort) queryParams.append("sortBy", sort);
+
+        // Navigate to filtered URL
+        window.location.href = `/admin/product-list2?${queryParams.toString()}`;
+    }
+
+    function clearFilters() {
+        // Reset all filter inputs
+        searchInput.value = "";
+        brandFilter.value = "";
+        categoryFilter.value = "";
+        statusFilter.value = "";
+        if (sortSelect) sortSelect.value = "";
+
+        // Apply cleared filters
+        applyFilters();
+    }
+
+    // Restore filter values from URL on page load
+    function restoreFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        
+        searchInput.value = params.get("search") || "";
+        brandFilter.value = params.get("brandsFilter") || "";
+        categoryFilter.value = params.get("categoryFilter") || "";
+        statusFilter.value = params.get("statusFilter") || "";
+        if (sortSelect) {
+            sortSelect.value = params.get("sortBy") || "";
+        }
+    }
+
+    // Initialize filters from URL
+    restoreFiltersFromURL();
+});
   </script>
 </body>
 </html>

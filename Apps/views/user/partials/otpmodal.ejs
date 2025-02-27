@@ -1,0 +1,133 @@
+<div id="otpModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 transform hover:scale-105 transition-transform duration-300">
+        <div class="text-center mb-6">
+            <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_q5pk6p1k.json" background="transparent" speed="1" style="width: 120px; height: 120px; margin: 0 auto;" loop autoplay></lottie-player>
+            <h3 class="text-2xl font-bold text-gray-800 mt-4">Enter OTP</h3>
+            <p class="text-gray-600 mt-2">We've sent a one-time password to your email.</p>
+        </div>
+        <form id="otpForm" class="space-y-6">
+            <div class="flex justify-between space-x-2">
+                <% for(let i = 0; i < 6; i++) { %>
+                    <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code"
+                        class="w-12 h-12 text-center text-2xl bg-gray-100 text-gray-800 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300" required>
+                <% } %>
+            </div>
+            <div id="otpError" class="text-red-500 text-sm text-center hidden"></div>
+            <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-105">
+                Verify OTP
+            </button>
+        </form>
+        <div class="mt-6 text-center">
+            <p class="text-gray-600">Didn't receive the code?</p>
+            <button id="resendOTP" class="text-blue-600 hover:text-blue-800 transition duration-300 mt-2 font-semibold">
+                Resend OTP
+            </button>
+            <p id="resendTimer" class="text-sm text-gray-500 mt-2 hidden">Resend available in <span id="timerCount">60</span>s</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const otpModal = document.getElementById('otpModal');
+        const otpForm = document.getElementById('otpForm');
+        const otpInputs = otpForm.querySelectorAll('input');
+        const otpError = document.getElementById('otpError');
+        const resendOTP = document.getElementById('resendOTP');
+        const resendTimer = document.getElementById('resendTimer');
+        const timerCount = document.getElementById('timerCount');
+        let resendTimeout;
+
+        function startResendTimer() {
+            resendOTP.disabled = true;
+            resendOTP.classList.add('text-gray-400', 'cursor-not-allowed');
+            resendTimer.classList.remove('hidden');
+            let timeLeft = 60;
+
+            const countDown = setInterval(() => {
+                timeLeft--;
+                timerCount.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countDown);
+                    resendOTP.disabled = false;
+                    resendOTP.classList.remove('text-gray-400', 'cursor-not-allowed');
+                    resendTimer.classList.add('hidden');
+                }
+            }, 1000);
+        }
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                if (e.inputType === "insertText") {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    if (index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value) {
+                    if (index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                }
+            });
+
+            input.addEventListener('focus', function() {
+                this.classList.add('scale-110');
+            });
+
+            input.addEventListener('blur', function() {
+                this.classList.remove('scale-110');
+            });
+
+            // Paste OTP
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedText = e.clipboardData.getData('text');
+                if (pastedText.length === otpInputs.length && /^\d+$/.test(pastedText)) {
+                    otpInputs.forEach((input, i) => {
+                        input.value = pastedText[i];
+                    });
+                }
+            });
+        });
+
+        otpForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+                showError('Please enter a valid 6-digit OTP');
+                return;
+            }
+            // Here you would typically send the OTP to your server for verification
+            // For this example, we'll just simulate a successful verification
+            gsap.to("#otpModal > div", {duration: 0.5, opacity: 0, y: -50, ease: "power3.in", onComplete: () => {
+                otpModal.classList.add('hidden');
+                // Redirect to reset password page or show success message
+                alert('OTP verified successfully!');
+                window.location.href = '/reset-password';
+            }});
+        });
+
+        resendOTP.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!this.disabled) {
+                gsap.to(this, {duration: 0.2, scale: 1.1, yoyo: true, repeat: 1});
+                // Implement resend OTP logic here
+                console.log('Resending OTP...');
+                startResendTimer();
+            }
+        });
+
+        function showError(message) {
+            otpError.textContent = message;
+            otpError.classList.remove('hidden');
+            gsap.from(otpError, {duration: 0.3, y: -10, opacity: 0, ease: "power2.out"});
+        }
+
+        // Initialize the resend timer
+        startResendTimer();
+    });
+</script>

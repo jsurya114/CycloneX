@@ -1,93 +1,236 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <%- include('partials/head') %>
+  <%- include('partials/head') %>
+  <!-- CropperJS CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+<body class="bg-gray-100">
+  <div class="min-h-screen flex flex-col">
+    <aside class="navbar-aside" id="offcanvas_aside">
+      <div class="aside-top">
+          <a href="" class="brand-wrap">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+          </a>
+          <div>
+              <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+          </div>
+      </div>
+      <nav>
+          <ul class="menu-aside">
+              <li class="menu-item active">
+                  <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                      <span class="text">Dashboard</span>
+                  </a>
+              </li>
+              <li class="menu-item">
+                  <a class="menu-link " href="/admin/product-list2"> <i class="icon material-icons md-shopping_bag"></i>
+                      <span class="text">Products</span>
+                  </a>
+              </li>
+  
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/category">  <i class="icon material-icons md-category"></i>
+                      <span class="text">category</span>
+                  </a>
+              </li>
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/brands"> <i class="icon material-icons md-stars"></i>
+                      <span class="text">Brands</span> </a>
+              </li>
+              <li class="menu-item ">
+                  <a class="menu-link" href="/admin/userlist">
+                    <i class="icon material-icons md-store"></i>
+                    <span class="text">Users</span>
+                  </a>
+                </li>
+          </ul>
+          <br>
+          <br>
+      </nav>
+    </aside>
+    <main class="flex-1 p-6">
+      <%- include('partials/header') %>
+      <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <% if (typeof success !== 'undefined' && success) { %>
+          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Success!</strong>
+            <span class="block sm:inline">Product added successfully.</span>
+          </div>
+        <% } %>
 
-<body>
-    <main class="main-wrap">
-        <aside class="navbar-aside" id="offcanvas_aside">
-    <div class="aside-top">
-      <a href="" class="brand-wrap">
-        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-      </a>
-      <div>
-        <button class="btn btn-icon btn-aside-minimize">
-          <i class="text-muted material-icons md-menu_open"></i>
-        </button>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Product</h2>
+        
+        <form action="/admin/addproduct" method="POST" enctype="multipart/form-data" class="space-y-4" id="addProductForm">
+            <!-- Product Name -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Product Name</label>
+              <input type="text" name="productName" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <span id="error-productName" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Description -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Description</label>
+              <textarea name="description" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+              <span id="error-description" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Price -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Price (₹)</label>
+              <input type="number" name="price" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <span id="error-price" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Category Selection -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Category</label>
+              <select name="category" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select Category</option>
+                <% category.forEach(category => { %>
+                  <option value="<%= category._id %>"><%= category.name %></option>
+                <% }) %>
+              </select>
+              <span id="error-category" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Brand Selection -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Brand</label>
+              <select name="brands" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select Brand</option>
+                <% brands.forEach(brand => { %>
+                  <option value="<%= brand._id %>"><%= brand.name %></option>
+                <% }) %>
+              </select>
+              <span id="error-brands" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Stock -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Stock</label>
+              <input type="number" name="stock" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <span id="error-stock" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Main Image (without cropping) -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Main Image (No Cropping)</label>
+              <input type="file" name="mainImage" accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+              <p class="text-sm text-gray-500 mt-1">Upload the main image without cropping.</p>
+              <span id="error-mainImage" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Additional Images (to be cropped in backend using CropperJS) -->
+            <div>
+              <label class="block text-gray-700 font-semibold">Product Images (Max 4)</label>
+              <input type="file" name="images" multiple accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" id="additionalImages">
+              <p class="text-sm text-gray-500 mt-1">You can upload up to 4 additional images. Crop each image as desired.</p>
+              <span id="error-images" class="text-red-500 text-sm"></span>
+            </div>
+            
+            <!-- Hidden input to store crop data -->
+            <input type="hidden" name="cropData" id="cropData">
+            
+            <!-- Submit Button -->
+            <div>
+              <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">Add Product</button>
+            </div>
+          </form>
+      </div>
+    </main>
+    <%- include('partials/footer') %>
+  </div>
+  
+  <!-- Cropper Modal -->
+  <div id="cropperModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden">
+    <div class="bg-white p-4 rounded-lg shadow-lg max-w-lg w-full">
+      <h2 class="text-xl font-bold mb-4">Crop Image</h2>
+      <div class="w-full h-64 overflow-hidden">
+        <img id="cropperImage" class="w-full">
+      </div>
+      <div class="mt-4 flex justify-end space-x-4">
+        <button id="skipBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">Skip</button>
+        <button id="cropBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg">Crop</button>
       </div>
     </div>
-    <nav>
-      <ul class="menu-aside">
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/dashboard">
-            <i class="icon material-icons md-home"></i>
-            <span class="text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item has-submenu active">
-            <a class="menu-link" href="#">
-              <i class="icon material-icons md-shopping_bag"></i>
-              <span class="text">Products</span>
-              <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-            </a>
-            <ul class="submenu">
-              <!-- <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li> -->
-              <li><a href="/admin/addproduct" class="submenu-link">Add Product</a></li>
-            </ul>
-          </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/category">
-            <i class="icon material-icons md-category"></i>
-            <span class="text">Category</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/brands">
-            <i class="icon material-icons md-stars"></i>
-            <span class="text">Brands</span>
-          </a>
-        </li>
-        
-      </ul>
-    </nav>
-  </aside>
-        <section class="content-main">
-            <div class="content-header">
-                <h2 class="content-title">Add New Brand</h2>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <% if (message) { %>
-                        <div class="alert alert-<%= message %>">
-                            <%= message %>
-                        </div>
-                    <% } %>
-                    
-                    <form id="addBrandForm" action="/admin/addbrand" method="POST" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="brandName" class="form-label">Brand Name</label>
-                            <input type="text" class="form-control" id="brandName" name="brandName"  >
-                        </div>
-                        <div class="mb-3">
-                            <label for="brandDescription" class="form-label">Brand Description</label>
-                            <textarea class="form-control" id="brandDescription" name="brandDescription" rows="3"  ></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="brandLogo" class="form-label">Brand Logo</label>
-                            <input type="file" class="form-control" id="brandLogo" name="brandLogo" accept="image/*">
-                        </div>
-                        <div>
-                            <button type="submit" class="btn btn-primary">Add Brand</button>
-                            <button type="reset" class="btn btn-secondary">Reset</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
-    <%- include('partials/scripts') %>
+  </div>
+  
+  <!-- CropperJS Script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+  <script>
+    let additionalFiles = [];
+    let cropDataArray = [];
+    let currentFileIndex = 0;
+    let cropperInstance;
+    
+    const additionalImagesInput = document.getElementById('additionalImages');
+    const cropperModal = document.getElementById('cropperModal');
+    const cropperImage = document.getElementById('cropperImage');
+    const cropDataInput = document.getElementById('cropData');
+    
+    additionalImagesInput.addEventListener('change', function(e) {
+      additionalFiles = Array.from(e.target.files);
+      cropDataArray = new Array(additionalFiles.length).fill(null);
+      currentFileIndex = 0;
+      if (additionalFiles.length > 0) {
+        openCropperModal(additionalFiles[currentFileIndex]);
+      }
+    });
+    
+    function openCropperModal(file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        cropperImage.src = event.target.result;
+        cropperModal.classList.remove('hidden');
+        if (cropperInstance) {
+          cropperInstance.destroy();
+        }
+        cropperInstance = new Cropper(cropperImage, {
+          aspectRatio: 1,
+          viewMode: 1,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    document.getElementById('cropBtn').addEventListener('click', function() {
+      if (cropperInstance) {
+        const data = cropperInstance.getData();
+        cropDataArray[currentFileIndex] = {
+          x: data.x,
+          y: data.y,
+          width: data.width,
+          height: data.height
+        };
+        nextCropperImage();
+      }
+    });
+    
+    document.getElementById('skipBtn').addEventListener('click', function() {
+      cropDataArray[currentFileIndex] = null;
+      nextCropperImage();
+    });
+    
+    function nextCropperImage() {
+      cropperInstance.destroy();
+      currentFileIndex++;
+      if (currentFileIndex < additionalFiles.length) {
+        openCropperModal(additionalFiles[currentFileIndex]);
+      } else {
+        cropperModal.classList.add('hidden');
+        cropDataInput.value = JSON.stringify(cropDataArray);
+      }
+    }
+    
+    // Ensure cropData is set before form submission.
+    document.getElementById('addProductForm').addEventListener('submit', function() {
+      if (!cropDataInput.value) {
+        cropDataInput.value = JSON.stringify(cropDataArray);
+      }
+    });
+  </script>
 </body>
-
 </html>

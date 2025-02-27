@@ -4,58 +4,121 @@
 <body class="bg-gray-100">
     <!-- Header -->
     <%- include('partials/header') %>
-
+    <%- include('partials/breadcrumbs') %>
     <!-- Product Details Section -->
     <main class="container mx-auto px-6 py-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Product Images -->
             <div class="space-y-4">
-                <!-- Main Image -->
-                <div class="bg-white p-4 shadow-lg rounded-lg overflow-hidden group">
-                    <img id="mainImage" src="/<%= product.mainImage %>" alt="Main Product Image" class="w-full h-auto rounded-lg transform transition-transform duration-300 group-hover:scale-125">
+                <!-- Main Image and Zoom Container Wrapper -->
+                <div class="relative">
+                    <!-- Main Image -->
+                    <div class="bg-white p-4 shadow-lg rounded-lg overflow-hidden group">
+                        <img id="mainImage" src="/<%= product.mainImage %>" alt="Main Product Image" class="w-full h-auto rounded-lg transform transition-transform duration-300 group-hover:scale-125">
+                    </div>
+                    <!-- Zoom Container (appears on hover) -->
+                    <div id="zoomWrapper" class="hidden absolute top-0 left-full ml-4 w-96 h-96 border border-gray-300 overflow-hidden" style="backdrop-filter: blur(5px);">
+                        <div id="zoomContainer" class="w-full h-full bg-no-repeat bg-center" style="background-size: 200%;"></div>
+                    </div>
                 </div>
                 <!-- Sub Images -->
-             <!-- Sub Images -->
-<div class="grid grid-cols-4 gap-4">
-    <% product.images.forEach(image => { %>
-        <div class="bg-white p-2 shadow-md rounded-lg ">
-            <img src="/<%= image %>" alt="Sub Image" class="w-full h-auto rounded-lg cursor-pointer"
-                onclick="updateMainImage(this.src)">
-        </div>
-    
-    <% }) %>
-    <div class="bg-white p-2 shadow-md rounded-lg ">
-        <img src="/<%= product.mainImage %>" alt="Sub Image" class="w-full h-auto rounded-lg cursor-pointer"
-            onclick="updateMainImage(this.src)">
-    </div>
-    
-</div>
-
+                <div class="grid grid-cols-4 gap-4">
+                    <% product.images.forEach(image => { %>
+                        <div class="bg-white p-2 shadow-md rounded-lg">
+                            <img src="/<%= image %>" alt="Sub Image" class="w-full h-auto rounded-lg cursor-pointer"
+                                onclick="updateMainImage(this.src)">
+                        </div>
+                    <% }) %>
+                    <div class="bg-white p-2 shadow-md rounded-lg">
+                        <img src="/<%= product.mainImage %>" alt="Sub Image" class="w-full h-auto rounded-lg cursor-pointer"
+                            onclick="updateMainImage(this.src)">
+                    </div>
+                </div>
             </div>
-
             <!-- Product Details -->
-            <div class="bg-white p-6 shadow-lg rounded-lg">
-                <h1 class="text-2xl font-bold text-gray-800"><%= product.productName %></h1>
-                <p class="text-sm text-gray-500 mt-2">Brand: <span class="font-semibold"><%= product.brands.name %></span></p>
-                <div class="mt-4">
-                    <span class="text-3xl font-bold text-gray-800">$<%= product.price %></span>
-                    <span class="text-sm text-gray-500 ml-2">(Inclusive of all taxes)</span>
-                </div>
-                <div class="mt-4">
-                    <span class="text-sm text-gray-700">Availability:</span>
-                    <span class="text-sm font-semibold <%= product.stock > 0 ? 'text-green-600' : 'text-red-600' %>">
-                        <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
-                    </span>
-                </div>
-                <div class="mt-6">
-                    <h3 class="text-lg font-semibold text-gray-800">Description</h3>
-                    <p class="text-sm text-gray-600 mt-2"><%= product.description %></p>
-                </div>
-                <div class="mt-6">
-                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Add to Cart</button>
-                    <button class="bg-green-600 text-white px-6 py-2 rounded-lg ml-4 hover:bg-green-700">Buy Now</button>
-                </div>
+            <!-- Product Details -->
+<div class="bg-white p-6 shadow-lg rounded-lg">
+    <h1 class="text-2xl font-bold text-gray-800"><%= product.productName %></h1>
+    <p class="text-sm text-gray-500 mt-2">Brand: <span class="font-semibold"><%= product.brands.name %></span></p>
+    <div class="mt-4">
+        <span class="text-3xl font-bold text-gray-800">₹<%= product.price %></span>
+        <span class="text-sm text-gray-500 ml-2">(Inclusive of all taxes)</span>
+    </div>
+
+    <!-- Offers & Discounts Section -->
+    <div class="mt-4 space-y-3">
+        <!-- Discount Badge -->
+        <% if(product.discount) { %>
+            <div class="inline-flex items-center bg-red-100 px-3 py-1 rounded-full">
+                <span class="text-red-600 font-semibold"><%= product.discount %>% Off</span>
             </div>
+        <% } %>
+
+        <!-- Coupons Section -->
+        <div class="border border-green-200 rounded-lg p-3 bg-green-50">
+            <h3 class="text-sm font-medium text-gray-700 mb-2">Available Offers</h3>
+            <ul class="space-y-2">
+                <% if(product.coupon) { %>
+                    <li class="flex items-center">
+                        <span class="inline-block w-5 h-5 mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
+                                <path d="M20 6L9 17l-5-5"></path>
+                            </svg>
+                        </span>
+                        <p class="text-sm">
+                            <span class="font-semibold text-green-700">COUPON: <%= product.coupon %></span> 
+                            - Use code at checkout
+                        </p>
+                    </li>
+                <% } %>
+                <!-- Additional offers can be added here -->
+                <li class="flex items-center">
+                    <span class="inline-block w-5 h-5 mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
+                            <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                    </span>
+                    <p class="text-sm">
+                        <span class="font-semibold">Bank Offer:</span> 
+                        10% off on HDFC Bank Credit Cards, up to ₹1500
+                    </p>
+                </li>
+                <li class="flex items-center">
+                    <span class="inline-block w-5 h-5 mr-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
+                            <path d="M20 6L9 17l-5-5"></path>
+                        </svg>
+                    </span>
+                    <p class="text-sm">
+                        <span class="font-semibold">Special:</span> 
+                        Free delivery on orders above ₹1000
+                    </p>
+                </li>
+            </ul>
+            <button class="mt-2 text-sm text-green-700 font-medium hover:text-green-800 flex items-center">
+                View more offers
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <span class="text-sm text-gray-700">Availability:</span>
+        <span class="text-sm font-semibold <%= product.stock > 0 ? 'text-green-600' : 'text-red-600' %>">
+            <%= product.stock %> products <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
+        </span>
+    </div>
+    <div class="mt-6">
+        <h3 class="text-lg font-semibold text-gray-800">Description</h3>
+        <p class="text-sm text-gray-600 mt-2"><%= product.description %></p>
+    </div>
+    <div class="mt-6">
+        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Add to Cart</button>
+        <button class="bg-green-600 text-white px-6 py-2 rounded-lg ml-4 hover:bg-green-700">Buy Now</button>
+    </div>
+</div>
         </div>
 
         <!-- Reviews Section -->
@@ -103,11 +166,34 @@
 
     <!-- Footer -->
     <%- include('partials/footer') %>
-   
+    
     <script>
         function updateMainImage(src) {
           document.getElementById('mainImage').src = src;
+          document.getElementById('zoomContainer').style.backgroundImage = "url(" + src + ")";
         }
-      </script>
+
+        const mainImage = document.getElementById('mainImage');
+        const zoomWrapper = document.getElementById('zoomWrapper');
+        const zoomContainer = document.getElementById('zoomContainer');
+
+        mainImage.addEventListener('mouseenter', function(){
+            zoomContainer.style.backgroundImage = "url(" + mainImage.src + ")";
+            zoomWrapper.classList.remove('hidden');
+        });
+
+        mainImage.addEventListener('mousemove', function(e){
+            const rect = mainImage.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const xPercent = (x / rect.width) * 100;
+            const yPercent = (y / rect.height) * 100;
+            zoomContainer.style.backgroundPosition = xPercent + "% " + yPercent + "%";
+        });
+
+        mainImage.addEventListener('mouseleave', function(){
+            zoomWrapper.classList.add('hidden');
+        });
+    </script>
 </body>
 </html>
