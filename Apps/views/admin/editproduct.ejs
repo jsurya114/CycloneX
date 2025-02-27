@@ -80,14 +80,16 @@
                     <label class="block text-gray-700 font-medium mb-1">Product Title</label>
                     <input type="text" name="productName" placeholder="Enter product name"
                         class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.productName %>" >
-                </div>
+                        <p id="productNameError" class="text-red-500 text-sm mt-1"></p>
+                      </div>
 
                 <!-- Description -->
                 <div>
                     <label class="block text-gray-700 font-medium mb-1">Description</label>
                     <textarea name="description" placeholder="Enter description" rows="4"
                         class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" ><%= product.description %></textarea>
-                </div>
+                        <p id="descriptionError" class="text-red-500 text-sm mt-1"></p>
+                      </div>
 
                 <!-- Brand Selection -->
                 <div>
@@ -114,7 +116,8 @@
                     <label class="block text-gray-700 font-medium mb-1">Price</label>
                     <input type="number" name="price" placeholder="00.0"
                         class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.price %>" >
-                </div>  
+                        <p id="priceError" class="text-red-500 text-sm mt-1"></p>
+                      </div>  
                   <!-- Stock (New Field) -->
         <div>
           <label class="block text-gray-700 font-medium mb-1">Stock</label>
@@ -163,6 +166,12 @@
             const formData = new FormData(this);
             const productId = formData.get('productId');
 
+            
+            // Clear previous errors
+            document.getElementById('productNameError').textContent = '';
+            document.getElementById('descriptionError').textContent = '';
+            document.getElementById('priceError').textContent = '';
+
             const result = await Swal.fire({
                 title: 'Confirm Update?',
                 text: "Do you want to save these changes?",
@@ -182,7 +191,21 @@
                     if (data.success) {
                         Swal.fire('Updated!', 'Product updated successfully.', 'success')
                         .then(() => window.location.href = '/admin/product-list2');
-                    } else {
+                    } else if (data.errors) {
+                        // Display validation errors
+                        if (data.errors.productName) {
+                            document.getElementById('productNameError').textContent = data.errors.productName;
+                        }
+                        if (data.errors.description) {
+                            document.getElementById('descriptionError').textContent = data.errors.description;
+                        }
+                        if (data.errors.price) {
+                            document.getElementById('priceError').textContent = data.errors.price;
+                        }
+                    }
+                    
+                    
+                    else {
                         Swal.fire('Error',data.message|| 'Failed to update product.', 'error');
                     }
                 })

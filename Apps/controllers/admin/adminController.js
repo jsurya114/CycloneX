@@ -7,11 +7,11 @@ const Productloader = require('../admin/productloader');
 const { category } = require('./categoryController');
 
 const adminController = {
-    dashboard: (req, res) => {
+    dashboard: (req,res,next) => {
         res.render('dashboard');
     },
 
-    product2: async (req, res) => {
+    product2: async (req,res,next) => {
         try {
 
             const {search,statusFilter,categoryFilter,brandsFilter,sortBy,page,limit}=req.query
@@ -113,11 +113,11 @@ const brands =await Brand.find()
         } catch (error) {
           
             console.error(error);
-            res.status(500).send('Internal Server Error');
+next(error)
         }
     },
 
-    showproductDetails:async (req,res) => {
+    showproductDetails:async (req,res,next) => {
         try{
             const productId = req.params.id
             const product =await Product.findById(productId).populate('category').populate('brands')
@@ -127,12 +127,12 @@ const brands =await Brand.find()
             res.render('product-details',{product})
         }catch(error){
             console.error('Error fetching product details:', error);
-            res.status(500).redirect('/admin/product-list2');
+            next(error)
     
         }
     },
     
-    userlist:async (req,res) => {
+    userlist:async (req,res,next) => {
         try {
 const {search,statusFilter,sortBy,page,limit}=req.query
 let filter={}
@@ -186,10 +186,10 @@ let totalProducts=await Product.countDocuments(filter)
             })
         } catch (error) {
             console.log(error)
-            res.status(500).send('internal server error')
+            next(error)
         }
     },
-    showUserdetails:async (req,res) => {
+    showUserdetails:async (req,res,next) => {
         try {
             const userId = req.params.id
             if(!userId){
@@ -201,10 +201,10 @@ let totalProducts=await Product.countDocuments(filter)
             }
             res.render('userdetails',{user,message:null})
         } catch (error) {
-            res.status(500).send('internal server error')
+            next(error)
         }
     },
-    listinguser:async (req,res) => {
+    listinguser:async (req,res,next) => {
         try {
             const userId = req.params.id
             const user = await User.findById(userId)
@@ -222,10 +222,10 @@ let totalProducts=await Product.countDocuments(filter)
               });
         } catch (error) {
             console.error(error);
-      res.status(500).json({ success: false, message: 'Error listing user status' })
+            next(error)
         }
     },
-    filtering: async (req, res) => {
+    filtering: async (req,res,next) => {
         try {
             let { search, status, limit, sort, order } = req.query;
             let filter = {};
@@ -247,7 +247,7 @@ let totalProducts=await Product.countDocuments(filter)
     
             res.json(users);
         } catch (error) {
-            res.status(500).json({ error: "Internal Server Error", details: error.message });
+            next(error)
         }
     }
     

@@ -3,6 +3,7 @@
 
 <%-include('partials/head')%>
 <body class="bg-gray-50">
+    <%-include('partials/loaders') %>
     <!-- Quick view -->
     <div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -61,7 +62,7 @@
                                 </div>
                                 <div class="clearfix product-price-cover mb-4">
                                     <div class="product-price primary-color float-left">
-                                        <ins><span class="text-xl font-bold text-blue-600">$<%= product.price %></span></ins>
+                                        <ins><span class="text-xl font-bold text-blue-600">₹<%= product.price %></span></ins>
                                     </div>
                                 </div>
                                 <div class="border-t border-gray-200 my-4"></div>
@@ -304,7 +305,7 @@
 
 <%-include('partials/footer') %>
 <!-- Preloader Start -->
-<%-include('partials/loader') %>
+
 <!-- Vendor JS-->
 <%-include('partials/script') %>
 <!-- Lucide Icons -->

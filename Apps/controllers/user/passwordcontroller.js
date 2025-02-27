@@ -21,10 +21,10 @@ const transporter = nodemailer.createTransport({
 });
 
 const passwordController ={
-    showforgotpassword:async (req,res) => {
+    showforgotpassword:async (req, res,next) => {
         res.render('forgotpassword')
     },
-forgotpassword: async (req,res) => {
+forgotpassword: async (req, res,next) => {
     console.log('invoked forgot pass');
     
     try {
@@ -71,10 +71,10 @@ forgotpassword: async (req,res) => {
 
     } catch (error) {
         console.error('Error in forgotPassword:', error);
-        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        next(error)
     }
 },
-verifyAndUpdatePassword:async (req,res) => {
+verifyAndUpdatePassword:async (req, res,next) => {
     console.log('invkd vrf');
     
     try {
@@ -99,10 +99,10 @@ verifyAndUpdatePassword:async (req,res) => {
 
     } catch (error) {
         console.error('Error during OTP verification:', error);
-        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        next(error)
     }
 },
-resendOTP: async (req, res) => {
+resendOTP: async (req, res,next) => {
     try {
       const { email } = req.body;
       const user = await User.findOne({ email });
@@ -126,14 +126,14 @@ resendOTP: async (req, res) => {
       return res.status(200).json({ success: true, message: 'New OTP sent to email' });
     } catch (error) {
       console.error('Error resending OTP:', error);
-      return res.status(500).json({ success: false, message: 'Internal Server Error' });
+      next(error)
     }
   },
   
-  showresetpassword:async (req,res) => {
+  showresetpassword:async (req, res,next) => {
     res.status(200).render('resetpassword')
   },
-  resetPassword: async (req, res) => {
+  resetPassword: async (req, res,next) => {
     try {
       const { password, confirmpassword } = req.body;
       console.log('Request body:', req.body); // Debug: Check the incoming data
@@ -168,7 +168,7 @@ resendOTP: async (req, res) => {
     } catch (error) {
       console.error("Reset Password Error:", error);
       if (!res.headersSent) {
-        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        next(error)
       }
     }
   }

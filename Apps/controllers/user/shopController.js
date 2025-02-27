@@ -111,12 +111,7 @@ const shopController = {
             });
         } catch (error) {
             console.error('Error loading shop page:', error);
-            res.render('home', {
-                products: [],
-                categories: [],
-                brands: [],
-                breadcrumbs: [],
-            });
+            next(error)
         }
     },
 };

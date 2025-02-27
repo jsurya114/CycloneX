@@ -22,13 +22,13 @@ if (!process.env.JWT_SECRET) {
 
 
 const authController = {
-    logins: async (req, res) => {
+    logins: async (req, res,next) => {
         res.render('logins', {
             logoPath: '/frontend/imgs/logos/cyclonelogo.png'
         });
     },
 
-    loginspost: async (req, res) => {
+    loginspost: async (req, res,next) => {
         // console.log(req.body);
         const { email, password } = req.body;
 
@@ -71,17 +71,17 @@ const authController = {
             // res.redirect('/home');
         } catch (error) {
             console.error("Login error:", error);
-            res.status(500).send("Internal Server Error");
+            next(error)
         }
     },
 
-    signup: async (req, res) => {
+    signup: async (req, res,next) => {
         res.render('signup', {
             logoPath: '/frontend/imgs/logos/cyclonelogo.png'
         });
     },
 
-    createUser: async (req, res) => {
+    createUser: async (req, res,next) => {
         try {
          
           const { fullname, email, phone, password, confirm_password } = req.body;
@@ -151,12 +151,12 @@ const authController = {
       
         } catch (error) {
           console.error('Error during signup:', error);
-          res.status(500).json({ message: 'Internal Server Error' });
+          next(error)
         }
       },
       
 
-verifyOTP: async (req, res) => {
+verifyOTP: async (req, res,next) => {
         try {
        
             
@@ -195,11 +195,11 @@ res.status(200).json({message:'OTP verified successfully'})
 
         } catch (error) {
             console.log('Error verifying OTP',error)
-            res.status(500).json({ message: 'Internal Server Error' });
+            next(error)
         }
     },
 
-    resendOTP: async (req, res) => {
+    resendOTP: async (req, res,next) => {
         try {
             const { email } = req.body;
             const user = await User.findOne({ email });
@@ -222,7 +222,7 @@ res.status(200).json({message:'OTP verified successfully'})
             res.status(200).json({ message: 'New OTP sent to email' });
         } catch (error) {
             console.error('Error resending OTP:', error);
-            res.status(500).json({ message: 'Internal Server Error' });
+            next(error)
         }
     },
 

@@ -3,12 +3,12 @@ const Brand = require('../../models/brandModel');
 const Category = require('../../models/categoryModel');
 const uploads = require('../../config/multer');
 const category = require('../admin/categoryController');
-const { buffer } = require('stream/consumers');
+
 const sharp = require('sharp')
 const fs = require('fs')
 
 const productController = {
-  showAddProductPage: async (req, res) => {
+  showAddProductPage: async (req, res,next) => {
     try { 
       const brands = await Brand.find();
       const category = await Category.find();
@@ -18,7 +18,7 @@ const productController = {
       res.status(500).send('internal server error');
     }
   },
-  addproduct: async (req, res) => {
+  addproduct: async (req, res,next) => {
     console.log('invoked add prod 1');
     try {
       let errors = {};
@@ -141,7 +141,7 @@ const productController = {
   },
   
 
-  showAddBrandPage: async (req, res) => {
+  showAddBrandPage: async (req, res,next) => {
     try {
 const {search,statusFilter,page,limit}=req.query
 let filter={}
@@ -163,9 +163,9 @@ let skip = (currentPage-1)*itemsPerPage
 let totalProducts =await Brand.countDocuments(filter)
 
 
-
+let sortOptions = { createdAt: -1 };
       const brands = await Brand.find(filter).skip(skip)
-      .limit(itemsPerPage)
+      .limit(itemsPerPage).sort(sortOptions)
 
       let totalPages = Math.ceil(totalProducts/itemsPerPage)
       res.render('brands', { brands ,
@@ -179,11 +179,11 @@ let totalProducts =await Brand.countDocuments(filter)
 
      
     } catch (error) {
-      res.status(500).send('Internal server error');
+    next(error)
     }
   },
 
-  addBrand: async (req, res) => {
+  addBrand: async (req, res,next) => {
     try {
       // Removed image (req.file) requirement and processing
       
@@ -228,12 +228,14 @@ let totalProducts =await Brand.countDocuments(filter)
 
     } catch (error) {
       console.error(error);
-      res.status(500).json({ success: false, message: 'Internal server error' });
+      next(error)
     }
   },
 
-  showEditBrandPage: async (req, res) => {
+  showEditBrandPage: async (req, res,next) => {
     try {
+
+      
       const brandId = req.params.id;
       const brand = await Brand.findById(brandId);
 
@@ -244,11 +246,11 @@ let totalProducts =await Brand.countDocuments(filter)
       res.status(200).render('editbrand', { brand, message: null });
     } catch (error) {
       console.error(error);
-      res.status(500).redirect('/admin/brands');
+      next(error)
     }
   },
 
-  editbrand: async (req, res) => {
+  editbrand: async (req, res,next) => {
 
     try {
       const brandId = req.params.id;
@@ -262,10 +264,7 @@ let totalProducts =await Brand.countDocuments(filter)
 
       let brand = await Brand.findById(brandId);
       if (!brand) {
-        return res.status(404).json({
-          success: false,
-          message: 'Brand not found'
-        });
+        return res.render('404',{message:"Brand  not found"})
       }
 
       // Update name and description only (removed image update)
@@ -279,14 +278,11 @@ let totalProducts =await Brand.countDocuments(filter)
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        success: false,
-        message: 'Error updating brand'
-      });
+     next(error);
     }
   },
 
-  listing: async (req, res) => {
+  listing: async (req, res,next) => {
     try {
       const brandId = req.params.id;
       const { status } = req.body;
@@ -305,10 +301,7 @@ let totalProducts =await Brand.countDocuments(filter)
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({
-        success: false,
-        message: "Error updating brand status"
-      });
+      next(error)
     }
   },
 };

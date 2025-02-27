@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error | Cycle Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        /* Improved bike repair animation with smoother movement */
+        .bike-repair {
+            animation: repair 4s ease-in-out infinite;
+            transform-origin: center;
+        }
+        @keyframes repair {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(3deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-3deg); }
+            100% { transform: rotate(0deg); }
+        }
+        /* Enhanced spark animation with better timing and glow effect */
+        .spark {
+            animation: spark 0.8s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+        }
+        @keyframes spark {
+            from { opacity: 0.3; transform: scale(0.6); }
+            to { opacity: 1; transform: scale(1.5); }
+        }
+        /* Improved cog rotation with easing for more natural movement */
+        .cog {
+            animation: spin 15s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+            transform-origin: center;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Animated wrench movement */
+        .wrench {
+            animation: wrench-move 2s ease-in-out infinite;
+            transform-origin: 55px 50px;
+        }
+        @keyframes wrench-move {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-15deg); }
+        }
+        /* Animated mechanic's arm */
+        .mechanic-arm {
+            animation: arm-move 2s ease-in-out infinite;
+            transform-origin: 65px 52px;
+        }
+        @keyframes arm-move {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-20deg); }
+        }
+        /* Wheel spokes animation */
+        .wheel-spokes {
+            stroke-dasharray: 31.4;
+            stroke-dashoffset: 31.4;
+            animation: wheel-spin 3s linear infinite;
+        }
+        @keyframes wheel-spin {
+            to { stroke-dashoffset: 0; }
+        }
+        /* Background pulse animation */
+        .background-pulse {
+            animation: pulse 8s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-red-100 to-orange-100 min-h-screen flex flex-col overflow-hidden">
+    <!-- Animated background elements -->
+    <div class="fixed inset-0 pointer-events-none">
+        <div class="absolute top-10 left-10 opacity-20">
+            <svg class="cog" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </div>
+        <div class="absolute bottom-10 right-10 opacity-20">
+            <svg class="cog" xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </div>
+        <div class="absolute top-1/3 right-1/4 opacity-10">
+            <svg class="cog" style="animation-duration: 20s; animation-direction: reverse;" xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <div class="flex-grow flex items-center justify-center p-4 relative">
+        <div class="max-w-4xl w-full bg-white bg-opacity-90 rounded-3xl shadow-2xl overflow-hidden relative">
+            <div class="md:flex">
+                <!-- Left side - Illustration -->
+                <div class="md:w-1/2 bg-gradient-to-br from-red-500 to-yellow-500 p-8 flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute inset-0 background-pulse">
+                        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#FFFFFF" d="M47.1,-77.9C59.9,-70.6,68.9,-55.5,75.1,-40.3C81.3,-25,84.8,-9.6,83.1,5.3C81.4,20.2,74.6,34.6,65.7,47.4C56.8,60.2,45.8,71.3,32.3,77.7C18.8,84.1,2.8,85.8,-13.4,83.5C-29.7,81.3,-46.1,75.1,-58.6,64.5C-71,53.9,-79.4,38.9,-83.4,23C-87.4,7,-87,-9.9,-81.7,-25.1C-76.4,-40.3,-66.3,-53.8,-53.5,-61.2C-40.7,-68.6,-25.3,-69.9,-9.7,-70.3C5.9,-70.7,22.5,-70.1,37.1,-77.7Z" transform="translate(200 200)" />
+                        </svg>
+                    </div>
+                    
+                    <div class="relative z-10">
+                        <div class="text-white text-center mb-8">
+                            <h2 class="text-4xl font-bold mb-2">Oops!</h2>
+                            <p class="text-xl">Our gears got a bit tangled</p>
+                        </div>
+                        
+                        <!-- Animated bike repair - Enhanced -->
+                        <div class="bike-repair relative h-64 w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-full h-full">
+                                <!-- Bicycle frame -->
+                                <path d="M20,70 L35,50 L50,70 L35,70 Z" fill="none" stroke="white" stroke-width="2"/>
+                                <line x1="35" y1="50" x2="35" y2="60" stroke="white" stroke-width="2"/>
+                                <line x1="35" y1="60" x2="65" y2="60" stroke="white" stroke-width="2"/>
+                                
+                                <!-- Wheels with spokes -->
+                                <circle cx="20" cy="70" r="10" fill="none" stroke="white" stroke-width="2"/>
+                                <circle cx="20" cy="70" r="7" fill="none" stroke="white" stroke-width="1" class="wheel-spokes"/>
+                                <circle cx="20" cy="70" r="2" fill="white"/>
+                                
+                                <circle cx="50" cy="70" r="10" fill="none" stroke="white" stroke-width="2"/>
+                                <circle cx="50" cy="70" r="7" fill="none" stroke="white" stroke-width="1" class="wheel-spokes" style="animation-delay: 0.5s"/>
+                                <circle cx="50" cy="70" r="2" fill="white"/>
+                                
+                                <!-- Mechanic with animated parts -->
+                                <circle cx="65" cy="45" r="5" fill="white"/> <!-- Head -->
+                                <line x1="65" y1="50" x2="65" y2="60" stroke="white" stroke-width="2"/> <!-- Body -->
+                                <line x1="65" y1="52" x2="55" y2="58" stroke="white" stroke-width="2" class="mechanic-arm"/> <!-- Animated Arm -->
+                                <line x1="65" y1="60" x2="60" y2="70" stroke="white" stroke-width="2"/> <!-- Leg -->
+                                <line x1="65" y1="60" x2="70" y2="70" stroke="white" stroke-width="2"/> <!-- Other Leg -->
+                                
+                                <!-- Wrench with animation -->
+                                <path d="M45,40 Q55,50 45,60" fill="none" stroke="white" stroke-width="2" class="wrench"/>
+                                
+                                <!-- Enhanced sparks with staggered animation -->
+                                <circle cx="40" cy="55" r="1.5" fill="white" class="spark"/>
+                                <circle cx="43" cy="52" r="1.5" fill="white" class="spark" style="animation-delay: 0.2s"/>
+                                <circle cx="46" cy="58" r="1.5" fill="white" class="spark" style="animation-delay: 0.4s"/>
+                                <circle cx="42" cy="57" r="1.5" fill="white" class="spark" style="animation-delay: 0.6s"/>
+                                <circle cx="47" cy="54" r="1.5" fill="white" class="spark" style="animation-delay: 0.3s"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="text-white text-center mt-8">
+                            <div class="text-7xl font-bold">500</div>
+                            <div class="text-xl mt-2 font-medium">SERVER ERROR</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right side - Content -->
+                <div class="md:w-1/2 p-8 md:p-12">
+                    <div class="h-full flex flex-col justify-between">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800 mb-4">We've Hit a Bump in the Road</h1>
+                            <p class="text-gray-600 mb-8">Our server is experiencing some technical difficulties. Our team of expert mechanics is working hard to get things rolling smoothly again.</p>
+                            
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-center p-4 bg-red-50 rounded-lg transition-all duration-300 hover:shadow-md">
+                                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">What Happened?</h3>
+                                        <p class="text-sm text-gray-600">Our server encountered an unexpected issue</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center p-4 bg-yellow-50 rounded-lg transition-all duration-300 hover:shadow-md">
+                                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">What Can You Do?</h3>
+                                        <p class="text-sm text-gray-600">Try refreshing the page or come back later</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="/" class="inline-flex justify-center items-center px-6 py-3 bg-red-600 text-white font-medium rounded-full shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Back to Homepage
+                            </a>
+                            <button onclick="window.location.reload()" class="inline-flex justify-center items-center px-6 py-3 bg-yellow-500 text-white font-medium rounded-full shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                Refresh Page
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-white bg-opacity-90 py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center text-gray-600 text-sm">
+            <p>&copy;CycloneX. All rights reserved. We'll be back on track soon!</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add hover effect for buttons
+        document.querySelectorAll('a, button').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                this.classList.add('scale-105');
+            });
+            element.addEventListener('mouseleave', function() {
+                this.classList.remove('scale-105');
+            });
+        });
+    </script>
+</body>
+</html>

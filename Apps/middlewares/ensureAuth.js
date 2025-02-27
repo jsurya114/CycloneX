@@ -30,7 +30,8 @@ const ensureAuth = async (req, res, next) => {
         req.admin = admin; // Attach admin to request object
 
         // Redirect authenticated admin from login to dashboard
-        if (req.path === '/login') {
+        if (req.path === '/admin/login'||req.path==='/admin/product'||req.path==='/admin/addproduct'||req.path==='/admin/brands'||req.path==='/admin/editbrands'||req.path==='/admin/editcategory'||req.path==='/admin/categry'||
+            req.path==='/admin/userlist'||req.path==='/admin/userdetails'||req.path==='/admin/product-list2'||req.path==='/admin/editproduct'||req.path.includes('/')) {
             return res.redirect('/admin/dashboard');
         }
 

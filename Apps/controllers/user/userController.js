@@ -5,7 +5,7 @@ const { category } = require('../admin/categoryController')
  
 
 const userController = {
-    home: async (req, res) => {
+    home: async (req, res,next) => {
         try {
             const { search, categoryFilter, brandsFilter, sortBy ,page,limit} = req.query;
             let filter = {};
@@ -116,10 +116,10 @@ const userController = {
             });
         } catch (error) {
             console.error('Error loading home page:', error);
-            res.render('home', { product: [], categories:[], brands:[], breadcrumbs: [{ name: 'Home', url: '/' }] });
+            next(error)
         }
     },
-    productDetails:async (req,res) => {
+    productDetails:async (req, res,next) => {
         try {
             const id =req.params.id
         const product = await Product.findById(id).populate('brands').populate('category')
@@ -139,19 +139,19 @@ const userController = {
            
 
         }).limit(10)
-
+   
         res.status(200).render('productdetails',{product,relatedProducts, breadcrumbs})
         
         } catch (error) {
             console.error(error)
-            res.status(500).send('internal server error')
+            next(error)
         }
 
 
 
 
     },
-    logout:(req,res)=>{
+    logout:(req, res,next)=>{
         res.clearCookie('token')
         res.status(200).redirect('/')
     }

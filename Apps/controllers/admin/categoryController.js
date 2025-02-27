@@ -2,7 +2,7 @@ const uploads = require('../../config/multer');
 const Category = require('../../models/categoryModel');
 
 const categoryController = {
-  category: async (req, res) => {
+  category: async (req,res,next) => {
     try {
         const { search,  statusFilter ,page,limit} = req.query;
 
@@ -32,9 +32,9 @@ let totalProducts =await Category.countDocuments(filter)
 
 
  
-
+let sortOptions = { createdAt: -1 };
         const category = await Category.find(filter).skip(skip)
-        .limit(itemsPerPage)
+        .limit(itemsPerPage).sort(sortOptions)
 
         let totalPages =Math.ceil(totalProducts/itemsPerPage)
         
@@ -48,11 +48,11 @@ let totalProducts =await Category.countDocuments(filter)
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+        next(error)
     }
 },
 
-  addCategory: async (req, res) => {
+  addCategory: async (req,res,next) => {
     console.log('invoked add cat');
     try {
       const { name, slug, description } = req.body;
@@ -94,11 +94,11 @@ if(!/^[a-z0-9]+$/.test(slug)){
       res.status(200).json({ success: true, message: 'category created successfully' });
     } catch (error) {
       console.error("Error adding category:", error);
-      res.status(500).json({ success: false, field: "all", message: "Internal Server Error" })
+      next(error)
     }
   },
 
-  showEditCategrory: async (req, res) => {
+  showEditCategrory: async (req,res,next) => {
     try {
       const categoryId = req.params.id;
       const category = await Category.findById(categoryId);
@@ -106,11 +106,11 @@ if(!/^[a-z0-9]+$/.test(slug)){
       res.render('editcategory', { category, message: null });
     } catch (error) {
       console.error(error);
-      res.status(500).send('Error loading edit page');
+      next(error)
     }
   },
 
-  editcategory: async (req, res) => {
+  editcategory: async (req,res,next) => {
     try {
      const {name,slug,description} =req.body
      const categoryId =req.params.id
@@ -154,11 +154,11 @@ if(!/^[a-z0-9]+$/.test(slug)){
 
     } catch (error) {
       console.error(error);
-      res.status(500).json({ success: false, field: "all", message: "Internal Server Error" })
+      next(error)
     }
   },
 
-  listing: async (req, res) => {
+  listing: async (req,res,next) => {
     try {
       const categoryId = req.params.id;
       console.log(categoryId);
@@ -179,7 +179,7 @@ if(!/^[a-z0-9]+$/.test(slug)){
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ success: false, message: 'Error listing category status' });
+      next(error)
     }
   },
 

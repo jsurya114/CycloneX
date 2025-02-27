@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | Cycle Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .wheel {
+            animation: spin 8s linear infinite;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        .bike-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 4s linear forwards infinite;
+        }
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex flex-col">
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="md:flex">
+                <!-- Left side - Illustration -->
+                <div class="md:w-1/2 bg-gradient-to-br from-blue-500 to-indigo-600 p-8 flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute opacity-10 top-0 left-0 w-full h-full">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                            <path fill="#FFFFFF" d="M42.8,-68.2C54.9,-62.3,63.7,-49.2,69.2,-35.3C74.8,-21.3,77,-6.5,74.9,7.5C72.8,21.5,66.3,34.7,56.6,44.8C46.9,54.9,34,61.9,20,67.4C6,72.9,-9.2,76.9,-23.6,74.2C-38,71.5,-51.7,62.1,-60.1,49.3C-68.5,36.5,-71.7,20.3,-72.6,4.3C-73.5,-11.7,-72.1,-27.5,-64.4,-39.1C-56.7,-50.7,-42.7,-58.1,-29.2,-63.3C-15.7,-68.5,-2.6,-71.5,10.8,-70.8C24.2,-70.1,30.7,-74.1,42.8,-68.2Z" transform="translate(100 100)" />
+                        </svg>
+                    </div>
+                    
+                    <div class="relative z-10">
+                        <!-- Bicycle wheel animation -->
+                        <div class="flex flex-col items-center">
+                            <div class="wheel relative mb-6">
+                                <svg width="150" height="150" viewBox="0 0 150 150" class="text-white">
+                                    <circle cx="75" cy="75" r="70" fill="none" stroke="currentColor" stroke-width="5" />
+                                    <circle cx="75" cy="75" r="10" fill="currentColor" />
+                                    <line x1="75" y1="5" x2="75" y2="145" stroke="currentColor" stroke-width="2" />
+                                    <line x1="5" y1="75" x2="145" y2="75" stroke="currentColor" stroke-width="2" />
+                                    <line x1="25" y1="25" x2="125" y2="125" stroke="currentColor" stroke-width="2" />
+                                    <line x1="125" y1="25" x2="25" y2="125" stroke="currentColor" stroke-width="2" />
+                                </svg>
+                            </div>
+                            
+                            <div class="text-white text-center">
+                                <div class="text-9xl font-bold">404</div>
+                                <div class="text-xl mt-2 font-medium">TRAIL NOT FOUND</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right side - Content -->
+                <div class="md:w-1/2 p-8 md:p-12">
+                    <div class="h-full flex flex-col justify-between">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800 mb-4">Oops! You've gone off-track</h1>
+                            <p class="text-gray-600 mb-8">The page you're looking for seems to have taken a different route. Let's get you back on the cycling path.</p>
+                            
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">Check the URL</h3>
+                                        <p class="text-sm text-gray-600">Make sure the address is spelled correctly</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">Return to homepage</h3>
+                                        <p class="text-sm text-gray-600">Start fresh from our main page</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="/home" class="inline-flex justify-center items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Back to Homepage
+                            </a>
+                            <a href="/contact" class="inline-flex justify-center items-center px-6 py-3 bg-white text-blue-600 font-medium rounded-lg shadow-sm border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                Contact Support
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-white py-6 border-t">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>&copy; <%= new Date().getFullYear() %> Cycle Shop. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -57,6 +57,30 @@ app.set('view engine', 'ejs');
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
+//404
+app.use((req,res)=>{
+    res.render('404')
+})
+
+// Global Error Handler
+app.use((error, req, res, next) => {
+  console.error("Error:", error.stack);
+
+  if (error.code === "LIMIT_FILE_SIZE") {
+    return res.status(500).render("500", {
+      message: "File too large. Please upload smaller files.",
+    });
+  }
+
+  if (req.xhr || req.headers.accept.indexOf("json") > -1) {
+    return res.status(500).render("500", { message: "Internal Server Error" });
+  }
+
+  res.status(500).render("500", { message: "Internal Server Error" });
+});
+
+
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`CycloneX running on http://127.0.0.1:${PORT}`);

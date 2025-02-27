@@ -10,6 +10,7 @@ const nocache = require('../../middlewares/nocache');
 const userController=require('../../controllers/user/userController')
 const passwordController = require('../../controllers/user/passwordcontroller');
 const shopController = require('../../controllers/user/shopController');
+
 router.use(userEnsure);
 
 router.get('/', userEnsure, nocache, authController.logins);
