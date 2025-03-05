@@ -6,140 +6,535 @@
     <title>CycloneX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"},
+                        primary: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"},
                         secondary: '#f97316',
+                        accent: '#8b5cf6',
                         dark: '#0f172a'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px 0 rgba(0, 0, 0, 0.05)',
+                        'hover': '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
                     }
                 },
                 fontFamily: {
-                    'body': ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
-                    'sans': ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif']
+                    'body': ['Poppins', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+                    'sans': ['Poppins', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif']
                 }
             }
         }
     </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0ea5e9;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+        
+        /* Smooth transitions */
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+        .cart-item:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Custom quantity input */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* Image zoom effect */
+        .product-image {
+            transition: transform 0.3s ease;
+        }
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Product card hover effect */
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ensure consistent height for product cards */
+        .product-card-image {
+            height: 180px;
+            object-fit: cover;
+        }
+    </style>
 </head>
-<body>
+<body class="font-body bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
     <%- include('partials/header') %>
 
-    <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
-        <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Shopping Cart</h2>
-
-            <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-                <div class="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-                    <div class="space-y-6">
-                        <% if (cart && cart.items && cart.items.length > 0) { %>
-                            <% cart.items.forEach(item => { %>
-                                <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 md:p-6">
-                                    <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
-                                        <a href="#" class="shrink-0 md:order-1">
-                                            <img class="h-20 w-20 dark:hidden" src="<%= item.product.mainImage %>" alt="<%= item.product.productName %>" />
-                                            <img class="hidden h-20 w-20 dark:block" src="<%= item.product.mainImage %>" alt="<%= item.product.productName %>" />
-                                        </a>
-
-                                        <div class="flex items-center justify-between md:order-3 md:justify-end">
-                                            <div class="flex items-center">
-                                                <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'decrement')" class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
-                                                    </svg>
-                                                </button>
-                                                <input type="text" id="quantity-<%= item.product._id %>" class="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="<%= item.quantity %>" required />
-                                                <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'increment')" class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-                                                    <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <div class="text-end md:order-4 md:w-32">
-                                                <p class="text-base font-bold text-gray-900 dark:text-white">₹<%= (item.product.price * item.quantity).toFixed(2) %></p>
-                                            </div>
-                                        </div>
-
-                                        <div class="w-full min-w-0 flex-1 space-y-4 md:order-2 md:max-w-md">
-                                            <a href="#" class="text-base font-medium text-gray-900 hover:underline dark:text-white"><%= item.product.productName %></a>
-
-                                            <div class="flex items-center gap-4">
-                                                <button type="button" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white">
-                                                    <svg class="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
-                                                    </svg>
-                                                    Add to Favorites
-                                                </button>
-
-                                                <button type="button" class="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500" onclick="removeFromCart('<%= item.product._id %>')">
-                                                    <svg class="me-1.5 h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
-                                                    </svg>
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            <% }) %>
-                        <% } else { %>
-                            <p class="text-center text-gray-500 dark:text-gray-400">Your cart is empty.</p>
-                        <% } %>
-                    </div>
-                </div>
-
-                <div class="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
-                    <div class="space-y-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-                        <p class="text-xl font-semibold text-gray-900 dark:text-white">Order Summary</p>
-
-                        <div class="space-y-4">
-                            <div class="space-y-2">
-                                <dl class="flex items-center justify-between gap-4">
-                                    <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Subtotal</dt>
-                                    <dd class="text-base font-medium text-gray-900 dark:text-white">₹<%= subtotal.toFixed(2) %></dd>
-                                </dl>
-
-                                <dl class="flex items-center justify-between gap-4">
-                                    <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Discount</dt>
-                                    <dd class="text-base font-medium text-green-600">₹<%= discount.toFixed(2) %></dd>
-                                </dl>
-
-                                <dl class="flex items-center justify-between gap-4">
-                                    <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                                    <dd class="text-base font-medium text-gray-900 dark:text-white">₹<%= tax.toFixed(2) %></dd>
-                                </dl>
-                            </div>
-
-                            <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
-                                <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
-                                <dd class="text-base font-bold text-gray-900 dark:text-white">₹<%= total.toFixed(2) %></dd>
-                            </dl>
-                        </div>
-
-                        <a href="#" class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Proceed to Checkout</a>
-
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="text-sm font-normal text-gray-500 dark:text-gray-400"> or </span>
-                            <a href="#" title="" class="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">
-                                Continue Shopping
-                                <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <main class="min-h-screen">
+        <!-- Hero section -->
+        <div class="bg-gradient-to-r from-primary-600 to-accent py-8 px-4 sm:px-6 lg:px-8 mb-8">
+            <div class="container mx-auto max-w-7xl">
+                <h1 class="text-4xl font-bold text-white mb-2">Your Shopping Cart</h1>
+                <p class="text-primary-100">Review your items and proceed to checkout</p>
             </div>
         </div>
-    </section>
 
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
+            <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
+                <!-- Cart items section -->
+                <section aria-labelledby="cart-heading" class="lg:col-span-7">
+                    <h2 id="cart-heading" class="sr-only">Items in your shopping cart</h2>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-soft overflow-hidden mb-8">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-xl font-semibold flex items-center">
+                                <i class="fas fa-shopping-bag text-primary-500 mr-2"></i>
+                                Cart Items
+                                <span class="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    (<%= cart && cart.items ? cart.items.length : 0 %> items)
+                                </span>
+                            </h3>
+                        </div>
+                        
+                        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700 max-h-[600px] overflow-y-auto">
+                            <% if (cart && cart.items && cart.items.length > 0) { %>
+                                <% cart.items.forEach(item => { %>
+                                    <li class="cart-item p-6 hover:bg-gray-50 dark:hover:bg-gray-750">
+                                        <div class="flex flex-col sm:flex-row sm:items-center">
+                                            <div class="flex-shrink-0 relative overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-700 w-full sm:w-32 h-32 mb-4 sm:mb-0 mx-auto sm:mx-0">
+                                                <img src="<%= item.product.mainImage %>" alt="<%= item.product.productName %>" 
+                                                    class="product-image h-full w-full object-cover object-center">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
+                                            </div>
+                                            
+                                            <div class="sm:ml-6 flex-1 flex flex-col">
+                                                <div class="flex flex-col sm:flex-row sm:justify-between">
+                                                    <div>
+                                                        <h4 class="text-lg font-medium text-gray-900 dark:text-white">
+                                                            <%= item.product.productName %>
+                                                        </h4>
+                                                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                                            <span class="px-2 py-1 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 text-xs font-medium">
+                                                                <%= item.product.brands ? item.product.brands.name : 'No Brand' %>
+                                                            </span>
+                                                        </p>
+                                                        <p class="mt-2 text-lg font-semibold text-primary-600 dark:text-primary-400">
+                                                            ₹<%= item.product.price.toFixed(2) %>
+                                                        </p>
+                                                    </div>
+                                                    
+                                                    <div class="flex flex-col items-start sm:items-end mt-4 sm:mt-0">
+                                                        <div class="flex items-center mt-2">
+                                                            <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">Qty:</span>
+                                                            <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                                                                <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'decrement')" 
+                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300">
+                                                                    <i class="fas fa-minus text-xs"></i>
+                                                                </button>
+                                                                <input id="quantity-<%= item.product._id %>" type="number" 
+                                                                    class="w-10 h-8 border-0 bg-white dark:bg-gray-800 text-center text-gray-900 dark:text-white" 
+                                                                    value="<%= item.quantity %>">
+                                                                <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'increment')" 
+                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300">
+                                                                    <i class="fas fa-plus text-xs"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <p class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Subtotal: ₹<%= (item.product.price * item.quantity).toFixed(2) %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                                                    <p class="flex items-center text-sm text-green-600 dark:text-green-400 mb-2 sm:mb-0">
+                                                        <i class="fas fa-check-circle mr-1.5"></i>
+                                                        In stock
+                                                    </p>
+                                                    
+                                                    <div class="flex space-x-3">
+                                                        <button type="button" class="flex items-center text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">
+                                                            <i class="far fa-heart mr-1"></i>
+                                                            <span>Save for later</span>
+                                                        </button>
+                                                        <button type="button" onclick="removeFromCart('<%= item.product._id %>')" 
+                                                            class="flex items-center text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                                                            <i class="far fa-trash-alt mr-1"></i>
+                                                            <span>Remove</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <% }) %>
+                            <% } else { %>
+                                <li class="py-16 px-6 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                                            <i class="fas fa-shopping-cart text-4xl text-gray-400 dark:text-gray-500"></i>
+                                        </div>
+                                        <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">Your cart is empty</h3>
+                                        <p class="text-gray-500 dark:text-gray-400 mb-6">Looks like you haven't added anything to your cart yet.</p>
+                                        <a href="/" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                            <i class="fas fa-arrow-left mr-2"></i>
+                                            Continue Shopping
+                                        </a>
+                                    </div>
+                                </li>
+                            <% } %>
+                        </ul>
+                        
+                        <% if (cart && cart.items && cart.items.length > 0) { %>
+                            <div class="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
+                                <a href="/" class="inline-flex items-center text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
+                                    <i class="fas fa-arrow-left mr-2"></i>
+                                    Continue Shopping
+                                </a>
+                            </div>
+                        <% } %>
+                    </div>
+                </section>
+
+                <!-- Order summary -->
+                <section aria-labelledby="summary-heading" class="mt-8 lg:mt-0 lg:col-span-5">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-soft overflow-hidden sticky top-8">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-xl font-semibold flex items-center">
+                                <i class="fas fa-receipt text-primary-500 mr-2"></i>
+                                Order Summary
+                            </h3>
+                        </div>
+                        
+                        <div class="p-6">
+                            <dl class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-sm text-gray-600 dark:text-gray-400">Subtotal</dt>
+                                    <dd class="text-sm font-medium text-gray-900 dark:text-white">₹<%= subtotal.toFixed(2) %></dd>
+                                </div>
+                                
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <dt class="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                                        <span>Discount</span>
+                                        <% if (discount > 0) { %>
+                                            <span class="ml-2 rounded-full bg-green-100 dark:bg-green-900 py-0.5 px-2 text-xs font-medium text-green-800 dark:text-green-200">Applied</span>
+                                        <% } %>
+                                    </dt>
+                                    <dd class="text-sm font-medium text-green-600 dark:text-green-400">-₹<%= discount.toFixed(2) %></dd>
+                                </div>
+                                
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <dt class="flex text-sm text-gray-600 dark:text-gray-400">
+                                        <span>Tax</span>
+                                    </dt>
+                                    <dd class="text-sm font-medium text-gray-900 dark:text-white">₹<%= tax.toFixed(2) %></dd>
+                                </div>
+                                
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <dt class="text-base font-medium text-gray-900 dark:text-white">Order total</dt>
+                                    <dd class="text-base font-bold text-primary-600 dark:text-primary-400">₹<%= total.toFixed(2) %></dd>
+                                </div>
+                            </dl>
+                            
+                            <!-- Promo code section -->
+                            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">Promo code</h4>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Optional</span>
+                                </div>
+                                
+                                <div class="flex space-x-2">
+                                    <input type="text" placeholder="Enter code" class="flex-1 min-w-0 block w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
+                                    <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                        Apply
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Checkout button -->
+                            <div class="mt-6">
+                                <button type="submit" class="w-full flex items-center justify-center px-6 py-4 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                    <i class="fas fa-lock mr-2"></i>
+                                    Proceed to Checkout
+                                </button>
+                            </div>
+                            
+                            <!-- Payment methods -->
+                            <div class="mt-6 flex items-center justify-center space-x-4">
+                                <i class="fab fa-cc-visa text-2xl text-gray-400 dark:text-gray-500"></i>
+                                <i class="fab fa-cc-mastercard text-2xl text-gray-400 dark:text-gray-500"></i>
+                                <i class="fab fa-cc-amex text-2xl text-gray-400 dark:text-gray-500"></i>
+                                <i class="fab fa-cc-paypal text-2xl text-gray-400 dark:text-gray-500"></i>
+                            </div>
+                            
+                            <!-- Secure checkout message -->
+                            <div class="mt-4 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
+                                <i class="fas fa-shield-alt mr-1"></i>
+                                Secure checkout powered by CycloneX
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Related Products Section -->
+           <!-- Related Products Section -->
+<section class="mt-16">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                <i class="fas fa-tag text-primary-500 mr-3"></i>
+                Related Products
+            </h3>
+            <a href="/shoplist" class="text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300 text-sm font-medium flex items-center transition-colors">
+                View all
+                <i class="fas fa-chevron-right ml-1 text-xs"></i>
+            </a>
+        </div>
+        
+        <div class="p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <% relatedProducts.forEach(product => { %>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md overflow-hidden group transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full flex flex-col">
+                        <div class="relative pt-[100%] overflow-hidden bg-gray-100 dark:bg-gray-700">
+                            <a href="/productdetails/<%= product._id %>" class="absolute inset-0 flex items-center justify-center p-4"> 
+                                <img 
+                                    src="/<%= product.mainImage %>" 
+                                    alt="<%= product.productName %>" 
+                                    class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500"
+                                >
+                            </a>
+                            <div class="absolute top-3 left-3 z-10">
+                                <span class="bg-primary-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
+                                    <%= product.brands ? product.brands.name : 'No Brand' %>
+                                </span>
+                            </div>
+                            <!-- Wishlist Button -->
+                            <button 
+                                onclick="toggleWishlist('<%= product._id %>')" 
+                                class="absolute top-3 right-3 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 z-10"
+                                aria-label="Add to wishlist"
+                            >
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    width="18" 
+                                    height="18" 
+                                    viewBox="0 0 24 24" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    stroke-width="2" 
+                                    stroke-linecap="round" 
+                                    stroke-linejoin="round" 
+                                    class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
+                                    data-product-id="<%= product._id %>"
+                                >
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </button>
+                            <!-- Quick view overlay -->
+                            <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <a href="/productdetails/<%= product._id %>" class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-4 py-2 rounded-lg text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                    Quick View
+                                </a>
+                            </div>
+                        </div>
+                        <div class="p-4 flex-grow flex flex-col">
+                            <a href="/productdetails/<%= product._id %>" class="text-base font-medium text-gray-800 dark:text-white hover:text-primary-500 dark:hover:text-primary-400 transition-colors"> 
+                                <h3 class="text-lg font-semibold mb-2 line-clamp-2 h-14"><%= product.productName %></h3>
+                            </a>
+                           
+                            <div class="flex items-center mb-3">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star text-sm"></i>
+                                    <i class="fas fa-star text-sm"></i>
+                                    <i class="fas fa-star text-sm"></i>
+                                    <i class="fas fa-star text-sm"></i>
+                                    <i class="fas fa-star-half-alt text-sm"></i>
+                                </div>
+                                <span class="text-gray-500 dark:text-gray-400 text-xs ml-2">(4.5)</span>
+                            </div>
+                            <div class="mt-auto">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary-600 dark:text-primary-400">₹<%= product.price %></span>
+                                    <button 
+                                        onclick="addToCart('<%= product._id %>')" 
+                                        class="bg-primary-500 hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 flex items-center"
+                                    >
+                                        <i class="fas fa-shopping-cart mr-2 text-xs"></i>
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+                <% if (relatedProducts.length === 0) { %>
+                    <div class="col-span-full">
+                        <div class="p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                            <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">No Related Products</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-base mb-6">We couldn't find any related products at the moment.</p>
+                            <button 
+                                onclick="window.location.href='/shoplist'" 
+                                class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                            >
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Browse All Products
+                            </button>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        
+        <!-- View all products button -->
+        <% if (relatedProducts && relatedProducts.length > 0) { %>
+            <div class="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750 text-center">
+                <a href="/shoplist" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                    View All Products
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        <% } %>
+    </div>
+</section>
+        </div>
+    </main>
+    
     <%- include('partials/footer') %>
 
+    <!-- Toast container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
+
+
+
     <script>
+            function addToCart(productId) {
+
+fetch('/addtocart', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+        productId,
+        quantity: 1 // Default quantity
+    })
+})
+.then(response => response.json())
+.then(data => {
+    console.log(data.message)
+    if (data.success) {
+        showToast('Product added to cart!');
+    } else {
+        showToast(data.message, true);
+    }
+})
+.catch(error => {
+    console.error('Error:', error);
+    showToast('An error occurred.', true);
+});
+}
+    </script>
+    <script>
+
+
+        // Function to create a Toastify notification
+        function showToast(message, type = 'info') {
+            // Create toast container if it doesn't exist
+            let toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.className = 'fixed bottom-4 right-4 z-50 flex flex-col items-end';
+                document.body.appendChild(toastContainer);
+            }
+
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `
+                mb-3 px-6 py-4 rounded-lg shadow-lg text-white flex items-center
+                ${type === 'error' ? 'bg-red-500' : 'bg-primary-600'}
+                transform transition-all duration-300 ease-in-out
+                opacity-0 translate-y-8
+                max-w-md
+            `;
+
+            // Add icon based on type
+            const icon = document.createElement('i');
+            icon.className = `mr-3 ${type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle'}`;
+            toast.appendChild(icon);
+
+            // Add message
+            const messageEl = document.createElement('span');
+            messageEl.textContent = message;
+            toast.appendChild(messageEl);
+
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'ml-auto text-white hover:text-gray-200 focus:outline-none';
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.onclick = () => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(8rem)';
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 300);
+            };
+            toast.appendChild(closeBtn);
+
+            // Add toast to container
+            toastContainer.appendChild(toast);
+
+            // Trigger animation
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            });
+
+            // Remove toast after 5 seconds
+            setTimeout(() => {
+                if (toast.parentNode === toastContainer) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(8rem)';
+                    setTimeout(() => {
+                        if (toast.parentNode === toastContainer) {
+                            toastContainer.removeChild(toast);
+                            // Remove container if no toasts left
+                            if (toastContainer.children.length === 0) {
+                                document.body.removeChild(toastContainer);
+                            }
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+
         // Function to update quantity
         async function updateQuantity(productId, action) {
             const quantityInput = document.getElementById(`quantity-${productId}`);
@@ -159,14 +554,23 @@
                     },
                     body: JSON.stringify({ quantity }),
                 });
-
-                if (response.ok) {
-                    window.location.reload(); // Reload the page to reflect the changes
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Show success toast before reloading
+                    showToast('Cart updated successfully', 'info');
+                    setTimeout(() => {
+                        window.location.reload(); // Reload the page to reflect the changes
+                    }, 1000);
                 } else {
-                    alert('Failed to update quantity');
+                    // Show toast only for stock unavailability
+                    if (data.message.includes('stock') || data.message.includes('available')) {
+                        showToast(data.message, 'error');
+                    }
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showToast('An error occurred', 'error');
             }
         }
 
@@ -177,14 +581,37 @@
                     method: 'DELETE',
                 });
                 if (response.ok) {
-                    window.location.reload(); // Reload the page to reflect the changes
+                    showToast('Item removed from cart', 'info');
+                    setTimeout(() => {
+                        window.location.reload(); // Reload the page to reflect the changes
+                    }, 1000);
                 } else {
-                    alert('Failed to remove item from cart');
+                    showToast('Failed to remove item from cart', 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
+                showToast('An error occurred', 'error');
             }
         }
+
+        // Add animation to cart items on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartItems = document.querySelectorAll('.cart-item');
+            cartItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('opacity-100');
+                    item.classList.remove('opacity-0');
+                }, index * 100);
+            });
+            
+            // Add quick add to cart functionality for related products
+            const addToCartButtons = document.querySelectorAll('.product-card button');
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    showToast('Product added to cart', 'info');
+                });
+            });
+        });
     </script>
 </body>
 </html>

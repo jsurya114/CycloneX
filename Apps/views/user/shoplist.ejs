@@ -163,15 +163,15 @@
                         <input 
                             type="range" 
                             min="0" 
-                            max="100000" 
-                            value="50000" 
+                            max="200000" 
+                            value="0" 
                             class="w-full"
                             id="priceRange"
                         >
                         <div class="flex justify-between mt-2">
                             <span class="text-sm text-gray-600">₹0</span>
-                            <span class="text-sm font-medium" id="priceValue">₹50,000</span>
-                            <span class="text-sm text-gray-600">₹100,000</span>
+                            <span class="text-sm font-medium" id="priceValue">₹10,00</span>
+                            <span class="text-sm text-gray-600">₹200,000</span>
                         </div>
                     </div>
                     
@@ -241,7 +241,7 @@
                 </div>
 
             <!-- Products list-->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <!-- Product Card -->
     <% if (product.length > 0) { %>
         <% product.forEach(pro => { %>
@@ -374,6 +374,7 @@
     }
 
     function addToCart(productId) {
+
     fetch('/addtocart', {
         method: 'POST',
         headers: {
@@ -386,11 +387,11 @@
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data)
+        console.log(data.message)
         if (data.success) {
             showToast('Product added to cart!');
         } else {
-            showToast('Failed to add product to cart.', true);
+            showToast(data.message, true);
         }
     })
     .catch(error => {
@@ -430,7 +431,7 @@ function addToCart(productId) {
         if (data.success) {
             showToast('Product added to cart!');
         } else {
-            showToast('Failed to add product to cart.', true);
+            showToast(data.message, true);
         }
     })
     .catch(error => {

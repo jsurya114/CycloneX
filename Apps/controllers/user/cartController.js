@@ -2,6 +2,7 @@ const Product=require('../../models/productModel')
 const Cart = require('../../models/cartModel')
 const User = require('../../models/userModel')
 const jwt = require('jsonwebtoken')
+const { productsoftdelete } = require('../admin/productloader')
 const cartController={
     showCartPage: async (req, res, next) => {
         try {
@@ -32,18 +33,32 @@ const cartController={
                 total = subtotal + tax - discount;
             }
     
+let referenceProduct= cart?.items?.length>0?cart.items[0].product:null
+
+let relatedProducts=[]
+if(referenceProduct){
+    relatedProducts= await Product.find({
+        category:referenceProduct.category,
+        brands:referenceProduct.brands,
+        _id:{$ne:referenceProduct._id}
+    })
+    .limit(10)
+    .populate('brands');
+}
             res.status(200).render('addtocart', {
                 user,
                 cart: cart || null,  // Explicitly set cart to null if not found
                 subtotal,
                 tax,
                 discount,
-                total
+                total,
+                relatedProducts
             });
         } catch (error) {
             next(error);
         }
     },
+
     addToCart:async (req,res,next) => {
         try {
             const {productId,quantity}=req.body
@@ -51,26 +66,44 @@ const cartController={
             if (quantity <= 0) {
                 return res.status(400).json({ success: false, message: "Quantity must be at least 1" });
             }
+            const product =await Product.findById(productId)
+            
+            
+            if (quantity > product.stock) {
+                return res.status(400).json({ success: false, message: `Only ${product.stock} items available in stock` });
+            }
 
             let cart =await Cart.findOne({user:userId})
             if(!cart) {
-                cart =new Cart({user:userId,items:[]})
+                cart =await new Cart({user:userId,items:[]})
+                await cart.save()
 
             }
-            const product =await Product.findById(productId)
-            if(!product) return res.status(404).json({success: false, message: 'Product not found'})
-
+           // console.log(cart,userId,productId,quantity)
+    
+          
         const existingItem = cart.items.find(item=>item.product.toString()===productId)
         if(existingItem){
+        
+            if(existingItem.quantity+quantity>product.stock){
+           
+                return res.status(400).json({ success: false, message: "Not enough stock available" })
+            }
             existingItem.quantity+=quantity
         }
         else{
-            cart.items.push({product: productId, quantity: parseInt(quantity)})
+          //  console.log(product,'hii',productId)
+            cart.items.push({product: productId,   
+                //  productName: product.productName,
+                quantity: parseInt(quantity)})
+                
         }
+        
         await cart.save()
         res.status(201).json({success: true, message: 'Product added to cart'})
         } catch (error) {
-            next(error)
+            console.log(error)
+           next(error)
         }
     },
 
@@ -102,19 +135,18 @@ res.status(200).json({success: true, message: 'Product removed from cart'})
                 return res.status(400).json({ success: false, message: "Quantity must be at least 1" });
             }
 
+
+            const product =await Product.findById(productId)
+            if (quantity > product.stock) {
+                return res.status(400).json({ success: false, message: `Only ${product.stock} items available in stock` });
+            }
+
             let cart = await Cart.findOne({ user: userId });
             if (!cart) return res.status(404).json({ success: false, message: "Cart not found" });
       
             const item = cart.items.find(item => item.product.toString() === productId);
             if (!item) return res.status(404).json({ success: false, message: "Product not in cart" });
-      
-
-if(quantity>item.product.stock){
-    item.quantity=item.prodcut.stock
-}
-
-
-
+      ``
             item.quantity = parseInt(quantity);
             await cart.save();
       

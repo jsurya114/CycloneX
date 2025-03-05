@@ -1,745 +1,211 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyclePro - Premium Cycles & Accessories</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb',
-                        secondary: '#f97316',
-                        dark: '#0f172a'
-                    }
-                }
-            }
-        }
-    </script>
-    <style type="text/tailwindcss">
-        @layer components {
-            .btn-primary {
-                @apply bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300;
-            }
-            .btn-secondary {
-                @apply bg-secondary text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300;
-            }
-            .product-card {
-                @apply bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl;
-            }
-            .product-image-container {
-                @apply relative overflow-hidden;
-            }
-            .product-image {
-                @apply w-full h-48 object-cover transition-transform duration-500;
-            }
-            .product-card:hover .product-image {
-                @apply transform scale-110;
-            }
-            .quick-view-btn {
-                @apply absolute bottom-0 left-0 right-0 bg-primary text-white py-2 text-center opacity-0 transition-opacity duration-300;
-            }
-            .product-card:hover .quick-view-btn {
-                @apply opacity-100;
-            }
-            .star-rating {
-                @apply flex text-yellow-400;
-            }
-            .modal {
-                @apply fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300;
-            }
-            .modal.active {
-                @apply opacity-100 pointer-events-auto;
-            }
-            .modal-content {
-                @apply bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto transform scale-95 transition-transform duration-300;
-            }
-            .modal.active .modal-content {
-                @apply scale-100;
-            }
-            .price-slider {
-                @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
-            }
-            .price-slider::-webkit-slider-thumb {
-                @apply appearance-none w-6 h-6 rounded-full bg-primary cursor-pointer;
-            }
-        }
-    </style>
-</head>
-<body class="bg-gray-50 font-sans">
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex items-center justify-between">
-                <!-- Logo -->
-                <a href="#" class="flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18.18 10l-1.39-2.77A3 3 0 0014.76 6H9.24a3 3 0 00-2.03 1.23L5.82 10H4a1 1 0 000 2h1v8a1 1 0 001 1h12a1 1 0 001-1v-8h1a1 1 0 100-2h-1.82zM9.24 8h5.52a1 1 0 01.87.5L16.5 10h-9l.87-1.5a1 1 0 01.87-.5zM19 12v7H5v-7h14z"/>
-                        <circle cx="8" cy="14" r="2"/>
-                        <circle cx="16" cy="14" r="2"/>
-                    </svg>
-                    <span class="text-2xl font-bold text-dark">CyclePro</span>
-                </a>
-                
-                <!-- Navigation -->
-                <nav class="hidden md:flex space-x-8">
-                    <a href="#" class="text-dark hover:text-primary font-medium">Home</a>
-                    <a href="#" class="text-dark hover:text-primary font-medium">Shop</a>
-                    <a href="#" class="text-dark hover:text-primary font-medium">Categories</a>
-                    <a href="#" class="text-dark hover:text-primary font-medium">About</a>
-                    <a href="#" class="text-dark hover:text-primary font-medium">Contact</a>
-                </nav>
-                
-                <!-- Icons -->
-                <div class="flex items-center space-x-4">
-                    <button class="text-dark hover:text-primary">
-                        <i class="fas fa-search text-xl"></i>
-                    </button>
-                    <button class="text-dark hover:text-primary">
-                        <i class="fas fa-user text-xl"></i>
-                    </button>
-                    <button class="text-dark hover:text-primary relative">
-                        <i class="fas fa-shopping-cart text-xl"></i>
-                        <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
-                    </button>
-                    <button class="md:hidden text-dark" id="mobile-menu-button">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Mobile Menu -->
-            <div class="md:hidden hidden mt-4 pb-4" id="mobile-menu">
-                <nav class="flex flex-col space-y-3">
-                    <a href="#" class="text-dark hover:text-primary font-medium">Home</a>
-                    <a href="#" class="text-dark hover:text-primary font-medium">Shop</a>
-                    <a href="#" class="text-dark hover:text-primary font-medium">Categories</a>
-                    <a href="#" class="text-dark hover:text-primary font-medium">About</a>
-                    <a href="#" class="text-dark hover:text-primary font-medium">Contact</a>
-                </nav>
-            </div>
-        </div>
-    </header>
+const bcrypt=require('bcrypt');
+const User=require('../../models/userModel');
+const jwt = require("jsonwebtoken");
+const statusCodes=require('../../utils/statusCodes');
+const errorMessages=require('../../utils/errorMessages');
+const crypto = require("crypto");
+require("dotenv").config();
 
-    <!-- Banner Slider -->
-    <section class="relative h-[500px] overflow-hidden">
-        <div class="slider-container h-full">
-            <div class="slider-item absolute inset-0 opacity-100 transition-opacity duration-1000">
-                <img src="https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80" alt="Mountain Biking" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center">
-                    <div class="container mx-auto px-4">
-                        <div class="max-w-xl text-white">
-                            <h1 class="text-4xl md:text-5xl font-bold mb-4">Adventure Awaits</h1>
-                            <p class="text-lg mb-6">Discover our premium mountain bikes for the ultimate trail experience</p>
-                            <button class="btn-primary">Shop Mountain Bikes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="slider-item absolute inset-0 opacity-0 transition-opacity duration-1000">
-                <img src="https://images.unsplash.com/photo-1571333250630-f0230c320b6d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80" alt="Road Cycling" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center">
-                    <div class="container mx-auto px-4">
-                        <div class="max-w-xl text-white">
-                            <h1 class="text-4xl md:text-5xl font-bold mb-4">Speed & Performance</h1>
-                            <p class="text-lg mb-6">Professional road bikes for the serious cyclist</p>
-                            <button class="btn-primary">Shop Road Bikes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="slider-item absolute inset-0 opacity-0 transition-opacity duration-1000">
-                <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80" alt="City Cycling" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center">
-                    <div class="container mx-auto px-4">
-                        <div class="max-w-xl text-white">
-                            <h1 class="text-4xl md:text-5xl font-bold mb-4">Urban Mobility</h1>
-                            <p class="text-lg mb-6">Stylish city bikes for your daily commute</p>
-                            <button class="btn-primary">Shop City Bikes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Slider Controls -->
-        <button class="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-100 rounded-full p-2 text-dark transition-all duration-300" id="prev-slide">
-            <i class="fas fa-chevron-left text-xl"></i>
-        </button>
-        <button class="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-100 rounded-full p-2 text-dark transition-all duration-300" id="next-slide">
-            <i class="fas fa-chevron-right text-xl"></i>
-        </button>
-        
-        <!-- Slider Indicators -->
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-            <button class="h-3 w-3 rounded-full bg-white bg-opacity-50 slider-indicator active" data-index="0"></button>
-            <button class="h-3 w-3 rounded-full bg-white bg-opacity-50 slider-indicator" data-index="1"></button>
-            <button class="h-3 w-3 rounded-full bg-white bg-opacity-50 slider-indicator" data-index="2"></button>
-        </div>
-    </section>
+const sendOTP =require('../../utils/sendOTP'); 
+const Product=require('../../models/productModel')
+const Cart=require('../../models/cartModel');
 
-    <!-- Search and Filter Section -->
-    <section class="py-8 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex flex-col md:flex-row gap-6">
-                    <!-- Search -->
-                    <div class="flex-1">
-                        <div class="relative">
-                            <input type="text" placeholder="Search for cycles..." id="searchInput" class="w-full border border-gray-300 rounded-md py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                        </div>
-                    </div>
-                    
-                    <!-- Sort -->
-                    <div class="w-full md:w-48">
-                        <label for="sortBy"></label>
-                        <select id="sortBy" class="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option value="featured">Featured</option>
-                            <option value="priceLowHigh">Price: Low to High</option>
-                            <option value="priceHighLow">Price: High to Low</option>
-                            <option value="aToZ">Name: A to Z</option>
-                            <option value="zToA">Name: Z to A</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Filter Toggle Button (Mobile) -->
-                    <button class="md:hidden btn-primary" id="filter-toggle">
-                        <i class="fas fa-filter mr-2"></i> Filters
-                    </button>
-                </div>
-                
-                <!-- Filters (Hidden on Mobile by Default) -->
-                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 hidden md:grid" id="filter-section">
-                    <!-- Price Range -->
-                    <div>
-                        <h3 class="font-semibold mb-3">Price Range</h3>
-                        <div class="mb-4">
-                            <input type="range" min="0" max="5000" value="2500" class="price-slider" id="price-range">
-                            <div class="flex justify-between mt-2">
-                                <span>$0</span>
-                                <span id="price-value">$2500</span>
-                                <span>$5000</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Categories -->
-                    <div>
-                        <label for="categoryFilter"></label>
-                        <h3 class="font-semibold mb-3">Categories</h3>
-                        <div class="space-y-2">
-                            <label class="flex items-center">
-                                <input type="checkbox" class="form-checkbox text-primary rounded h-5 w-5">
-                                <span class="ml-2">All Categories</span>
-                            </label>
-                            <% categories.forEach(cat => { %>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="form-checkbox text-primary rounded h-5 w-5" value="<%= cat.name %>">
-                                    <span class="ml-2"><%= cat.name %></span>
-                                </label>
-                            <% }); %>
-                        </div>
-                    </div>
-                    
-                    <!-- Brands -->
-<div>
-    <h3 class="font-semibold mb-3">Brands</h3>
-    <div class="space-y-2">
-        <label class="flex items-center">
-            <input type="checkbox" class="form-checkbox text-primary rounded h-5 w-5">
-            <span class="ml-2">All Brands</span>
-        </label>
-        <% brands.forEach(brand => { %>
-            <label class="flex items-center">
-                <input type="checkbox" class="form-checkbox text-primary rounded h-5 w-5" value="<%= brand.name %>">
-                <span class="ml-2"><%= brand.name %></span>
-            </label>
-        <% }); %>
-    </div>
-</div>
-     </div>
-            </div>
-        </div>
-    </section>
+const loadCart = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const user = await User.findById(userId);
+        const cart = await Cart.findOne({ user: userId }).populate("items.product");
 
-    <!-- Featured Products -->
-    <section class="py-12">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-8 text-center">Featured Cycles</h2>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <% if (product.length > 0) { %>
-                    <% product.forEach(pro => { %>
-                        <!-- Product Card -->
-                        <div class="product-card">
-                            <div class="product-image-container">
-                                <img src="/<%= pro.mainImage %>" alt="<%= pro.productName %>" class="product-image">
-                                <button class="quick-view-btn" data-product="<%= pro._id %>">Quick View</button>
-                            </div>
-                            <div class="p-4">
-                                <div class="text-sm text-gray-500 mb-1"><%= pro.brand ? pro.brand.name : 'No Brand' %></div>
-                                <h3 class="font-semibold text-lg mb-1"><%= pro.productName %></h3>
-                                <div class="star-rating mb-2">
-                                    <!-- Star rating would go here -->
-                                    <span class="text-gray-500 ml-1">(0)</span>
-                                </div>
-                                <div class="font-bold text-lg text-primary">₹<%= pro.price %></div>
-                            </div>
-                        </div>
-                    <% }) %>
-                <% } else { %>
-                    <div class="col-span-full">
-                        <div class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-search mx-auto mb-4">
-                                <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
-                                <path d="M16.5 9.4 7.55 4.24"/>
-                                <polyline points="3.29 7 12 12 20.71 7"/>
-                                <line x1="12" y1="22" x2="12" y2="12"/>
-                                <circle cx="18.5" cy="15.5" r="2.5"/>
-                                <path d="M20.27 17.27 22 19"/>
-                            </svg>
-                            <p class="text-gray-500 text-lg mb-4">No products found.</p>
-                            <button onclick="window.location.href='/'" class="btn-primary flex items-center gap-2 mx-auto">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="m15 18-6-6 6-6"/>
-                                </svg>
-                                Back to All Products
-                            </button>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
-            
-            <% if (product.length > 0) { %>
-                <div class="mt-10 text-center">
-                    <%- include('partials/pagination')%>
-                </div>
-            <% } %>
-        </div>
-    </section>
+        let subtotal = 0;
+        let discount = 0;
 
-    <!-- Categories Section -->
-    <section class="py-12 bg-gray-100">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-8 text-center">Shop By Category</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <% if (categories && categories.length > 0) { %>
-                    <% categories.forEach(category => { %>
-                        <!-- Category Card -->
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden group">
-                            <div class="relative h-60 overflow-hidden">
-                                <% 
-                                    // Find a product from this category to display its image
-                                    let categoryProduct = products.find(product => product.category && product.category._id.toString() === category._id.toString());
-                                    let imageUrl = categoryProduct ? `/${categoryProduct.mainImage}` : '/images/placeholder.jpg';
-                                %>
-                                <img src="<%= imageUrl %>" alt="<%= category.name %>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-                                    <div class="p-6">
-                                        <h3 class="text-2xl font-bold text-white mb-2"><%= category.name %></h3>
-                                        <p class="text-white text-sm mb-4"><%= category.description || 'Explore our collection' %></p>
-                                        <a href="/category/<%= category._id %>" class="inline-block bg-white text-primary px-4 py-2 rounded-md font-medium hover:bg-primary hover:text-white transition duration-300">Shop Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    <% }); %>
-                <% } else { %>
-                    <div class="col-span-full text-center p-12">
-                        <p class="text-gray-500 text-lg">No categories found.</p>
-                    </div>
-                <% } %>
-            </div>
-        </div>
-    </section>
-
-    <!-- Newsletter Section -->
-    <section class="py-12 bg-primary text-white">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4">Join Our Newsletter</h2>
-            <p class="max-w-2xl mx-auto mb-6">Subscribe to our newsletter to receive updates on new arrivals, special offers and other discount information.</p>
-            <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-2">
-                <input type="email" placeholder="Your email address" class="flex-1 px-4 py-3 rounded-l-md text-dark focus:outline-none">
-                <button type="submit" class="bg-secondary text-white px-6 py-3 rounded-r-md font-medium hover:bg-orange-600 transition duration-300">Subscribe</button>
-            </form>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white pt-12 pb-6">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-                <!-- Company Info -->
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.18 10l-1.39-2.77A3 3 0 0014.76 6H9.24a3 3 0 00-2.03 1.23L5.82 10H4a1 1 0 000 2h1v8a1 1 0 001 1h12a1 1 0 001-1v-8h1a1 1 0 100-2h-1.82zM9.24 8h5.52a1 1 0 01.87.5L16.5 10h-9l.87-1.5a1 1 0 01.87-.5zM19 12v7H5v-7h14z"/>
-                            <circle cx="8" cy="14" r="2"/>
-                            <circle cx="16" cy="14" r="2"/>
-                        </svg>
-                        <span class="text-xl font-bold">CyclePro</span>
-                    </div>
-                    <p class="text-gray-400 mb-4">Premium cycles for every rider. From mountain trails to city streets, we've got you covered.</p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Quick Links -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Shop</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Categories -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Mountain Bikes</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Road Bikes</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">City Bikes</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Electric Bikes</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Kids Bikes</a></li>
-                    </ul>
-                </div>
-                
-                <!-- Contact Info -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start space-x-3">
-                            <i class="fas fa-map-marker-alt mt-1 text-primary"></i>
-                            <span class="text-gray-400">123 Bike Street, Cycling City, CC 12345</span>
-                        </li>
-                        <li class="flex items-start space-x-3">
-                            <i class="fas fa-phone-alt mt-1 text-primary"></i>
-                            <span class="text-gray-400">+1 (555) 123-4567</span>
-                        </li>
-                        <li class="flex items-start space-x-3">
-                            <i class="fas fa-envelope mt-1 text-primary"></i>
-                            <span class="text-gray-400">info@cyclepro.com</span>
-                        </li>
-                        <li class="flex items-start space-x-3">
-                            <i class="fas fa-clock mt-1 text-primary"></i>
-                            <span class="text-gray-400">Mon-Fri: 9AM - 6PM<br>Sat: 10AM - 4PM</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <hr class="border-gray-800 mb-6">
-            
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 text-sm mb-4 md:mb-0">&copy; 2023 CyclePro. All rights reserved.</p>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Shipping Policy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Quick View Modal -->
-    <div class="modal" id="quick-view-modal">
-        <div class="modal-content p-0">
-            <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10" id="close-modal">
-                <i class="fas fa-times text-2xl"></i>
-            </button>
-            <div class="grid grid-cols-1 md:grid-cols-2">
-                <div class="p-6">
-                    <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Image" class="w-full h-auto rounded-lg" id="modal-product-image">
-                    <div class="grid grid-cols-4 gap-2 mt-4">
-                        <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Thumbnail" class="w-full h-auto rounded-lg cursor-pointer border-2 border-primary">
-                        <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Thumbnail" class="w-full h-auto rounded-lg cursor-pointer">
-                        <img src="https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Thumbnail" class="w-full h-auto rounded-lg cursor-pointer">
-                        <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Thumbnail" class="w-full h-auto rounded-lg cursor-pointer">
-                    </div>
-                </div>
-                <div class="bg-gray-50 p-6">
-                    <div class="text-sm text-gray-500 mb-1" id="modal-product-brand">Trek</div>
-                    <h3 class="font-bold text-2xl mb-2" id="modal-product-name">Domane SL 6</h3>
-                    <div class="star-rating mb-4">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <span class="text-gray-500 ml-1">(24 reviews)</span>
-                    </div>
-                    <div class="font-bold text-2xl text-primary mb-4" id="modal-product-price">$2,899.99</div>
-                    <p class="text-gray-600 mb-6" id="modal-product-description">The Domane SL 6 is a performance road bike with an ultra-smooth ride quality. The lightweight OCLV Carbon frame features Front and Rear IsoSpeed, which smooth out rough roads so you can stay stronger longer.</p>
-                    
-                    <div class="mb-6">
-                        <h4 class="font-semibold mb-2">Color</h4>
-                        <div class="flex space-x-2">
-                            <button class="w-8 h-8 rounded-full bg-red-500 border-2 border-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"></button>
-                            <button class="w-8 h-8 rounded-full bg-blue-500 border-2 border-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"></button>
-                            <button class="w-8 h-8 rounded-full bg-black border-2 border-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"></button>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h4 class="font-semibold mb-2">Size</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="px-4 py-2 border border-gray-300 rounded-md hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">S</button>
-                            <button class="px-4 py-2 border border-gray-300 rounded-md hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">M</button>
-                            <button class="px-4 py-2 border border-gray-300 rounded-md hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">L</button>
-                            <button class="px-4 py-2 border border-gray-300 rounded-md hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary">XL</button>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h4 class="font-semibold mb-2">Quantity</h4>
-                        <div class="flex items-center">
-                            <button class="w-10 h-10 border border-gray-300 rounded-l-md flex items-center justify-center hover:bg-gray-100">-</button>
-                            <input type="number" value="1" min="1" class="w-16 h-10 border-t border-b border-gray-300 text-center focus:outline-none">
-                            <button class="w-10 h-10 border border-gray-300 rounded-r-md flex items-center justify-center hover:bg-gray-100">+</button>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <button class="btn-primary flex-1 py-3">Add to Cart</button>
-                        <button class="btn-secondary flex-1 py-3">Buy Now</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript -->
-    <script>
-        // Mobile Menu Toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // Filter Toggle (Mobile)
-        const filterToggle = document.getElementById('filter-toggle');
-        const filterSection = document.getElementById('filter-section');
-        
-        filterToggle.addEventListener('click', () => {
-            filterSection.classList.toggle('hidden');
-        });
-        
-        // Price Range Slider
-        const priceRange = document.getElementById('price-range');
-        const priceValue = document.getElementById('price-value');
-        
-        priceRange.addEventListener('input', () => {
-            priceValue.textContent = `$${priceRange.value}`;
-        });
-        
-        // Banner Slider
-        const sliderItems = document.querySelectorAll('.slider-item');
-        const sliderIndicators = document.querySelectorAll('.slider-indicator');
-        const prevSlide = document.getElementById('prev-slide');
-        const nextSlide = document.getElementById('next-slide');
-        let currentSlide = 0;
-        
-        function showSlide(index) {
-            sliderItems.forEach((item, i) => {
-                item.classList.toggle('opacity-0', i !== index);
-                item.classList.toggle('opacity-100', i === index);
+        if (!cart || cart.items.length === 0) {
+            return res.render("cart", { 
+                user, 
+                cartItems: [], 
+                subtotal: 0,
+                discount: 0,
+                grandTotal: 0,
+                relatedProducts: [] 
             });
-            
-            sliderIndicators.forEach((indicator, i) => {
-                indicator.classList.toggle('bg-opacity-50', i !== index);
-                indicator.classList.toggle('bg-opacity-100', i === index);
-                indicator.classList.toggle('active', i === index);
-            });
-            
-            currentSlide = index;
+        }
+
+        let cartItems = [];
+
+        cartItems = cart.items.map((item) => {
+            if (!item.product) {
+                console.error(Product not found for cart item: ${item._id});
+                return null; // Skip this item if the product is missing
+            }
+
+            const product = item.product; 
+            const price = product.discount
+                ? product.price - (product.price * product.discount) / 100
+                : product.price;
+            const total = price * item.quantity;
+            subtotal += total;
+
+            return {
+                id: product._id,
+                name: product.name,
+                image: product.images?.[0] || "", // Avoid accessing undefined image array
+                price: price,
+                quantity: item.quantity,
+                total: total,
+            };
+        }).filter(item => item !== null); // Remove null items
+
+        let grandTotal = subtotal - discount;
+
+        // Ensure at least one product exists in the cart before querying related products
+        let relatedProducts = [];
+        if (cart.items[0]?.product?.category) {
+            relatedProducts = await Product.find({ 
+                category: cart.items[0].product.category,
+                _id: { $ne: cart.items[0].product._id } 
+            }).limit(4);
+        }
+
+        res.render("cart", {
+            cartItems,
+            subtotal,
+            relatedProducts,
+            discount,
+            grandTotal,
+            user,
+        });
+    } catch (error) {
+        console.error("Error loading cart:", error);
+        res.status(500).send("Server Error");
+    }
+};
+
+
+const addToCart = async (req, res) => {
+    try {
+        const { productId, quantity } = req.body;
+        const userId = req.user.userId; // Ensure user is authenticated
+
+        if (!productId || !quantity) {
+            return res.status(400).json({ success: false, message: "Invalid request" });
+        }
+
+        //  Check if product exists
+        const product = await Product.findById(productId);
+        if (!product || product.stock === 0) {
+            return res.status(400).json({ success: false, message: "Product is out of stock" });
+        }
+
+        //  Check if user already has a cart
+        let cart = await Cart.findOne({ user: userId }).populate('items.product');
+
+        if (!cart) {
+            // If no cart exists, create a new one
+            cart = new Cart({ user: userId, items: [] });
+        }
+
+        //  Check if product is already in cart
+        const existingItem = cart.items.find(item => item.product.id.toString() === productId);
+
+        if (existingItem) {
+            // If product already exists, update quantity (but don't exceed stock)
+            if (existingItem.quantity + quantity > product.stock) {
+                return res.status(400).json({ success: false, message: "Not enough stock available" });
+            }
+            if(existingItem.quantity + quantity > 10){
+                return res.status(400).json({ success: false, message: "Only 10 quantities can be added per product" });
+            }
+            existingItem.quantity += quantity;
+        } else {
+            // Otherwise, add new product to cart
+            cart.items.push({ product: productId, quantity });
+        }
+
+        await cart.save();
+        return res.status(200).json({ success: true, message: "Product added to cart" });
+
+    } catch (error) {
+        console.error("Add to Cart Error:", error);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+const updateCart = async (req, res) => {
+    try {
+        const { quantity, productId } = req.body;
+        const userId = req.user.userId;
+
+        const user=await User.findById(userId);
+        if(!user){
+            return res.redirect('/login');
+        }
+
+        // Fetch product to check stock availability
+        const product = await Product.findById(productId);
+        if (!product || product.isDeleted) {
+            return res.status(400).json({ success: false, message: "Product not found or inactive" });
+        }
+
+        // Fetch user's cart and populate product details
+        const cart = await Cart.findOne({ user: userId }).populate('items.product');
+        if (!cart) {
+            return res.status(400).json({ success: false, message: "Cart not found" });
+        }
+
+        // Find the cart item by productId
+        const item = cart.items.find(i => i.product._id.toString() === productId);
+        if (!item) {
+            return res.status(400).json({ success: false, message: "Product not found in cart" });
         }
         
-        prevSlide.addEventListener('click', () => {
-            const newIndex = (currentSlide - 1 + sliderItems.length) % sliderItems.length;
-            showSlide(newIndex);
-        });
-        
-        nextSlide.addEventListener('click', () => {
-            const newIndex = (currentSlide + 1) % sliderItems.length;
-            showSlide(newIndex);
-        });
-        
-        sliderIndicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => {
-                showSlide(index);
-            });
-        });
-        
-        // Auto slide
-        setInterval(() => {
-            const newIndex = (currentSlide + 1) % sliderItems.length;
-            showSlide(newIndex);
-        }, 5000);
-        
-        // Quick View Modal
-        const quickViewButtons = document.querySelectorAll('.quick-view-btn');
-        const quickViewModal = document.getElementById('quick-view-modal');
-        const closeModal = document.getElementById('close-modal');
-        
-        quickViewButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                quickViewModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-                
-                // In a real application, you would fetch product data based on the product ID
-                const productId = button.getAttribute('data-product');
-                // For demo purposes, we're not changing the modal content based on the product
-            });
-        });
-        
-        closeModal.addEventListener('click', () => {
-            quickViewModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        });
-        
-        quickViewModal.addEventListener('click', (e) => {
-            if (e.target === quickViewModal) {
-                quickViewModal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        });
-    </script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-<section class="py-8 bg-gray-100">
-    <div class="container mx-auto px-4 max-w-6xl">
-        <div class="bg-white rounded-lg shadow-md p-6">
-            <div class="flex flex-col md:flex-row items-center gap-4">
-                <!-- Search -->
-                <div class="w-full md:w-1/3">
-                    <div class="relative">
-                        <input type="text" placeholder="Search for cycles..." id="searchInput" class="w-full border border-gray-300 rounded-full py-2 px-4 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                </div>
-                
-                <!-- Sort -->
-                <div class="w-full md:w-1/4">
-                    <select id="sortBy" class="w-full border border-gray-300 rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white text-sm">
-                        <option value="">Sort By</option>
-                        <option value="featured">Featured</option>
-                        <option value="priceLowHigh">Price: Low to High</option>
-                        <option value="priceHighLow">Price: High to Low</option>
-                        <option value="aToZ">Name: A to Z</option>
-                        <option value="zToA">Name: Z to A</option>
-                    </select>
-                </div>
-                
-                <!-- Filter Toggle Button (Mobile) -->
-                <button class="md:hidden bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 ease-in-out flex items-center space-x-2" id="filter-toggle">
-                    <i class="fas fa-filter"></i>
-                    <span>Filters</span>
-                </button>
-            </div>
+        // Check stock availability
+        if (quantity > item.product.stock) {
+            item.quantity = item.product.stock; // Set quantity to available stock
+            await cart.save();
             
-            <!-- Filters (Hidden on Mobile by Default) -->
-            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 hidden md:grid" id="filter-section">
-                <!-- Price Range -->
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h3 class="font-semibold mb-3 text-gray-700">Price Range</h3>
-                    <div class="mb-4">
-                        <input type="range" min="0" max="5000" value="2500" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer" id="price-range">
-                        <div class="flex justify-between mt-2 text-sm text-gray-600">
-                            <span>$0</span>
-                            <span id="price-value" class="font-medium text-blue-600">$2500</span>
-                            <span>$5000</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Categories -->
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h3 class="font-semibold mb-3 text-gray-700">Categories</h3>
-                    <div class="space-y-2 max-h-48 overflow-y-auto" id="categoryFilter">
-                        <label class="flex items-center">
-                            <input type="checkbox" id="allCategories" class="form-checkbox text-blue-500 rounded h-4 w-4" checked>
-                            <span class="ml-2 text-sm">All Categories</span>
-                        </label>
-                        <% categories.forEach(cat => { %>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="categoryFilter" class="category-checkbox form-checkbox text-blue-500 rounded h-4 w-4" value="<%= cat.name %>">
-                                <span class="ml-2 text-sm"><%= cat.name %></span>
-                            </label>
-                        <% }); %>
-                    </div>
-                </div>
-                
-                <!-- Brands -->
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h3 class="font-semibold mb-3 text-gray-700">Brands</h3>
-                    <div class="space-y-2 max-h-48 overflow-y-auto" id="brandFilter">
-                        <label class="flex items-center">
-                            <input type="checkbox" id="allBrands" class="form-checkbox text-blue-500 rounded h-4 w-4" checked>
-                            <span class="ml-2 text-sm">All Brands</span>
-                        </label>
-                        <% brands.forEach(brand => { %>
-                            <label class="flex items-center">
-                                <input type="checkbox" name="brandFilter" class="brand-checkbox form-checkbox text-blue-500 rounded h-4 w-4" value="<%= brand.name %>">
-                                <span class="ml-2 text-sm"><%= brand.name %></span>
-                            </label>
-                        <% }); %>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+            return res.json({ 
+                success: false, 
+                message: "Quantity adjusted to available stock",
+                adjustedQuantity: item.product.stock  // Send updated quantity to frontend
+            });
+        }
+        
+        // Update quantity and save
+        item.quantity = quantity;
+        await cart.save();
+        
+        return res.json({ success: true, message: "Quantity updated successfully" });
 
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+};
 
+const removeProduct= async(req,res)=>{
+    try{
+        const productId=req.params.id;
+        const userId=req.user.userId;
+        const cart=await Cart.findOne({user:userId}).populate('items.product');
+        if(!cart){
+            return res.status(400).json({success:false,message:"Cart not found"});
+            }
+            const item=cart.items.find(i=>i.product._id.toString()==productId);
+            if(!item){
+                return res.status(400).json({success:false,message:"Product not found in cart"});
+            }
+            cart.items.pull(item);
+            await cart.save();
+            return res.json({success:true,message:"Product removed successfully"});
+            }catch(err){
+                console.error(err);
+                return res.status(500).json({success:false,message:"Something went wrong"});
+                }             
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+module.exports={
+    loadCart,
+    addToCart,
+    updateCart,
+    removeProduct
+}

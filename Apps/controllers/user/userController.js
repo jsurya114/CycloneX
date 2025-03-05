@@ -16,7 +16,6 @@ const userController = {
              const userId= decoded.id;
             //  console.log("user",userId);
              const user=await User.findById(userId);
-             console.log(user);
             const categories = await Category.find({});
             const brands = await Brand.find({});
             if (search) {
@@ -132,7 +131,15 @@ const filteredProducts = product.filter(pro => pro.category && pro.brands)
     productDetails:async (req, res,next) => {
         try {
             const id =req.params.id
-        const product = await Product.findById(id).populate('brands').populate('category')
+
+              const token = req.cookies.token;
+                        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                        
+                        const userId = decoded.id;
+                        const user = await User.findById(userId);
+                        const categories = await Category.find({});
+                                   const brands = await Brand.find({});
+        const product = await Product.findById(id).populate('category')
 
         const breadcrumbs = [
             { name: 'Home', url: '/' },
@@ -148,9 +155,9 @@ const filteredProducts = product.filter(pro => pro.category && pro.brands)
             _id:{$ne:product._id},
            
 
-        }).limit(10)
+        }).limit(10).populate('brands')
    
-        res.status(200).render('productdetails',{product,relatedProducts, breadcrumbs})
+        res.status(200).render('productdetails',{product,user:user._id,relatedProducts, breadcrumbs,brands})
         
         } catch (error) {
             console.error(error)
@@ -173,12 +180,13 @@ try
     const userId= req.params.userId
 const user = await User.findById(userId)
 
+const users= req.user.id
 
-    console.log('usercontroller',user)
+  
 if(!userId) return res.status(404).json({success:false,message:'invalid input'})
 
 
-        res.status(200).render('userprofile',{user})}
+        res.status(200).render('userprofile',{user,users})}
         catch(error){
             next(error)
         }

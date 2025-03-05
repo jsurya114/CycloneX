@@ -12,7 +12,7 @@ const verifyUser = async (req, res, next) => {
       return res.status(401).redirect('/')
      }
      const decodedToken=jwt.verify(token,process.env.jwt_SECRET)
-console.log(decodedToken.id+"this we ");
+console.log(decodedToken.id+" this we ");
 
 if(!decodedToken){
   

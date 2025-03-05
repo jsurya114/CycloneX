@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>CycloneX</title>
      <!-- Tailwind CSS CDN -->
      <script src="https://cdn.tailwindcss.com"></script>
     
@@ -125,11 +125,11 @@
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center">
                         <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-3 overflow-hidden">
-                            <span class="text-orange-500 font-bold">JL</span>
+                            <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
                         </div>
                         <div>
-                            <p class="font-semibold">Jesse Leos (Personal)</p>
-                            <p class="text-sm text-gray-500">jesse@flowbite.com</p>
+                            <p class="font-semibold"><%= user.fullName || 'Guest User' %></p>
+                            <p class="text-sm text-gray-500"><%= user.email || 'No email' %></p>
                         </div>
                     </div>
                     <button class="text-gray-500">

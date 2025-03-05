@@ -27,7 +27,7 @@ router.get('/forgotpassword',userEnsure,passwordController.showforgotpassword)
 router.post('/forgotpassword',passwordController.forgotpassword)
 router.post('/verifyAndUpdatePassword',passwordController.verifyAndUpdatePassword)
 router.post('/resendotp',passwordController.resendOTP)
-router.get('/resetpassword',verifyUser,passwordController.showresetpassword)
+router.get('/resetpassword',passwordController.showresetpassword)
 router.post('/resetpassword',passwordController.resetPassword)
 // Google authentication routes
 console.log('invoked routes');

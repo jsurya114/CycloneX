@@ -1,6 +1,89 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<%- include('partials/head') %>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CyclePro - Premium Cycles & Accessories</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#2563eb',
+                            secondary: '#f97316',
+                            dark: '#0f172a'
+                        },
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif']
+                        }
+                    }
+                }
+            }
+        </script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style type="text/tailwindcss">
+            @layer components {
+                .btn-primary {
+                    @apply bg-primary text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+                }
+                .btn-secondary {
+                    @apply bg-secondary text-white px-6 py-3 rounded-md hover:bg-orange-600 transition duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+                }
+                .product-card {
+                    @apply bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl;
+                }
+                .product-image-container {
+                    @apply relative overflow-hidden;
+                }
+                .product-image {
+                    @apply w-full h-48 object-cover transition-transform duration-500;
+                }
+                .product-card:hover .product-image {
+                    @apply transform scale-110;
+                }
+                .quick-view-btn {
+                    @apply absolute bottom-0 left-0 right-0 bg-primary text-white py-2 text-center opacity-0 transition-opacity duration-300;
+                }
+                .product-card:hover .quick-view-btn {
+                    @apply opacity-100;
+                }
+                .star-rating {
+                    @apply flex text-yellow-400;
+                }
+                .modal {
+                    @apply fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300;
+                }
+                .modal.active {
+                    @apply opacity-100 pointer-events-auto;
+                }
+                .modal-content {
+                    @apply bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto transform scale-95 transition-transform duration-300;
+                }
+                .modal.active .modal-content {
+                    @apply scale-100;
+                }
+                .price-slider {
+                    @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+                }
+                .price-slider::-webkit-slider-thumb {
+                    @apply appearance-none w-6 h-6 rounded-full bg-primary cursor-pointer;
+                }
+                .category-card {
+                    @apply transition-all duration-300 hover:-translate-y-2;
+                }
+                .banner-text {
+                    @apply text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight;
+                }
+                .banner-subtitle {
+                    @apply text-xl md:text-2xl mb-8 max-w-xl font-light;
+                }
+            }
+        </style>
+    </head>
 <body class="bg-gray-100">
     <!-- Header -->
     <%- include('partials/header') %>
@@ -14,7 +97,8 @@
                 <div class="relative">
                     <!-- Main Image -->
                     <div class="bg-white p-4 shadow-lg rounded-lg overflow-hidden group">
-                        <img id="mainImage" src="/<%= product.mainImage %>" alt="Main Product Image" class="w-full h-auto rounded-lg transform transition-transform duration-300 group-hover:scale-125">
+                        <img id="mainImage" src="/<%= product.mainImage %>" alt="Main Product Image" class="w-full h-auto rounded-lg">
+
                     </div>
                     <!-- Zoom Container (appears on hover) -->
                     <div id="zoomWrapper" class="hidden absolute top-0 left-full ml-4 w-96 h-96 border border-gray-300 overflow-hidden" style="backdrop-filter: blur(5px);">
@@ -148,20 +232,101 @@
         <!-- Related Products Section -->
         <div class="mt-12">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Related Products</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <% relatedProducts.forEach(product => { %>
-                    <div class="bg-white p-4 shadow-lg rounded-lg">
-                        <a href="/productdetails/<%= product._id %>">
-                            <img src="/<%= product.mainImage %>" alt="<%= product.productName %>" class="w-full h-48 object-cover rounded-lg">
-                        </a>
-                        <div class="mt-4">
-                            <a href="/product/<%= product._id %>" class="text-lg font-semibold text-gray-800 hover:text-blue-600"><%= product.productName %></a>
-                            <p class="text-sm text-gray-600 mt-2">$<%= product.price %></p>
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden group">
+                        <div class="relative">
+                            <a href="/productdetails/<%= product._id %>" class="block w-full h-full"> 
+                                <img 
+                                    src="/<%= product.mainImage %>" 
+                                    alt="<%= product.productName %>" 
+                                    class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300"
+                                >
+                            </a>
+                            <div class="absolute top-4 left-4">
+                                <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
+                                    <%= product.brands ? product.brands.name : 'No Brand' %>
+                                </span>
+                            </div>
+                            <!-- Wishlist Button -->
+                            <button 
+                                onclick="toggleWishlist('<%= product._id %>')" 
+                                class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
+                                aria-label="Add to wishlist"
+                            >
+                                <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    width="20" 
+                                    height="20" 
+                                    viewBox="0 0 24 24" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    stroke-width="2" 
+                                    stroke-linecap="round" 
+                                    stroke-linejoin="round" 
+                                    class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
+                                    data-product-id="<%= product._id %>"
+                                >
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </button>
+                      
+                        </div>
+                        <div class="p-4">
+                            <a href="/productdetails/<%= product._id %>" class="text-base font-medium text-gray-800 hover:text-blue-600 transition-colors line-clamp-2"> 
+                                <h3 class="text-lg font-semibold mb-2"><%= product.productName %></h3>
+                            </a>
+                           
+                            <div class="flex items-center mb-2">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-gray-500 text-sm ml-2">(4.5)</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xl font-bold text-primary">₹<%= product.price %></span>
+                                <button onclick="addToCart('<%= product._id %>')" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200">
+                                    Add to Cart
+                                </button>
+                            </div>
                         </div>
                     </div>
                 <% }) %>
+                <% if (relatedProducts.length === 0) { %>
+                    <div class="col-span-full">
+                        <div class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
+                            <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="20" 
+                            height="20" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            stroke-width="2" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
+                            data-product-id="<%= pro._id %>"
+                        >
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                            <p class="text-gray-500 text-lg mb-4">No related products found.</p>
+                            <button onclick="window.location.href='/shoplist'" class="btn-primary flex items-center gap-2 mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m15 18-6-6 6-6"/>
+                                </svg>
+                                Back to All Products
+                            </button>
+                        </div>
+                    </div>
+                <% } %>
             </div>
         </div>
+        
     </main>
 
     <!-- Footer -->
