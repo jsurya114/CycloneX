@@ -9,17 +9,6 @@ const generateOTP = require('../../services/otp');
 
 
 
-// Configure Nodemailer with correct SMTP settings
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465, // Use 587 if 465 doesn't work
-    secure: true,
-    auth: {
-        user: process.env.EMAIL, 
-        pass: process.env.EMAIL_PASSWORD 
-    }
-});
-
 const passwordController ={
     showforgotpassword:async (req, res,next) => {
         res.render('forgotpassword')
@@ -48,6 +37,7 @@ forgotpassword: async (req, res,next) => {
         // Store OTP in the database with expiry time
         await User.findByIdAndUpdate(user._id, { otp, otpExpiry });
 
+        console.log(otp)
         // Send OTP via email
         await sendEmail(email, 'Your OTP for Password Reset', 
             `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in 1 minute.</p>`
@@ -55,7 +45,7 @@ forgotpassword: async (req, res,next) => {
 
         // Generate JWT without OTP (only for user identification)
         const token = jwt.sign(
-            { id: user._id, email: user.email }, 
+            { id: user._id, email: user.email, resetPassword:true }, 
             process.env.JWT_SECRET, 
             { expiresIn: '15m' } // Shorter expiry since it's for password reset
         );
@@ -95,7 +85,11 @@ verifyAndUpdatePassword:async (req, res,next) => {
         // Optional: Clear OTP after successful verification
         await User.findByIdAndUpdate(user._id, { otp: null });
 
-        return res.status(200).json({ success: true, message: 'OTP verification successful' });
+
+        res.clearCookie('token')
+        return res.status(200).json({ success: true, message: 'OTP verification successful'});
+         
+     
 
     } catch (error) {
         console.error('Error during OTP verification:', error);

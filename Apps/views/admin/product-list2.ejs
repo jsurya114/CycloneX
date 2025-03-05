@@ -146,7 +146,8 @@
                           <%= product.productName %>
                         </a>
                       </td>
-                    <td class="p-3 text-sm text-gray-700 category-column"><%= product.category.name %></td>
+                   
+                    <td class="p-3 text-sm text-gray-700 category-column"><%= product.category ? product.category.name : 'No Category' %></td>
                     <td class="p-3 text-sm text-gray-700"><%= product.brands ? product.brands.name :'No Brands' %></td>
                     <td class="p-3 text-sm text-gray-700">₹<%= product.price ? product.price :'No product available' %></td>
                     <td class="p-3 text-right">

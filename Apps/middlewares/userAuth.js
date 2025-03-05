@@ -12,12 +12,14 @@ const verifyUser = async (req, res, next) => {
       return res.status(401).redirect('/')
      }
      const decodedToken=jwt.verify(token,process.env.jwt_SECRET)
+console.log(decodedToken.id+"this we ");
 
 if(!decodedToken){
   
   return res.status(403).redirect('/')
 }
 const userId = decodedToken.id 
+
 const isUser = await User.findById(userId)
 
 if(!isUser){
@@ -30,6 +32,7 @@ if(isUser.isActive===false){
 }
 
 req.user=isUser
+
 next()
 
     } catch (error) {

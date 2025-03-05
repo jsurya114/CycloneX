@@ -29,7 +29,15 @@ router.post(
     productController.addproduct
   );
 router.get('/editproduct/:id',adminAuths,productloader.showeditProduct)
-router.put('/editproduct/:id',upload.array('productImage'),productloader.editProduct)
+router.put(
+  '/editproduct/:id',
+  upload.fields([
+      { name: 'mainImage', maxCount: 1 },
+      { name: 'images', maxCount: 4 }
+  ]),
+  productloader.editProduct
+);
+router.delete('/delete-product-image/:id', productloader.deleteProductImage);
 router.put('/toggle-product/:id', productloader.productsoftdelete);
 
 router.get('/brands', productController.showAddBrandPage);

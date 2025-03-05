@@ -1,73 +1,265 @@
-<script src="frontend/js/vendor/modernizr-3.6.0.min.js"></script>
-<script src="frontend/js/vendor/jquery-3.6.0.min.js"></script>
-<script src="frontend/js/vendor/jquery-migrate-3.3.0.min.js"></script>
-<script src="frontend/js/vendor/bootstrap.bundle.min.js"></script>
-<script src="frontend/js/plugins/slick.js"></script>
-<script src="frontend/js/plugins/jquery.syotimer.min.js"></script>
-<script src="frontend/js/plugins/wow.js"></script>
-<script src="frontend/js/plugins/jquery-ui.js"></script>
-<script src="frontend/js/plugins/perfect-scrollbar.js"></script>
-<script src="frontend/js/plugins/magnific-popup.js"></script>
-<script src="frontend/js/plugins/select2.min.js"></script>
-<script src="frontend/js/plugins/waypoints.js"></script>
-<script src="frontend/js/plugins/counterup.js"></script>
-<script src="frontend/js/plugins/jquery.countdown.min.js"></script>
-<script src="frontend/js/plugins/images-loaded.js"></script>
-<script src="frontend/js/plugins/isotope.js"></script>
-<script src="frontend/js/plugins/scrollup.js"></script>
-<script src="frontend/js/plugins/jquery.vticker-min.js"></script>
-<script src="frontend/js/plugins/jquery.theia.sticky.js"></script>
-<script src="frontend/js/plugins/jquery.elevatezoom.js"></script>
-<!-- Template  JS -->
-<script src="./frontend/js/main.js?v=3.4"></script>
-<script src="./frontend/js/shop.js?v=3.4"></script>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+
 <script>
-    const swiper = new Swiper('.thumbnail-slider', {
-        slidesPerView: 'auto',
-        spaceBetween: 16, // Gap between slides
-        loop: true,
-        autoplay: {
-            delay: 3000, // Auto slide every 3 seconds
-            disableOnInteraction: false,
-        },
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        breakpoints: {
-            // Mobile
-            320: {
-                slidesPerView: 2,
-                spaceBetween: 8
-            },
-            // Tablet
-            640: {
-                slidesPerView: 3,
-                spaceBetween: 12
-            },
-            // Desktop
-            1024: {
-                slidesPerView: 5,
-                spaceBetween: 16
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("formData");
+    const userId=document.getElementById("userProfile").getAttribute('data-id');
+    // const userId = document.getElementById("userProfile").dataset.userId; // Get userId from div
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault(); 
+
+        const formData = {
+            fullName: document.getElementById("fullName").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            mobile: document.getElementById("mobile").value.trim(),
+            country: document.getElementById("country").value.trim(),
+            state: document.getElementById("state").value.trim(),
+            address: document.getElementById("address").value.trim(),
+            pincode: document.getElementById("pincode").value.trim(),
+            landmark: document.getElementById("landmark").value.trim(),
+        };
+
+        try {
+            const response = await fetch(`/userprofile/${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message);
             }
+
+            Toastify({
+                text: "Address added successfully!",
+                duration: 3000,
+                gravity: "bottom",
+                position: "center",
+                backgroundColor: "#4CAF50",
+            }).showToast();
+
+            form.reset();
+        } catch (error) {
+            Toastify({
+                text: error.message,
+                duration: 3000,
+                gravity: "bottom",
+                position: "center",
+                backgroundColor: "#FF0000",
+            }).showToast();
         }
     });
+});
+
 </script>
 
-<!-- Optional: Custom navigation button styles -->
-<style>
-    .swiper-button-next,
-    .swiper-button-prev {
-        color: #333;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 20px;
-        border-radius: 50%;
-    }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("formData");
+        const userId=document.getElementById("userProfile").getAttribute('data-id');
+    
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault(); // Prevent default form submission
+    
 
-    .swiper-button-next:after,
-    .swiper-button-prev:after {
-        font-size: 20px;
+
+
+
+
+            
+            // Collect form data
+            const formData = {
+                fullName: document.getElementById("fullName").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                mobile: document.getElementById("mobile").value.trim(),
+                country: document.getElementById("country").value.trim(),
+                state: document.getElementById("state").value.trim(),
+                address: document.getElementById("address").value.trim(),
+                pincode: document.getElementById("pincode").value.trim(),
+                landmark: document.getElementById("landmark").value.trim(),
+            };
+    
+            try {
+                const response = await fetch(`/userprofile/${userId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+    
+                const result = await response.json();
+    
+                if (!response.ok) {
+                    if (result.errors) {
+                        // Show validation errors on respective fields
+                        Object.keys(result.errors).forEach((field) => {
+                            const inputField = document.getElementById(field);
+                            if (inputField) {
+                                inputField.classList.add("border-red-500"); // Highlight the field
+                                inputField.nextElementSibling?.remove(); // Remove existing error messages
+    
+                                const errorSpan = document.createElement("span");
+                                errorSpan.className = "text-red-500 text-sm";
+                                errorSpan.textContent = result.errors[field];
+                                inputField.insertAdjacentElement("afterend", errorSpan);
+                            }
+                        });
+                    }
+                    throw new Error(result.message);
+                }
+    
+                // Success message using Toastify
+                Toastify({
+                    text: "Address added successfully!",
+                    duration: 3000,
+                    gravity: "bottom",
+                    position: "center",
+                    backgroundColor: "#4CAF50",
+                }).showToast();
+    
+                form.reset(); // Reset form after successful submission
+            } catch (error) {
+                Toastify({
+                    text: error.message,
+                    duration: 3000,
+                    gravity: "bottom",
+                    position: "center",
+                    backgroundColor: "#FF0000",
+                }).showToast();
+            }
+        });
+    });
+    
+        </script>
+
+        <script>
+                // Function to check if there's an existing address
+    function checkForExistingAddress() {
+        const savedAddress = localStorage.getItem('userAddress');
+        if (savedAddress) {
+            // If address exists, hide form and show display
+            toggleAddressDisplay();
+        }
     }
-</style>
+    
+    // Function to toggle between form and address display
+    function toggleAddressDisplay() {
+        const savedAddress = localStorage.getItem('userAddress');
+        if (savedAddress) {
+            const addressData = JSON.parse(savedAddress);
+            
+            // Update address display
+            addressDisplayContainer.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mr-3 overflow-hidden">
+                            <span class="text-gray-500 font-bold">UP</span>
+                        </div>
+                        <div>
+                            <p class="text-lg font-semibold">User Profile</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Current Address</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-gray-500 mb-1">Full Name</p>
+                            <p class="font-medium">${addressData.fullName}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500 mb-1">Email Address</p>
+                            <p class="font-medium">${addressData.email}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500 mb-1">Mobile Number</p>
+                            <p class="font-medium">${addressData.mobile}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500 mb-1">Country</p>
+                            <p class="font-medium">${addressData.country}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500 mb-1">State</p>
+                            <p class="font-medium">${addressData.state}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500 mb-1">Address</p>
+                            <p class="font-medium">${addressData.address}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500 mb-1">Pincode</p>
+                            <p class="font-medium">${addressData.pincode}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500 mb-1">Landmark</p>
+                            <p class="font-medium">${addressData.landmark || 'Not provided'}</p>
+                        </div>
+                    </div>
+                    
+                    <button id="editAddressBtn" class="mt-6 bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-edit mr-2"></i>
+                        Edit Address
+                    </button>
+                </div>
+            `;
+            
+            // Show address display and hide form
+            addressDisplayContainer.style.display = "block";
+            formContainer.style.display = "none";
+            
+            // Add event listener to edit button
+            document.getElementById('editAddressBtn').addEventListener('click', function() {
+                // Fill form with existing data
+                fillFormWithAddressData(addressData);
+                
+                // Show form and hide address display
+                formContainer.style.display = "block";
+                addressDisplayContainer.style.display = "none";
+            });
+        } else {
+            // No address data, show form and hide display
+            formContainer.style.display = "block";
+            addressDisplayContainer.style.display = "none";
+        }
+    }
+    
+    // Function to fill form with address data
+    function fillFormWithAddressData(addressData) {
+        document.getElementById('fullName').value = addressData.fullName || '';
+        document.getElementById('email').value = addressData.email || '';
+        document.getElementById('mobile').value = addressData.mobile || '';
+        document.getElementById('country').value = addressData.country || '';
+        document.getElementById('state').value = addressData.state || '';
+        document.getElementById('address').value = addressData.address || '';
+        document.getElementById('pincode').value = addressData.pincode || '';
+        document.getElementById('landmark').value = addressData.landmark || '';
+    }
+    
+    // Add event listeners to clear error styling when user starts typing
+    document.querySelectorAll('#formData input').forEach(input => {
+        input.addEventListener('input', function() {
+            this.classList.remove('border-red-500');
+            const errorMessage = this.parentNode.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.remove();
+            }
+        });
+    });
+
+        </script>

@@ -1,3 +1,4 @@
+const { name } = require('ejs');
 const uploads = require('../../config/multer');
 const Category = require('../../models/categoryModel');
 
@@ -11,9 +12,9 @@ const categoryController = {
         // Search functionality
         if (search) {
             filter.$or = [
-                { category: { $regex: search, $options: 'i' } },
+                { name: { $regex: search, $options: 'i' } },
                 { slug: { $regex: search, $options: 'i' } },
-              
+               
             ];
         }
 
@@ -39,6 +40,8 @@ let sortOptions = { createdAt: -1 };
         let totalPages =Math.ceil(totalProducts/itemsPerPage)
         
         res.render('category', { category, message: null ,
+          search,             // Add this
+    statusFilter,
           currentPage,
                 totalPages,
                 hasNextPage: currentPage < totalPages,
@@ -75,7 +78,7 @@ if(!/^[a-z0-9]+$/.test(slug)){
 
       const existingCategory = await Category.findOne({$or:[{name:{$regex:new RegExp(`^${name}$`,'i')}},{slug:{$regex:new RegExp(`^${slug}$`,'i')}}]});
    if(existingCategory) {  
-      if (existingCategory.name.toLowerCase()===name.toLowerCase()) {
+      if (existingCategory.name===name) {
         return res.status(400).json({ success: false, message: 'category already exists' });
       }
       if(existingCategory.slug.toLowerCase()===slug.toLowerCase()){

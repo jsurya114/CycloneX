@@ -10,6 +10,8 @@ const nocache = require('../../middlewares/nocache');
 const userController=require('../../controllers/user/userController')
 const passwordController = require('../../controllers/user/passwordcontroller');
 const shopController = require('../../controllers/user/shopController');
+const productController = require('../../controllers/admin/productController');
+const cartController = require('../../controllers/user/cartController')
 
 router.use(userEnsure);
 
@@ -25,7 +27,7 @@ router.get('/forgotpassword',userEnsure,passwordController.showforgotpassword)
 router.post('/forgotpassword',passwordController.forgotpassword)
 router.post('/verifyAndUpdatePassword',passwordController.verifyAndUpdatePassword)
 router.post('/resendotp',passwordController.resendOTP)
-router.get('/resetpassword',userEnsure,passwordController.showresetpassword)
+router.get('/resetpassword',verifyUser,passwordController.showresetpassword)
 router.post('/resetpassword',passwordController.resetPassword)
 // Google authentication routes
 console.log('invoked routes');
@@ -40,12 +42,22 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
 });
 
 router.get('/home', verifyUser, nocache, userController.home);
-router.get('/shoplist',verifyUser,nocache,shopController.shopList)
+router.get('/shoplist',verifyUser,shopController.shopList)
 router.post('/shoplist',shopController.shopList)
-router.get('/productdetails/:id',userController.productDetails)
+router.get('/productdetails/:id',verifyUser,userController.productDetails)
+router.get('/product/:id',verifyUser,productController.quickView)
 router.get('/logout', verifyUser, userController.logout);
 
+router.get('/userprofile/:userId',verifyUser,userController.showUserProfile)
+router.post('/userprofile/:userId',userController.userAddress)
 
+
+
+router.get('/orders',verifyUser,shopController.order)
+router.get('/addtocart',verifyUser,cartController.showCartPage)
+router.post('/addtocart',cartController.addToCart)
+router.put('/addtocart/:productId',cartController.updateQuantity)
+router.delete('/addtocart/:productId',cartController.removeFromCart)
 
 
 

@@ -125,7 +125,15 @@ const authController = {
       
           const salt = await bcrypt.genSalt(5);
           const hashedPassword = await bcrypt.hash(password, salt);
-          const otp = generateOTP();
+          const otp = 
+          
+          
+          
+          
+          
+          
+          
+          generateOTP();
           console.log(otp);
           const otpExpires = new Date(Date.now() + (1 * 60 * 1000));
       
@@ -147,7 +155,7 @@ const authController = {
         
 
       
-          res.status(200).json({ success: true, message: 'Signup successful. OTP sent to email.' });
+          res.status(201).json({ success: true, message: 'Signup successful. OTP sent to email.' });
       
         } catch (error) {
           console.error('Error during signup:', error);

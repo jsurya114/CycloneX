@@ -1,421 +1,714 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - CyclePro</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<%-include('partials/head')%>
-<body class="bg-gray-50">
-    <%-include('partials/loaders') %>
-    <!-- Quick view -->
-    <div class="modal fade custom-modal" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content rounded-xl shadow-2xl">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="modal-body p-6">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-12 col-xs-12">
-                            <div class="detail-gallery">
-                                <span class="zoom-icon"><i class="fi-rs-search"></i></span>
-                                <!-- MAIN SLIDES -->
-                                <div class="product-image-slider">
-                                    <% if (product.images && Array.isArray(product.images)) { %>
-                                        <% product.images.forEach((image, index) => { %>
-                                            <figure class="border-radius-10 overflow-hidden transition-all duration-300 hover:shadow-lg">
-                                                <img src="/<%= image %>" alt="<%= product.productName %>" class="w-full h-auto object-cover">
-                                            </figure>
-                                        <% }) %>
-                                    <% } else { %>
-                                        <p class="text-gray-500 italic">No images available for this product.</p>
-                                    <% } %>
-                                </div>
-                                <!-- THUMBNAILS -->
-                                <div class="slider-nav-thumbnails pl-15 pr-15 mt-4 flex flex-wrap gap-2">
-                                    <% if (product.images && Array.isArray(product.images)) { %>
-                                        <% product.images.forEach((image, index) => { %>
-                                            <div class="border-2 border-transparent rounded-md overflow-hidden transition-all duration-200 hover:border-blue-500 cursor-pointer">
-                                                <img src="/<%= image %>" alt="<%= product.productName %>" class="w-16 h-16 object-cover">
-                                            </div>
-                                        <% }) %>
-                                    <% } %>
-                                </div>
-                            </div>
-                            <!-- End Gallery -->
-                        </div>
-                        <div class="col-md-6 col-sm-12 col-xs-12">
-                            <div class="detail-info p-4">
-                                <h3 class="text-2xl font-bold text-gray-800 mt-6 mb-3"><%= product.productName %></h3>
-                                <div class="product-detail-rating flex items-center justify-between mb-3">
-                                    <div class="pro-details-brand">
-                                        <span class="text-gray-600"> 
-                                            <span class="font-medium">Brands:</span> 
-                                            <% if (product.brands && product.brands.name) { %>
-                                                <a href="shop-grid-right.html" class="text-blue-600 hover:text-blue-800 transition-colors"><%= product.brands.name %></a>
-                                            <% } else { %>
-                                                <span class="text-gray-400 italic">No brand available</span>
-                                            <% } %>
-                                        </span>
-                                    </div>
-                                    <div class="product-rate-cover text-end">
-                                        <div class="product-rate d-inline-block">
-                                            <div class="product-rating" style="width:90%"></div>
-                                        </div>
-                                        <span class="text-sm ml-2 text-gray-500"> (25 reviews)</span>
-                                    </div>
-                                </div>
-                                <div class="clearfix product-price-cover mb-4">
-                                    <div class="product-price primary-color float-left">
-                                        <ins><span class="text-xl font-bold text-blue-600">₹<%= product.price %></span></ins>
-                                    </div>
-                                </div>
-                                <div class="border-t border-gray-200 my-4"></div>
-                                <div class="short-desc mb-6">
-                                    <p class="text-gray-600 leading-relaxed"><%= product.description %></p>
-                                </div>
-                                <div class="border-t border-gray-200 my-5"></div>
-                                <div class="detail-extralink flex flex-wrap items-center gap-4">
-                                    <div class="detail-qty border rounded-full flex items-center overflow-hidden bg-white shadow-sm">
-                                        <a href="#" class="qty-down p-2 px-3 text-gray-500 hover:bg-gray-100 transition-colors"><i class="fi-rs-angle-small-down"></i></a>
-                                        <span class="qty-val px-3 font-medium">1</span>
-                                        <a href="#" class="qty-up p-2 px-3 text-gray-500 hover:bg-gray-100 transition-colors"><i class="fi-rs-angle-small-up"></i></a>
-                                    </div>
-                                    <div class="product-extra-link2 flex gap-2">
-                                        <button type="submit" class="button button-add-to-cart bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2">
-                                            <i class="fi-rs-shopping-cart mr-1"></i> Add to cart
-                                        </button>
-                                        <a aria-label="Add To Wishlist" class="action-btn hover-up bg-white p-3 rounded-full shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-blue-400" href="shop-wishlist.html">
-                                            <i class="fi-rs-heart text-gray-600"></i>
-                                        </a>
-                                        <a aria-label="Compare" class="action-btn hover-up bg-white p-3 rounded-full shadow-sm hover:shadow-md transition-all border border-gray-200 hover:border-blue-400" href="shop-compare.html">
-                                            <i class="fi-rs-shuffle text-gray-600"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <ul class="product-meta font-xs text-gray-500 mt-8 space-y-2">
-                                    <li class="flex items-center">
-                                        <span class="mr-2">Availability:</span> 
-                                        <span class="in-stock text-green-600 font-medium"><%= product.stock %> Items In Stock</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!-- Detail Info -->
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#f97316',
+                        dark: '#0f172a'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Custom scrollbar for Webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Price range slider styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #2563eb;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #2563eb;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Checkbox styling */
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .custom-checkbox:hover {
+            background-color: #f3f4f6;
+            border-radius: 0.375rem;
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+            margin-right: 0.5rem;
+            border-radius: 0.25rem;
+            border: 1.5px solid #d1d5db;
+            transition: all 0.2s;
+        }
+
+        .custom-checkbox input[type="checkbox"]:checked {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+   <%-include('partials/header')  %>
+
+    <!-- Page Title -->
+    <div class="bg-gradient-to-r from-primary to-blue-700 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-bold text-white mb-2">Shop</h1>
+            <div class="flex items-center text-blue-100">
+                
+                <%- include('partials/breadcrumbs') %>
+            </div>  
         </div>
     </div>
-   <%-include('partials/header')%>
-   <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mt-3">Shops</h1>
- 
-   <%-include('partials/breadcrumbs')%>
-   <main class="main">
+    
 
-
-    <section class="product-tabs pt-6 pb-6 wow fadeIn animated">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <!-- Search Bar with Enhanced Tailwind UI -->
-                    <div class="tab-header flex flex-wrap items-center p-6 bg-white rounded-xl shadow-md border border-gray-100 gap-4 mb-8 transition-all duration-300 hover:shadow-lg">
-                        <!-- Search Bar and Buttons Container -->
-                        <div class="flex flex-wrap items-center gap-4 w-full">
-                            <!-- Search Input with Icon -->
-                            <div class="relative flex items-center flex-grow max-w-md">
-                                <span class="absolute left-3 text-gray-400">
-                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
-                                        <circle cx="11" cy="11" r="8"/>
-                                        <path d="m21 21-4.3-4.3"/>
-                                    </svg> -->
-                                </span>
-                                <input type="text" id="searchInput" placeholder="Search products..."
-                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm">
-                                
-                                <!-- Cancel Button -->
-                                <button id="clearBtn"
-                                    class="ml-2 px-4 py-3 bg-gray-500 text-white rounded-lg text-sm hover:bg-gray-600 transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
-                                        <path d="M18 6 6 18"/>
-                                        <path d="m6 6 12 12"/>
-                                    </svg>
-                                    Clear
-                                </button>
-                            </div>
-                        
-                            <!-- Filters and Sorting -->
-                            <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
-                                <!-- Sort Dropdown -->
-                                <div class="flex items-center gap-2 w-full sm:w-auto">
-                                    <label for="sortBy" class="text-sm text-gray-700 font-medium whitespace-nowrap">Sort by:</label>
-                                    <select id="sortBy"
-                                        class="w-full sm:w-48 px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-no-repeat bg-right pr-8"
-                                        style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%236B7280\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m6 9 6 6 6-6\"/></svg>'); background-position: right 10px center;">
-                                        <option value="">Sort By</option>
-                                        <option value="priceLowHigh">Price: Low to High</option>
-                                        <option value="priceHighLow">Price: High to Low</option>
-                                        <option value="aToZ">A-Z</option>
-                                        <option value="zToA">Z-A</option>
-                                    </select>
-                                </div>
-                        
-                                <!-- Category Filter -->
-                                <div class="flex items-center gap-2 w-full sm:w-auto">
-                                    <label for="categoryFilter" class="text-sm text-gray-700 font-medium whitespace-nowrap">Category:</label>
-                                    <select id="categoryFilter"
-                                        class="w-full sm:w-48 px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-no-repeat bg-right pr-8"
-                                        style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%236B7280\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m6 9 6 6 6-6\"/></svg>'); background-position: right 10px center;">
-                                        <option value="">All Categories</option>
-                                        <% categories.forEach(cat => { %>
-                                            <option value="<%= cat.name %>"><%= cat.name %></option>
-                                        <% }); %>
-                                    </select>
-                                </div>
-                        
-                                <!-- Brand Filter -->
-                                <div class="flex items-center gap-2 w-full sm:w-auto">
-                                    <label for="brandFilter" class="text-sm text-gray-700 font-medium whitespace-nowrap">Brand:</label>
-                                    <select id="brandFilter"
-                                        class="w-full sm:w-48 px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm appearance-none bg-no-repeat bg-right pr-8"
-                                        style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%236B7280\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m6 9 6 6 6-6\"/></svg>'); background-position: right 10px center;">
-                                        <option value="">All Brands</option>
-                                        <% brands.forEach(brand => { %>
-                                            <option value="<%= brand.name %>"><%= brand.name %></option>
-                                        <% }); %>
-                                    </select>
-                                </div>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Sidebar Filters -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+                    <h2 class="text-xl font-bold mb-6">Filters</h2>
+                    
+                    <!-- Categories -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold mb-3">Categories</h3>
+                        <div id="categoryFiltersContainer">
+                            <div class="space-y-2">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" id="allCategories" class="accent-primary" name="categoryFilter" checked>
+                                    <span class="ml-2">All Categories</span>
+                                </label>
+                                <% categories.forEach(cat => { %>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="accent-primary" name="categoryFilter" value="<%= cat.name %>" disabled>
+                                    <span class="ml-2"><%= cat.name %></span>
+                                </label>
+                                <% }) %>
                             </div>
                         </div>
                     </div>
                     
-                    <!--End nav-tabs-->
-                    <div class="tab-content wow fadeIn animated" id="myTabContent">
-                        <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
-                            
-                            <!-- Product Grid with Fixed Height/Width -->
-                            <div class="row product-grid-4">
-                                <% if (product.length > 0) { %>
-                                    <% product.forEach(pro => { %>
-                                        <div class="col-lg-3 col-md-4 col-6 col-sm-6">
-                                            <!-- Fixed height product card container -->
-                                            <div class="product-cart-wrap mb-30 bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 hover:shadow-lg border border-gray-100 hover:border-blue-200 h-full flex flex-col">
-                                                <!-- Fixed height for image section -->
-                                                <div class="product-img-action-wrap p-2 relative" style="height: 220px;">
-                                                    <div class="product-img product-img-zoom overflow-hidden rounded-lg h-full">
-                                                        <a href="/productdetails/<%= pro._id%>" class="block h-full">
-                                                            <img class="default-img w-full h-full object-cover transform transition-transform duration-700 hover:scale-110" src="/<%= pro.mainImage %>" alt="<%= product.productName %>">
-                                                            <img class="hover-img w-full h-full object-cover absolute top-0 left-0 opacity-0 transition-opacity duration-700 hover:opacity-100" src="/<%= pro.images[0] %>" alt="<%= product.productName %>">
-                                                        </a>
-                                                    </div>
-                                                    <div class="product-action-1 absolute top-4 right-4 flex flex-col gap-2">
-                                                        <a aria-label="Quick view" class="action-btn bg-white p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-blue-50" data-bs-toggle="modal" data-bs-target="#quickViewModal">
-                                                            <i class="fi-rs-eye text-gray-600"></i>
-                                                        </a>
-                                                        <a aria-label="Add To Wishlist" class="action-btn bg-white p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-blue-50" href="#">
-                                                            <i class="fi-rs-heart text-gray-600"></i>
-                                                        </a>
-                                                        <a aria-label="Compare" class="action-btn bg-white p-2 rounded-full shadow-sm hover:shadow-md transition-all hover:bg-blue-50" href="shop-compare.html">
-                                                            <i class="fi-rs-shuffle text-gray-600"></i>
-                                                        </a>
-                                                    </div>
-                                                    <div class="product-badges product-badges-position product-badges-mrg absolute top-4 left-4">
-                                                        <span class="hot bg-blue-600 text-white text-xs py-1 px-2 rounded-full"><%= pro.brands.name%></span>
-                                                    </div>
-                                                </div>
-                                                <!-- Fixed height content section -->
-                                                <div class="product-content-wrap p-4 flex flex-col flex-grow">
-                                                    <div class="product-category mb-1">
-                                                        <a href="shop-grid-right.html" class="text-xs text-gray-500 hover:text-blue-600 transition-colors"><%= pro.category.name %></a>
-                                                    </div>
-                                                    <!-- Fixed height for title with truncation -->
-                                                    <h2 class="mb-2 h-12 overflow-hidden">
-                                                        <a href="/productdetails/<%= pro._id%>" class="text-base font-medium text-gray-800 hover:text-blue-600 transition-colors line-clamp-2"><%= pro.productName %></a>
-                                                    </h2>
-                                                    <div class="rating-result mb-2" title="90%">
-                                                        <!-- Star Rating Placeholder -->
-                                                        <!-- <div class="flex">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#FFB800" stroke="#FFB800" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star">
-                                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                                                            </svg>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#FFB800" stroke="#FFB800" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star">
-                                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                                                            </svg>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#FFB800" stroke="#FFB800" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star">
-                                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                                                            </svg>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#FFB800" stroke="#FFB800" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star">
-                                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                                                            </svg>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#E5E7EB" stroke="#E5E7EB" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star">
-                                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                                                            </svg>
-                                                        </div> -->
-                                                    </div>
-                                                    <!-- Spacer to push the add to cart button to the bottom -->
-                                                    <div class="flex-grow"></div>
-                                                    <div class="product-price mb-4">
-                                                        <span class="text-lg font-bold text-blue-600">$<%= pro.price %></span>
-                                                    </div>
-                                                    <div class="product-action-1 show">
-                                                        <a aria-label="Add To Cart" class="action-btn hover-up w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2" href="shop-cart.html">
-                                                            <i class="fi-rs-shopping-bag-add"></i>
-                                                            <span>Add to Cart</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <% }) %>
-                            </div>
-                            <!-- Pagination Area -->
-                            <%- include('partials/pagination')%>
-                                <% } else { %>
-                                    <div class="col-12">
-                                        <div class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-search mx-auto mb-4">
-                                                <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
-                                                <path d="M16.5 9.4 7.55 4.24"/>
-                                                <polyline points="3.29 7 12 12 20.71 7"/>
-                                                <line x1="12" y1="22" x2="12" y2="12"/>
-                                                <circle cx="18.5" cy="15.5" r="2.5"/>
-                                                <path d="M20.27 17.27 22 19"/>
-                                            </svg>
-                                            <p class="text-gray-500 text-lg mb-4">No products found.</p>
-                                            <button onclick="window.location.href='/shoplist'" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2 mx-auto">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="m15 18-6-6 6-6"/>
-                                                </svg>
-                                                Back to All Products
-                                            </button>
-                                        </div>
-                                    </div>
-                                <% } %>
-                            </div>
-
-                            <!--End product-grid-4-->
+                    <!-- Price Range -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold mb-3">Price Range</h3>
+                        <input 
+                            type="range" 
+                            min="0" 
+                            max="100000" 
+                            value="50000" 
+                            class="w-full"
+                            id="priceRange"
+                        >
+                        <div class="flex justify-between mt-2">
+                            <span class="text-sm text-gray-600">₹0</span>
+                            <span class="text-sm font-medium" id="priceValue">₹50,000</span>
+                            <span class="text-sm text-gray-600">₹100,000</span>
                         </div>
-                        <!--End tab one (Featured)-->
                     </div>
-                    <!--End tab-content-->
+                    
+                    <!-- Brands -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold mb-3">Brands</h3>
+                        <div id="brandFiltersContainer" class="space-y-2">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" id="allBrands" class="accent-primary" name="brandsFilter" checked>
+                                <span class="ml-2">All Brands</span>
+                            </label>
+                            <% brands.forEach(brand => { %>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="accent-primary" name="brandsFilter" value="<%= brand.name %>" disabled>
+                                <span class="ml-2"><%= brand.name %></span>
+                            </label>
+                            <% }); %>
+                        </div>
+                    </div>
+                    
+                    
+                    <!-- Colors -->
+                    <!-- <div class="mb-6">
+                        <h3 class="font-semibold mb-3">Colors</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="w-8 h-8 rounded-full bg-black border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
+                            <button class="w-8 h-8 rounded-full bg-red-500 border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
+                            <button class="w-8 h-8 rounded-full bg-blue-500 border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
+                            <button class="w-8 h-8 rounded-full bg-green-500 border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
+                            <button class="w-8 h-8 rounded-full bg-yellow-500 border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
+                        </div>
+                    </div> -->
+                    
+                    <!-- Apply Filters Button -->
+                    <button class="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition-colors duration-200">
+                        Apply Filters
+                    </button>
                 </div>
             </div>
+
+            <!-- Products Grid -->
+            <div class="lg:w-3/4">
+                <!-- Sort and View Options -->
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-600">Sort by:</span>
+                            <select id="sortBy" class="border rounded-md px-2 py-1 focus:outline-none focus:border-primary">
+                                <option value="">Featured</option>
+                                <option value="priceLowHigh">Price: Low to High</option>
+                                <option value="priceHighLow">Price: High to Low</option>
+                                <option value="newest">Newest</option>
+                                <option value="aToZ">A to Z</option>
+                                <option value="zToA">Z to A</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-gray-600">View:</span>
+                            <button class="p-2 bg-primary text-white rounded-md">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button class="p-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Products list-->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Product Card -->
+    <% if (product.length > 0) { %>
+        <% product.forEach(pro => { %>
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden group">
+        <div class="relative">
+            <a href="/productdetails/<%= pro._id%>" class="block w-full h-full"> 
+                <img 
+                    src="/<%= pro.mainImage %>" 
+                    alt="<%= pro.productName %>" 
+                    class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300"
+                >
+            </a>
+            <div class="absolute top-4 left-4">
+                <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
+                    <%= pro.brands ? pro.brands.name : 'No Brand' %>
+                </span>
+            </div>
+            <!-- Wishlist Button -->
+            <button 
+                onclick="toggleWishlist('<%= pro._id %>')" 
+                class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
+                aria-label="Add to wishlist"
+            >
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="2" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
+                    data-product-id="<%= pro._id %>"
+                >
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+            </button>
+            <button class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-gray-100">
+                Quick View
+            </button>
         </div>
+        <div class="p-4">
+            <a href="/productdetails/<%= pro._id%>" class="text-base font-medium text-gray-800 hover:text-blue-600 transition-colors line-clamp-2"> 
+                <h3 class="text-lg font-semibold mb-2"><%= pro.productName %></h3>
+            </a>
+           
+            <div class="flex items-center mb-2">
+                <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="text-gray-500 text-sm ml-2">(4.5)</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-xl font-bold text-primary">₹<%= pro.price %></span>
+                <button onclick="addToCart('<%= pro._id %>')" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
+    <% }) %>
+<% } else { %>
+    <div class="col-span-full">
+        <div class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-search mx-auto mb-4">
+                <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+                <path d="M16.5 9.4 7.55 4.24"/>
+                <polyline points="3.29 7 12 12 20.71 7"/>
+                <line x1="12" y1="22" x2="12" y2="12"/>
+                <circle cx="18.5" cy="15.5" r="2.5"/>
+                <path d="M20.27 17.27 22 19"/>
+            </svg>
+            <p class="text-gray-500 text-lg mb-4">No products found.</p>
+            <button onclick="window.location.href='/'" class="btn-primary flex items-center gap-2 mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"/>
+                </svg>
+                Back to All Products
+            </button>
+        </div>
+    </div>
+<% } %>
+</div>
 
-          <!-- Pagination Area -->
-    
-    </section>
+                <!-- Pagination -->
+                  
+            <% if (product.length > 0) { %>
+                <div class="mt-10 text-center">
+                    <%- include('partials/pagination')%>
+                </div>
+            <% } %>
+            </div>
+        </div>
+    </div>
+<!-- Toast Notification -->
+<div id="toast" class="hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
+    <span id="toast-message"></span>
+</div>
+    <!-- Footer -->
+   <%-include('partials/footer') %>
 
-</main>
+   
 
-<%-include('partials/footer') %>
-<!-- Preloader Start -->
 
-<!-- Vendor JS-->
-<%-include('partials/script') %>
-<!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById("searchInput");
-        const brandFilter = document.getElementById("brandFilter");
-        const categoryFilter = document.getElementById("categoryFilter");
-        const sortSelect = document.getElementById("sortBy");
-        const clearBtn = document.getElementById("clearBtn");
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
 
-        // Ensure all product cards have equal height
-        function equalizeCardHeights() {
-            const productCards = document.querySelectorAll('.product-cart-wrap');
-            let maxHeight = 0;
-            
-            // Reset heights first
-            productCards.forEach(card => {
-                card.style.height = 'auto';
-                const height = card.offsetHeight;
-                maxHeight = Math.max(maxHeight, height);
-            });
-            
-            // Set all cards to the height of the tallest
-            productCards.forEach(card => {
-                card.style.height = `${maxHeight}px`;
-            });
+        toastMessage.textContent = message;
+        toast.classList.remove('hidden');
+
+        if (isError) {
+            toast.classList.add('bg-red-500');
+        } else {
+            toast.classList.remove('bg-red-500');
+            toast.classList.add('bg-gray-800');
         }
 
-        // Debounce function to delay execution
-        function debounce(func, delay) {
-            let timer;
-            return function (...args) {
-                clearTimeout(timer);
-                timer = setTimeout(() => func.apply(this, args), delay);
-            };
+        setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 3000); // Hide after 3 seconds
+    }
+
+    function addToCart(productId) {
+    fetch('/addtocart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productId,
+            quantity: 1 // Default quantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        if (data.success) {
+            showToast('Product added to cart!');
+        } else {
+            showToast('Failed to add product to cart.', true);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('An error occurred.', true);
+    });
+}
+</script>
+    <!-- JavaScript for Price Range -->
+    <script>
+        const priceRange = document.getElementById('priceRange');
+        const priceValue = document.getElementById('priceValue');
 
-        // Apply filters when input changes (debounced)
-        function applyFilters() {
-            const queryParams = new URLSearchParams();
+        priceRange.addEventListener('input', function() {
+            const value = this.value;
+            priceValue.textContent = '₹' + parseInt(value).toLocaleString();
+        });
+    </script>
 
-            // Get all filter values
-            const search = searchInput.value.trim();
-            const brand = brandFilter.value;
-            const category = categoryFilter.value;
-            const sort = sortSelect?.value;
 
-            // Add non-empty filters to query params
-            if (search) queryParams.append("search", search);
-            if (brand) queryParams.append("brandsFilter", brand);
-            if (category) queryParams.append("categoryFilter", category);
-            if (sort) queryParams.append("sortBy", sort);
+<script>
 
-            // Navigate to filtered URL
-            window.location.href = `/shoplist?${queryParams.toString()}`;
+function addToCart(productId) {
+    fetch('/addtocart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+           
+            productId: productId,
+            quantity: 1 // Default quantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Product added to cart!');
+        } else {
+            showToast('Failed to add product to cart.', true);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('An error occurred.', true);
+    });
+}
 
-        // Clear all filters
-        function clearFilters() {
-            searchInput.value = "";
-            brandFilter.value = "";
-            categoryFilter.value = "";
-            if (sortSelect) sortSelect.value = "";
-            window.location.href = '/shoplist';
-        }
 
-        // Debounced function for search input
-        const debouncedSearch = debounce(applyFilters, 500); // Adjust delay as needed
 
-        // Add event listeners
-        searchInput.addEventListener("input", debouncedSearch);
-        brandFilter.addEventListener("change", applyFilters);
-        categoryFilter.addEventListener("change", applyFilters);
-        sortSelect?.addEventListener("change", applyFilters);
-        clearBtn.addEventListener("click", clearFilters);
+ // This would replace your existing JavaScript file content
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortBy");
+    const clearBtn = document.getElementById("clearBtn");
+    const applyFiltersBtn = document.querySelector('button.w-full.bg-primary.text-white');
+    const priceRange = document.getElementById("priceRange");
+    const priceValue = document.getElementById("priceValue");
 
-        // Restore filter values from URL on page load
-        function restoreFiltersFromURL() {
-            const params = new URLSearchParams(window.location.search);
-            searchInput.value = params.get("search") || "";
-            brandFilter.value = params.get("brandsFilter") || "";
-            categoryFilter.value = params.get("categoryFilter") || "";
-            if (sortSelect) sortSelect.value = params.get("sortBy") || "";
-        }
+    // Update price value display
+    if (priceRange && priceValue) {
+        priceRange.addEventListener('input', function() {
+            priceValue.textContent = `₹${parseInt(this.value).toLocaleString()}`;
+        });
+    }
 
-        // Initialize filters from URL
-        restoreFiltersFromURL();
-        
-        // Add animation to product cards
+    // Ensure all product cards have equal height
+    function equalizeCardHeights() {
         const productCards = document.querySelectorAll('.product-cart-wrap');
+        let maxHeight = 0;
+        
+        // Reset heights first
         productCards.forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.classList.add('transform', 'translate-y-[-5px]');
-            });
-            card.addEventListener('mouseleave', () => {
-                card.classList.remove('transform', 'translate-y-[-5px]');
-            });
+            card.style.height = 'auto';
+            const height = card.offsetHeight;
+            maxHeight = Math.max(maxHeight, height);
+        });
+        
+        // Set all cards to the height of the tallest
+        productCards.forEach(card => {
+            card.style.height = `${maxHeight}px`;
+        });
+    }
+
+    // Debounce function to delay execution
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    // Apply filters when input changes (debounced)
+    function applyFilters() {
+        const queryParams = new URLSearchParams();
+
+        // Get search value
+        const search = searchInput?.value.trim();
+        
+        // Get checked categories
+        const checkedCategories = document.querySelectorAll('input[name="categoryFilter"]:checked');
+        let categoryValues = [];
+        
+        checkedCategories.forEach(checkbox => {
+            if (checkbox.id !== 'allCategories') {
+                // Get the category name from the span element next to the checkbox
+                const categoryName = checkbox.nextElementSibling.textContent.trim();
+                categoryValues.push(categoryName);
+            }
         });
 
-        // Run equalize heights on page load and window resize
-        equalizeCardHeights();
-        window.addEventListener('resize', debounce(equalizeCardHeights, 200));
+        // Get checked brands
+        const checkedBrands = document.querySelectorAll('input[name="brandsFilter"]:checked');
+        let brandValues = [];
         
-        // Run again after images load for more accurate heights
-        window.addEventListener('load', equalizeCardHeights);
+        checkedBrands.forEach(checkbox => {
+            if (checkbox.id !== 'allBrands') {
+                // Get the brand name from the span element next to the checkbox
+                const brandName = checkbox.nextElementSibling.textContent.trim();
+                brandValues.push(brandName);
+            }
+        });
+
+        // Get price range
+        const maxPrice = priceRange?.value;
+
+        // Get sort value
+        const sort = sortSelect?.value;
+
+        // Add non-empty filters to query params
+        if (search) queryParams.append("search", search);
+        if (categoryValues.length > 0 && !document.getElementById('allCategories').checked) {
+            queryParams.append("categoryFilter", categoryValues[0]); // Currently backend handles only one category
+        }
+        if (brandValues.length > 0 && !document.getElementById('allBrands').checked) {
+            queryParams.append("brandsFilter", brandValues[0]); // Currently backend handles only one brand
+        }
+        if (maxPrice) queryParams.append("maxPrice", maxPrice);
+        if (sort) queryParams.append("sortBy", sort);
+
+        // Navigate to filtered URL
+        window.location.href = `/shoplist?${queryParams.toString()}`;
+    }
+
+    // Function to handle "All Categories" checkbox
+    function handleAllCategories() {
+        const allCategoriesCheckbox = document.getElementById('allCategories');
+        const categoryCheckboxes = document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)');
+        
+        if (allCategoriesCheckbox) {
+            allCategoriesCheckbox.addEventListener('change', function() {
+                categoryCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.disabled = this.checked;
+                });
+            });
+            
+            // If any individual category is checked, uncheck "All Categories"
+            categoryCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        allCategoriesCheckbox.checked = false;
+                    }
+                });
+            });
+        }
+    }
+
+    // Function to handle "All Brands" checkbox
+    function handleAllBrands() {
+        const allBrandsCheckbox = document.getElementById('allBrands');
+        const brandCheckboxes = document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)');
+        
+        if (allBrandsCheckbox) {
+            allBrandsCheckbox.addEventListener('change', function() {
+                brandCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.disabled = this.checked;
+                });
+            });
+            
+            // If any individual brand is checked, uncheck "All Brands"
+            brandCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        allBrandsCheckbox.checked = false;
+                    }
+                });
+            });
+        }
+    }
+
+    // Clear all filters
+    function clearFilters() {
+        const allCategoriesCheckbox = document.getElementById('allCategories');
+        const allBrandsCheckbox = document.getElementById('allBrands');
+        
+        if (searchInput) searchInput.value = "";
+        if (allCategoriesCheckbox) allCategoriesCheckbox.checked = true;
+        if (allBrandsCheckbox) allBrandsCheckbox.checked = true;
+        
+        document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.disabled = true;
+        });
+        
+        document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.disabled = true;
+        });
+        
+        if (sortSelect) sortSelect.value = "";
+        if (priceRange) priceRange.value = priceRange.max / 2;
+        if (priceValue) priceValue.textContent = `₹${parseInt(priceRange.value).toLocaleString()}`;
+        
+        window.location.href = '/shoplist';
+    }
+
+    // Restore filter values from URL on page load
+    function restoreFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        
+        // Restore search
+        if (searchInput) searchInput.value = params.get("search") || "";
+        
+        // Restore category filters
+        const categoryParam = params.get("categoryFilter");
+        if (categoryParam) {
+            const allCategoriesCheckbox = document.getElementById('allCategories');
+            if (allCategoriesCheckbox) {
+                allCategoriesCheckbox.checked = false;
+            }
+            
+            // Check the appropriate category checkbox
+            document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
+                const categoryName = checkbox.nextElementSibling.textContent.trim();
+                checkbox.checked = categoryName === categoryParam;
+                checkbox.disabled = false;
+            });
+        }
+        
+        // Restore brand filters
+        const brandParam = params.get("brandsFilter");
+        if (brandParam) {
+            const allBrandsCheckbox = document.getElementById('allBrands');
+            if (allBrandsCheckbox) {
+                allBrandsCheckbox.checked = false;
+            }
+            
+            // Check the appropriate brand checkbox
+            document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
+                const brandName = checkbox.nextElementSibling.textContent.trim();
+                checkbox.checked = brandName === brandParam;
+                checkbox.disabled = false;
+            });
+        }
+        
+        // Restore price range
+        const maxPriceParam = params.get("maxPrice");
+        if (maxPriceParam && priceRange && priceValue) {
+            priceRange.value = maxPriceParam;
+            priceValue.textContent = `₹${parseInt(maxPriceParam).toLocaleString()}`;
+        }
+        
+        // Restore sort
+        if (sortSelect) {
+            sortSelect.value = params.get("sortBy") || "";
+        }
+    }
+
+    // Add event listeners
+    if (searchInput) {
+        searchInput.addEventListener("input", debounce(applyFilters, 500));
+    }
+    
+    if (sortSelect) {
+        sortSelect.addEventListener("change", applyFilters);
+    }
+    
+    if (clearBtn) {
+        clearBtn.addEventListener("click", clearFilters);
+    }
+    
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener("click", applyFilters);
+    }
+    
+    if (priceRange) {
+        priceRange.addEventListener("change", applyFilters);
+    }
+
+    // Initialize checkbox handlers
+    handleAllCategories();
+    handleAllBrands();
+    
+    // Initialize filters from URL
+    restoreFiltersFromURL();
+    
+    // Add animation to product cards
+    const productCards = document.querySelectorAll('.product-cart-wrap');
+    productCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.classList.add('transform', 'translate-y-[-5px]');
+        });
+        card.addEventListener('mouseleave', () => {
+            card.classList.remove('transform', 'translate-y-[-5px]');
+        });
     });
+
+    // Run equalize heights on page load and window resize
+    equalizeCardHeights();
+    window.addEventListener('resize', debounce(equalizeCardHeights, 200));
+    
+    // Run again after images load for more accurate heights
+    window.addEventListener('load', equalizeCardHeights);
+});
+
 </script>
-
 </body>
-
 </html>

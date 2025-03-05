@@ -20,6 +20,9 @@ const userEnsure = async (req, res, next) => {
             }
             throw error;
         }
+        if(decodedToken?.resetPassword){
+            return next();
+        }
 
         const user = await User.findById(decodedToken.id);
         if (!user) {
@@ -29,7 +32,7 @@ const userEnsure = async (req, res, next) => {
         req.user = user;
 
         // Redirect authenticated user from root or signup to home
-        if (req.path === '/' || req.path === '/signup'||req.path==='/shoplist'||req.path==='/productdetails' ||req.path==='/resetpassword'||req.path==='/forgotpassword'|| req.path.includes('admin')) {
+        if (req.path === '/' || req.path === '/signup'|| req.path==='/resetpassword' || req.path==='/forgotpassword'|| req.path.includes('admin')) {
             return res.redirect('/home');
         }
 

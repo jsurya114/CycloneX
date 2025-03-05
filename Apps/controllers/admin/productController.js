@@ -8,6 +8,20 @@ const sharp = require('sharp')
 const fs = require('fs')
 
 const productController = {
+quickView:async (req,res,next) => {
+try {
+  const product=await Product.findById(req.params.id).populate('brands').populate('category')
+
+  if (!product) {
+    return res.status(404).send('Product not found');
+  }
+  res.render('quickview', { product });
+} catch (error) {
+  console.error(err);
+  res.status(500).render('500')
+}
+},
+
   showAddProductPage: async (req, res,next) => {
     try { 
       const brands = await Brand.find();
@@ -136,7 +150,7 @@ const productController = {
       
     } catch (error) {
       console.log(error);
-      res.status(500).send('internal server error');
+      next(error)
     }
   },
   

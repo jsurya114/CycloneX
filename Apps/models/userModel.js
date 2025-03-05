@@ -1,3 +1,4 @@
+const { timeStamp } = require("console");
 const mongoose = require("mongoose");
 const { type } = require("os");
 
@@ -10,14 +11,12 @@ const UserSchema = new mongoose.Schema({
     status:{type:String},
     isVerified: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date },
+    // createdAt: { type: Date, default: Date.now },
+    // updatedAt: { type: Date },
     otp: { type: String }, // Add this field for storing OTP
     otpExpires: { type: Date }, // Add this field for storing OTP expiry time
     googleId: { type: String },
     facebookId: { type: String },
- 
-
-});
+},{timeStamp:true});
 
 module.exports = mongoose.model("User", UserSchema);
