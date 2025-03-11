@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyclePro - Premium Cycles & Accessories</title>
+    <title>CycloneX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -160,16 +160,15 @@
         </div>
     </section>
 
-    <!-- Shop By Category Section - MOVED ABOVE FEATURED PRODUCTS -->
-    <section class="py-16 bg-white">
+    <section class="py-20 bg-white">
         <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold mb-4">Shop By Category</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Explore our wide range of cycling categories and find the perfect ride for your adventure</p>
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 text-gray-900">Shop By Category</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Explore our wide range of cycling categories and find the perfect ride for your adventure</p>
             </div>
             
             <!-- Categories Section -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-12">
                 <% if (categories && categories.length > 0) { %>
                     <% categories.forEach(category => { %>
                         <%
@@ -182,48 +181,73 @@
                                 : mainImage; // Fallback to main image if no subimages
                         %>
                         
-                        <div class="flex flex-col items-center category-card">
-                            <!-- Circle container with shadow and group for hover effects -->
-                            <div class="relative w-40 h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-full overflow-hidden shadow-lg group mb-4">
-                                <!-- Main image shown by default -->
+                        <div class="flex flex-col items-center category-card group">
+                            <!-- Circle container with improved image fitting -->
+                            <div class="relative w-40 h-40 md:w-52 md:h-52 lg:w-64 lg:h-64 rounded-full overflow-hidden shadow-lg mb-6 
+                                        transform transition-all duration-500 ease-in-out group-hover:shadow-2xl group-hover:scale-105
+                                        bg-gray-100 flex items-center justify-center">
+                                <!-- Background pattern for empty space -->
+                                <div class="absolute inset-0 bg-gradient-to-b from-blue-50 to-gray-100 opacity-50"></div>
+                                
+                                <!-- Main image with object-contain to show full image -->
                                 <img 
                                     src="<%= mainImage %>" 
                                     alt="<%= category.name %>"
-                                    class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out group-hover:opacity-0"
+                                    class="absolute inset-0 w-full h-full object-contain transition-all duration-700 ease-in-out 
+                                           group-hover:opacity-0 scale-90 group-hover:scale-85"
                                 />
-                                <!-- Subimage shown on hover -->
+                                
+                                <!-- Subimage with object-contain -->
                                 <img 
                                     src="<%= subImage %>" 
                                     alt="<%= category.name %> alternative view"
-                                    class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100"
+                                    class="absolute inset-0 w-full h-full object-contain opacity-0 transition-all duration-700 ease-in-out 
+                                           group-hover:opacity-100 scale-95 group-hover:scale-90"
                                 />
                                 
-                                <!-- Overlay with category name -->
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                                    <h3 class="text-white text-lg font-semibold px-4 text-center"><%= category.name %></h3>
+                                <!-- Circular mask overlay to ensure perfect circle -->
+                                <div class="absolute inset-0 rounded-full border-8 border-white/90 opacity-0 group-hover:opacity-100 
+                                            transition-opacity duration-500"></div>
+                                
+                                <!-- Improved overlay with better gradient and positioning -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent 
+                                            opacity-0 group-hover:opacity-100 transition-all duration-500 
+                                            flex items-end justify-center pb-8">
+                                    <h3 class="text-white text-xl font-semibold px-4 text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                        <%= category.name %>
+                                    </h3>
                                 </div>
                             </div>
                             
-                            <!-- Category name below the circle -->
-                            <h3 class="text-xl font-medium text-gray-900 mb-2"><%= category.name %></h3>
+                            <!-- Category name with improved typography -->
+                            <h3 class="text-xl font-medium text-gray-900 mb-3"><%= category.name %></h3>
                             
-                            <!-- Shop now link -->
-                            <a href="/category/<%= category._id %>" class="inline-flex items-center text-primary hover:text-blue-700 font-medium transition-colors duration-300">
-                                Shop Now
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <!-- Improved Shop now link with better hover effect -->
+                            <a href="/category/<%= category._id %>" 
+                               class="inline-flex items-center text-primary hover:text-blue-700 font-medium transition-all duration-300
+                                      relative overflow-hidden group-hover:font-semibold">
+                                <span class="relative z-10">Shop Now</span>
+                                <!-- Animated arrow -->
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                     class="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:translate-x-1" 
+                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                 </svg>
+                                <!-- Underline animation -->
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                             </a>
                         </div>
                     <% }); %>
                 <% } else { %>
-                    <div class="col-span-full p-8 text-center bg-gray-100 rounded-lg">
-                        <p class="text-gray-500">No categories found.</p>
+                    <div class="col-span-full p-10 text-center bg-gray-50 rounded-xl shadow-inner">
+                        <p class="text-gray-500 text-lg">No categories found.</p>
                     </div>
                 <% } %>
             </div>
         </div>
     </section>
+    
+
 
     <!-- Featured Products -->
     <section class="py-16 bg-gray-50">
@@ -256,7 +280,7 @@
                                 <% } %>
                                 
                                 <!-- Wishlist Button -->
-                                <button 
+                                <!-- <button 
                                     onclick="toggleWishlist('<%= pro._id %>')" 
                                     class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-all duration-300"
                                     aria-label="Add to wishlist"
@@ -276,7 +300,7 @@
                                     >
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                     </svg>
-                                </button>
+                                </button> -->
                                 
                                 <!-- Quick View Button -->
                                 <button 
@@ -312,12 +336,12 @@
                                 </div>
                                 
                                 <!-- Price and Add to Cart -->
-                                <div class="flex items-center justify-between">
+                                <!-- <div class="flex items-center justify-between">
                                     <span class="text-xl font-bold text-primary">₹<%= pro.price %></span>
                                     <button onclick="addToCart('<%= pro._id %>')" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200">
                                         Add to Cart
                                     </button>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     <% }) %>

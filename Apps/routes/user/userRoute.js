@@ -13,6 +13,14 @@ const shopController = require('../../controllers/user/shopController');
 const productController = require('../../controllers/admin/productController');
 const cartController = require('../../controllers/user/cartController')
 
+const checkoutController = require('../../controllers/user/checkoutController');
+const { verify } = require('crypto');
+const addressController = require('../../controllers/user/addressController');
+const orderController = require('../../controllers/user/orderController');
+
+
+
+
 router.use(userEnsure);
 
 router.get('/', userEnsure, nocache, authController.logins);
@@ -42,6 +50,7 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
 });
 
 router.get('/home', verifyUser, nocache, userController.home);
+
 router.get('/shoplist',verifyUser,shopController.shopList)
 router.post('/shoplist',shopController.shopList)
 router.get('/productdetails/:id',verifyUser,userController.productDetails)
@@ -51,16 +60,32 @@ router.get('/logout', verifyUser, userController.logout);
 router.get('/userprofile/:userId',verifyUser,userController.showUserProfile)
 router.post('/userprofile/:userId',userController.userAddress)
 
+router.get('/addaddress/:userId',verifyUser,addressController.getUserAddress)
+router.get('/addaddress/:userId/:addressId',addressController.specificAddress)
+router.post('/addaddress/:userId',addressController.manageAddress)
+router.delete('/addaddress/:userId/:addressId',addressController.deleteAddress)
 
 
-router.get('/orders',verifyUser,shopController.order)
+
+router.get('/order',verifyUser,orderController.getorder)
+
+router.get('/orderdetails/:orderId',orderController.order)
+
 router.get('/addtocart',verifyUser,cartController.showCartPage)
 router.post('/addtocart',cartController.addToCart)
 router.put('/addtocart/:productId',cartController.updateQuantity)
 router.delete('/addtocart/:productId',cartController.removeFromCart)
+router.get('/wishlist',cartController.showWhishlistPage)
+router.post('/wishlistStatus',cartController.addToWishlist)
+router.post('/wishlist',cartController.addToWishlist)
+router.delete('/wishlist/:productId',cartController.removeFromWishlist)
 
 
+router.get('/checkout',verifyUser,checkoutController.showcheckOut)
+router.put('/checkout/:productId',cartController.updateQuantity)
+router.delete('/checkout/:productId',cartController.removeFromCart)
 
-
+router.post('/orders/cod',orderController.placeOrder)
+router.get('/confirmation',verifyUser,orderController.confirmation)
 
 module.exports = router;

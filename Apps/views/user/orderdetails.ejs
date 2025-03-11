@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - CycloneX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"},
+                        secondary: '#f97316',
+                         dark: '#0f172a'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif']
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-slow {
+            animation: pulse 2s infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .staggered-item:nth-child(1) { animation-delay: 0.1s; }
+        .staggered-item:nth-child(2) { animation-delay: 0.2s; }
+        .staggered-item:nth-child(3) { animation-delay: 0.3s; }
+        .staggered-item:nth-child(4) { animation-delay: 0.4s; }
+        .staggered-item:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-primary-50 font-sans min-h-screen">
+    <%-include('partials/header') %>
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header with improved styling -->
+
+        <main>
+            <!-- Order header with improved styling -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-primary-600 to-primary-700 p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <h1 class="text-2xl font-bold text-white mb-2 sm:mb-0 flex items-center">
+                            <i class="fas fa-file-invoice-dollar mr-3"></i>
+                            Order #<%= orders.orderId %>
+                        </h1>
+                        <div class="flex items-center">
+                            <% 
+                            let statusColor, statusBg, statusIcon;
+                            switch(orders.status) {
+                                case 'pending':
+                                    statusColor = 'text-yellow-700';
+                                    statusBg = 'bg-yellow-100';
+                                    statusIcon = 'fa-clock';
+                                    break;
+                                case 'processing':
+                                    statusColor = 'text-blue-700';
+                                    statusBg = 'bg-blue-100';
+                                    statusIcon = 'fa-cog';
+                                    break;
+                                case 'shipped':
+                                    statusColor = 'text-indigo-700';
+                                    statusBg = 'bg-indigo-100';
+                                    statusIcon = 'fa-shipping-fast';
+                                    break;
+                                case 'delivered':
+                                    statusColor = 'text-green-700';
+                                    statusBg = 'bg-green-100';
+                                    statusIcon = 'fa-check-circle';
+                                    break;
+                                case 'cancelled':
+                                    statusColor = 'text-red-700';
+                                    statusBg = 'bg-red-100';
+                                    statusIcon = 'fa-times-circle';
+                                    break;
+                                case 'return_request':
+                                    statusColor = 'text-orange-700';
+                                    statusBg = 'bg-orange-100';
+                                    statusIcon = 'fa-undo';
+                                    break;
+                                case 'returned':
+                                    statusColor = 'text-gray-700';
+                                    statusBg = 'bg-gray-100';
+                                    statusIcon = 'fa-box-open';
+                                    break;
+                                default:
+                                    statusColor = 'text-gray-700';
+                                    statusBg = 'bg-gray-100';
+                                    statusIcon = 'fa-info-circle';
+                            }
+                            %>
+                           <% if (orders.status) { %>
+                            <span class="<%= statusColor %> <%= statusBg %> px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                                <i class="fas <%= statusIcon %> mr-2"></i>
+                                <%= orders.status.charAt(0).toUpperCase() + orders.status.slice(1).replace('_', ' ') %>
+                            </span>
+                        <% } else { %>
+                            <span class="text-gray-700 bg-gray-100 px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Unknown Status
+                            </span>
+                        <% } %>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order progress tracker - dynamic based on status -->
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <div class="relative">
+                        <div class="absolute left-0 top-1/2 w-full h-1 bg-gray-200 -translate-y-1/2"></div>
+                        <div class="relative flex justify-between">
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center z-10">
+                                    <i class="fas fa-check text-sm"></i>
+                                </div>
+                                <span class="text-xs mt-2 font-medium text-primary-600">Ordered</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full <%= orders.status === 'pending' ? 'bg-gray-300' : 'bg-primary-500' %> text-white flex items-center justify-center z-10">
+                                    <i class="fas <%= orders.status === 'pending' ? 'fa-cog' : 'fa-check' %> text-sm"></i>
+                                </div>
+                                <span class="text-xs mt-2 font-medium <%= orders.status === 'pending' ? 'text-gray-500' : 'text-primary-600' %>">Processing</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full <%= orders.status === 'shipped' ? 'bg-primary-500 animate-pulse-slow' : (orders.status === 'delivered' ? 'bg-primary-500' : 'bg-gray-300') %> text-white flex items-center justify-center z-10">
+                                    <i class="fas <%= orders.status === 'delivered' ? 'fa-check' : 'fa-shipping-fast' %> text-sm"></i>
+                                </div>
+                                <span class="text-xs mt-2 font-medium <%= orders.status === 'shipped' || orders.status === 'delivered' ? 'text-primary-600' : 'text-gray-500' %>">Shipping</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 rounded-full <%= orders.status === 'delivered' ? 'bg-primary-500' : 'bg-gray-300' %> text-white flex items-center justify-center z-10">
+                                    <i class="fas <%= orders.status === 'delivered' ? 'fa-check' : 'fa-home' %> text-sm"></i>
+                                </div>
+                                <span class="text-xs mt-2 font-medium <%= orders.status === 'delivered' ? 'text-primary-600' : 'text-gray-500' %>">Delivered</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8">
+                    <!-- Action Buttons Section - NEW -->
+                    <% if (!['cancelled', 'return_request', 'returned'].includes(orders.status)) { %>
+                    <div class="mb-8 animate-fade-in staggered-item opacity-0">
+                        <div class="flex flex-wrap gap-4">
+                            <% if (['pending', 'processing'].includes(orders.status)) { %>
+                            <!-- Cancel Order Button -->
+                            <button type="button" id="cancelOrderBtn" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors inline-flex items-center">
+                                <i class="fas fa-times-circle mr-2"></i>
+                                Cancel Order
+                            </button>
+                            <% } %>
+                            
+                            <% if (orders.status === 'delivered') { %>
+                            <!-- Return Order Button -->
+                            <button type="button" id="returnOrderBtn" class="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-colors inline-flex items-center">
+                                <i class="fas fa-undo mr-2"></i>
+                                Return Order
+                            </button>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <!-- Cancel Order Form - NEW -->
+                    <div id="cancelOrderForm" class="hidden mb-8 bg-red-50 border border-red-200 rounded-lg p-6 animate-fade-in">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-red-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-times-circle text-red-600 text-lg"></i>
+                            </div>
+                            <h2 class="text-lg font-semibold text-gray-800">Cancel Order</h2>
+                        </div>
+                        
+                        <form action="/order/<%= orders.orderId %>/cancel" method="POST" class="space-y-4">
+                            <div>
+                                <label for="cancelReason" class="block text-sm font-medium text-gray-700 mb-1">Reason for Cancellation</label>
+                                <select id="cancelReason" name="cancelReason" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                    <option value="">Select a reason</option>
+                                    <option value="changed_mind">Changed my mind</option>
+                                    <option value="found_better_price">Found a better price elsewhere</option>
+                                    <option value="ordered_by_mistake">Ordered by mistake</option>
+                                    <option value="shipping_too_long">Shipping time is too long</option>
+                                    <option value="other">Other reason</option>
+                                </select>
+                            </div>
+                            
+                            <div id="otherReasonContainer" class="hidden">
+                                <label for="otherReason" class="block text-sm font-medium text-gray-700 mb-1">Please specify</label>
+                                <textarea id="otherReason" name="otherReason" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"></textarea>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input id="confirmCancel" name="confirmCancel" type="checkbox" required class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                <label for="confirmCancel" class="ml-2 block text-sm text-gray-700">
+                                    I understand that this action cannot be undone
+                                </label>
+                            </div>
+                            
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" id="cancelOrderClose" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors">
+                                    Never Mind
+                                </button>
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                                    Confirm Cancellation
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Return Order Form - NEW -->
+                    <div id="returnOrderForm" class="hidden mb-8 bg-orange-50 border border-orange-200 rounded-lg p-6 animate-fade-in">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-orange-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-undo text-orange-600 text-lg"></i>
+                            </div>
+                            <h2 class="text-lg font-semibold text-gray-800">Return Order</h2>
+                        </div>
+                        
+                        <form action="/order/<%= orders.orderId %>/return" method="POST" class="space-y-4">
+                            <div>
+                                <label for="returnReason" class="block text-sm font-medium text-gray-700 mb-1">Reason for Return</label>
+                                <select id="returnReason" name="returnReason" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                    <option value="">Select a reason</option>
+                                    <option value="damaged">Item arrived damaged</option>
+                                    <option value="defective">Item is defective</option>
+                                    <option value="wrong_item">Received wrong item</option>
+                                    <option value="not_as_described">Item not as described</option>
+                                    <option value="size_issue">Size/fit issue</option>
+                                    <option value="other">Other reason</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Select Items to Return</label>
+                                <div class="space-y-2 max-h-60 overflow-y-auto border border-gray-200 rounded-md p-3 bg-white">
+                                    <% orders.items.forEach((item, index) => { %>
+                                    <div class="flex items-center py-2 border-b border-gray-100 last:border-0">
+                                        <input id="return-item-<%= index %>" name="returnItems[]" value="<%= item.product._id %>" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                        <label for="return-item-<%= index %>" class="ml-2 flex-grow">
+                                            <span class="block text-sm font-medium text-gray-800"><%= item.product.productName %></span>
+                                            <span class="block text-xs text-gray-500">Qty: <%= item.quantity %> × ₹<%= item.product.price.toFixed(2) %></span>
+                                        </label>
+                                        <span class="text-sm font-medium text-gray-800">₹<%= (item.product.price * item.quantity).toFixed(2) %></span>
+                                    </div>
+                                    <% }); %>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="returnDetails" class="block text-sm font-medium text-gray-700 mb-1">Additional Details</label>
+                                <textarea id="returnDetails" name="returnDetails" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Please provide any additional details about your return..."></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Upload Images (Optional)</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
+                                                <span>Upload images</span>
+                                                <input id="file-upload" name="returnImages" type="file" class="sr-only" multiple accept="image/*">
+                                            </label>
+                                            <p class="pl-1">or drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB each</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <input id="confirmReturn" name="confirmReturn" type="checkbox" required class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                <label for="confirmReturn" class="ml-2 block text-sm text-gray-700">
+                                    I confirm that the items are in their original condition
+                                </label>
+                            </div>
+                            
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" id="returnOrderClose" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                                    Submit Return Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Address and summary cards with improved styling -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                       <!-- Address card with enhanced styling -->
+                        <div class="bg-gradient-to-br from-white to-primary-50 rounded-lg p-6 border border-primary-100 shadow-sm hover:shadow-md transition-shadow animate-fade-in staggered-item opacity-0">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-primary-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-map-marker-alt text-primary-600 text-lg"></i>
+                                </div>
+                                <h2 class="text-lg font-semibold text-gray-800">Shipping Address</h2>
+                            </div>
+                            
+                            <div class="pl-2 border-l-2 border-primary-200">
+                                <!-- Name -->
+                                <div class="flex items-start mb-3">
+                                    <div class="bg-white p-1.5 rounded-full shadow-sm mr-3 mt-0.5">
+                                        <i class="fas fa-user text-primary-500 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider">Full Name</p>
+                                        <p class="font-medium text-gray-800"><%= orders.address.fullname %></p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Email -->
+                                <div class="flex items-start mb-3">
+                                    <div class="bg-white p-1.5 rounded-full shadow-sm mr-3 mt-0.5">
+                                        <i class="fas fa-envelope text-primary-500 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider">Email</p>
+                                        <p class="font-medium text-gray-800 break-all"><%= orders.address.email %></p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Address -->
+                                <div class="flex items-start mb-3">
+                                    <div class="bg-white p-1.5 rounded-full shadow-sm mr-3 mt-0.5">
+                                        <i class="fas fa-home text-primary-500 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider">Street Address</p>
+                                        <p class="font-medium text-gray-800"><%= orders.address.address %></p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Location -->
+                                <div class="flex items-start mb-3">
+                                    <div class="bg-white p-1.5 rounded-full shadow-sm mr-3 mt-0.5">
+                                        <i class="fas fa-location-arrow text-primary-500 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider">Location</p>
+                                        <div class="font-medium text-gray-800">
+                                            <span class="inline-flex items-center bg-primary-50 px-2 py-0.5 rounded mr-1 text-sm">
+                                                <i class="fas fa-landmark text-xs mr-1 text-primary-500"></i>
+                                                <%= orders.address.landmark %>
+                                            </span>
+                                            <span class="inline-flex items-center bg-primary-50 px-2 py-0.5 rounded mr-1 text-sm">
+                                                <i class="fas fa-map text-xs mr-1 text-primary-500"></i>
+                                                <%= orders.address.state %>
+                                            </span>
+                                            <span class="inline-flex items-center bg-primary-50 px-2 py-0.5 rounded text-sm">
+                                                <i class="fas fa-thumbtack text-xs mr-1 text-primary-500"></i>
+                                                <%= orders.address.pincode %>
+                                            </span>
+                                        </div>
+                                        <p class="font-medium text-gray-800 mt-1"><%= orders.address.country %></p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Phone -->
+                                <div class="flex items-start">
+                                    <div class="bg-white p-1.5 rounded-full shadow-sm mr-3 mt-0.5">
+                                        <i class="fas fa-phone-alt text-primary-500 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider">Phone</p>
+                                        <p class="font-medium text-gray-800 flex items-center">
+                                            <%= orders.address.mobileNum %>
+                                            <a href="tel:<%= orders.address.mobileNum %>" class="ml-2 text-primary-600 hover:text-primary-700">
+                                                <i class="fas fa-phone-alt text-xs"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow animate-fade-in staggered-item opacity-0">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-receipt text-primary-500 mr-2"></i>
+                                <h2 class="text-lg font-semibold text-gray-700">Order Summary</h2>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center pb-2 border-b border-gray-200">
+                                    <span class="text-gray-600">Order Date:</span>
+                                    <span class="font-medium"><%= new Date(orders.timestamp).toLocaleDateString() %></span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-gray-200">
+                                    <span class="text-gray-600">Total Items:</span>
+                                    <span class="font-medium"><%= orders.items.length %></span>
+                                </div>
+                                <div class="flex justify-between items-center pt-2 text-lg">
+                                    <span class="font-semibold text-gray-800">Total Amount:</span>
+                                    <span class="font-bold text-primary-700">₹<%= orders.totalAmount.toFixed(2) %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order items with improved styling -->
+                    <div class="mb-8 animate-fade-in staggered-item opacity-0">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-shopping-bag text-primary-500 mr-2"></i>
+                            <h2 class="text-xl font-semibold text-gray-800">Order Items</h2>
+                        </div>
+                        <div class="space-y-4">
+                            <% orders.items.forEach(item => { %>
+                                <div class="flex flex-col sm:flex-row items-center bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                                    <!-- <div class="relative w-full sm:w-24 h-32 sm:h-24 overflow-hidden">
+                                        <img src="<%= item.product.mainImage %>" alt="<%= item.product.productName %>" class="w-full h-full object-cover">
+                                    </div> -->
+                                    <div class="flex-grow p-4">
+                                        <h3 class="text-lg font-medium text-gray-800"><%= item.product.productName %></h3>
+                                        <div class="flex items-center mt-2">
+                                            <span class="text-sm bg-primary-100 text-primary-700 px-2 py-0.5 rounded">
+                                                <i class="fas fa-box mr-1"></i>
+                                                Qty: <%= item.quantity %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 text-right">
+                                        <p class="text-lg font-semibold text-gray-800">₹<%= (item.product.price * item.quantity).toFixed(2) %></p>
+                                        <p class="text-sm text-gray-500">₹<%= item.product.price.toFixed(2) %></p>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                    <!-- Action Buttons Section - NEW -->
+<% if (!['cancelled', 'return request', 'returned'].includes(orders.orderStatus)) { %>
+    <div class="mb-8 animate-fade-in staggered-item opacity-0">
+        <div class="flex flex-wrap gap-4">
+            <% if (['pending', 'processing', 'shipped'].includes(orders.orderStatus)) { %>
+            <!-- Cancel Order Button -->
+            <button type="button" id="cancelOrderBtn" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors inline-flex items-center">
+                <i class="fas fa-times-circle mr-2"></i>
+                Cancel Order
+            </button>
+            <% } %>
+            
+            <% if (orders.orderStatus === 'delivered') { %>
+            <!-- Return Order Button -->
+            <button type="button" id="returnOrderBtn" class="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-colors inline-flex items-center">
+                <i class="fas fa-undo mr-2"></i>
+                Request Return
+            </button>
+            <% } %>
+        </div>
+    </div>
+    <% } %>
+
+                    <!-- Support section with improved styling -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg p-6 border border-primary-200 animate-fade-in staggered-item opacity-0">
+                        <div class="text-center sm:text-left mb-4 sm:mb-0 flex items-center">
+                            <i class="fas fa-headset text-4xl text-primary-500 mr-4 hidden sm:block"></i>
+                            <div>
+                                <h3 class="text-lg font-semibold text-primary-700 mb-1">Need Help?</h3>
+                                <p class="text-primary-600">We're here to assist you with any questions.</p>
+                            </div>
+                        </div>
+                        <a href="/support" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors inline-flex items-center animate-pulse-slow">
+                            <i class="fas fa-headset mr-2"></i>
+                            Contact Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+   
+    </div>
+    <%-include('partials/footer') %>
+    <script>
+        // Animation for staggered items
+        document.addEventListener('DOMContentLoaded', function() {
+            const staggeredItems = document.querySelectorAll('.staggered-item');
+            staggeredItems.forEach(item => {
+                setTimeout(() => {
+                    item.classList.remove('opacity-0');
+                }, 100);
+            });
+
+            // Cancel Order Form Toggle
+            const cancelOrderBtn = document.getElementById('cancelOrderBtn');
+            const cancelOrderForm = document.getElementById('cancelOrderForm');
+            const cancelOrderClose = document.getElementById('cancelOrderClose');
+            
+            if (cancelOrderBtn) {
+                cancelOrderBtn.addEventListener('click', function() {
+                    cancelOrderForm.classList.remove('hidden');
+                    if (returnOrderForm) returnOrderForm.classList.add('hidden');
+                });
+            }
+            
+            if (cancelOrderClose) {
+                cancelOrderClose.addEventListener('click', function() {
+                    cancelOrderForm.classList.add('hidden');
+                });
+            }
+
+            // Return Order Form Toggle
+            const returnOrderBtn = document.getElementById('returnOrderBtn');
+            const returnOrderForm = document.getElementById('returnOrderForm');
+            const returnOrderClose = document.getElementById('returnOrderClose');
+            
+            if (returnOrderBtn) {
+                returnOrderBtn.addEventListener('click', function() {
+                    returnOrderForm.classList.remove('hidden');
+                    if (cancelOrderForm) cancelOrderForm.classList.add('hidden');
+                });
+            }
+            
+            if (returnOrderClose) {
+                returnOrderClose.addEventListener('click', function() {
+                    returnOrderForm.classList.add('hidden');
+                });
+            }
+
+            // Show "Other Reason" field when "Other" is selected
+            const cancelReason = document.getElementById('cancelReason');
+            const otherReasonContainer = document.getElementById('otherReasonContainer');
+            
+            if (cancelReason && otherReasonContainer) {
+                cancelReason.addEventListener('change', function() {
+                    if (this.value === 'other') {
+                        otherReasonContainer.classList.remove('hidden');
+                    } else {
+                        otherReasonContainer.classList.add('hidden');
+                    }
+                });
+            }
+
+            // File upload preview
+            const fileUpload = document.getElementById('file-upload');
+            if (fileUpload) {
+                fileUpload.addEventListener('change', function() {
+                    // You could add image preview functionality here
+                    const fileCount = this.files.length;
+                    const fileLabel = this.parentElement.querySelector('span');
+                    if (fileCount > 0) {
+                        fileLabel.textContent = `${fileCount} file${fileCount > 1 ? 's' : ''} selected`;
+                    } else {
+                        fileLabel.textContent = 'Upload images';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

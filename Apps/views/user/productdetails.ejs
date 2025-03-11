@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CyclePro - Premium Cycles & Accessories</title>
+        <title>CycloneX</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <script>
@@ -81,6 +81,33 @@
                 .banner-subtitle {
                     @apply text-xl md:text-2xl mb-8 max-w-xl font-light;
                 }
+                .thumbnail {
+                    @apply border-2 border-transparent rounded-md overflow-hidden transition-all duration-200;
+                }
+                .thumbnail.active {
+                    @apply border-primary;
+                }
+                .thumbnail:hover {
+                    @apply border-blue-300;
+                }
+                .badge {
+                    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+                }
+                .badge-discount {
+                    @apply bg-red-100 text-red-800;
+                }
+                .badge-instock {
+                    @apply bg-green-100 text-green-800;
+                }
+                .badge-outstock {
+                    @apply bg-red-100 text-red-800;
+                }
+                .tab-button {
+                    @apply px-4 py-2 font-medium text-gray-600 border-b-2 border-transparent hover:text-primary transition-colors duration-200;
+                }
+                .tab-button.active {
+                    @apply text-primary border-primary;
+                }
             }
         </style>
     </head>
@@ -104,6 +131,29 @@
                     <div id="zoomWrapper" class="hidden absolute top-0 left-full ml-4 w-96 h-96 border border-gray-300 overflow-hidden" style="backdrop-filter: blur(5px);">
                         <div id="zoomContainer" class="w-full h-full bg-no-repeat bg-center" style="background-size: 200%;"></div>
                     </div>
+
+                     <!-- Wishlist Button -->
+                     <button 
+                     onclick="addToWishlist('<%= product._id %>', this)" 
+                     class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
+                     aria-label="Add to wishlist"
+                 >
+                     <svg 
+                         xmlns="http://www.w3.org/2000/svg" 
+                         width="20" 
+                         height="20" 
+                         viewBox="0 0 24 24" 
+                         fill="none" 
+                         stroke="currentColor" 
+                         stroke-width="2" 
+                         stroke-linecap="round" 
+                         stroke-linejoin="round" 
+                         class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
+                         data-product-id="<%= product._id %>"
+                     >
+                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                     </svg>
+                 </button>
                 </div>
                 <!-- Sub Images -->
                 <div class="grid grid-cols-4 gap-4">
@@ -198,36 +248,150 @@
         <h3 class="text-lg font-semibold text-gray-800">Description</h3>
         <p class="text-sm text-gray-600 mt-2"><%= product.description %></p>
     </div>
-    <div class="mt-6">
-        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Add to Cart</button>
-        <button class="bg-green-600 text-white px-6 py-2 rounded-lg ml-4 hover:bg-green-700">Buy Now</button>
+    <div class="mt-6 flex items-center gap-4"> 
+        <button onclick="addToCart('<%= product._id %>')" 
+            class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>             
+            <span class="font-medium">Add to Cart</span>         
+        </button>         
+    
+        <button class="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
+            Buy Now
+        </button>     
     </div>
+    
 </div>
         </div>
 
-        <!-- Reviews Section -->
-        <div class="mt-12 bg-white p-6 shadow-lg rounded-lg">
-            <h2 class="text-xl font-bold text-gray-800">Customer Reviews</h2>
-            <div class="mt-4">
-                <div class="flex items-center">
-                    <span class="text-yellow-400 text-2xl">★★★★★</span>
-                    <span class="text-sm text-gray-600 ml-2">4.5 out of 5</span>
-                </div>
-                <p class="text-sm text-gray-600 mt-2">1,234 global ratings</p>
-            </div>
-            <div class="mt-6">
-                <!-- Review Item -->
-                <div class="border-b pb-4 mb-4">
-                    <div class="flex items-center">
-                        <span class="text-yellow-400 text-lg">★★★★☆</span>
-                        <span class="text-sm text-gray-600 ml-2">4 out of 5</span>
-                    </div>
-                    <p class="text-sm text-gray-800 mt-2">Great product! Works perfectly and looks amazing.</p>
-                    <p class="text-xs text-gray-500 mt-1">Reviewed by John Doe on October 10, 2023</p>
-                </div>
-                <!-- Add more reviews here -->
+      <!-- Tabs Section -->
+      <div class="mt-6 bg-white rounded-xl shadow-sm overflow-hidden">
+        <div class="border-b border-gray-100">
+            <div class="flex overflow-x-auto">
+                <button class="tab-button active" onclick="openTab(event, 'details')">Product Details</button>
+                <button class="tab-button" onclick="openTab(event, 'reviews')">Reviews</button>
+                <button class="tab-button" onclick="openTab(event, 'shipping')">Shipping & Returns</button>
             </div>
         </div>
+        
+        <!-- Tab Content -->
+        <div class="p-4 md:p-6">
+            <!-- Product Details Tab -->
+            <div id="details" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Specifications</h3>
+                        <table class="w-full text-sm">
+                            <tbody>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-2 text-gray-500">Brand</td>
+                                    <td class="py-2 font-medium"><%= product.brands.name %></td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-2 text-gray-500">Model</td>
+                                    <td class="py-2 font-medium"><%= product.productName %></td>
+                                </tr>
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-2 text-gray-500">Stock</td>
+                                    <td class="py-2 font-medium"><%= product.stock %> units</td>
+                                </tr>
+                                <!-- Add more specifications as needed -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Features</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Premium quality materials</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Durable construction</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Ergonomic design for comfort</span>
+                            </li>
+                            <!-- Add more features as needed -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Tab (hidden by default) -->
+            <div id="reviews" class="tab-content hidden">
+                <div class="flex items-center mb-4">
+                    <div class="flex items-center mr-4">
+                        <span class="text-3xl font-bold text-gray-900 mr-2">4.5</span>
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                    <span class="text-sm text-gray-500">Based on 1,234 reviews</span>
+                </div>
+                
+                <!-- Review Item -->
+                <div class="border-t border-gray-100 py-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mr-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">JD</div>
+                        </div>
+                        <div>
+                            <div class="flex items-center mb-1">
+                                <h4 class="font-medium text-gray-900 mr-2">John Doe</h4>
+                                <span class="text-xs text-gray-500">October 10, 2023</span>
+                            </div>
+                            <div class="flex text-yellow-400 text-sm mb-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <p class="text-sm text-gray-700">Great product! Works perfectly and looks amazing. The quality is excellent and it arrived earlier than expected.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- More reviews would go here -->
+                
+                <button class="mt-4 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200">
+                    Load more reviews
+                </button>
+            </div>
+            
+            <!-- Shipping Tab (hidden by default) -->
+            <div id="shipping" class="tab-content hidden">
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Shipping Information</h3>
+                        <p class="text-sm text-gray-600">We offer free shipping on all orders above ₹1000. Standard delivery takes 3-5 business days.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Return Policy</h3>
+                        <p class="text-sm text-gray-600">If you're not satisfied with your purchase, you can return it within 30 days for a full refund or exchange.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Warranty</h3>
+                        <p class="text-sm text-gray-600">This product comes with a 1-year manufacturer warranty covering defects in materials and workmanship.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
         <!-- Related Products Section -->
         <div class="mt-12">
@@ -244,32 +408,32 @@
                                 >
                             </a>
                             <div class="absolute top-4 left-4">
-                                <span class="bg-red-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
+                                <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
                                     <%= product.brands ? product.brands.name : 'No Brand' %>
                                 </span>
                             </div>
-                            <!-- Wishlist Button -->
-                            <button 
-                                onclick="toggleWishlist('<%= product._id %>')" 
-                                class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
-                                aria-label="Add to wishlist"
-                            >
-                                <svg 
-                                    xmlns="http://www.w3.org/2000/svg" 
-                                    width="20" 
-                                    height="20" 
-                                    viewBox="0 0 24 24" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    stroke-width="2" 
-                                    stroke-linecap="round" 
-                                    stroke-linejoin="round" 
-                                    class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
-                                    data-product-id="<%= product._id %>"
-                                >
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                </svg>
-                            </button>
+                           <!-- Wishlist Button -->
+            <button 
+            onclick="addToWishlist('<%= product._id %>', this)" 
+            class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
+            aria-label="Add to wishlist"
+        >
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="2" 
+                stroke-linecap="round" 
+                stroke-linejoin="round" 
+                class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
+                data-product-id="<%= product._id %>"
+            >
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+        </button>
                       
                         </div>
                         <div class="p-4">
@@ -289,8 +453,12 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-xl font-bold text-primary">₹<%= product.price %></span>
-                                <button onclick="addToCart('<%= product._id %>')" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200">
-                                    Add to Cart
+                                <button onclick="addToCart('<%= product._id %>')" 
+                                    class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>             
+                                    <span class="font-medium">Add to Cart</span>         
                                 </button>
                             </div>
                         </div>
@@ -310,7 +478,7 @@
                             stroke-linecap="round" 
                             stroke-linejoin="round" 
                             class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
-                            data-product-id="<%= pro._id %>"
+                            data-product-id="<%= product._id %>"
                         >
                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                         </svg>
@@ -329,13 +497,171 @@
         
     </main>
 
+    <!-- Toast Notification -->
+<div id="toast" class="hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
+    <span id="toast-message"></span>
+</div>
     <!-- Footer -->
     <%- include('partials/footer') %>
-    
+
+
+
     <script>
-        function updateMainImage(src) {
-          document.getElementById('mainImage').src = src;
-          document.getElementById('zoomContainer').style.backgroundImage = "url(" + src + ")";
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+
+            if (isError) {
+                toast.classList.add('bg-red-500');
+                toast.classList.remove('bg-gray-800');
+            } else {
+                toast.classList.remove('bg-red-500');
+                toast.classList.add('bg-gray-800');
+            }
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        function addToWishlist(productId, button) {
+            // Get the SVG element inside the button
+            const wishlistIcon = button.querySelector('.wishlist-icon');
+            
+            // Check if it's already in wishlist (has filled color)
+            const isInWishlist = wishlistIcon.getAttribute('fill') === 'red';
+            
+            if (isInWishlist) {
+                // Remove from wishlist
+                fetch(`/wishlist/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI - change to unfilled heart
+                        wishlistIcon.setAttribute('fill', 'none');
+                        wishlistIcon.classList.remove('text-red-500');
+                        wishlistIcon.classList.add('text-gray-500');
+                        showToast('Product removed from wishlist!');
+                    } else {
+                        showToast(data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred.', true);
+                });
+            } else {
+                // Add to wishlist - use your existing code
+                fetch('/wishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI - change to filled heart
+                        wishlistIcon.setAttribute('fill', 'red');
+                        wishlistIcon.setAttribute('stroke', 'red');
+                        wishlistIcon.classList.remove('text-gray-500');
+                        wishlistIcon.classList.add('text-red-500');
+                        showToast('Product added to wishlist!');
+                    } else {
+                        showToast(data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred.', true);
+                });
+            }
+        }
+
+        // Initialize wishlist status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in (has a token cookie)
+            const token = document.cookie.includes('token=');
+            if (!token) return;
+            
+            // Get all wishlist icons
+            const wishlistIcons = document.querySelectorAll('.wishlist-icon');
+            
+            // Make a single request to get all wishlist items
+            fetch('/wishlistStatus', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.wishlistItems) {
+                    // Update the icon colors for items in wishlist
+                    wishlistIcons.forEach(icon => {
+                        const productId = icon.dataset.productId;
+                        if (data.wishlistItems.includes(productId)) {
+                            icon.setAttribute('fill', 'red');
+                            icon.setAttribute('stroke', 'red');
+                            icon.classList.remove('text-gray-500');
+                            icon.classList.add('text-red-500');
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching wishlist status:', error);
+            });
+        });
+
+        function addToCart(productId) {
+            fetch('/addtocart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: 1 // Default quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Product added to cart!');
+                } else {
+                    showToast(data.message, true);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred.', true);
+            });
+        }
+
+        function updateMainImage(src, thumbnail) {
+            // Update main image
+            document.getElementById('mainImage').src = src;
+            document.getElementById('zoomContainer').style.backgroundImage = "url(" + src + ")";
+            
+            // Update active thumbnail
+            document.querySelectorAll('.thumbnail').forEach(el => {
+                el.classList.remove('active');
+            });
+            if (thumbnail) {
+                thumbnail.classList.add('active');
+            }
         }
 
         const mainImage = document.getElementById('mainImage');
@@ -359,6 +685,25 @@
         mainImage.addEventListener('mouseleave', function(){
             zoomWrapper.classList.add('hidden');
         });
+        
+        // Tab functionality
+        function openTab(evt, tabName) {
+            // Hide all tab content
+            const tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.add("hidden");
+            }
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.getElementsByClassName("tab-button");
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            // Show the selected tab content and mark button as active
+            document.getElementById(tabName).classList.remove("hidden");
+            evt.currentTarget.classList.add("active");
+        }
     </script>
 </body>
 </html>

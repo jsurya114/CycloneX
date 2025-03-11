@@ -57,14 +57,14 @@ const authController = {
             const token = jwt.sign(
                 { id: user._id, email: user.email },
                 process.env.JWT_SECRET,
-                { expiresIn: '7d' } // Token expires in 7 days
+                { expiresIn: '35d' } // Token expires in 7 days
             );
            
             
             res.cookie('token', token, { 
                 httpOnly: true, 
                 secure: process.env.NODE_ENV === 'production', 
-                maxAge: 7 * 24 * 60 * 60 * 1000 // Corrected to 7 days (in milliseconds)
+                maxAge: 35 * 24 * 60 * 60 * 1000 // Corrected to 7 days (in milliseconds)
             });
             
                 res.status(200).json({ok:true,message:'User is authenticated'});

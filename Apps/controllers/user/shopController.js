@@ -12,12 +12,12 @@ const shopController = {
                          const userId= decoded.id;
                         //  console.log("user",userId);
                          const user=await User.findById(userId);
-                         console.log(user);
+                         
             const { search, categoryFilter, brandsFilter, sortBy, page, limit, maxPrice } = req.query;
             let filter = { isDeleted: false };
     
-            const categories = await Category.find({});
-            const brands = await Brand.find({});
+            const categories = await Category.find({isBlocked:false});
+            const brands = await Brand.find({isBlocked:false});
     
             // Search filter
             if (search) {
@@ -130,9 +130,7 @@ const shopController = {
             next(error);
         }
     },
-    order:async(req,res,next)=>{
-        res.status(200).render('orders')
-    },
+  
    
 };
 

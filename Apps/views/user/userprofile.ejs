@@ -7,24 +7,28 @@
      <!-- Tailwind CSS CDN -->
      <script src="https://cdn.tailwindcss.com"></script>
     
-
      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
      <!-- Font Awesome -->
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
      <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"},
+                        primary: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"},
                         secondary: '#f97316',
                         dark: '#0f172a'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif']
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
                     }
                 }
             }
@@ -34,21 +38,22 @@
 <style>
     /* Custom scrollbar for Webkit browsers */
     ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
     }
     
     ::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #f1f5f9;
+        border-radius: 8px;
     }
     
     ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
+        background: #94a3b8;
+        border-radius: 8px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: #555;
+        background: #64748b;
     }
 
     /* Price range slider styling */
@@ -56,8 +61,8 @@
         -webkit-appearance: none;
         width: 100%;
         height: 4px;
-        background: #e5e7eb;
-        border-radius: 5px;
+        background: #e2e8f0;
+        border-radius: 8px;
         outline: none;
     }
 
@@ -66,7 +71,7 @@
         appearance: none;
         width: 18px;
         height: 18px;
-        background: #2563eb;
+        background: #0ea5e9;
         border-radius: 50%;
         cursor: pointer;
         border: 2px solid white;
@@ -76,7 +81,7 @@
     input[type="range"]::-moz-range-thumb {
         width: 18px;
         height: 18px;
-        background: #2563eb;
+        background: #0ea5e9;
         border-radius: 50%;
         cursor: pointer;
         border: 2px solid white;
@@ -93,7 +98,7 @@
     }
 
     .custom-checkbox:hover {
-        background-color: #f3f4f6;
+        background-color: #f8fafc;
         border-radius: 0.375rem;
     }
 
@@ -102,286 +107,362 @@
         height: 1rem;
         margin-right: 0.5rem;
         border-radius: 0.25rem;
-        border: 1.5px solid #d1d5db;
+        border: 1.5px solid #cbd5e1;
         transition: all 0.2s;
     }
 
     .custom-checkbox input[type="checkbox"]:checked {
-        background-color: #2563eb;
-        border-color: #2563eb;
+        background-color: #0ea5e9;
+        border-color: #0ea5e9;
+    }
+
+    /* Form input focus styles */
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+    }
+
+    /* Card hover effects */
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Gradient backgrounds */
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+    }
+    
+    .bg-gradient-secondary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
     }
 </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-50 font-sans">
     <%-include('partials/header') %>
     <div class="container mx-auto p-4 max-w-7xl">
-        <!-- General overview -->
-        <h2 class="text-xl font-semibold mb-4">General overview</h2>
+        <!-- Page header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-display font-bold text-slate-800">My Profile</h1>
+            <p class="text-slate-500">Manage your account settings and preferences</p>
+        </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <!-- Left sidebar -->
-            <div class="bg-white p-4 rounded-lg border border-gray-200">
-                <!-- User profile -->
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mr-3 overflow-hidden">
-                            <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
-                        </div>
-                        <div>
-                            <p class="font-semibold"><%= user.fullName || 'Guest User' %></p>
-                            <p class="text-sm text-gray-500"><%= user.email || 'No email' %></p>
-                        </div>
-                    </div>
-                    <button class="text-gray-500">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </button>
+     <!-- General overview -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <!-- Left sidebar -->
+    <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm">
+        <!-- User profile -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                    <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
                 </div>
-                
-                <!-- Navigation tabs -->
-                <div class="flex justify-between mb-6">
-                    <div class="flex flex-col items-center">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-1">
-                            <i class="fas fa-user text-blue-600"></i>
-                        </div>
-                        <span class="text-sm text-blue-600">Profile</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-1">
-                            <i class="fas fa-gift text-purple-600"></i>
-                        </div>
-                        <span class="text-sm">Gifts</span>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-1">
-                            <i class="fas fa-wallet text-green-600"></i>
-                        </div>
-                        <span class="text-sm">Wallet</span>
-                    </div>
-                </div>
-                
-                <!-- Menu items -->
-                <div class="space-y-4">
-                    <div class="flex items-center text-gray-700">
-                        <i class="fas fa-shopping-bag mr-3 text-gray-400"></i>
-                        <span>My orders</span>
-                    </div>
-                    <div class="flex items-center text-gray-700">
-                        <i class="fas fa-star mr-3 text-gray-400"></i>
-                        <span>Reviews</span>
-                    </div>
-                    <div class="flex items-center text-gray-700">
-                        <i class="fas fa-map-marker-alt mr-3 text-gray-400"></i>
-                        <span>Delivery addresses</span>
-                    </div>
-                    <div class="flex items-center text-gray-700">
-                        <i class="fas fa-eye mr-3 text-gray-400"></i>
-                        <span>Recently viewed</span>
-                    </div>
-                    <div class="flex items-center text-gray-700">
-                        <i class="fas fa-heart mr-3 text-gray-400"></i>
-                        <span>Favourite items</span>
-                    </div>
-                    <div class="flex items-center text-gray-700 mt-8">
-                        <i class="fas fa-cog mr-3 text-gray-400"></i>
-                        <span>Settings</span>
-                    </div>
-                    <div class="flex items-center text-red-500">
-                        <i class="fas fa-sign-out-alt mr-3"></i>
-                        <a href="/logout"><span>Log out</span></a>
-                    </div>
+                <div>
+                    <p class="font-semibold text-lg text-gray-800"><%= user.fullName || 'Guest User' %></p>
+                    <p class="text-sm text-gray-500"><%= user.email || 'No email' %></p>
                 </div>
             </div>
-            
-            <!-- Stats cards -->
-            <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center">
-                    <div class="mr-3 text-gray-400">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Favorite products</p>
-                        <p class="font-semibold">455</p>
-                    </div>
+            <button class="text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+        
+        <!-- Navigation tabs -->
+        <div class="flex justify-between mb-8">
+            <div class="group cursor-pointer">
+                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                    <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
                 </div>
-                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center">
-                    <div class="mr-3 text-gray-400">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Total Orders</p>
-                        <p class="font-semibold">124</p>
-                    </div>
+                <span class="text-xs font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">Profile</span>
+            </div>
+            <div class="group cursor-pointer">
+                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                    <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
                 </div>
-                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center">
-                    <div class="mr-3 text-gray-400">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Reviews added</p>
-                        <p class="font-semibold">1,285</p>
-                    </div>
+                <span class="text-xs font-medium text-gray-600 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
+            </div>
+            <div class="group cursor-pointer">
+                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                    <i class="fas fa-wallet text-green-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
                 </div>
-                <div class="bg-white p-4 rounded-lg border border-gray-200 flex items-center">
-                    <div class="mr-3 text-gray-400">
-                        <i class="fas fa-undo"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Product returns</p>
-                        <p class="font-semibold">2</p>
-                    </div>
-                </div>
+                <span class="text-xs font-medium text-gray-600 group-hover:text-green-500 transition-colors duration-300">Wallet</span>
             </div>
         </div>
         
+        <!-- Menu items -->
+        <div class="space-y-2">
+            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
+                <i class="fas fa-shopping-bag mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">My orders</span>
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
+                <i class="fas fa-star mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Reviews</span>
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
+                <i class="fas fa-map-marker-alt mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Delivery addresses</span>
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
+                <i class="fas fa-eye mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Recently viewed</span>
+            </a>
+            <a href="/wishlist/<%= product._id%>" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
+                <i class="fas fa-heart mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Favourite items</span>
+            </a>
+            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group mt-4">
+                <i class="fas fa-cog mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Settings</span>
+            </a>
+            <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 transition-colors duration-300 group">
+                <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
+                <span class="font-medium text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Stats cards -->
+    <div class="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer">
+            <div class="flex items-center justify-between">
+                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-heart text-red-500 text-xl"></i>
+                </div>
+                <p class="text-3xl font-bold text-gray-800 group-hover:text-red-500 transition-colors duration-300">455</p>
+            </div>
+            <p class="text-sm text-gray-500 mt-4 group-hover:text-red-400 transition-colors duration-300">Favorite products</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer">
+            <div class="flex items-center justify-between">
+                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-shopping-cart text-blue-500 text-xl"></i>
+                </div>
+                <p class="text-3xl font-bold text-gray-800 group-hover:text-blue-500 transition-colors duration-300">124</p>
+            </div>
+            <p class="text-sm text-gray-500 mt-4 group-hover:text-blue-400 transition-colors duration-300">Total Orders</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer">
+            <div class="flex items-center justify-between">
+                <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                </div>
+                <p class="text-3xl font-bold text-gray-800 group-hover:text-yellow-500 transition-colors duration-300">1,285</p>
+            </div>
+            <p class="text-sm text-gray-500 mt-4 group-hover:text-yellow-400 transition-colors duration-300">Reviews added</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer">
+            <div class="flex items-center justify-between">
+                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-undo text-purple-500 text-xl"></i>
+                </div>
+                <p class="text-3xl font-bold text-gray-800 group-hover:text-purple-500 transition-colors duration-300">2</p>
+            </div>
+            <p class="text-sm text-gray-500 mt-4 group-hover:text-purple-400 transition-colors duration-300">Product returns</p>
+        </div>
+    </div>
+</div>
+        
+
         <!-- Account data -->
-        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-6">Account data</h2>
+        <div class="bg-white rounded-xl shadow-card p-8 mb-8">
+            <h2 class="text-2xl font-display font-bold text-slate-800 mb-6">Account Information</h2>
             
-            <form class="grid grid-cols-1 gap-4" id="formData">
+            <form class="grid grid-cols-1 gap-6" id="formData">
                 <!-- User info -->
-                <div class="space-y-4">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mr-3 overflow-hidden">
-                            <span class="text-gray-500 font-bold">UP</span>
+                <div class="space-y-6">
+                    <div class="flex items-center mb-6 pb-4 border-b border-slate-100">
+                        <div class="w-14 h-14 rounded-full bg-gradient-primary flex items-center justify-center mr-4 text-white font-bold text-xl shadow-md">
+                            <span><%= user.fullName ? user.fullName.charAt(0) : 'U' %></span>
                         </div>
                         <div>
-                            <p class="text-lg font-semibold">User Profile</p>
+                            <p class="text-xl font-semibold text-slate-800">Personal Details</p>
+                            <p class="text-slate-500">Update your personal information</p>
                         </div>
                     </div>
             
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <input type="hidden" id="userProfile" data-id="<%=user._id%>">
                         <!-- Full Name -->
                         <div>
-                            <label for="fullName" class="text-gray-500 mb-1 block">Full Name</label>
-                            <input type="text" id="fullName" name="fullName" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter your full name" >
+                            <label for="fullName" class="text-slate-700 font-medium mb-2 block">Full Name</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-slate-400"></i>
+                                </div>
+                                <input type="text" id="fullName" name="fullName" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your full name">
+                            </div>
                         </div>
             
                         <!-- Email Address -->
                         <div>
-                            <label for="email" class="text-gray-500 mb-1 block">Email Address</label>
-                            <input type="email" id="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter your email" >
+                            <label for="email" class="text-slate-700 font-medium mb-2 block">Email Address</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-slate-400"></i>
+                                </div>
+                                <input type="email" id="email" name="email" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your email">
+                            </div>
                         </div>
             
                         <!-- Mobile Number -->
                         <div>
-                            <label for="mobile" class="text-gray-500 mb-1 block">Mobile Number</label>
-                            <input type="tel" id="mobile" name="mobile" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter your mobile number" >
+                            <label for="mobile" class="text-slate-700 font-medium mb-2 block">Mobile Number</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-phone text-slate-400"></i>
+                                </div>
+                                <input type="tel" id="mobile" name="mobile" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your mobile number">
+                            </div>
                         </div>
             
                         <!-- Country -->
                         <div>
-                            <label for="country" class="text-gray-500 mb-1 block">Country</label>
-                            <input type="text" id="country" name="country" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter your country" >
+                            <label for="country" class="text-slate-700 font-medium mb-2 block">Country</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-globe text-slate-400"></i>
+                                </div>
+                                <input type="text" id="country" name="country" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your country">
+                            </div>
                         </div>
             
                         <!-- State -->
                         <div>
-                            <label for="state" class="text-gray-500 mb-1 block">State</label>
-                            <input type="text" id="state" name="state" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter your state" >
+                            <label for="state" class="text-slate-700 font-medium mb-2 block">State</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-map text-slate-400"></i>
+                                </div>
+                                <input type="text" id="state" name="state" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your state">
+                            </div>
                         </div>
             
                         <!-- Address -->
                         <div>
-                            <label for="address" class="text-gray-500 mb-1 block">Address</label>
-                            <input type="text" id="address" name="address" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter your address" >
+                            <label for="address" class="text-slate-700 font-medium mb-2 block">Address</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-home text-slate-400"></i>
+                                </div>
+                                <input type="text" id="address" name="address" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your address">
+                            </div>
                         </div>
             
                         <!-- Pincode -->
                         <div>
-                            <label for="pincode" class="text-gray-500 mb-1 block">Pincode</label>
-                            <input type="text" id="pincode" name="pincode" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter your pincode" >
+                            <label for="pincode" class="text-slate-700 font-medium mb-2 block">Pincode</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-map-pin text-slate-400"></i>
+                                </div>
+                                <input type="text" id="pincode" name="pincode" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your pincode">
+                            </div>
                         </div>
             
                         <!-- Landmark -->
                         <div>
-                            <label for="landmark" class="text-gray-500 mb-1 block">Landmark</label>
-                            <input type="text" id="landmark" name="landmark" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter nearby landmark">
+                            <label for="landmark" class="text-slate-700 font-medium mb-2 block">Landmark</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-landmark text-slate-400"></i>
+                                </div>
+                                <input type="text" id="landmark" name="landmark" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter nearby landmark">
+                            </div>
                         </div>
-        
                     </div>
             
-
-                    <button type="button" id="getLocation" class="mt-4 bg-green-600 text-white py-2 px-4 rounded-lg flex items-center">
+                    <button type="button" id="getLocation" class="mt-4 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg flex items-center transition-colors shadow-md">
                         <i class="fas fa-map-marker-alt mr-2"></i> Use Current Location
                     </button>
 
-
                     <!-- Submit Button -->
-                    <button type="submit" class="mt-6 bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center">
-                        <i class="fas fa-edit mr-2"></i>
+                    <button type="submit" class="mt-6 bg-gradient-primary text-white py-3 px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
+                        <i class="fas fa-save mr-2"></i>
                         Save Changes
                     </button>
                 </div>
             </form>
-            
-            <!-- Edit button -->
-          
         </div>
-        
+
+        <!-- Add New Address Button -->
+        <button type="button" class="mb-8 bg-gradient-primary text-white py-3 px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
+            <i class="fas fa-plus mr-2"></i> Add New Address
+        </button>
+           
         <!-- Active orders -->
-        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <div class="flex items-center mb-6">
-                <h2 class="text-xl font-semibold">Active orders</h2>
-                <i class="fas fa-info-circle text-gray-400 ml-2"></i>
+        <div class="bg-white rounded-xl shadow-card p-8 mb-8">
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+                <div class="flex items-center">
+                    <h2 class="text-2xl font-display font-bold text-slate-800">Active Orders</h2>
+                    <span class="ml-2 bg-primary-100 text-primary-800 text-xs font-medium px-2.5 py-0.5 rounded-full">3 orders</span>
+                </div>
+                <button class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fas fa-filter"></i>
+                </button>
             </div>
             
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left">
-                    <thead class="text-gray-500 border-b">
+                    <thead class="text-slate-500 border-b">
                         <tr>
-                            <th class="py-3 px-4">Order ID:</th>
-                            <th class="py-3 px-4">Date:</th>
-                            <th class="py-3 px-4">Price:</th>
-                            <th class="py-3 px-4">Status:</th>
-                            <th class="py-3 px-4 text-right">Actions</th>
+                            <th class="py-4 px-4 font-semibold">Order ID</th>
+                            <th class="py-4 px-4 font-semibold">Date</th>
+                            <th class="py-4 px-4 font-semibold">Price</th>
+                            <th class="py-4 px-4 font-semibold">Status</th>
+                            <th class="py-4 px-4 text-right font-semibold">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-b">
-                            <td class="py-4 px-4 font-medium">#FWB125467980</td>
-                            <td class="py-4 px-4">27.01.2024</td>
-                            <td class="py-4 px-4">$4,799</td>
+                        <tr class="border-b hover:bg-slate-50 transition-colors">
+                            <td class="py-4 px-4 font-medium text-slate-800">#FWB125467980</td>
+                            <td class="py-4 px-4 text-slate-600">27.01.2024</td>
+                            <td class="py-4 px-4 font-medium text-slate-800">$4,799</td>
                             <td class="py-4 px-4">
-                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center w-fit">
-                                    <i class="fas fa-circle text-xs mr-1"></i>
+                                <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                    <i class="fas fa-circle text-[8px] mr-1.5"></i>
                                     In transit
                                 </span>
                             </td>
                             <td class="py-4 px-4 text-right">
-                                <button class="text-gray-500">
+                                <button class="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-slate-100 rounded-full">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
                             </td>
                         </tr>
-                        <tr class="border-b">
-                            <td class="py-4 px-4 font-medium">#FWB125467971</td>
-                            <td class="py-4 px-4">11.12.2023</td>
-                            <td class="py-4 px-4">$964</td>
+                        <tr class="border-b hover:bg-slate-50 transition-colors">
+                            <td class="py-4 px-4 font-medium text-slate-800">#FWB125467971</td>
+                            <td class="py-4 px-4 text-slate-600">11.12.2023</td>
+                            <td class="py-4 px-4 font-medium text-slate-800">$964</td>
                             <td class="py-4 px-4">
-                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center w-fit">
-                                    <i class="fas fa-circle text-xs mr-1"></i>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                    <i class="fas fa-circle text-[8px] mr-1.5"></i>
                                     Pre-order
                                 </span>
                             </td>
                             <td class="py-4 px-4 text-right">
-                                <button class="text-gray-500">
+                                <button class="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-slate-100 rounded-full">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="py-4 px-4 font-medium">#FWB125467665</td>
-                            <td class="py-4 px-4">05.04.2023</td>
-                            <td class="py-4 px-4">$230</td>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-4 px-4 font-medium text-slate-800">#FWB125467665</td>
+                            <td class="py-4 px-4 text-slate-600">05.04.2023</td>
+                            <td class="py-4 px-4 font-medium text-slate-800">$230</td>
                             <td class="py-4 px-4">
-                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center w-fit">
-                                    <i class="fas fa-check-circle text-xs mr-1"></i>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                    <i class="fas fa-check-circle text-[8px] mr-1.5"></i>
                                     Confirmed
                                 </span>
                             </td>
                             <td class="py-4 px-4 text-right">
-                                <button class="text-gray-500">
+                                <button class="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-slate-100 rounded-full">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
                             </td>
@@ -390,62 +471,528 @@
                 </table>
             </div>
             
-            <button class="mt-6 bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center">
+            <button class="mt-6 bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg flex items-center transition-colors shadow-md">
                 <i class="fas fa-eye mr-2"></i>
                 See all orders
             </button>
         </div>
    
         <!-- Cards and Feedback -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <!-- My cards -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6">
-                <h2 class="text-xl font-semibold mb-6">My cards</h2>
+            <div class="bg-white rounded-xl shadow-card p-8">
+                <h2 class="text-2xl font-display font-bold text-slate-800 mb-6 pb-4 border-b border-slate-100">Payment Methods</h2>
                 
-                <div class="mb-4">
-                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Favorite card</span>
+                <div class="mb-6">
+                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">Default payment</span>
                 </div>
                 
-                <div class="flex items-start mb-6">
-                    <div class="bg-gray-100 p-2 rounded-lg mr-4">
-                        <i class="fab fa-cc-visa text-blue-800 text-2xl"></i>
+                <div class="flex items-start mb-6 p-4 border border-slate-200 rounded-xl hover:border-primary-300 transition-colors">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-700 p-3 rounded-lg mr-4 text-white">
+                        <i class="fab fa-cc-visa text-2xl"></i>
                     </div>
-                    <div>
-                        <p>Visa ending in 7658</p>
-                        <p class="text-sm text-gray-500">Expiry 10/2024</p>
-                        <div class="mt-2 space-x-2">
-                            <button class="text-sm text-gray-500">Delete</button>
-                            <button class="text-sm text-gray-500">Edit</button>
+                    <div class="flex-1">
+                        <p class="font-medium text-slate-800">Visa ending in 7658</p>
+                        <p class="text-sm text-slate-500">Expiry 10/2024</p>
+                        <div class="mt-3 flex space-x-3">
+                            <button class="text-sm text-slate-500 hover:text-red-500 transition-colors">
+                                <i class="fas fa-trash-alt mr-1"></i> Delete
+                            </button>
+                            <button class="text-sm text-slate-500 hover:text-primary-500 transition-colors">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <button class="bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center">
+                <button class="bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg flex items-center transition-colors shadow-md">
                     <i class="fas fa-credit-card mr-2"></i>
-                    Manage cards
+                    Manage payment methods
                 </button>
             </div>
             
             <!-- Help us improve -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6 flex flex-col items-center text-center">
-                <div class="w-24 h-24 mb-4 relative">
-                    <div class="absolute inset-0 bg-blue-100 rounded-full"></div>
+            <div class="bg-white rounded-xl shadow-card p-8 flex flex-col items-center text-center">
+                <div class="w-24 h-24 mb-6 relative">
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full"></div>
                     <div class="absolute inset-0 flex items-center justify-center">
-                        <i class="fas fa-user-astronaut text-blue-500 text-4xl"></i>
+                        <i class="fas fa-user-astronaut text-primary-500 text-4xl"></i>
                     </div>
                 </div>
-                <h2 class="text-xl font-semibold mb-2">Help Us Improve!</h2>
-                <p class="text-gray-500 mb-6">Periodically, we will ask for your opinion on studies that help us improve your customer experience</p>
-                <button class="bg-blue-600 text-white py-2 px-4 rounded-lg">
+                <h2 class="text-2xl font-display font-bold text-slate-800 mb-3">Help Us Improve!</h2>
+                <p class="text-slate-500 mb-6 max-w-md">Periodically, we will ask for your opinion on studies that help us improve your customer experience</p>
+                <button class="bg-gradient-primary hover:shadow-lg text-white py-3 px-6 rounded-lg transition-all shadow-md">
                     Participate Now
                 </button>
             </div>
         </div>
     </div>
 
-
 <%-include('partials/footer')  %>
 
 <%-include('partials/userscript')  %>
+
+<script>
+    // Address Management functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Get DOM elements
+    const addAddressBtn = document.querySelector('button[type="button"].mb-8');
+    const mainForm = document.getElementById('formData');
+    const accountDataSection = document.querySelector('.bg-white.rounded-xl.shadow-card.p-8.mb-8');
+    
+    // Create address form container
+    let addressFormVisible = false;
+    const addressFormContainer = document.createElement('div');
+    addressFormContainer.id = 'addressFormContainer';
+    addressFormContainer.className = 'hidden mt-8 p-6 border border-slate-200 rounded-xl bg-slate-50';
+    
+    // Add form HTML
+    addressFormContainer.innerHTML = `
+        <h3 class="text-xl font-display font-semibold text-slate-800 mb-6">Add New Address</h3>
+        <form id="addressForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <input type="hidden" id="addressId" name="addressId" value="">
+            
+            <!-- Full Name -->
+            <div>
+                <label for="addr_fullName" class="text-slate-700 font-medium mb-2 block">Full Name</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-user text-slate-400"></i>
+                    </div>
+                    <input type="text" id="addr_fullName" name="fullName" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your full name">
+                </div>
+            </div>
+            
+            <!-- Email Address -->
+            <div>
+                <label for="addr_email" class="text-slate-700 font-medium mb-2 block">Email Address</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-envelope text-slate-400"></i>
+                    </div>
+                    <input type="email" id="addr_email" name="email" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your email">
+                </div>
+            </div>
+            
+            <!-- Mobile Number -->
+            <div>
+                <label for="addr_mobile" class="text-slate-700 font-medium mb-2 block">Mobile Number</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-phone text-slate-400"></i>
+                    </div>
+                    <input type="tel" id="addr_mobile" name="mobile" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your mobile number">
+                </div>
+            </div>
+            
+            <!-- Country -->
+            <div>
+                <label for="addr_country" class="text-slate-700 font-medium mb-2 block">Country</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-globe text-slate-400"></i>
+                    </div>
+                    <input type="text" id="addr_country" name="country" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your country">
+                </div>
+            </div>
+            
+            <!-- State -->
+            <div>
+                <label for="addr_state" class="text-slate-700 font-medium mb-2 block">State</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-map text-slate-400"></i>
+                    </div>
+                    <input type="text" id="addr_state" name="state" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your state">
+                </div>
+            </div>
+            
+            <!-- Address -->
+            <div>
+                <label for="addr_address" class="text-slate-700 font-medium mb-2 block">Address</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-home text-slate-400"></i>
+                    </div>
+                    <input type="text" id="addr_address" name="address" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your address">
+                </div>
+            </div>
+            
+            <!-- Pincode -->
+            <div>
+                <label for="addr_pincode" class="text-slate-700 font-medium mb-2 block">Pincode</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-map-pin text-slate-400"></i>
+                    </div>
+                    <input type="text" id="addr_pincode" name="pincode" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your pincode">
+                </div>
+            </div>
+            
+            <!-- Landmark -->
+            <div>
+                <label for="addr_landmark" class="text-slate-700 font-medium mb-2 block">Landmark</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-landmark text-slate-400"></i>
+                    </div>
+                    <input type="text" id="addr_landmark" name="landmark" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter nearby landmark">
+                </div>
+            </div>
+            
+            <!-- Submit and Cancel buttons -->
+            <div class="md:col-span-2 flex gap-4">
+                <button type="submit" class="bg-gradient-primary text-white py-3 px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
+                    <i class="fas fa-save mr-2"></i>
+                    Save Address
+                </button>
+                <button type="button" id="cancelAddressBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-700 py-3 px-6 rounded-lg flex items-center transition-colors">
+                    <i class="fas fa-times mr-2"></i>
+                    Cancel
+                </button>
+            </div>
+        </form>
+    `;
+    
+    // Insert the address form after the main form
+    accountDataSection.appendChild(addressFormContainer);
+    
+    // Add click event for Add New Address button
+    addAddressBtn.addEventListener('click', function() {
+        toggleAddressForm();
+    });
+    
+    // Cancel button event listener
+    const cancelAddressBtn = document.getElementById('cancelAddressBtn');
+    cancelAddressBtn.addEventListener('click', function() {
+        toggleAddressForm();
+        resetAddressForm();
+    });
+    
+    // Toggle address form visibility
+    function toggleAddressForm() {
+        addressFormVisible = !addressFormVisible;
+        addressFormContainer.classList.toggle('hidden', !addressFormVisible);
+    }
+    
+    // Reset address form
+    function resetAddressForm() {
+        document.getElementById('addressForm').reset();
+        document.getElementById('addressId').value = '';
+    }
+    
+    // Handle address form submission
+    const addressForm = document.getElementById('addressForm');
+    addressForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        try {
+            const userId = document.getElementById('userProfile').dataset.id;
+            
+            // Collect form data
+            const formData = {
+                fullName: document.getElementById('addr_fullName').value,
+                email: document.getElementById('addr_email').value,
+                mobile: document.getElementById('addr_mobile').value,
+                country: document.getElementById('addr_country').value,
+                state: document.getElementById('addr_state').value,
+                address: document.getElementById('addr_address').value,
+                pincode: document.getElementById('addr_pincode').value,
+                landmark: document.getElementById('addr_landmark').value,
+                addressId: document.getElementById('addressId').value || null
+            };
+            
+            // Send API request
+            const response = await fetch(`/addaddress/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Show success message
+                Toastify({
+                    text: result.message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#10b981",
+                }).showToast();
+                
+                // Reset form and hide it
+                resetAddressForm();
+                toggleAddressForm();
+                
+                // Reload addresses
+                loadUserAddresses();
+            } else {
+                // Show error message
+                Toastify({
+                    text: result.message || "Something went wrong",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#ef4444",
+                }).showToast();
+                
+                // Display validation errors if any
+                if (result.errors) {
+                    Object.keys(result.errors).forEach(key => {
+                        const inputField = document.getElementById(`addr_${key}`);
+                        if (inputField) {
+                            inputField.classList.add('border-red-500');
+                            const errorMsg = document.createElement('p');
+                            errorMsg.className = 'text-red-500 text-xs mt-1';
+                            errorMsg.textContent = result.errors[key];
+                            inputField.parentNode.appendChild(errorMsg);
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Toastify({
+                text: "An error occurred while saving the address",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "center",
+                backgroundColor: "#ef4444",
+            }).showToast();
+        }
+    });
+    
+    // Create addresses display section
+    const addressesSection = document.createElement('div');
+    addressesSection.className = 'bg-white rounded-xl shadow-card p-8 mb-8';
+    addressesSection.innerHTML = `
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+            <h2 class="text-2xl font-display font-bold text-slate-800">My Addresses</h2>
+            <span class="text-sm text-slate-500">Manage your delivery locations</span>
+        </div>
+        <div id="addressesList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Addresses will be loaded here -->
+            <div class="flex items-center justify-center h-40 border border-slate-200 rounded-xl bg-slate-50">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin text-primary-500 text-2xl mb-2"></i>
+                    <p class="text-slate-500">Loading addresses...</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Insert the addresses section after account data section
+    accountDataSection.insertAdjacentElement('afterend', addressesSection);
+    
+    // Function to load user addresses
+    async function loadUserAddresses() {
+        try {
+            const userId = document.getElementById('userProfile').dataset.id;
+            const response = await fetch(`/addaddress/${userId}`);
+            const result = await response.json();
+            
+            const addressesList = document.getElementById('addressesList');
+            
+            if (result.success && result.allAddress && result.allAddress.length > 0) {
+                // Clear existing content
+                addressesList.innerHTML = '';
+                
+                // Add each address
+                result.allAddress.forEach(address => {
+                    const addressCard = document.createElement('div');
+                    addressCard.className = 'p-6 border border-slate-200 rounded-xl hover:border-primary-300 transition-colors hover-card';
+                    addressCard.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="font-semibold text-slate-800">${address.fullname}</h3>
+                            <div class="flex space-x-2">
+                                <button class="edit-address-btn text-primary-600 hover:text-primary-800 transition-colors p-1.5 hover:bg-primary-50 rounded-full" data-id="${address._id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="delete-address-btn text-red-500 hover:text-red-700 transition-colors p-1.5 hover:bg-red-50 rounded-full" data-id="${address._id}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-slate-600">
+                            <p class="flex items-start">
+                                <i class="fas fa-home text-slate-400 mr-2 mt-1"></i>
+                                <span>${address.address}</span>
+                            </p>
+                            <p class="flex items-start">
+                                <i class="fas fa-map-marker-alt text-slate-400 mr-2 mt-1"></i>
+                                <span>${address.state}, ${address.country} - ${address.pincode}</span>
+                            </p>
+                            <p class="flex items-start">
+                                <i class="fas fa-landmark text-slate-400 mr-2 mt-1"></i>
+                                <span>Landmark: ${address.landmark || 'N/A'}</span>
+                            </p>
+                            <p class="flex items-start">
+                                <i class="fas fa-phone text-slate-400 mr-2 mt-1"></i>
+                                <span>${address.mobileNum}</span>
+                            </p>
+                            <p class="flex items-start">
+                                <i class="fas fa-envelope text-slate-400 mr-2 mt-1"></i>
+                                <span>${address.email}</span>
+                            </p>
+                        </div>
+                    `;
+                    
+                    addressesList.appendChild(addressCard);
+                });
+                
+                // Add event listeners for edit and delete buttons
+                addAddressButtonListeners();
+            } else {
+                // No addresses found
+                addressesList.innerHTML = `
+                    <div class="md:col-span-2 flex flex-col items-center justify-center p-8 border border-slate-200 rounded-xl bg-slate-50">
+                        <div class="w-20 h-20 rounded-full bg-primary-50 flex items-center justify-center mb-4">
+                            <i class="fas fa-map-marker-alt text-primary-400 text-3xl"></i>
+                        </div>
+                        <p class="text-lg font-medium text-slate-700 mb-2">No addresses found</p>
+                        <p class="text-slate-500 text-center mb-6">Add a new address to manage your deliveries</p>
+                        <button class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-lg flex items-center transition-colors" id="noAddressBtn">
+                            <i class="fas fa-plus mr-2"></i> Add New Address
+                        </button>
+                    </div>
+                `;
+                
+                // Add event listener for the "Add New Address" button in the empty state
+                document.getElementById('noAddressBtn').addEventListener('click', function() {
+                    toggleAddressForm();
+                });
+            }
+        } catch (error) {
+            console.error('Error loading addresses:', error);
+            document.getElementById('addressesList').innerHTML = `
+                <div class="md:col-span-2 p-6 border border-red-100 rounded-xl bg-red-50">
+                    <div class="flex items-center text-red-600">
+                        <i class="fas fa-exclamation-circle mr-2 text-xl"></i>
+                        <p>Failed to load addresses. Please try again.</p>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Add event listeners to edit and delete buttons
+    function addAddressButtonListeners() {
+        // Edit button listeners
+        document.querySelectorAll('.edit-address-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                const addressId = this.dataset.id;
+                const userId = document.getElementById('userProfile').dataset.id;
+                
+                try {
+                    const response = await fetch(`/addaddress/${userId}/${addressId}`);
+                    const result = await response.json();
+                    
+                    if (result.success && result.address) {
+                        // Fill the form with address data
+                        const address = result.address;
+                        document.getElementById('addressId').value = address._id;
+                        document.getElementById('addr_fullName').value = address.fullname;
+                        document.getElementById('addr_email').value = address.email;
+                        document.getElementById('addr_mobile').value = address.mobileNum;
+                        document.getElementById('addr_country').value = address.country;
+                        document.getElementById('addr_state').value = address.state;
+                        document.getElementById('addr_address').value = address.address;
+                        document.getElementById('addr_pincode').value = address.pincode;
+                        document.getElementById('addr_landmark').value = address.landmark || '';
+                        
+                        // Show the form
+                        if (!addressFormVisible) {
+                            toggleAddressForm();
+                        }
+                        
+                        // Scroll to the form
+                        addressFormContainer.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        Toastify({
+                            text: "Failed to load address details",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#ef4444",
+                        }).showToast();
+                    }
+                } catch (error) {
+                    console.error('Error fetching address:', error);
+                    Toastify({
+                        text: "An error occurred while loading address details",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#ef4444",
+                    }).showToast();
+                }
+            });
+        });
+        
+        // Delete button listeners
+        document.querySelectorAll('.delete-address-btn').forEach(button => {
+            button.addEventListener('click', async function() {
+                if (confirm('Are you sure you want to delete this address?')) {
+                    const addressId = this.dataset.id;
+                    const userId = document.getElementById('userProfile').dataset.id;
+                    
+                    try {
+                        const response = await fetch(`/addaddress/${userId}/${addressId}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            Toastify({
+                                text: result.message || "Address deleted successfully",
+                                duration: 3000,
+                                close: true,
+                                gravity: "top",
+                                position: "center",
+                                backgroundColor: "#10b981",
+                            }).showToast();
+                            
+                            // Reload addresses
+                            loadUserAddresses();
+                        } else {
+                            Toastify({
+                                text: result.message || "Failed to delete address",
+                                duration: 3000,
+                                close: true,
+                                gravity: "top",
+                                position: "center",
+                                backgroundColor: "#ef4444",
+                            }).showToast();
+                        }
+                    } catch (error) {
+                        console.error('Error deleting address:', error);
+                        Toastify({
+                            text: "An error occurred while deleting the address",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#ef4444",
+                        }).showToast();
+                    }
+                }
+            });
+        });
+    }
+    
+    // Initialize by loading user addresses
+    loadUserAddresses();
+});
+</script>
+
 </body>
 </html>

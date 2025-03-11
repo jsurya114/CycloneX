@@ -139,7 +139,7 @@ const filteredProducts = product.filter(pro => pro.category && pro.brands)
                         const user = await User.findById(userId);
                         const categories = await Category.find({});
                                    const brands = await Brand.find({});
-        const product = await Product.findById(id).populate('category')
+        const product = await Product.findById(id).populate('category').populate('brands')
 
         const breadcrumbs = [
             { name: 'Home', url: '/' },
@@ -182,11 +182,12 @@ const user = await User.findById(userId)
 
 const users= req.user.id
 
-  
+  const {productId}=req.body
+  const product= await Product.findById(productId)
 if(!userId) return res.status(404).json({success:false,message:'invalid input'})
 
 
-        res.status(200).render('userprofile',{user,users})}
+        res.status(200).render('userprofile',{user,users,product: product || { _id: '' }})}
         catch(error){
             next(error)
         }

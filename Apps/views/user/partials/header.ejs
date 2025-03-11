@@ -1,26 +1,36 @@
-
 <header class="bg-white shadow-md sticky top-0 z-40">
     <div class="container mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
             <!-- Logo -->
             <a href="/" class="flex items-center space-x-2">
-                <svg xmlns="/frontend/imgs/logos/cyclonelogo1.png" class="h-10 w-10 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.18 10l-1.39-2.77A3 3 0 0014.76 6H9.24a3 3 0 00-2.03 1.23L5.82 10H4a1 1 0 000 2h1v8a1 1 0 001 1h12a1 1 0 001-1v-8h1a1 1 0 100-2h-1.82zM9.24 8h5.52a1 1 0 01.87.5L16.5 10h-9l.87-1.5a1 1 0 01.87-.5zM19 12v7H5v-7h14z"/>
-                    <circle cx="8" cy="14" r="2"/>
-                    <circle cx="16" cy="14" r="2"/>
-                </svg>
-                <span class="text-2xl font-bold text-dark">CycloneX</span>
+                <img src="/frontend/imgs/logos/cyclonelogo1.png" alt="" class="w-32 h-25">
+
             </a>
-            
+                         
             <!-- Navigation -->
             <nav class="hidden md:flex space-x-8">
-                <a href="/" class="text-dark hover:text-primary font-medium">Home</a>
-                <a href="/shoplist" class="text-dark hover:text-primary font-medium">Shop</a>
-                <a href="/orders" class="text-dark hover:text-primary font-medium">Order</a>
-                <a href="/about" class="text-dark hover:text-primary font-medium">About</a>
-                <a href="/contact" class="text-dark hover:text-primary font-medium">Contact</a>
+                <a href="/" class="text-dark hover:text-primary font-medium relative group">
+                    Home
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/shoplist" class="text-dark hover:text-primary font-medium relative group">
+                    Shop
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/order" class="text-dark hover:text-primary font-medium relative group">
+                    Order
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/about" class="text-dark hover:text-primary font-medium relative group">
+                    About
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/contact" class="text-dark hover:text-primary font-medium relative group">
+                    Contact
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a>
             </nav>
-            
+                         
             <!-- Icons -->
             <div class="flex items-center space-x-4">
               <div class="w-full md:w-1/3">
@@ -32,26 +42,27 @@
             <a id="submitFormData" href="/userprofile/<%=user._id  %>">
                 <button onclick="submitFormData('<%=user._id %>')" class="text-dark hover:text-primary">
                     <i class="fas fa-user text-xl"></i>
-                </button></a>
+                </button>
+            </a>
                 <button class="text-dark hover:text-primary relative">
-                  <a href="/addtocart"> <i  class="fas fa-shopping-cart text-xl"></i></a> 
-                    <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                  <a href="/addtocart"> <i  class="fas fa-shopping-cart text-xl"></i></a>
+                     <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
                 </button>
                 <button class="md:hidden text-dark" id="mobile-menu-button">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <div class="md:hidden hidden mt-4 pb-4" id="mobile-menu">
-            <nav class="flex flex-col space-y-3">
-                <a href="/" class="text-dark hover:text-primary font-medium">Home</a>
-                <a href="/shoplist" class="text-dark hover:text-primary font-medium">Shop</a>
-                <a href="/orders" class="text-dark hover:text-primary font-medium">Orders</a>
-                <a href="/about" class="text-dark hover:text-primary font-medium">About</a>
-                <a href="/contact" class="text-dark hover:text-primary font-medium">Contact</a>
-            </nav>
-        </div>
     </div>
+                 
+    <!-- Mobile Menu -->
+    <div class="md:hidden hidden mt-4 pb-4" id="mobile-menu">
+        <nav class="flex flex-col space-y-3">
+            <a href="/" class="text-dark hover:text-primary font-medium">Home</a>
+            <a href="/shoplist" class="text-dark hover:text-primary font-medium">Shop</a>
+            <a href="/orders" class="text-dark hover:text-primary font-medium">Orders</a>
+            <a href="/about" class="text-dark hover:text-primary font-medium">About</a>
+            <a href="/contact" class="text-dark hover:text-primary font-medium">Contact</a>
+        </nav>
+    </div>
+</div>
 </header>
