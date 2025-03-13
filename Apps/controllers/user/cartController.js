@@ -12,9 +12,7 @@ const cartController={
             const userId = decoded.id;
             const user = await User.findById(userId);
             
-            let cart = await Cart.findOne({ user: user._id }).populate('items.product',
-            
-            );
+            let cart = await Cart.findOne({ user: user._id }).populate('items.product');
     
             let subtotal = 0;
             let discount = 0;
@@ -90,12 +88,14 @@ if(referenceProduct){
     
 const wishlist = await Wishlist.findOne({userId})
 if(wishlist&&wishlist.product){
-    let existedCart=wishlist.product.findIndex(p=>p.toString()===productId.toString())
-
-    if(existedCart!==-1){
-wishlist.product.splice(existedCart,1)
-await wishlist.save()
+  let newWishlist = []
+  for(let pId of wishlist.product){
+    if(pId.toString()!==productId.toString()){
+        newWishlist.push(pId)
     }
+  }
+  wishlist.product=newWishlist
+  await wishlist.save()
 }
 
           

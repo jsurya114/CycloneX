@@ -15,8 +15,8 @@ const productloader ={
             }
             let sortOptions = { createdAt: -1 };
 const product = await Product.findById(productId).populate('brands','name').populate('category', 'name').sort(sortOptions)
-const brands = await Brand.find()
-const category = await Category.find()
+const brands = await Brand.find({isBlocked:false})
+const category = await Category.find({isBlocked:false})
 if(!product){
     return res.status(404).json({success:true,message:'product not found'})
 }

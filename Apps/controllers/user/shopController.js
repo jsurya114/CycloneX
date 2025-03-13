@@ -80,7 +80,7 @@ const shopController = {
             let totalProducts = await Product.countDocuments(filter);
     
             // Fetch paginated products
-            const product = await Product.find(filter)
+            const product = await Product.find(filter,{})
                 .sort(sortOptions)
                 .skip(skip)
                 .limit(itemsPerPage)

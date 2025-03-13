@@ -2,6 +2,7 @@ const Product=require('../../models/productModel')
 const Cart = require('../../models/cartModel')
 const User = require('../../models/userModel')
 const jwt = require('jsonwebtoken')
+const Wishlist = require('../../models/wislistModel')
 const Order= require('../../models/orderModel')
 const Address = require('../../models/addressModel')
 const { v4: uuidv4 } = require('uuid')
@@ -35,7 +36,7 @@ if(!addressDoc){
 
 }
 console.log('here3',addressDoc)
-const cart = await Cart.findOne({user:userId}).populate('items.product')
+const cart = await Cart.findOne({user:userId})
 console.log('here' ,cart)
 if(!cart||!cart.items||cart.items.length===0){
     return res.status(404).json({success:false,message:'Cart is empty.Please add items to your cart before placing an order.'})
@@ -98,6 +99,25 @@ await newOrder.save()
 
 await Cart.findOneAndUpdate({user:userId},{$set:{items:[]}})
 
+let wishlist=await Wishlist.findOne({user:userId})
+if(wishlist&&wishlist.product){
+    const orderedProducts = items.map(or=>or.product.toString())
+let newWishlist =[]
+for(let pId of wishlist.product){
+
+    if(!orderedProducts.includes(pId.toString()))
+    {
+        newWishlist.push(pId)
+    }
+}
+
+wishlist.product = newWishlist
+await wishlist.save()
+
+}
+
+
+
 return res.status(201).json({success:true,message:'order placed successfull',
     method: paymentMethod,
     order: newOrder
@@ -110,6 +130,7 @@ return res.status(201).json({success:true,message:'order placed successfull',
     },
 
 confirmation:async (req,res,next) => {
+    
     res.status(200).render('confirmation')
 },
 getorder:async (req,res,next) => {
@@ -172,10 +193,57 @@ if(!order){
     next(error)
 }      
     },
+    cancelOrder:async (req,res,next) => {
+        try {
+console.log('para',req.params)
+          const orderId = req.params.orderId
+          const {cancelReason} = req.body
+          console.log('peresdfsd',orderId)
+          console.log('body',req.body)
+          if(!orderId){
+      return res.status(400).json({success:false,message:'invalid input'})
+          }
 
-  
+      
+          const order = await Order.findOne({orderId})
+
+          if(!order){
+            return res.status(404).json({success:false,message:'Order not found'})
+          }
+          order.cancelReason=cancelReason
+          order.orderStatus="cancelled"
+          await order.save()
+
+          return res.status(200).json({success:true,message:'Order cancelled successfully'})
+       
+        } catch (error) {
+      next(error)
+        }
+      
+      
+      },
+      returnOrder:async (req,res,next) => {
+        console.log('rew',req.params)
+        const orderId = req.params.orderId
+        const {returnReason}=req.body
+        if(!orderId){
+            return res.status(400).json({success:false,message:'invalid input'})
+                }
+      
+            
+                const order = await Order.findOne({orderId})
+      
+                if(!order){
+                  return res.status(404).json({success:false,message:'Order not found'})
+                }
+                order.returnReason=returnReason
+                order.orderStatus="return request"
+                await order.save()
+
+                return res.status(200).json({success:true,message:'Order returned successfully'})
 
 
+      }
 
 }
 module.exports=orderController

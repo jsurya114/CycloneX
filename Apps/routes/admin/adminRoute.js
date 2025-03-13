@@ -7,9 +7,11 @@ const verifyAdmin = require('../../middlewares/adminsAuth')
 const productController = require('../../controllers/admin/productController')
 const  upload = require('../../config/multer')
 const categoryController = require('../../controllers/admin/categoryController')
+const orderController = require('../../controllers/admin/orderController')
 const productloader = require('../../controllers/admin/productloader')
 const nocache =require('../../middlewares/nocache')
 const ensureAuth = require('../../middlewares/ensureAuth')
+
 router.get('/login',ensureAuth,nocache, adminAuth.login);
 router.post('/login', adminAuth.loginPost); // Handle login form submission
 router.get('/dashboard',verifyAdmin, nocache,adminController.dashboard);
@@ -56,4 +58,8 @@ router.get('/userlist',verifyAdmin,adminController.userlist)
 router.get('/userdetails/:id', adminController.showUserdetails);
 router.put('/toggle-user/:id',adminController.listinguser)
 router.get('/api/users',adminController.filtering)
+router.get('/orderlist',verifyAdmin,orderController.getorderlist)
+
+router.get('/orderdetailss/:id',verifyAdmin,orderController.showOrderDetails)
+router.post('/updateorderstatus/:id',orderController.updateOrderStatus)
 module.exports = router;

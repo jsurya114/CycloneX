@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,7 +71,7 @@
                         <div class="flex items-center">
                             <% 
                             let statusColor, statusBg, statusIcon;
-                            switch(orders.status) {
+                            switch(orders.orderStatus) {
                                 case 'pending':
                                     statusColor = 'text-yellow-700';
                                     statusBg = 'bg-yellow-100';
@@ -112,10 +113,10 @@
                                     statusIcon = 'fa-info-circle';
                             }
                             %>
-                           <% if (orders.status) { %>
+                           <% if (orders.orderStatus) { %>
                             <span class="<%= statusColor %> <%= statusBg %> px-3 py-1 rounded-full text-sm font-medium flex items-center">
                                 <i class="fas <%= statusIcon %> mr-2"></i>
-                                <%= orders.status.charAt(0).toUpperCase() + orders.status.slice(1).replace('_', ' ') %>
+                                <%= orders.orderStatus.charAt(0).toUpperCase() + orders.orderStatus.slice(1).replace('_', ' ') %>
                             </span>
                         <% } else { %>
                             <span class="text-gray-700 bg-gray-100 px-3 py-1 rounded-full text-sm font-medium flex items-center">
@@ -194,7 +195,7 @@
                             <h2 class="text-lg font-semibold text-gray-800">Cancel Order</h2>
                         </div>
                         
-                        <form action="/order/<%= orders.orderId %>/cancel" method="POST" class="space-y-4">
+                        <form action="/order/cancel/<%= orders.orderId %>" method="POST" class="space-y-4">
                             <div>
                                 <label for="cancelReason" class="block text-sm font-medium text-gray-700 mb-1">Reason for Cancellation</label>
                                 <select id="cancelReason" name="cancelReason" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -239,7 +240,7 @@
                             <h2 class="text-lg font-semibold text-gray-800">Return Order</h2>
                         </div>
                         
-                        <form action="/order/<%= orders.orderId %>/return" method="POST" class="space-y-4">
+                        <form action="/order/return/<%= orders.orderId %>" method="POST" class="space-y-4">
                             <div>
                                 <label for="returnReason" class="block text-sm font-medium text-gray-700 mb-1">Reason for Return</label>
                                 <select id="returnReason" name="returnReason" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
@@ -274,22 +275,7 @@
                                 <textarea id="returnDetails" name="returnDetails" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Please provide any additional details about your return..."></textarea>
                             </div>
                             
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Upload Images (Optional)</label>
-                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                    <div class="space-y-1 text-center">
-                                        <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
-                                        <div class="flex text-sm text-gray-600">
-                                            <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500">
-                                                <span>Upload images</span>
-                                                <input id="file-upload" name="returnImages" type="file" class="sr-only" multiple accept="image/*">
-                                            </label>
-                                            <p class="pl-1">or drag and drop</p>
-                                        </div>
-                                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB each</p>
-                                    </div>
-                                </div>
-                            </div>
+                            
                             
                             <div class="flex items-center">
                                 <input id="confirmReturn" name="confirmReturn" type="checkbox" required class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
@@ -567,5 +553,83 @@
             }
         });
     </script>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Cancel Order
+    const cancelOrderForm = document.getElementById("cancelOrderForm");
+    if (cancelOrderForm) {
+        cancelOrderForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            
+            const orderId = "<%= orders.orderId %>";
+            const cancelReason = document.getElementById("cancelReason").value;
+            const confirmCancel = document.getElementById("confirmCancel").checked;
+
+            if (!confirmCancel) {
+                alert("Please confirm the cancellation.");
+                return;
+            }
+
+            const response = await fetch(`/order/cancel/${orderId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ cancelReason }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("Order has been canceled successfully.");
+                location.reload();
+            } else {
+                alert(`Error: ${result.message}`);
+            }
+        });
+    }
+
+    // Return Order
+    const returnOrderForm = document.getElementById("returnOrderForm");
+    if (returnOrderForm) {
+        returnOrderForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            
+            const orderId = "<%= orders.orderId %>";
+            const returnReason = document.getElementById("returnReason").value;
+            const returnDetails = document.getElementById("returnDetails").value;
+            const confirmReturn = document.getElementById("confirmReturn").checked;
+            const returnItems = [...document.querySelectorAll("input[name='returnItems[]']:checked")].map(item => item.value);
+
+            if (!confirmReturn) {
+                alert("Please confirm the return.");
+                return;
+            }
+
+            const response = await fetch(`/order/return/${orderId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ returnReason, returnDetails, returnItems }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("Return request submitted successfully.");
+                location.reload();
+            } else {
+                alert(`Error: ${result.message}`);
+            }
+        });
+    }
+});
+
+
+</script>
 </body>
 </html>
