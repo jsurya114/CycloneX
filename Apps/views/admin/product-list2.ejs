@@ -1,292 +1,575 @@
 <!DOCTYPE HTML>
 <html lang="en">
-<%- include('partials/head') %>
-<body>
-  <div class="screen-overlay"></div>
-  <aside class="navbar-aside" id="offcanvas_aside">
-    <div class="aside-top">
-      <a href="" class="brand-wrap">
-        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-      </a>
-      <div>
-        <button class="btn btn-icon btn-aside-minimize">
-          <i class="text-muted material-icons md-menu_open"></i>
-        </button>
-      </div>
-    </div>
-    <nav>
-      <ul class="menu-aside">
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/dashboard">
-            <i class="icon material-icons md-home"></i>
-            <span class="text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item has-submenu active">
-            <a class="menu-link" href="#">
-              <i class="icon material-icons md-shopping_bag"></i>
-              <span class="text">Products</span>
-              <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-            </a>
-            <ul class="submenu">
-              <!-- <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li> -->
-              <li><a href="/admin/addproduct" class="submenu-link">Add Product</a></li>
-            </ul>
-          </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/category">
-            <i class="icon material-icons md-category"></i>
-            <span class="text">Category</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/brands">
-            <i class="icon material-icons md-stars"></i>
-            <span class="text">Brands</span>
-          </a>
-        </li>
-        <li class="menu-item  ">
-          <a class="menu-link" href="/admin/userlist">
-            <i class="icon material-icons md-store"></i>
-            <span class="text">Users</span>
-            <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-          </a>
-       
-        </li>
-
-
-
-        <li class="menu-item ">
-          <a class="menu-link" href="/admin/orderlist">
-            <i class="icon material-icons md-shopping_bag"></i>
-            <span class="text">Orders</span>
-            <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-          </a>
-          <!-- <ul class="submenu">
-            <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li>
-            <li><a href="/admin/orderlist" class="submenu-link">Add Product</a></li>
-          </ul> -->
-        </li>
-      </ul>
-    </nav>
-  </aside>
-  <main class="main-wrap">
-    <%- include('partials/header') %>
-    <h2 class="content-title card-title text-4xl mt-3">Products</h2>
-    <section class="content-main">
-      <div class="content-header flex justify-between">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#2e1065',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
         
-        <br>
-        <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-4">
-          <!-- Search Input -->
-          <input
-              type="text"
-              id="searchInput"
-              placeholder="Search Products"
-              class="bg-white px-3 py-2 border rounded-md w-full sm:max-w-xs"
-          />
-          
-          <!-- Search Button -->
-          <button
-              id="searchBtn"
-              class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-              Search
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Main Container - Added flex layout for better structure -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Sidebar - Fixed width on large screens, fixed position on small screens -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+            </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
+          </a>
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
+            </a>
+            
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-primary-50 text-primary-700 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Brands</span>
+            </a>
+          </div>
           
-          <!-- Clear Button -->
-          <button
-              id="clearBtn"
-              class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          >
-              Clear
-          </button>
-     
-
-          <!-- Status Filter Dropdown -->
-          <select id="statusFilter" class="bg-white px-3 py-2 border rounded-md">
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="deactive">Deactivated</option>
-          </select>
-      
-          <!-- Category Filter Dropdown -->
-          <select id="categoryFilter" class="bg-white px-3 py-2 border rounded-md">
-              <option value="">All Categories</option>
-              <% categories.forEach(cat => { %>
-                  <option value="<%= cat.name %>"><%= cat.name %></option>
-              <% }); %>
-          </select>
-      
-          <!-- Brand Filter Dropdown -->
-          <select id="brandFilter" class="bg-white px-3 py-2 border rounded-md">
-              <option value="">All Brands</option>
-              <% brands.forEach(brand => { %>
-                  <option value="<%= brand.name %>"><%= brand.name %></option>
-              <% }); %>
-          </select>
-      
-          <!-- Sort Dropdown -->
-          <select id="sortBy" class="bg-white px-3 py-2 border rounded-md">
-              <option value="">Sort By</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-              <option value="name_asc">Name: A to Z</option>
-              <option value="name_desc">Name: Z to A</option>
-          </select>
-      </div>
-      </div>
-      <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-        <div class="p-6">
-          <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border border-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="p-3 text-left">Product Name</th>
-                  <th class="p-3 text-left">Category</th>
-                  <th class="p-3 text-left">Brand</th>
-                  <th class="p-3 text-left">Price</th>
-                  <th class="p-3 text-right">Action</th>
-                  <th class="p-3 text-left">Status</th>
-                  <th class="p-3 text-left">Listing</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% if(products && products.length> 0){ %>
-                <% products.forEach(product => { %>
-                  <tr class="border-b border-gray-200 hover:bg-gray-50">
-                    <td class="p-3 text-sm text-gray-700">
-                        <a href="/admin/product/<%= product._id %>" class="font-bold text-blue-600 hover:text-blue-800">
-                          <%= product.productName %>
-                        </a>
-                      </td>
-                   
-                    <td class="p-3 text-sm text-gray-700 category-column"><%= product.category ? product.category.name : 'No Category' %></td>
-                    <td class="p-3 text-sm text-gray-700"><%= product.brands ? product.brands.name :'No Brands' %></td>
-                    <td class="p-3 text-sm text-gray-700">₹<%= product.price ? product.price :'No product available' %></td>
-                    <td class="p-3 text-right">
-                      <a href="/admin/editproduct/<%= product._id %>" class="text-blue-500 hover:text-blue-700">
-                        <i class="fas fa-pencil-alt" style="font-size: 1.2rem;"></i>
-                      </a>
-                    </td>
-                    <td class="p-3">
-                      <% if (product.isDeleted) { %>
-                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
-                          Deactivated
-                        </span>
-                      <% } else { %>
-                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                          Active
-                        </span>
-                      <% } %>
-                    </td>
-                    <!-- Updated Toggle Switch -->
-                    <td class="p-3">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" 
-                               class="sr-only peer toggle-checkbox" 
-                               data-id="<%= product._id %>" 
-                               <%= product.isDeleted ? '' : 'checked' %> />
-                        <div class="w-11 h-6 rounded-full bg-red-200 
-                                    peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 
-                                    dark:peer-focus:ring-red-800
-                                    peer-checked:bg-green-600 relative
-                                    after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                                    after:border-gray-300 after:border after:rounded-full 
-                                    after:h-5 after:w-5 after:transition-all 
-                                    peer-checked:after:translate-x-full peer-checked:after:border-white">
-                        </div>
-                      </label>
-                    </td>
-                  </tr>
-                <% }) %>
-              
-                <% } else { %>
-                  <tr>
-                    <td colspan="6" class="text-center p-3">No products found</td>
-                  </tr>
-              <% } %>
-              </tbody>
-            </table>
-          
-           
-            <%- include('partials/pagination') %> 
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Users</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Orders</span>
+            </a>
+          </div>
+        </nav>
+        
+        <!-- User Profile -->
+        <div class="p-4 border-t border-gray-200">
+          <div class="flex items-center space-x-3">
+            <div class="flex-shrink-0">
+              <div class="relative">
+                <img class="h-10 w-10 rounded-full bg-gray-300" src="https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff" alt="Admin">
+                <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-white"></span>
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">Admin User</p>
+              <p class="text-xs text-gray-500 truncate"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1a0a5aca8af81a2b8a2adaeafa4b9efa2aeac">[email&#160;protected]</a></p>
+            </div>
+            <div class="flex-shrink-0">
+              <button class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-cog"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
+    </aside>
+
+    <!-- Main Content Area - Flex-grow to fill available space -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- Left: Hamburger Menu -->
+          <div class="flex items-center">
+            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div class="hidden md:flex items-center ml-4">
+              <h1 class="text-xl font-semibold text-gray-800">Product Management</h1>
+              <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">Admin</span>
+            </div>
+          </div>
+          
+          <!-- Right: Actions -->
+          <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="hidden md:block relative">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+              </div>
+              <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2" placeholder="Search...">
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="hidden md:flex items-center space-x-2">
+              <a href="/admin/addproduct" class="inline-flex items-center px-3 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+                <i class="fas fa-plus text-sm mr-1.5"></i> New Product
+              </a>
+            </div>
+            
+            <!-- Notifications -->
+            <button class="relative p-1 text-gray-500 hover:text-gray-700 focus:outline-none">
+              <i class="fas fa-bell text-xl"></i>
+              <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+            </button>
+            
+            <!-- Settings -->
+            <button class="p-1 text-gray-500 hover:text-gray-700 focus:outline-none">
+              <i class="fas fa-cog text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content - Scrollable area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div class="mb-4 md:mb-0">
+            <h1 class="text-2xl font-bold text-gray-900">Products</h1>
+            <p class="text-sm text-gray-600">Manage your product inventory and listings</p>
+          </div>
+        </div>
+        
+        <!-- Filters Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <!-- Search & Filters -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-wrap flex-1">
+              <!-- Search Input -->
+              <div class="relative w-full sm:max-w-xs">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Search Products"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5"
+                />
+              </div>
+              
+              <!-- Status Filter Dropdown -->
+              <select id="statusFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="deactive">Deactivated</option>
+              </select>
+          
+              <!-- Category Filter Dropdown -->
+              <select id="categoryFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5">
+                <option value="">All Categories</option>
+                <% categories.forEach(cat => { %>
+                  <option value="<%= cat.name %>"><%= cat.name %></option>
+                <% }); %>
+              </select>
+          
+              <!-- Brand Filter Dropdown -->
+              <select id="brandFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5">
+                <option value="">All Brands</option>
+                <% brands.forEach(brand => { %>
+                  <option value="<%= brand.name %>"><%= brand.name %></option>
+                <% }); %>
+              </select>
+            </div>
+            
+            <!-- Sort & Buttons -->
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Sort Dropdown -->
+              <select id="sortBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5">
+                <option value="">Sort By</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="name_asc">Name: A to Z</option>
+                <option value="name_desc">Name: Z to A</option>
+              </select>
+              
+              <!-- Action Buttons -->
+              <div class="flex space-x-2">
+                <button
+                  id="searchBtn"
+                  class="bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <i class="fas fa-search mr-2"></i> Search
+                </button>
+                
+                <button
+                  id="clearBtn"
+                  class="bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                >
+                  <i class="fas fa-times mr-2"></i> Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Products Table Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <!-- Table Header -->
+          <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900">Product Inventory</h3>
+            <span class="text-sm text-gray-500">
+              <% if(products && products.length > 0){ %>
+                Showing <%= products.length %> products
+              <% } else { %>
+                No products found
+              <% } %>
+            </span>
+          </div>
+          
+          <!-- Table Content -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Listing</th>
+                  <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <% if(products && products.length > 0){ %>
+                  <% products.forEach(product => { %>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-lg flex items-center justify-center text-primary-600">
+                            <i class="fas fa-box"></i>
+                          </div>
+                          <div class="ml-4">
+                            <a href="/admin/product/<%= product._id %>" class="text-sm font-medium text-primary-600 hover:text-primary-800">
+                              <%= product.productName %>
+                            </a>
+                            <p class="text-xs text-gray-500 mt-1">ID: <%= product._id %></p>
+                          </div>
+                        </div>
+                      </td>
+                      
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2.5 py-1 text-xs font-medium bg-secondary-100 text-secondary-800 rounded-full category-column">
+                          <%= product.category ? product.category.name : 'No Category' %>
+                        </span>
+                      </td>
+                      
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm text-gray-700">
+                          <%= product.brands ? product.brands.name : 'No Brands' %>
+                        </span>
+                      </td>
+                      
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm font-medium text-gray-900">
+                          ₹<%= product.price ? product.price : 'No product available' %>
+                        </span>
+                      </td>
+                      
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <% if (product.isDeleted) { %>
+                          <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                            Deactivated
+                          </span>
+                        <% } else { %>
+                          <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                            Active
+                          </span>
+                        <% } %>
+                      </td>
+                      
+                      <!-- Toggle Switch -->
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" 
+                                 class="sr-only peer toggle-checkbox" 
+                                 data-id="<%= product._id %>" 
+                                 <%= product.isDeleted ? '' : 'checked' %> />
+                          <div class="w-11 h-6 rounded-full bg-red-200 
+                                      peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 
+                                      peer-checked:bg-primary-600 relative
+                                      after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                                      after:border-gray-300 after:border after:rounded-full 
+                                      after:h-5 after:w-5 after:transition-all 
+                                      peer-checked:after:translate-x-full peer-checked:after:border-white">
+                          </div>
+                        </label>
+                      </td>
+                      
+                      <!-- Actions -->
+                      <td class="px-6 py-4 whitespace-nowrap text-right">
+                        <div class="flex justify-end space-x-2">
+                          <a href="/admin/editproduct/<%= product._id %>" class="inline-flex items-center justify-center w-8 h-8 text-primary-600 bg-primary-100 rounded-lg hover:bg-primary-200 transition-colors" title="Edit Product">
+                            <i class="fas fa-pencil-alt"></i>
+                          </a>
+                          <a href="/admin/product/<%= product._id %>" class="inline-flex items-center justify-center w-8 h-8 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors" title="View Product">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="7" class="px-6 py-10 text-center text-gray-500">
+                      <div class="flex flex-col items-center">
+                        <i class="fas fa-box-open text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-lg font-medium text-gray-700">No products found</p>
+                        <p class="text-sm mt-1 max-w-md mx-auto">Try adjusting your search or filter to find what you're looking for.</p>
+                        <a href="/admin/addproduct" class="mt-4 inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+                          <i class="fas fa-plus mr-2"></i> Add New Product
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="px-6 py-4 border-t border-gray-200">
+            <%- include('partials/pagination') %> 
+          </div>
+        </div>
+      </main>
       
-    </section>
-    
-    <%- include('partials/footer') %>
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <%- include('partials/scripts') %>
+      <!-- Footer -->
+  
+    </div>
+  </div>
+
+  <!-- SweetAlert2 -->
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Include scripts -->
+
   <script>
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', openSidebar);
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+      }
+      
+      // Close sidebar on window resize if screen becomes large
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
+    });
    
-   // Toggle switch functionality with SweetAlert confirmation
-   document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
-        switchElement.addEventListener('change', async function () {
-          const productId = this.getAttribute('data-id');
-          const newStatus = this.checked;
+    // Toggle switch functionality with SweetAlert confirmation
+    document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
+      switchElement.addEventListener('change', async function () {
+        const productId = this.getAttribute('data-id');
+        const newStatus = this.checked;
 
-          const result = await Swal.fire({
-            title: 'Are you sure?',
-            text: `You are about to ${newStatus ? 'list' : 'unlist'} this product.`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, proceed!'
-          });
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: `You are about to ${newStatus ? 'list' : 'unlist'} this product.`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#0ea5e9',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, proceed!',
+          customClass: {
+            confirmButton: 'rounded-lg text-sm font-medium px-5 py-2.5',
+            cancelButton: 'rounded-lg text-sm font-medium px-5 py-2.5',
+            popup: 'rounded-xl'
+          },
+          buttonsStyling: true
+        });
 
-          if (result.isConfirmed) {
-            try {
-              const response = await fetch(`/admin/toggle-product/${productId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: newStatus })
-              });
-              if (!response.ok) throw new Error('Failed to update status');
-              Swal.fire({ icon: 'success', title: 'Updated!', text: 'Product status has been updated.', confirmButtonText: 'OK' });
-              window.location.reload();
-            } catch (error) {
-              Swal.fire({ icon: 'error', title: 'Error!', text: 'Failed to update product status.', confirmButtonText: 'OK' });
-              this.checked = !newStatus;
-            }
-          } else {
+        if (result.isConfirmed) {
+          try {
+            const response = await fetch(`/admin/toggle-product/${productId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: newStatus })
+            });
+            if (!response.ok) throw new Error('Failed to update status');
+            Swal.fire({ 
+              icon: 'success', 
+              title: 'Updated!', 
+              text: 'Product status has been updated.', 
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#0ea5e9',
+              customClass: {
+                confirmButton: 'rounded-lg text-sm font-medium px-5 py-2.5',
+                popup: 'rounded-xl'
+              }
+            });
+            window.location.reload();
+          } catch (error) {
+            Swal.fire({ 
+              icon: 'error', 
+              title: 'Error!', 
+              text: 'Failed to update product status.', 
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#0ea5e9',
+              customClass: {
+                confirmButton: 'rounded-lg text-sm font-medium px-5 py-2.5',
+                popup: 'rounded-xl'
+              }
+            });
             this.checked = !newStatus;
           }
-        });
+        } else {
+          this.checked = !newStatus;
+        }
       });
-   // Frontend JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    // Get all filter elements
-    const searchInput = document.getElementById("searchInput");
-    const searchBtn = document.getElementById("searchBtn");
-    const brandFilter = document.getElementById("brandFilter");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const statusFilter = document.getElementById("statusFilter");
-    const sortSelect = document.getElementById("sortBy");
-
-    // Add event listeners
-    document.getElementById("searchBtn").addEventListener("click", applyFilters);
-    document.getElementById("clearBtn").addEventListener("click", clearFilters);
+    });
     
-    // Add change listeners to all filter dropdowns
-    [brandFilter, categoryFilter, statusFilter, sortSelect].forEach(element => {
+    // Frontend JavaScript for filters
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all filter elements
+      const searchInput = document.getElementById("searchInput");
+      const searchBtn = document.getElementById("searchBtn");
+      const brandFilter = document.getElementById("brandFilter");
+      const categoryFilter = document.getElementById("categoryFilter");
+      const statusFilter = document.getElementById("statusFilter");
+      const sortSelect = document.getElementById("sortBy");
+
+      // Add event listeners
+      document.getElementById("searchBtn").addEventListener("click", applyFilters);
+      document.getElementById("clearBtn").addEventListener("click", clearFilters);
+      
+      // Add change listeners to all filter dropdowns
+      [brandFilter, categoryFilter, statusFilter, sortSelect].forEach(element => {
         if (element) {
-            element.addEventListener('change', applyFilters);
+          element.addEventListener('change', applyFilters);
         }
-    });
+      });
 
-    // Add enter key listener to search input
-    searchInput.addEventListener('keypress', function(e) {
+      // Add enter key listener to search input
+      searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            applyFilters();
+          applyFilters();
         }
-    });
+      });
 
-    function applyFilters() {
+      function applyFilters() {
         const queryParams = new URLSearchParams();
         
         // Get all filter values
@@ -305,9 +588,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Navigate to filtered URL
         window.location.href = `/admin/product-list2?${queryParams.toString()}`;
-    }
+      }
 
-    function clearFilters() {
+      function clearFilters() {
         // Reset all filter inputs
         searchInput.value = "";
         brandFilter.value = "";
@@ -317,10 +600,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Apply cleared filters
         applyFilters();
-    }
+      }
 
-    // Restore filter values from URL on page load
-    function restoreFiltersFromURL() {
+      // Restore filter values from URL on page load
+      function restoreFiltersFromURL() {
         const params = new URLSearchParams(window.location.search);
         
         searchInput.value = params.get("search") || "";
@@ -328,13 +611,13 @@ document.addEventListener('DOMContentLoaded', function() {
         categoryFilter.value = params.get("categoryFilter") || "";
         statusFilter.value = params.get("statusFilter") || "";
         if (sortSelect) {
-            sortSelect.value = params.get("sortBy") || "";
+          sortSelect.value = params.get("sortBy") || "";
         }
-    }
+      }
 
-    // Initialize filters from URL
-    restoreFiltersFromURL();
-});
+      // Initialize filters from URL
+      restoreFiltersFromURL();
+    });
   </script>
 </body>
 </html>

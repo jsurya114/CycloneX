@@ -7,9 +7,7 @@ const Productloader = require('../admin/productloader');
 const { category } = require('./categoryController');
 
 const adminController = {
-    dashboard: (req,res,next) => {
-        res.render('dashboard');
-    },
+  
 
     product2: async (req,res,next) => {
         try {

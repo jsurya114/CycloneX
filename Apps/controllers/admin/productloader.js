@@ -31,8 +31,9 @@ res.render('editproduct',{product,brands,category})
     },
     editProduct:async (req,res,next) => {
         try {
-            const { productId, productName, description, price, brands, category, stock } = req.body;
-            
+            console.log('jdjdj',req.body)
+            const { productId, productName, description, price, brands, category, stock ,offer} = req.body;
+            console.log('productId, productName, description, price, brands, category, stock ,offer',productId, productName, description, price, brands, category, stock ,offer)
             // Validation
             let errors = {};
             
@@ -69,6 +70,7 @@ res.render('editproduct',{product,brands,category})
                 brands,
                 category,
                 stock,
+                offer
                 
             };
             

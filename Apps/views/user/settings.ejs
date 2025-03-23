@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX - Settings</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"},
+                        secondary: '#f97316',
+                        dark: '#0f172a'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    </script>
+
+<style>
+        /* Add these if they don't already exist in your styles */
+        .transition-max-height {
+        transition: max-height 0.5s ease-in-out;
+        overflow: hidden;
+    }
+
+    .form-hidden {
+        max-height: 0;
+    }
+
+    .form-visible {
+        max-height: 500px;
+    }
+    /* Custom scrollbar for Webkit browsers */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 8px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 8px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
+
+    /* Form input focus styles */
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+    }
+
+    /* Card hover effects */
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Gradient backgrounds */
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+    }
+    
+    .bg-gradient-secondary {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    }
+
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow: auto;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 1rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Toggle switch */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+        background-color: #0ea5e9;
+    }
+
+    input:checked + .toggle-slider:before {
+        transform: translateX(26px);
+    }
+
+    /* OTP input styles */
+    .otp-input {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        font-size: 1.5rem;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+    }
+
+    .otp-input:focus {
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+    }
+
+    /* New styles for enhanced UI */
+    .settings-card {
+        border-radius: 1rem;
+        background: white;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .settings-card:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .settings-section {
+        position: relative;
+        border-radius: 0.75rem;
+        background: linear-gradient(to right, rgba(240, 249, 255, 0.5), rgba(224, 242, 254, 0.5));
+        overflow: hidden;
+    }
+
+    .settings-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, #38bdf8, #0284c7);
+        border-radius: 4px;
+    }
+
+    .settings-icon {
+        background: linear-gradient(135deg, #38bdf8, #0284c7);
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+    }
+
+    .edit-button {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .edit-button::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: -100%;
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+        transition: all 0.6s ease;
+    }
+
+    .edit-button:hover::after {
+        left: 100%;
+    }
+
+    .input-animated {
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+    }
+
+    .input-animated:focus {
+        transform: translateY(-2px);
+    }
+</style>
+</head>
+<body class="bg-slate-50 font-sans">
+    <%- include('partials/header') %> 
+    <div class="container mx-auto p-4 max-w-7xl">
+        <!-- Page header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-display font-bold text-slate-800">Settings</h1>
+            <p class="text-slate-500">Manage your account settings and preferences</p>
+        </div>
+        <!-- Main content grid -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <!-- Left sidebar - copied from user profile page -->
+            <div class="md:col-span-3">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm h-half">
+                    <!-- User profile -->
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                                <%= user.fullName.charAt(0).toUpperCase() %>
+                            </div>
+                            <div>
+                                 <p class="font-semibold text-lg text-gray-800"><%= user.name %></p>
+                                 <p class="text-sm text-gray-500"><%= user.email %></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Navigation tabs -->
+                    <div class="flex justify-between mb-8">
+                        <div class="group cursor-pointer">
+                            <a href="/settings">
+                                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                    <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                                </div>
+                                <span class="text-xs font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">Profile</span>
+                            </a>
+                        </div>
+                        <div class="group cursor-pointer">
+                            <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-600 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
+                        </div>
+                        <div class="group cursor-pointer">
+                            <a href="/wallet" class="flex flex-col items-center">  
+                                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                    <i class="fas fa-wallet text-green-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                                </div>
+                                <span class="text-xs font-medium text-gray-600 group-hover:text-green-500 transition-colors duration-300">Wallet</span>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Menu items -->
+                    <div class="space-y-2">
+                        <a href="/order" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
+                            <i class="fas fa-shopping-bag mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                            <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">My orders</span>
+                        </a>
+                        <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 transition-colors duration-300 group">
+                            <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
+                            <span class="font-medium text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Right content area -->
+            <div class="md:col-span-9">
+                <div class="settings-card p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                        <span class="bg-blue-500 p-2 rounded-lg mr-3 text-white">
+                            <i class="fas fa-cog"></i>
+                        </span>
+                        Account Settings
+                    </h2>
+                    
+                    <!-- Email section - Enhanced UI -->
+                    <div class="settings-section p-6 mb-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="settings-icon mr-4">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-700 text-lg">Email Address</h3>
+                                    <p class="text-gray-500 mt-1" id="currentEmail"><%= user.email %></p>
+                                </div>
+                            </div>
+                            <button id="editEmailBtn" class="edit-button px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-300 font-medium text-sm flex items-center">
+                                <i class="fas fa-pen-to-square mr-2"></i> Edit Email
+                            </button>
+                        </div>
+                        <!-- Email edit form (initially hidden) -->
+                        <div id="emailEditForm" class="mt-6 transition-max-height form-hidden">
+                            <form id="updateEmailForm" class="space-y-4 bg-white p-5 rounded-lg shadow-sm">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1" for="oldEmail">Current Email</label>
+                                    <input type="email" id="oldEmail" name="oldEmail" class="input-animated w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1" for="newEmail">New Email</label>
+                                    <input type="email" id="newEmail" name="newEmail" class="input-animated w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                </div>
+                                <div class="flex space-x-3">
+                                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium flex items-center">
+                                        <i class="fas fa-paper-plane mr-2"></i> Update Email
+                                    </button>
+                                    <button type="button" id="cancelEmailEdit" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-300 font-medium">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Password section - Enhanced UI -->
+                    <div class="settings-section p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="settings-icon mr-4">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-700 text-lg">Password</h3>
+                                    <p class="text-gray-500 mt-1">Change your account password</p>
+                                </div>
+                            </div>
+                            <button id="editPasswordBtn" class="edit-button px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-300 font-medium text-sm flex items-center">
+                                <i class="fas fa-key mr-2"></i> Change Password
+                            </button>
+                        </div>
+                        <!-- Password edit form (initially hidden) -->
+                        <div id="passwordEditForm" class="mt-6 transition-max-height form-hidden">
+                            <form id="updatePasswordForm" class="space-y-4 bg-white p-5 rounded-lg shadow-sm">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1" for="newPassword">New Password</label>
+                                    <div class="relative">
+                                        <input type="password" id="newPassword" name="newPassword" class="input-animated w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                        <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1" for="confirmNewPassword">Confirm New Password</label>
+                                    <div class="relative">
+                                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="input-animated w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                        <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-3">
+                                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium flex items-center">
+                                        <i class="fas fa-paper-plane mr-2"></i> Send Verification Code
+                                    </button>
+                                    <button type="button" id="cancelPasswordEdit" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-300 font-medium">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- OTP Modal for Email -->
+            <div id="otpModal" class="modal">
+                <div class="modal-content p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Verify Your Email</h3>
+                        <button id="closeOtpModal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-600 mb-6">We've sent a verification code to your new email address. Please enter the code below to complete the email update.</p>
+                    <form id="otpVerificationForm">
+                        <div class="flex justify-center space-x-3 mb-6">
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
+                        </div>
+                        <div class="text-center mb-4">
+                            <span class="text-sm text-gray-500">Didn't receive code? <button type="button" id="resendOtp" class="text-blue-600 hover:text-blue-800">Resend OTP</button></span>
+                        </div>
+                        <div class="flex justify-center">
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium">
+                                Verify & Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Password OTP Modal -->
+            <div id="passwordOtpModal" class="modal">
+                <div class="modal-content p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Verify Your Identity</h3>
+                        <button id="closePasswordOtpModal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-600 mb-6">We've sent a verification code to your email address. Please enter the code below to proceed with password change.</p>
+                    <form id="passwordOtpVerificationForm">
+                        <div class="flex justify-center space-x-3 mb-6">
+                            <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
+                            <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
+                        </div>
+                        <div class="text-center mb-4">
+                            <span class="text-sm text-gray-500">Didn't receive code? <button type="button" id="resendPasswordOtp" class="text-blue-600 hover:text-blue-800">Resend OTP</button></span>
+                        </div>
+                        <div class="flex justify-center">
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium">
+                                Verify & Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <%- include('partials/footer') %> 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Email script
+          const editEmailBtn = document.getElementById('editEmailBtn');
+          const emailEditForm = document.getElementById('emailEditForm');
+          const cancelEmailEdit = document.getElementById('cancelEmailEdit');
+          const updateEmailForm = document.getElementById('updateEmailForm');
+          const oldEmailInput = document.getElementById('oldEmail');
+          const currentEmailDisplay = document.getElementById('currentEmail');
+          const otpModal = document.getElementById('otpModal');
+          const closeOtpModal = document.getElementById('closeOtpModal');
+          const otpVerificationForm = document.getElementById('otpVerificationForm');
+          const resendOtp = document.getElementById('resendOtp');
+          const otpInputs = document.querySelectorAll('.otp-input');
+    
+          oldEmailInput.value = currentEmailDisplay.textContent.trim();
+    
+          editEmailBtn.addEventListener('click', function() {
+            emailEditForm.classList.toggle('form-hidden');
+            emailEditForm.classList.toggle('form-visible');
+          });
+    
+          cancelEmailEdit.addEventListener('click', function() {
+            emailEditForm.classList.add('form-hidden');
+            emailEditForm.classList.remove('form-visible');
+            updateEmailForm.reset();
+          });
+    
+          updateEmailForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const newEmail = document.getElementById('newEmail').value;
+            try {
+              const response = await fetch('/updateEmail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: newEmail })
+              });
+              const data = await response.json();
+              if (data.success) {
+                otpModal.style.display = 'block';
+                Toastify({
+                  text: "OTP sent to your new email address!",
+                  duration: 3000,
+                  close: true,
+                  gravity: "bottom",
+                  position: 'center',
+                  backgroundColor: "#0ea5e9"
+                }).showToast();
+              } else {
+                Toastify({
+                  text: "Error: " + data.message,
+                  duration: 3000,
+                  close: true,
+                  gravity: "bottom",
+                  position: 'center',
+                  backgroundColor: "#ef4444"
+                }).showToast();
+              }
+            } catch (error) {
+              console.error('Error updating email:', error);
+              Toastify({
+                text: "An error occurred. Please try again.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#ef4444"
+              }).showToast();
+            }
+          });
+    
+          otpVerificationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            let otp = '';
+            otpInputs.forEach(input => {
+              otp += input.value;
+            });
+            const newEmail = document.getElementById('newEmail').value;
+            try {
+              const response = await fetch('/verifyEmailOtp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: newEmail, otp })
+              });
+              const data = await response.json();
+              if (data.success) {
+                currentEmailDisplay.textContent = newEmail;
+                Toastify({
+                  text: "Email updated successfully!",
+                  duration: 3000,
+                  close: true,
+                  gravity: "bottom",
+                  position: "center",
+                  backgroundColor: "#10B981"
+                }).showToast();
+                otpModal.style.display = 'none';
+                emailEditForm.classList.add('form-hidden');
+                emailEditForm.classList.remove('form-visible');
+                updateEmailForm.reset();
+                otpVerificationForm.reset();
+                location.reload();
+              } else {
+                Toastify({
+                  text: "OTP verification failed: " + data.message,
+                  duration: 3000,
+                  close: true,
+                  gravity: "top",
+                  position: "right",
+                  backgroundColor: "#ef4444"
+                }).showToast();
+              }
+            } catch (error) {
+              console.error('Error verifying OTP:', error);
+              Toastify({
+                text: "An error occurred during OTP verification. Please try again.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#ef4444"
+              }).showToast();
+            }
+          });
+    
+          resendOtp.addEventListener('click', function() {
+            Toastify({
+              text: "OTP resent successfully!",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "right",
+              backgroundColor: "#3B82F6"
+            }).showToast();
+          });
+    
+          window.addEventListener('click', function(e) {
+            if (e.target === otpModal) {
+              otpModal.style.display = 'none';
+            }
+          });
+    
+          otpInputs.forEach((input, index) => {
+            input.addEventListener('input', function() {
+              if (this.value.length === 1 && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+              }
+            });
+            input.addEventListener('keydown', function(e) {
+              if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                otpInputs[index - 1].focus();
+              }
+            });
+          });
+    
+          // Password script
+          const editPasswordBtn = document.getElementById('editPasswordBtn');
+          const passwordEditForm = document.getElementById('passwordEditForm');
+          const cancelPasswordEdit = document.getElementById('cancelPasswordEdit');
+          const updatePasswordForm = document.getElementById('updatePasswordForm');
+          const passwordOtpModal = document.getElementById('passwordOtpModal');
+          const closePasswordOtpModal = document.getElementById('closePasswordOtpModal');
+          const passwordOtpVerificationForm = document.getElementById('passwordOtpVerificationForm');
+          const resendPasswordOtp = document.getElementById('resendPasswordOtp');
+          const passwordOtpInputs = document.querySelectorAll('.password-otp');
+    
+          editPasswordBtn.addEventListener('click', function() {
+            passwordEditForm.classList.toggle('form-hidden');
+            passwordEditForm.classList.toggle('form-visible');
+          });
+    
+          cancelPasswordEdit.addEventListener('click', function() {
+            passwordEditForm.classList.add('form-hidden');
+            passwordEditForm.classList.remove('form-visible');
+            updatePasswordForm.reset();
+          });
+    
+          updatePasswordForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const newPassword = document.getElementById('newPassword').value
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+            if (newPassword !== confirmPassword) {
+              Toastify({
+                text: "New passwords do not match!",
+                duration: 3000,
+                close: true,
+                gravity: "bottom",
+                position: 'center',
+                backgroundColor: "#ef4444"
+              }).showToast();
+              return;
+            }
+
+            try {
+              const response = await fetch('/sendPasswordOtp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newPassword })
+              });
+              const data = await response.json();
+              if (data.success) {
+                passwordOtpModal.style.display = 'block';
+                Toastify({
+                  text: "OTP sent to your email address!",
+                  duration: 3000,
+                  close: true,
+                  gravity: "bottom",
+                  position: 'center',
+                  backgroundColor: "#0ea5e9"
+                }).showToast();
+              } else {
+                Toastify({
+                  text:  data.message,
+                  duration: 3000,
+                  close: true,
+                  gravity: "bottom",
+                  position: 'center',
+                  backgroundColor: "#ef4444"
+                }).showToast();
+              }
+            } catch (error) {
+              console.error('Error sending password OTP:', error);
+              Toastify({
+                text: "An error occurred. Please try again.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#ef4444"
+              }).showToast();
+            }
+          });
+    
+          passwordOtpVerificationForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            let otp = '';
+            passwordOtpInputs.forEach(input => {
+              otp += input.value;
+            });
+            try {
+              const response = await fetch('/verifyPasswordOtp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ otp })
+              });
+              const data = await response.json();
+              console.log('dsdd',data)
+              if (data.success) {
+                Toastify({
+                  text: "Password updated successfully!",
+                  duration: 3000,
+                  close: true,
+                  gravity: "bottom",
+                  position: "center",
+                  backgroundColor: "#10B981"
+                }).showToast();
+
+                passwordOtpModal.style.display = 'none';
+                passwordEditForm.classList.add('form-hidden');
+                passwordEditForm.classList.remove('form-visible');
+                updatePasswordForm.reset();
+                passwordOtpVerificationForm.reset();
+              } else {
+                Toastify({
+                  text:  data.message,
+                  duration: 3000,
+                  close: true,
+                  gravity: "top",
+                  position: "right",
+                  backgroundColor: "#ef4444"
+                }).showToast();
+              }
+            } catch (error) {
+              console.error('Error verifying password OTP:', error);
+              Toastify({
+                text: "An error occurred during OTP verification. Please try again.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#ef4444"
+              }).showToast();
+            }
+          });
+    
+          resendPasswordOtp.addEventListener('click', async function() {
+            try {
+              const response = await fetch('/sendPasswordOtp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: '<%= user.email %>' })
+              });
+              const data = await response.json();
+              if (data.success) {
+                Toastify({
+                  text: "OTP resent successfully!",
+                  duration: 3000,
+                  close: true,
+                  gravity: "top",
+                  position: "right",
+                  backgroundColor: "#3B82F6"
+                }).showToast();
+              } else {
+                Toastify({
+                  text: "Error resending OTP: " + data.message,
+                  duration: 3000,
+                  close: true,
+                  gravity: "top",
+                  position: "right",
+                  backgroundColor: "#ef4444"
+                }).showToast();
+              }
+            } catch (error) {
+              console.error('Error resending OTP:', error);
+              Toastify({
+                text: "An error occurred. Please try again.",
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#ef4444"
+              }).showToast();
+            }
+          });
+    
+          closePasswordOtpModal.addEventListener('click', function() {
+            passwordOtpModal.style.display = 'none';
+          });
+    
+          passwordOtpInputs.forEach((input, index) => {
+            input.addEventListener('input', function() {
+              if (this.value.length === 1 && index < passwordOtpInputs.length - 1) {
+                passwordOtpInputs[index + 1].focus();
+              }
+            });
+            input.addEventListener('keydown', function(e) {
+              if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                passwordOtpInputs[index - 1].focus();
+              }
+            });
+          });
+    
+          window.addEventListener('click', function(e) {
+            if (e.target === otpModal) {
+              otpModal.style.display = 'none';
+            }
+            if (e.target === passwordOtpModal) {
+              passwordOtpModal.style.display = 'none';
+            }
+          });
+
+          // Toggle password visibility
+          document.querySelectorAll('.fa-eye').forEach(icon => {
+            icon.addEventListener('click', function() {
+              const input = this.parentElement.previousElementSibling;
+              if (input.type === 'password') {
+                input.type = 'text';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+              } else {
+                input.type = 'password';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+              }
+            });
+          });
+        });
+      </script>
+</body>
+</html>

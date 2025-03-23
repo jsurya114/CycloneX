@@ -1,8 +1,12 @@
 const Product=require('../../models/productModel')
 const Cart = require('../../models/cartModel')
+const Category = require('../../models/categoryModel')
+
 const User = require('../../models/userModel')
 const jwt = require('jsonwebtoken')
 const Wishlist = require('../../models/wislistModel')
+const { category } = require('../admin/categoryController')
+const userEnsure = require('../../middlewares/userEnsure')
 const cartController={
     showCartPage: async (req, res, next) => {
         try {
@@ -11,8 +15,15 @@ const cartController={
             
             const userId = decoded.id;
             const user = await User.findById(userId);
-            
-            let cart = await Cart.findOne({ user: user._id }).populate('items.product');
+            let cartCount =await Cart.countDocuments({user:userId})
+            let cart = await Cart.findOne({ user: user._id })
+                     .populate({
+                         path: 'items.product',
+                         populate: {
+                             path: 'category' // Correct way to populate nested category data
+                         }
+                     });
+
     
             let subtotal = 0;
             let discount = 0;
@@ -22,21 +33,45 @@ const cartController={
             let shippingCharge=300
     
             if (cart && cart.items.length > 0) {
-                cart.items.forEach(item => {
-                    subtotal += item.product.price * item.quantity;
+                cart.items = cart.items.map(item => {
+                    const productOffer = item.product.offer || 0;
+                    const categoryOffer = (item.product.category && item.product.category.offer) ? item.product.category.offer : 0;
+                    const maxOffer = Math.max(productOffer, categoryOffer) || 0;
+            
+                    // Ensure price is valid
+                    const originalPrice = item.product.price || 0;
+                    const salePrice = maxOffer > 0 ? originalPrice * (1 - maxOffer / 100) : originalPrice;
+                    const itemSubtotal = salePrice * (item.quantity || 1);
+            
+                    return {
+                        ...item.toObject(),
+                        maxOffer,
+                        salePrice,
+                        subtotal: itemSubtotal // ✅ Save subtotal per item
+                    };
                 });
-    
-                if (subtotal > 19000) {
-                    discount = subtotal * 0.19;
-                }
-                if(subtotal>20000){
-                    shippingCharge = 0
-                }
-    
-                tax = subtotal * taxRate;
-                total = subtotal + tax - discount+shippingCharge;
+
+            
+                // ✅ Store total subtotal in cart
+                cart.totalSubtotal = cart.items.reduce((sum, item) => sum + item.subtotal, 0);
+                await cart.save();
             }
+    let taxAmount=cart.totalSubtotal*taxRate
+            let finalTotal =cart.totalSubtotal+taxAmount
+
+            if (!cart || cart.items.length === 0) {
+                cart = null; // Clear the cart reference
+                subtotal = 0;
+                taxAmount = 0;
+                finalTotal = 0;
+            }
+            
+
+            const product = await Product.find({isDeleted:false}).populate('category').populate('brands')
     
+
+
+
 let referenceProduct= cart?.items?.length>0?cart.items[0].product:null
 
 let relatedProducts=[]
@@ -51,13 +86,16 @@ if(referenceProduct){
 }
             res.status(200).render('addtocart', {
                 user,
+                product,
                 cart: cart || null,  // Explicitly set cart to null if not found
                 subtotal,
                 tax,
                 discount,
                 shippingCharge,
                 total,
-                relatedProducts
+                relatedProducts,cartCount,
+                taxAmount,
+                finalTotal
             });
         } catch (error) {
             next(error);
@@ -71,41 +109,48 @@ if(referenceProduct){
             if (quantity <= 0) {
                 return res.status(400).json({ success: false, message: "Quantity must be at least 1" });
             }
-            const product =await Product.findById(productId)
+            const product =await Product.findById(productId).populate('category')
             
+            if(product.isDeleted==true){
+                return res.status(400).json({success:false,message:'product is unavailable'})
+            }
+            if (product.category && product.category.isBlocked === true) {
+                return res.status(400).json({ success: false, message: 'This product is unavailable' });
+            }
+
             
+
             if (quantity > product.stock) {
                 return res.status(400).json({ success: false, message: `Only ${product.stock} items available in stock` });
             }
 
-            let cart =await Cart.findOne({user:userId})
+            let cart =await Cart.findOne({user:userId}).populate('items.product')
+
+
             if(!cart) {
                 cart =await new Cart({user:userId,items:[]})
-                await cart.save()
+                await cart.save();
 
             }
+
+
            // console.log(cart,userId,productId,quantity)
     
-const wishlist = await Wishlist.findOne({userId})
-if(wishlist&&wishlist.product){
-  let newWishlist = []
-  for(let pId of wishlist.product){
-    if(pId.toString()!==productId.toString()){
-        newWishlist.push(pId)
-    }
-  }
-  wishlist.product=newWishlist
-  await wishlist.save()
+const wishlist = await Wishlist.findOne({user:userId})
+if (wishlist && wishlist.product.includes(productId)) {
+    wishlist.product = wishlist.product.filter(pId => pId.toString() !== productId.toString());
+    await wishlist.save()
 }
 
           
-        const existingItem = cart.items.find(item=>item.product.toString()===productId)
+        const existingItem = cart.items.find(item=>item.product._id.toString()===productId)
         if(existingItem){
         
             if(existingItem.quantity+quantity>product.stock){
            
                 return res.status(400).json({ success: false, message: "Not enough stock available" })
             }
+
             existingItem.quantity+=quantity
         }
         else{
@@ -148,8 +193,8 @@ res.status(200).json({success: true, message: 'Product removed from cart'})
             const { quantity } = req.body;
             const userId = req.user._id;
       
-            if (quantity <= 0) {
-                return res.status(400).json({ success: false, message: "Quantity must be at least 1" });
+            if (!quantity || isNaN(quantity) || quantity <= 0) {
+                return res.status(400).json({ success: false, message: " quantity must be atleast one." });
             }
 
 
@@ -164,10 +209,41 @@ res.status(200).json({success: true, message: 'Product removed from cart'})
             const item = cart.items.find(item => item.product.toString() === productId);
             if (!item) return res.status(404).json({ success: false, message: "Product not in cart" });
       ``
-            item.quantity = parseInt(quantity);
+            item.quantity = parseInt(quantity)
+cart.items = cart.items.map(item=>{
+    const productOffer = item.product.offer||0
+    const categoryOffer = (item.product.category&&item.product.category.offer)?item.product.category.offer:0
+    const maxOffer = Math.max(productOffer,categoryOffer)||0
+
+
+
+    const originalPrice = item.product.price||0
+    const salePrice = maxOffer>0?originalPrice*(1-maxOffer/100):originalPrice
+    const itemSubtotal = salePrice*(item.quantity||1)
+    return {
+        ...item.toObject(),
+        maxOffer,
+        salePrice,
+        subtotal:itemSubtotal
+    }
+})
+cart.totalSubtotal = cart.items.reduce((sum, item) => sum + item.subtotal, 0);
+
+
+const taxRate = 0.18;
+const taxAmount = cart.totalSubtotal * taxRate;
+const finalTotal = cart.totalSubtotal + taxAmount;
+const updatedCart = await Cart.findOne({ user: userId }).populate('items.product');
+
             await cart.save();
       
-            res.json({ success: true, message: "Product quantity updated", cart });
+            res.json({
+                success: true,
+                message: "Product quantity updated",
+                subtotal: cart.totalSubtotal,
+                tax: taxAmount,
+                total: finalTotal
+            });
         } catch (error) {
             next(error);
         }
@@ -191,7 +267,7 @@ const user = await User.findById(userId)
 if (!user) {
     return res.status(404).render('error', { message: 'User not found' });
 }
-
+let cartCount =await Cart.countDocuments({user:userId})
 const wishlist = await Wishlist.findOne({user:user._id}).populate({ path: 'product',
     select: 'name price mainImage brands'})
 
@@ -214,11 +290,13 @@ const wishlist = await Wishlist.findOne({user:user._id}).populate({ path: 'produ
             url: `/wislist?brandsFilter=${encodeURIComponent(brandsFilter)}`
         });
     }
-
+    let cart = await Cart.findOne({ user: user._id }).populate('items.product');
 res.status(200).render('wishlist',{
     user,
+    cart,
     wishlist,
     breadcrumbs,
+    cartCount
 })
       } catch (error) {
         next(error)

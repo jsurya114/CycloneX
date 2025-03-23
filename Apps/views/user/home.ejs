@@ -1,354 +1,767 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CycloneX</title>
+    <title>CycloneX - Premium Cycling Experience</title>
+   
+    <!-- Use the latest Tailwind CDN with direct import -->
     <script src="https://cdn.tailwindcss.com"></script>
+   
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+   
+    <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif']
+                    },
                     colors: {
-                        primary: '#2563eb',
-                        secondary: '#f97316',
+                        primary: '#3b82f6',
+                        secondary: '#f43f5e',
                         dark: '#0f172a'
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-in': 'slideIn 0.7s ease-in-out',
+                        'zoom-in': 'zoomIn 0.7s ease-in-out',
+                        'float': 'float 6s ease-in-out infinite',
+                        'rotate-y': 'rotateY 15s infinite linear'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(30px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        zoomIn: {
+                            '0%': { transform: 'scale(1.1)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        rotateY: {
+                            '0%': { transform: 'rotateY(0deg)' },
+                            '100%': { transform: 'rotateY(360deg)' }
+                        }
                     }
                 }
             }
         }
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style type="text/tailwindcss">
-        @layer components {
-            .btn-primary {
-                @apply bg-primary text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+   
+    <!-- Custom Styles -->
+    <style>
+        /* Base styles in case Tailwind fails */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .dark body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+       
+        /* Enhanced Banner Slider */
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+        }
+       
+        .slider-item {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease-in-out, transform 1s ease, visibility 0.8s;
+            transform: scale(1.05);
+        }
+       
+        .slider-item.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+            z-index: 1;
+        }
+       
+        /* Slide content animations */
+        .slider-item.active .slide-title {
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+       
+        .slider-item.active .slide-description {
+            animation: slideInRight 0.8s ease-out 0.2s forwards;
+        }
+       
+        .slider-item.active .slide-buttons {
+            animation: slideInRight 0.8s ease-out 0.4s forwards;
+        }
+       
+        .slider-item.active .slide-image {
+            animation: zoomIn 1s ease-out forwards;
+        }
+       
+        @keyframes slideInRight {
+            from {
+                transform: translateX(50px);
+                opacity: 0;
             }
-            .btn-secondary {
-                @apply bg-secondary text-white px-6 py-3 rounded-md hover:bg-orange-600 transition duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+            to {
+                transform: translateX(0);
+                opacity: 1;
             }
-            .product-card {
-                @apply bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl;
+        }
+       
+        @keyframes zoomIn {
+            from {
+                transform: scale(1.1);
+                opacity: 0;
             }
-            .product-image-container {
-                @apply relative overflow-hidden;
+            to {
+                transform: scale(1);
+                opacity: 1;
             }
-            .product-image {
-                @apply w-full h-48 object-cover transition-transform duration-500;
-            }
-            .product-card:hover .product-image {
-                @apply transform scale-110;
-            }
-            .quick-view-btn {
-                @apply absolute bottom-0 left-0 right-0 bg-primary text-white py-2 text-center opacity-0 transition-opacity duration-300;
-            }
-            .product-card:hover .quick-view-btn {
-                @apply opacity-100;
-            }
-            .star-rating {
-                @apply flex text-yellow-400;
-            }
-            .modal {
-                @apply fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300;
-            }
-            .modal.active {
-                @apply opacity-100 pointer-events-auto;
-            }
-            .modal-content {
-                @apply bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto transform scale-95 transition-transform duration-300;
-            }
-            .modal.active .modal-content {
-                @apply scale-100;
-            }
-            .price-slider {
-                @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
-            }
-            .price-slider::-webkit-slider-thumb {
-                @apply appearance-none w-6 h-6 rounded-full bg-primary cursor-pointer;
-            }
-            .category-card {
-                @apply transition-all duration-300 hover:-translate-y-2;
-            }
-            .banner-text {
-                @apply text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight;
-            }
-            .banner-subtitle {
-                @apply text-xl md:text-2xl mb-8 max-w-xl font-light;
-            }
+        }
+       
+        /* Improved Category Circles */
+        .category-circle {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+       
+        .category-circle:hover {
+            transform: translateY(-10px);
+        }
+       
+        .circle-image {
+            transition: all 0.6s ease;
+        }
+       
+        .category-circle:hover .circle-image {
+            transform: scale(1.1);
+        }
+       
+        /* Product Cards */
+        .product-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            animation: float 6s ease-in-out infinite;
+        }
+       
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation-play-state: paused;
+        }
+        
+        .dark .product-card {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+        
+        .dark .product-card .product-title {
+            color: #f8fafc;
+        }
+        
+        /* 3D Product Images - Only for product cards */
+        .product-card img {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            animation: rotate-y 15s infinite linear;
+        }
+        
+        .product-card:hover img {
+            animation-play-state: paused;
+        }
+       
+        /* Slider Progress Bar */
+        .slider-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+       
+        .slider-progress-bar {
+            height: 100%;
+            background: #fff;
+            width: 0;
+            transition: width 5s linear;
+        }
+       
+        .slider-progress.active .slider-progress-bar {
+            width: 100%;
+        }
+       
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+       
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+       
+        .modal-content {
+            background-color: white;
+            border-radius: 1rem;
+            max-width: 80%;
+            width: 100%;
+            max-height: 90vh;
+            overflow: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .dark .modal-content {
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+       
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+       
+        /* Enhanced Slider Dots */
+        .slider-dot {
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+       
+        .slider-dot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            transform: scale(0);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+       
+        .slider-dot.active::before {
+            transform: scale(1);
+        }
+       
+        /* Slide content initial state for animations */
+        .slide-title, .slide-description, .slide-buttons {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+       
+        .slide-image {
+            opacity: 0;
+            transform: scale(1.1);
+        }
+       
+        /* Floating elements animation */
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+       
+        /* Gradient overlay for slider */
+        .slider-gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(30, 41, 59, 0.7), rgba(30, 41, 59, 0.3));
+            z-index: 0;
+        }
+        
+        .dark .slider-gradient-overlay {
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.4));
+        }
+       
+        /* Particle effect */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Dark mode styles */
+        .dark .bg-white {
+            background-color: #1e293b;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #0f172a;
+        }
+        
+        .dark .text-gray-800 {
+            color: #f8fafc;
+        }
+        
+        .dark .text-gray-600 {
+            color: #cbd5e1;
+        }
+        
+        .dark .text-gray-500 {
+            color: #94a3b8;
+        }
+        
+        .dark .border-gray-100 {
+            border-color: #334155;
+        }
+        
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #3B82F6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.25rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(30deg);
+        }
+        
+        /* 3D Card Tilt Effect */
+        .tilt-card {
+            transition: transform 0.5s ease;
+            transform-style: preserve-3d;
         }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
-    <!-- Header -->
+
+<body class="font-sans bg-gray-50 dark:bg-gray-900">
+    <!-- Header with reduced opacity background -->
     <%-include('partials/header') %>
+ 
 
-    <!-- Banner Slider -->
-    <section class="relative h-[600px] md:h-[700px] overflow-hidden">
-        <div class="slider-container h-full">
-            <div class="slider-item absolute inset-0 opacity-100 transition-opacity duration-1000">
-                <img src="/frontend/imgs/logos/sigbg.jpg" alt="Mountain Biking" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-r from-black to-transparent flex items-center">
-                    <div class="container mx-auto px-6 md:px-8">
-                        <div class="max-w-2xl text-white">
-                            <h1 class="banner-text">Conquer Every Trail</h1>
-                            <p class="banner-subtitle">Experience unmatched performance with our premium mountain bikes engineered for the ultimate adventure seeker</p>
-                            <button class="btn-primary flex items-center gap-2 group">
-                                Shop Mountain Bikes
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<!-- Enhanced Banner Slider Section with Improved Image Cards -->
+<section class="relative h-[600px] md:h-[700px] overflow-hidden bg-gradient-to-r from-blue-900 to-indigo-900 dark:from-gray-900 dark:to-gray-800">
+    <!-- Decorative Elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-blue-500 opacity-10 animate-spin-slow floating-element"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-indigo-500 opacity-10 animate-spin-slow" style="animation-direction: reverse;"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border-2 border-blue-300 rounded-full opacity-5"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border-2 border-indigo-300 rounded-full opacity-5"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border-2 border-purple-300 rounded-full opacity-5"></div>
+    </div>
+   
+    <!-- Improved Slider Container -->
+    <div class="slider-container h-full">
+        <!-- Slide 1 -->
+        <div class="slider-item active">
+            <div class="slider-gradient-overlay"></div>
+            <div class="absolute inset-0 flex items-center">
+                <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
+                        <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Premium Mountain Bikes</span>
+                        <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
+                            Conquer Every <span class="text-rose-400">Trail</span>
+                        </h1>
+                        <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
+                            Experience unmatched performance with our premium mountain bikes engineered for the ultimate adventure seeker.
+                        </p>
+                        <div class="flex flex-wrap gap-4 slide-buttons">
+                            <a href="#" class="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-rose-500/30 group">
+                                Shop Now
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="slider-item absolute inset-0 opacity-0 transition-opacity duration-1000">
-                <img src="/frontend/imgs/logos/sign.jpg" alt="Road Cycling" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-r from-black to-transparent flex items-center">
-                    <div class="container mx-auto px-6 md:px-8">
-                        <div class="max-w-2xl text-white">
-                            <h1 class="banner-text">Engineered for Speed</h1>
-                            <p class="banner-subtitle">Professional-grade road bikes with cutting-edge aerodynamics and lightweight frames for peak performance</p>
-                            <button class="btn-primary flex items-center gap-2 group">
-                                Shop Road Bikes
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="slider-item absolute inset-0 opacity-0 transition-opacity duration-1000">
-                <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80" alt="City Cycling" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-r from-black to-transparent flex items-center">
-                    <div class="container mx-auto px-6 md:px-8">
-                        <div class="max-w-2xl text-white">
-                            <h1 class="banner-text">Urban Freedom</h1>
-                            <p class="banner-subtitle">Stylish city bikes that blend comfort and efficiency, transforming your daily commute into a joyful experience</p>
-                            <button class="btn-primary flex items-center gap-2 group">
-                                Shop City Bikes
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Slider Controls -->
-        <button class="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-3 text-dark transition-all duration-300 shadow-md" id="prev-slide">
-            <i class="fas fa-chevron-left text-xl"></i>
-        </button>
-        <button class="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full p-3 text-dark transition-all duration-300 shadow-md" id="next-slide">
-            <i class="fas fa-chevron-right text-xl"></i>
-        </button>
-        
-        <!-- Slider Indicators -->
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3">
-            <button class="h-3 w-12 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 slider-indicator active transition-all duration-300" data-index="0"></button>
-            <button class="h-3 w-12 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 slider-indicator transition-all duration-300" data-index="1"></button>
-            <button class="h-3 w-12 rounded-full bg-white bg-opacity-70 hover:bg-opacity-100 slider-indicator transition-all duration-300" data-index="2"></button>
-        </div>
-    </section>
-
-    <section class="py-20 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold mb-4 text-gray-900">Shop By Category</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Explore our wide range of cycling categories and find the perfect ride for your adventure</p>
-            </div>
-            
-            <!-- Categories Section -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-12">
-                <% if (categories && categories.length > 0) { %>
-                    <% categories.forEach(category => { %>
-                        <%
-                            // Find a product from this category to display its image
-                            let categoryProduct = product.find(product => product.category && product.category._id.toString() === category._id.toString());
-                            let mainImage = categoryProduct ? `/${categoryProduct.mainImage}` : '/images/placeholder.jpg';
-                            // Get a subimage if available
-                            let subImage = categoryProduct && categoryProduct.subImages && categoryProduct.subImages.length > 0 
-                                ? `/${categoryProduct.subImages[0]}` 
-                                : mainImage; // Fallback to main image if no subimages
-                        %>
-                        
-                        <div class="flex flex-col items-center category-card group">
-                            <!-- Circle container with improved image fitting -->
-                            <div class="relative w-40 h-40 md:w-52 md:h-52 lg:w-64 lg:h-64 rounded-full overflow-hidden shadow-lg mb-6 
-                                        transform transition-all duration-500 ease-in-out group-hover:shadow-2xl group-hover:scale-105
-                                        bg-gray-100 flex items-center justify-center">
-                                <!-- Background pattern for empty space -->
-                                <div class="absolute inset-0 bg-gradient-to-b from-blue-50 to-gray-100 opacity-50"></div>
-                                
-                                <!-- Main image with object-contain to show full image -->
-                                <img 
-                                    src="<%= mainImage %>" 
-                                    alt="<%= category.name %>"
-                                    class="absolute inset-0 w-full h-full object-contain transition-all duration-700 ease-in-out 
-                                           group-hover:opacity-0 scale-90 group-hover:scale-85"
-                                />
-                                
-                                <!-- Subimage with object-contain -->
-                                <img 
-                                    src="<%= subImage %>" 
-                                    alt="<%= category.name %> alternative view"
-                                    class="absolute inset-0 w-full h-full object-contain opacity-0 transition-all duration-700 ease-in-out 
-                                           group-hover:opacity-100 scale-95 group-hover:scale-90"
-                                />
-                                
-                                <!-- Circular mask overlay to ensure perfect circle -->
-                                <div class="absolute inset-0 rounded-full border-8 border-white/90 opacity-0 group-hover:opacity-100 
-                                            transition-opacity duration-500"></div>
-                                
-                                <!-- Improved overlay with better gradient and positioning -->
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent 
-                                            opacity-0 group-hover:opacity-100 transition-all duration-500 
-                                            flex items-end justify-center pb-8">
-                                    <h3 class="text-white text-xl font-semibold px-4 text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                        <%= category.name %>
-                                    </h3>
-                                </div>
-                            </div>
-                            
-                            <!-- Category name with improved typography -->
-                            <h3 class="text-xl font-medium text-gray-900 mb-3"><%= category.name %></h3>
-                            
-                            <!-- Improved Shop now link with better hover effect -->
-                            <a href="/category/<%= category._id %>" 
-                               class="inline-flex items-center text-primary hover:text-blue-700 font-medium transition-all duration-300
-                                      relative overflow-hidden group-hover:font-semibold">
-                                <span class="relative z-10">Shop Now</span>
-                                <!-- Animated arrow -->
-                                <svg xmlns="http://www.w3.org/2000/svg" 
-                                     class="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:translate-x-1" 
-                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                                <!-- Underline animation -->
-                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                            <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
+                                Learn More
                             </a>
                         </div>
-                    <% }); %>
-                <% } else { %>
-                    <div class="col-span-full p-10 text-center bg-gray-50 rounded-xl shadow-inner">
-                        <p class="text-gray-500 text-lg">No categories found.</p>
                     </div>
-                <% } %>
+                    <div class="md:w-1/2 relative">
+                        <!-- Enhanced Image Card with 3D Effect -->
+                        <div class="w-full h-[300px] md:h-[400px] relative mx-auto overflow-hidden rounded-3xl shadow-2xl transform perspective-1000 group">
+                            <!-- Glowing background effect -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-rose-500/20 to-blue-500/20 opacity-70 group-hover:opacity-90 transition-opacity duration-700"></div>
+                           
+                            <!-- Main image with enhanced container -->
+                            <div class="absolute inset-0 p-4 transform group-hover:scale-[0.98] transition-transform duration-700">
+                                <div class="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 p-2 backdrop-blur-sm">
+                                    <img
+                                        src="/frontend/imgs/logos/sigbg.jpg"
+                                        alt="Mountain Biking"
+                                        class="w-full h-full object-cover object-center rounded-xl slide-image animate-rotate-y"
+                                    >
+                                </div>
+                            </div>
+                           
+                            <!-- Decorative elements -->
+                            <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-rose-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
+                            <div class="absolute -top-4 -left-4 w-40 h-40 bg-blue-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
+                           
+                            <!-- Floating particles -->
+                            <div class="absolute top-1/4 right-1/4 w-3 h-3 bg-white rounded-full opacity-70 animate-ping"></div>
+                            <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 1s;"></div>
+                            <div class="absolute top-1/2 right-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 2s;"></div>
+                           
+                            <!-- Shine effect overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
-    
-
-
-    <!-- Featured Products -->
-    <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-bold mb-4">Featured Cycles</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Discover our handpicked selection of premium cycles designed for performance and comfort</p>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <% if (product.length > 0) { %>
-                    <% product.forEach(pro => { %>
-                        <!-- Enhanced Product Card -->
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                            <!-- Product Image Container with Quick View -->
-                            <div class="relative overflow-hidden product-image-container h-64 flex items-center justify-center bg-gray-50">
-                                <a href="/productdetails/<%= pro._id%>" class="block w-full h-full flex items-center justify-center">
-                                    <img 
-                                        src="/<%= pro.mainImage %>" 
-                                        alt="<%= pro.productName %>" 
-                                        class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 product-image"
+       
+        <!-- Slide 2 -->
+        <div class="slider-item">
+            <div class="slider-gradient-overlay"></div>
+            <div class="absolute inset-0 flex items-center">
+                <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
+                        <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Professional Road Bikes</span>
+                        <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
+                            Engineered for <span class="text-amber-400">Speed</span>
+                        </h1>
+                        <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
+                            Professional-grade road bikes with cutting-edge aerodynamics and lightweight frames for peak performance.
+                        </p>
+                        <div class="flex flex-wrap gap-4 slide-buttons">
+                            <a href="#" class="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-amber-500/30 group">
+                                Shop Now
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                            <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 relative">
+                        <!-- Enhanced Image Card with 3D Effect -->
+                        <div class="w-full h-[300px] md:h-[400px] relative mx-auto overflow-hidden rounded-3xl shadow-2xl transform perspective-1000 group">
+                            <!-- Glowing background effect -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/20 to-blue-500/20 opacity-70 group-hover:opacity-90 transition-opacity duration-700"></div>
+                           
+                            <!-- Main image with enhanced container -->
+                            <div class="absolute inset-0 p-4 transform group-hover:scale-[0.98] transition-transform duration-700">
+                                <div class="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 p-2 backdrop-blur-sm">
+                                    <img
+                                        src="/frontend/imgs/logos/sign.jpg"
+                                        alt="Road Cycling"
+                                        class="w-full h-full object-cover object-center rounded-xl slide-image animate-rotate-y"
                                     >
-                                </a>
-                                
-                                <!-- Sale badge if applicable -->
-                                <% if (pro.onSale) { %>
-                                    <div class="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
-                                        SALE
+                                </div>
+                            </div>
+                           
+                            <!-- Decorative elements -->
+                            <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-amber-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
+                            <div class="absolute -top-4 -left-4 w-40 h-40 bg-blue-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
+                           
+                            <!-- Floating particles -->
+                            <div class="absolute top-1/4 right-1/4 w-3 h-3 bg-white rounded-full opacity-70 animate-ping"></div>
+                            <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 1s;"></div>
+                            <div class="absolute top-1/2 right-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 2s;"></div>
+                           
+                            <!-- Shine effect overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <!-- Slide 3 -->
+        <div class="slider-item">
+            <div class="slider-gradient-overlay"></div>
+            <div class="absolute inset-0 flex items-center">
+                <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
+                        <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Urban Commuter Bikes</span>
+                        <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
+                            Urban <span class="text-emerald-400">Freedom</span>
+                        </h1>
+                        <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
+                            Stylish city bikes that blend comfort and efficiency, transforming your daily commute into a joyful experience.
+                        </p>
+                        <div class="flex flex-wrap gap-4 slide-buttons">
+                            <a href="#" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-emerald-500/30 group">
+                                Shop Now
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                            <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 relative">
+                        <!-- Enhanced Image Card with 3D Effect -->
+                        <div class="w-full h-[300px] md:h-[400px] relative mx-auto overflow-hidden rounded-3xl shadow-2xl transform perspective-1000 group">
+                            <!-- Glowing background effect -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-blue-500/20 opacity-70 group-hover:opacity-90 transition-opacity duration-700"></div>
+                           
+                            <!-- Main image with enhanced container -->
+                            <div class="absolute inset-0 p-4 transform group-hover:scale-[0.98] transition-transform duration-700">
+                                <div class="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 p-2 backdrop-blur-sm">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80"
+                                        alt="City Cycling"
+                                        class="w-full h-full object-cover object-center rounded-xl slide-image animate-rotate-y"
+                                    >
+                                </div>
+                            </div>
+                           
+                            <!-- Decorative elements -->
+                            <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-emerald-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
+                            <div class="absolute -top-4 -left-4 w-40 h-40 bg-blue-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
+                           
+                            <!-- Floating particles -->
+                            <div class="absolute top-1/4 right-1/4 w-3 h-3 bg-white rounded-full opacity-70 animate-ping"></div>
+                            <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 1s;"></div>
+                            <div class="absolute top-1/2 right-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 2s;"></div>
+                           
+                            <!-- Shine effect overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <!-- Enhanced Slider Controls -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4 z-20">
+        <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot active transition-all duration-300 border border-white/50" data-index="0"></button>
+        <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot transition-all duration-300 border border-white/50" data-index="1"></button>
+        <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot transition-all duration-300 border border-white/50" data-index="2"></button>
+    </div>
+   
+    <!-- Improved Slider Navigation Arrows -->
+    <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/40 text-white rounded-full p-3 z-20 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 group" id="prev-slide">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+    <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/40 text-white rounded-full p-3 z-20 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 group" id="next-slide">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+   
+    <!-- Slider Progress Bar -->
+    <div class="slider-progress active absolute bottom-0 left-0 right-0 z-10">
+        <div class="slider-progress-bar"></div>
+    </div>
+   
+    <!-- Wave Separator -->
+    <div class="absolute bottom-0 left-0 w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full h-auto">
+            <path fill="#f8fafc" fill-opacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" class="dark:fill-gray-900"></path>
+        </svg>
+    </div>
+</section>
+
+<!-- Clean Professional Categories Section with Circles - Full Image Display -->
+<section id="categories" class="py-20 bg-gray-50 dark:bg-gray-900">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Shop By <span class="text-primary">Category</span></h2>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">Explore our wide range of cycling categories and find the perfect ride for your adventure</p>
+        </div>
+       
+        <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+            <% if (categories && categories.length > 0) { %>
+                <% categories.forEach((category, index) => { %>
+                    <%
+                    // Find a product from this category to display its image
+                    let categoryProduct = product.find(p => p.category && p.category._id.toString() === category._id.toString());
+                    let mainImage = categoryProduct && categoryProduct.mainImage ? `${categoryProduct.mainImage}` : '/images/placeholder.jpg';
+                    %>
+            
+                    <div class="category-circle flex flex-col items-center">
+                        <div class="relative mb-6">
+                            <div class="relative w-48 h-48 rounded-full overflow-hidden shadow-lg bg-white dark:bg-gray-800 flex items-center justify-center p-2">
+                                <div class="w-full h-full rounded-full overflow-hidden bg-gray-50 dark:bg-gray-700 flex items-center justify-center">
+                                    <img src="<%= mainImage %>" alt="<%= category.name %>" class="w-full h-full object-contain p-2" />
+                                </div>
+                            </div>
+                            <div class="absolute -inset-1 rounded-full bg-gray-900/5 dark:bg-white/5 -z-10 blur-sm"></div>
+                        </div>
+            
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2 text-center"><%= category.name %></h3>
+                        <a href="/category/<%= category._id %>" class="inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded-full text-sm font-medium shadow-md">
+                            <span>Shop Now</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="w-full p-10 text-center bg-white dark:bg-gray-800 rounded-xl shadow-inner">
+                    <p class="text-gray-500 dark:text-gray-400 text-lg">No categories found.</p>
+                </div>
+            <% } %>
+            
+        </div>
+    </div>
+</section>
+
+
+<!-- Enhanced Product Cards Section -->
+<section id="featured" class="py-20 bg-white dark:bg-gray-800">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Featured <span class="text-primary">Cycles</span></h2>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">Discover our handpicked selection of premium cycles designed for performance and comfort</p>
+        </div>
+       
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <% if (product.length > 0) { %>
+                    <% product.slice(0, 6).forEach(pro => { %>
+                        <!-- Enhanced Product Card with Glass Morphism -->
+                        <div class="product-card tilt-card group relative bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-500">
+                            <!-- Product Image Container with Enhanced Effects -->
+                            <div class="relative h-64 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 overflow-hidden perspective-1000">
+                                <!-- Background Pattern -->
+                                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+                               
+                                <!-- Offer Badge -->
+                                <% if (typeof pro.maxOffer !== 'undefined' && pro.maxOffer > 0) { %>
+                                    <div class="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg">
+                                        <%= pro.maxOffer %>% OFF
+                                    </div>
+                                <% } else { %>
+                                    <div class="absolute top-4 left-4 bg-gradient-to-r from-primary to-blue-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg">
+                                        NEW
                                     </div>
                                 <% } %>
                                 
-                                <!-- Wishlist Button -->
-                                <!-- <button 
-                                    onclick="toggleWishlist('<%= pro._id %>')" 
-                                    class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-all duration-300"
-                                    aria-label="Add to wishlist"
-                                >
-                                    <svg 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        width="20" 
-                                        height="20" 
-                                        viewBox="0 0 24 24" 
-                                        fill="none" 
-                                        stroke="currentColor" 
-                                        stroke-width="2" 
-                                        stroke-linecap="round" 
-                                        stroke-linejoin="round" 
-                                        class="wishlist-icon text-gray-400 hover:text-red-500 transition-all duration-300"
-                                        data-product-id="<%= pro._id %>"
-                                    >
-                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                    </svg>
-                                </button> -->
-                                
+                               
+                                <!-- Product Image with Hover Effects -->
+                                <a href="/productdetails/<%= pro._id%>" class="block w-full h-full">
+                                    <div class="absolute inset-0 flex items-center justify-center p-4">
+                                        <img
+                                            src="/<%= pro.mainImage %>"
+                                            alt="<%= pro.productName %>"
+                                            class="max-h-full max-w-full object-contain transition-all duration-700 filter drop-shadow-md"
+                                        >
+                                    </div>
+                                </a>
+                               
                                 <!-- Quick View Button -->
-                                <button 
-                                    class="absolute inset-x-0 bottom-4 mx-auto w-max bg-white text-gray-800 font-medium py-2 px-6 rounded-full shadow-md hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
-                                    data-product="<%= pro._id %>"
-                                >
-                                    Quick View
-                                </button>
+                                <div class="absolute bottom-4 left-0 right-0 text-center transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                                    <button class="w-auto px-4 py-2 rounded-full bg-white dark:bg-gray-700 shadow-lg flex items-center justify-center text-gray-700 dark:text-white hover:bg-primary hover:text-white transition-all duration-300 hover:scale-105 mx-auto" data-product="<%= pro._id %>" aria-label="Quick view">
+                                        <i class="fas fa-eye mr-2"></i> Quick View
+                                    </button>
+                                </div>
                             </div>
-            
-                            <!-- Product Info -->
-                            <div class="p-6">
-                                <!-- Brand -->
-                                <div class="text-sm text-gray-500 mb-1 font-medium">
+           
+                            <!-- Enhanced Product Info with Better Typography and Layout -->
+                            <div class="p-6 relative">
+                                <!-- Decorative accent line -->
+                                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-primary/30 via-primary to-primary/30 rounded-full"></div>
+                               
+                                <!-- Brand with enhanced styling -->
+                                <div class="text-sm text-primary font-medium mb-2 flex items-center">
+                                    <span class="inline-block w-2 h-2 rounded-full bg-primary mr-2"></span>
                                     <%= pro.brands ? pro.brands.name : 'No Brand' %>
                                 </div>
-                                
-                                <!-- Product Name -->
-                                <h3 class="font-semibold text-lg mb-2 text-gray-800 hover:text-blue-600 transition-colors line-clamp-2 h-14">
-                                    <a href="/productdetails/<%= pro._id%>"><%= pro.productName %></a>
+                               
+                                <!-- Product Name with better typography -->
+                                <h3 class="font-semibold text-lg mb-2 text-gray-800 dark:text-white hover:text-primary transition-colors line-clamp-2 h-14 group-hover:text-primary">
+                                    <a href="/productdetails/<%= pro._id%>" class="hover:underline decoration-primary decoration-2 underline-offset-2"><%= pro.productName %></a>
                                 </h3>
-                                
-                                <!-- Star Ratings -->
-                                <div class="flex items-center mb-2">
-                                    <div class="flex text-yellow-400">
+                               
+                                <!-- Enhanced Star Ratings -->
+                                <div class="flex items-center mb-4">
+                                    <div class="flex text-amber-400">
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star"></i>
                                         <i class="fas fa-star-half-alt"></i>
                                     </div>
-                                    <span class="text-gray-500 text-sm ml-2">(4.5)</span>
+                                    <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
                                 </div>
-                                
-                                <!-- Price and Add to Cart -->
-                                <!-- <div class="flex items-center justify-between">
-                                    <span class="text-xl font-bold text-primary">₹<%= pro.price %></span>
-                                    <button onclick="addToCart('<%= pro._id %>')" class="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary/90 transition-colors duration-200">
-                                        Add to Cart
-                                    </button>
-                                </div> -->
+                               
+                                <!-- Price Display with Original and Sale Price -->
+                                <div class="flex flex-col mb-4">
+                                    <% if (pro.maxOffer > 0) { %>
+                                        <span class="text-gray-500 dark:text-gray-400 text-sm line-through">₹<%= pro.price %></span>
+                                        <span class="text-xl font-bold text-primary">₹<%= Math.round(pro.salePrice) %></span>
+                                    <% } else { %>
+                                        <span class="text-xl font-bold text-primary">₹<%= pro.price %></span>
+                                    <% } %>
+                                    
+                                </div>
+                               
+                                <!-- View Details Button -->
+                                <div class="flex justify-center">
+                                    <a href="/productdetails/<%= pro._id%>" class="w-full relative overflow-hidden bg-gray-100 dark:bg-gray-700 hover:bg-primary text-gray-800 dark:text-white hover:text-white px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-center group-hover:shadow-md">
+                                        <span class="relative z-10">View Details</span>
+                                        <span class="absolute inset-0 bg-primary scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 -z-0"></span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     <% }) %>
                 <% } else { %>
-                    <div class="col-span-full">
-                        <div class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-search mx-auto mb-4">
+                    <div class="col-span-3">
+                        <div class="p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4">
                                 <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
                                 <path d="M16.5 9.4 7.55 4.24"/>
                                 <polyline points="3.29 7 12 12 20.71 7"/>
@@ -356,9 +769,9 @@
                                 <circle cx="18.5" cy="15.5" r="2.5"/>
                                 <path d="M20.27 17.27 22 19"/>
                             </svg>
-                            <p class="text-gray-500 text-lg mb-4">No products found.</p>
-                            <button onclick="window.location.href='/'" class="btn-primary flex items-center gap-2 mx-auto">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">No products found.</p>
+                            <button onclick="window.location.href='/'" class="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-blue-600 transition duration-300 flex items-center gap-2 mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
                                     <path d="m15 18-6-6 6-6"/>
                                 </svg>
                                 Back to All Products
@@ -367,266 +780,504 @@
                     </div>
                 <% } %>
             </div>
-            
-            <% if (product.length > 0) { %>
-                <div class="mt-12 text-center">
-                    <%- include('partials/pagination')%>
-                </div>
-            <% } %>
         </div>
-    </section>
+       
+        <% if (product.length > 0) { %>
+            <div class="mt-12 text-center">
+                <%- include('partials/pagination')%>
+            </div>
+           
+            <div class="mt-8 text-center">
+                <a href="/shoplist" class="inline-flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 shadow-lg shadow-blue-500/20 group">
+                    View All Products
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+            </div>
+        <% } %>
+    </div>
+</section>
 
-
-
-
-
-    <!-- Benefits Section -->
-    <section class="py-16 bg-white">
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-50 dark:bg-gray-900">
         <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Why Choose <span class="text-primary">CycloneX</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">Experience premium service and quality with every purchase</p>
+            </div>
+           
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-truck text-primary text-2xl"></i>
+                <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 text-center group hover:-translate-y-2 transition-transform">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-primary text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-truck"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Free Shipping</h3>
-                    <p class="text-gray-600">Free shipping on all orders over ₹5000</p>
+                    <h3 class="text-xl font-semibold mb-3 dark:text-white">Free Shipping</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Free shipping on all orders over ₹5000 nationwide with tracking information</p>
                 </div>
-                
-                <div class="flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-shield-alt text-primary text-2xl"></i>
+               
+                <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 text-center group hover:-translate-y-2 transition-transform">
+                    <div class="w-16 h-16 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center text-rose-500 text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Secure Payment</h3>
-                    <p class="text-gray-600">100% secure payment methods</p>
+                    <h3 class="text-xl font-semibold mb-3 dark:text-white">Secure Payment</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Multiple secure payment options with end-to-end encryption for your safety</p>
                 </div>
-                
-                <div class="flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-exchange-alt text-primary text-2xl"></i>
+               
+                <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 text-center group hover:-translate-y-2 transition-transform">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center text-emerald-500 text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-exchange-alt"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Easy Returns</h3>
-                    <p class="text-gray-600">30 day return policy for eligible items</p>
+                    <h3 class="text-xl font-semibold mb-3 dark:text-white">Easy Returns</h3>
+                    <p class="text-gray-600 dark:text-gray-400">30-day hassle-free return policy with full refund guarantee on eligible items</p>
                 </div>
-                
-                <div class="flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 shadow-sm hover:shadow-md transition-shadow duration-300">
-                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-headset text-primary text-2xl"></i>
+               
+                <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 text-center group hover:-translate-y-2 transition-transform">
+                    <div class="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center text-amber-500 text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-headset"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">24/7 Support</h3>
-                    <p class="text-gray-600">Dedicated support team available</p>
+                    <h3 class="text-xl font-semibold mb-3 dark:text-white">24/7 Support</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Our dedicated support team is available around the clock to assist you</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Newsletter Section -->
-    <section class="py-16 bg-gradient-to-r from-primary to-blue-700 text-white">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4">Join Our Cycling Community</h2>
-            <p class="max-w-2xl mx-auto mb-8 text-blue-100">Subscribe to our newsletter for exclusive deals, new arrivals, expert tips, and cycling event updates.</p>
-            <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-2">
-                <input type="email" placeholder="Your email address" class="flex-1 px-4 py-3 rounded-l-md text-dark focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-300">
-                <button type="submit" class="bg-secondary text-white px-6 py-3 rounded-r-md font-medium hover:bg-orange-600 transition-all duration-300 shadow-md hover:shadow-lg">Subscribe</button>
-            </form>
-            <p class="text-sm text-blue-200 mt-4">By subscribing, you agree to receive marketing emails from CyclePro. You can unsubscribe anytime.</p>
+    <section class="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Join Our Cycling Community</h2>
+                <p class="text-blue-100 mb-8 max-w-2xl mx-auto">Subscribe to our newsletter for exclusive deals, new arrivals, expert tips, and cycling event updates.</p>
+               
+                <form class="flex flex-col sm:flex-row gap-2 max-w-lg mx-auto mb-8">
+                    <input type="email" placeholder="Your email address" class="flex-1 px-6 py-4 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-300">
+                    <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-8 py-4 rounded-full font-medium transition-all duration-300 shadow-lg shadow-rose-500/30 flex items-center justify-center gap-2 group">
+                        Subscribe
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </form>
+               
+                <p class="text-sm text-blue-200">By subscribing, you agree to receive marketing emails from CycloneX. You can unsubscribe anytime.</p>
+            </div>
         </div>
     </section>
 
+    <!-- Footer -->
     <%-include('partials/footer') %>
 
-    <!-- Quick View Modal -->
-    <div class="modal" id="quick-view-modal">
-        <div class="modal-content p-0 rounded-xl overflow-hidden">
-            <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-10 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md" id="close-modal">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            <div class="grid grid-cols-1 md:grid-cols-2">
-                <div class="p-6">
-                    <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Image" class="w-full h-auto rounded-lg shadow-md" id="modal-product-image">
-                    <div class="grid grid-cols-4 gap-2 mt-4">
-                        <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Thumbnail" class="w-full h-auto rounded-lg cursor-pointer border-2 border-primary shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Thumbnail" class="w-full h-auto rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <img src="https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Thumbnail" class="w-full h-auto rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Product Thumbnail" class="w-full h-auto rounded-lg cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-300">
+   <!-- Enhanced Quick View Modal -->
+<div class="modal" id="quick-view-modal">
+    <div class="modal-content p-0 rounded-3xl overflow-hidden max-w-5xl transform transition-all duration-500">
+        <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 z-10 bg-white dark:bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-md hover:scale-110 transition-transform" id="close-modal">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <div class="grid grid-cols-1 md:grid-cols-2">
+            <!-- Enhanced Left Side with Image Gallery -->
+            <div class="p-8 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                <!-- Main Product Image with Enhanced Container -->
+                <div class="relative rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow-md mb-6 group">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                         alt="Product Image"
+                         class="w-full h-auto object-contain max-h-80 mx-auto p-4 transition-transform duration-500 group-hover:scale-105 animate-rotate-y"
+                         id="modal-product-image">
+                </div>
+               
+                <!-- Enhanced Thumbnail Gallery -->
+                <div class="grid grid-cols-4 gap-3">
+                    <div class="thumbnail-item active rounded-lg overflow-hidden border-2 border-primary cursor-pointer shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105">
+                        <img src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                             alt="Product Thumbnail"
+                             class="w-full h-auto object-cover aspect-square">
+                    </div>
+                    <div class="thumbnail-item rounded-lg overflow-hidden border-2 border-transparent cursor-pointer shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105">
+                        <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                             alt="Product Thumbnail"
+                             class="w-full h-auto object-cover aspect-square">
+                    </div>
+                    <div class="thumbnail-item rounded-lg overflow-hidden border-2 border-transparent cursor-pointer shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105">
+                        <img src="https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                             alt="Product Thumbnail"
+                             class="w-full h-auto object-cover aspect-square">
+                    </div>
+                    <div class="thumbnail-item rounded-lg overflow-hidden border-2 border-transparent cursor-pointer shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105">
+                        <img src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
+                             alt="Product Thumbnail"
+                             class="w-full h-auto object-cover aspect-square">
                     </div>
                 </div>
-                <div class="bg-gray-50 p-6">
-                    <div class="text-sm text-gray-500 mb-1 font-medium" id="modal-product-brand">Trek</div>
-                    <h3 class="font-bold text-2xl mb-2" id="modal-product-name">Domane SL 6</h3>
-                    <div class="star-rating mb-4">
+            </div>
+           
+            <!-- Enhanced Right Side with Product Details -->
+            <div class="p-8 bg-white dark:bg-gray-800">
+                <!-- Brand Badge -->
+                <div class="inline-block px-3 py-1 bg-blue-50 dark:bg-blue-900/30 text-primary rounded-full text-sm font-medium mb-3" id="modal-product-brand">Trek</div>
+               
+                <!-- Product Name -->
+                <h3 class="font-bold text-2xl mb-2 text-gray-800 dark:text-white" id="modal-product-name">Domane SL 6</h3>
+               
+                <!-- Enhanced Ratings -->
+                <div class="flex items-center mb-4">
+                    <div class="flex text-amber-400">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star-half-alt"></i>
-                        <span class="text-gray-500 ml-1">(24 reviews)</span>
                     </div>
-                    <div class="font-bold text-2xl text-primary mb-4" id="modal-product-price">$2,899.99</div>
-                    <p class="text-gray-600 mb-6" id="modal-product-description">The Domane SL 6 is a performance road bike with an ultra-smooth ride quality. The lightweight OCLV Carbon frame features Front and Rear IsoSpeed, which smooth out rough roads so you can stay stronger longer.</p>
-                    
-                    <div class="mb-6">
-                        <h4 class="font-semibold mb-2">Color</h4>
-                        <div class="flex space-x-3">
-                            <button class="w-8 h-8 rounded-full bg-red-500 border-2 border-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 shadow-sm"></button>
-                            <button class="w-8 h-8 rounded-full bg-blue-500 border-2 border-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm"></button>
-                            <button class="w-8 h-8 rounded-full bg-black border-2 border-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black shadow-sm"></button>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h4 class="font-semibold mb-2">Size</h4>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="px-4 py-2 border border-gray-300 rounded-md hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300">S</button>
-                            <button class="px-4 py-2 border border-gray-300 rounded-md hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300">M</button>
-                            <button class="px-4 py-2 border border-gray-300 rounded-md hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300">L</button>
-                            <button class="px-4 py-2 border border-gray-300 rounded-md hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300">XL</button>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h4 class="font-semibold mb-2">Quantity</h4>
-                        <div class="flex items-center">
-                            <button class="w-10 h-10 border border-gray-300 rounded-l-md flex items-center justify-center hover:bg-gray-100 transition-colors duration-300">-</button>
-                            <input type="number" value="1" min="1" class="w-16 h-10 border-t border-b border-gray-300 text-center focus:outline-none">
-                            <button class="w-10 h-10 border border-gray-300 rounded-r-md flex items-center justify-center hover:bg-gray-100 transition-colors duration-300">+</button>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <button class="btn-primary flex-1 py-3 flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            Add to Cart
+                    <span class="text-gray-500 dark:text-gray-400 ml-1 text-sm">(24 reviews)</span>
+                    <span class="mx-2 text-gray-300 dark:text-gray-600">|</span>
+                    <span class="text-green-500 text-sm flex items-center">
+                        <i class="fas fa-check-circle mr-1"></i> In Stock
+                    </span>
+                </div>
+               
+                <!-- Price with Sale Badge -->
+                <div class="flex items-center mb-4">
+                    <div class="font-bold text-2xl text-gray-800 dark:text-white" id="modal-product-price">₹2,89,999</div>
+                    <div class="ml-3 px-2 py-1 bg-rose-100 dark:bg-rose-900/30 text-rose-500 dark:text-rose-400 text-xs font-semibold rounded">20% OFF</div>
+                </div>
+               
+                <!-- Enhanced Description -->
+                <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed" id="modal-product-description">The Domane SL 6 is a performance road bike with an ultra-smooth ride quality. The lightweight OCLV Carbon frame features Front and Rear IsoSpeed, which smooth out rough roads  The lightweight OCLV Carbon frame features Front and Rear IsoSpeed, which smooth out rough roads so you can stay stronger longer.</p>
+               
+                <!-- Divider -->
+                <div class="w-full h-px bg-gray-200 dark:bg-gray-700 my-6"></div>
+               
+                <!-- Enhanced Color Selection -->
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3 flex items-center dark:text-white">
+                        <span class="w-4 h-4 mr-2 rounded-full bg-gradient-to-r from-red-500 to-blue-500"></span>
+                        Color
+                    </h4>
+                    <div class="flex space-x-3">
+                        <button class="w-10 h-10 rounded-full bg-red-500 border-2 border-white dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 shadow-sm hover:scale-110 transition-transform relative">
+                            <span class="absolute inset-0 rounded-full bg-red-500 animate-ping opacity-75 duration-1000"></span>
                         </button>
-                        <button class="btn-secondary flex-1 py-3">Buy Now</button>
+                        <button class="w-10 h-10 rounded-full bg-blue-500 border-2 border-white dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm hover:scale-110 transition-transform"></button>
+                        <button class="w-10 h-10 rounded-full bg-black border-2 border-white dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black shadow-sm hover:scale-110 transition-transform"></button>
+                    </div>
+                </div>
+               
+                <!-- Enhanced Size Selection -->
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3 dark:text-white">Size</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 dark:text-white">S</button>
+                        <button class="px-4 py-2 border-2 border-primary bg-primary/5 rounded-md focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 dark:text-white">M</button>
+                        <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 dark:text-white">L</button>
+                        <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md hover:border-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 dark:text-white">XL</button>
+                    </div>
+                </div>
+               
+                <!-- Enhanced Quantity Selector -->
+                <div class="mb-6">
+                    <h4 class="font-semibold mb-3 dark:text-white">Quantity</h4>
+                    <div class="flex items-center">
+                        <button class="w-10 h-10 border border-gray-300 dark:border-gray-600 rounded-l-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-1 focus:ring-primary" id="decrease-quantity">
+                            <i class="fas fa-minus text-gray-500 dark:text-gray-400"></i>
+                        </button>
+                        <input type="number" value="1" min="1" class="w-16 h-10 border-t border-b border-gray-300 dark:border-gray-600 text-center focus:outline-none focus:ring-1 focus:ring-primary bg-white dark:bg-gray-800 dark:text-white" id="quantity-input">
+                        <button class="w-10 h-10 border border-gray-300 dark:border-gray-600 rounded-r-md flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-1 focus:ring-primary" id="increase-quantity">
+                            <i class="fas fa-plus text-gray-500 dark:text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+               
+                <!-- Enhanced Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-full font-medium transition duration-300 flex-1 flex items-center justify-center gap-2 group shadow-lg shadow-blue-500/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Add to Cart
+                    </button>
+                    <button class="bg-rose-500 hover:bg-rose-600 text-white px-6 py-3 rounded-full font-medium transition duration-300 flex-1 shadow-lg shadow-rose-500/20">Buy Now</button>
+                </div>
+               
+                <!-- Product Features -->
+                <div class="mt-8 grid grid-cols-2 gap-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Free Shipping</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">2 Year Warranty</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">30-Day Returns</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Secure Checkout</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <%-include('partials/script') %>
-    
-    <script>
+<!-- Dark Mode Toggle Button -->
+<button id="darkModeToggle" class="dark-mode-toggle">
+    <i class="fas fa-moon dark:hidden"></i>
+    <i class="fas fa-sun hidden dark:block"></i>
+</button>
 
-function addToCart(productId) {
-    fetch('/addtocart', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-           
-            productId: productId,
-            quantity: 1 // Default quantity
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showToast('Product added to cart!');
-        } else {
-            showToast('Failed to add product to cart.', true);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('An error occurred.', true);
-    });
-}
-
-
-
-        // Banner slider functionality
-        document.addEventListener('DOMContentLoaded', function() {
+<%-include('partials/script') %>
+   
+<script>
+      // Enhanced Banner slider functionality with proper working code
+      document.addEventListener('DOMContentLoaded', function() {
+            // Get all slider elements
             const sliderItems = document.querySelectorAll('.slider-item');
-            const indicators = document.querySelectorAll('.slider-indicator');
+            const sliderDots = document.querySelectorAll('.slider-dot');
             const prevBtn = document.getElementById('prev-slide');
             const nextBtn = document.getElementById('next-slide');
+            const progressBar = document.querySelector('.slider-progress-bar');
+           
             let currentIndex = 0;
-            
+            let slideInterval;
+            let isAnimating = false;
+           
+            // Function to show a specific slide
             function showSlide(index) {
-                sliderItems.forEach(item => item.classList.remove('opacity-100'));
-                sliderItems.forEach(item => item.classList.add('opacity-0'));
-                indicators.forEach(indicator => indicator.classList.remove('active', 'bg-opacity-100'));
-                indicators.forEach(indicator => indicator.classList.add('bg-opacity-50'));
-                
-                sliderItems[index].classList.remove('opacity-0');
-                sliderItems[index].classList.add('opacity-100');
-                indicators[index].classList.add('active', 'bg-opacity-100');
-                
+                // Don't do anything if animation is in progress
+                if (isAnimating) return;
+                isAnimating = true;
+               
+                // Hide all slides
+                sliderItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+               
+                // Deactivate all dots
+                sliderDots.forEach(dot => {
+                    dot.classList.remove('active');
+                });
+               
+                // Show the selected slide
+                sliderItems[index].classList.add('active');
+               
+                // Activate the corresponding dot
+                sliderDots[index].classList.add('active');
+               
+                // Update current index
                 currentIndex = index;
+               
+                // Reset and start progress bar animation
+                if (progressBar) {
+                    progressBar.style.width = '0';
+                    setTimeout(() => {
+                        progressBar.style.width = '100%';
+                    }, 50);
+                }
+               
+                // Add particle effects on slide change
+                createParticles();
+               
+                // Allow next animation after current one completes
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 800);
             }
-            
-            // Auto slide every 5 seconds
-            let slideInterval = setInterval(() => {
+           
+            // Function to go to the next slide
+            function nextSlide() {
                 let nextIndex = (currentIndex + 1) % sliderItems.length;
                 showSlide(nextIndex);
-            }, 5000);
-            
-            // Event listeners for controls
-            prevBtn.addEventListener('click', () => {
-                clearInterval(slideInterval);
+            }
+           
+            // Function to go to the previous slide
+            function prevSlide() {
                 let prevIndex = (currentIndex - 1 + sliderItems.length) % sliderItems.length;
                 showSlide(prevIndex);
-                slideInterval = setInterval(() => {
-                    let nextIndex = (currentIndex + 1) % sliderItems.length;
-                    showSlide(nextIndex);
-                }, 5000);
-            });
-            
-            nextBtn.addEventListener('click', () => {
+            }
+           
+            // Function to start the automatic slideshow
+            function startSlideInterval() {
+                // Clear any existing interval
                 clearInterval(slideInterval);
-                let nextIndex = (currentIndex + 1) % sliderItems.length;
-                showSlide(nextIndex);
-                slideInterval = setInterval(() => {
-                    let nextIndex = (currentIndex + 1) % sliderItems.length;
-                    showSlide(nextIndex);
-                }, 5000);
-            });
-            
-            indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', () => {
-                    clearInterval(slideInterval);
+               
+                // Auto slide every 5 seconds
+                slideInterval = setInterval(nextSlide, 5000);
+            }
+           
+            // Create particle effect on slide change
+            function createParticles() {
+                const container = document.querySelector('.slider-container');
+                const particleCount = 20;
+               
+                // Remove any existing particles
+                const existingParticles = document.querySelectorAll('.particle');
+                existingParticles.forEach(particle => particle.remove());
+               
+                // Create new particles
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                   
+                    // Random size between 5px and 15px
+                    const size = Math.random() * 10 + 5;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                   
+                    // Random position
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    particle.style.left = `${x}%`;
+                    particle.style.top = `${y}%`;
+                   
+                    // Random opacity
+                    particle.style.opacity = Math.random() * 0.5 + 0.3;
+                   
+                    // Add animation
+                    particle.style.animation = `float ${Math.random() * 3 + 3}s ease-in-out infinite`;
+                   
+                    // Add to container
+                    container.appendChild(particle);
+                   
+                    // Remove after animation
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, 3000);
+                }
+            }
+           
+            // Initialize slider
+            showSlide(0);
+            startSlideInterval();
+           
+            // Previous slide button
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    prevSlide();
+                    startSlideInterval(); // Restart the timer when manually changing slides
+                });
+            }
+           
+            // Next slide button
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    nextSlide();
+                    startSlideInterval(); // Restart the timer when manually changing slides
+                });
+            }
+           
+            // Dot navigation
+            sliderDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
                     showSlide(index);
-                    slideInterval = setInterval(() => {
-                        let nextIndex = (currentIndex + 1) % sliderItems.length;
-                        showSlide(nextIndex);
-                    }, 5000);
+                    startSlideInterval(); // Restart the timer when manually changing slides
                 });
             });
+           
+            // Pause slider on hover
+            const sliderContainer = document.querySelector('.slider-container');
+            if (sliderContainer) {
+                sliderContainer.addEventListener('mouseenter', () => {
+                    clearInterval(slideInterval);
+                });
+               
+                sliderContainer.addEventListener('mouseleave', () => {
+                    startSlideInterval();
+                });
+            }
+           
+            // Add keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    prevSlide();
+                    startSlideInterval();
+                } else if (e.key === 'ArrowRight') {
+                    nextSlide();
+                    startSlideInterval();
+                }
+            });
+            
+            // Dark mode toggle functionality
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && 
+                 window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+            }
+            
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                localStorage.setItem('darkMode', html.classList.contains('dark'));
+            });
+            
+            // Initialize 3D tilt effect for product cards
+            initTiltEffect();
         });
         
-        // Quick view modal functionality
+        // 3D Tilt Effect for Cards
+        function initTiltEffect() {
+            const cards = document.querySelectorAll('.tilt-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', handleTilt);
+                card.addEventListener('mouseleave', resetTilt);
+            });
+        }
+        
+        function handleTilt(e) {
+            const card = this;
+            const cardRect = card.getBoundingClientRect();
+            const cardWidth = cardRect.width;
+            const cardHeight = cardRect.height;
+            
+            // Calculate mouse position relative to card center
+            const centerX = cardRect.left + cardWidth / 2;
+            const centerY = cardRect.top + cardHeight / 2;
+            const mouseX = e.clientX - centerX;
+            const mouseY = e.clientY - centerY;
+            
+            // Calculate rotation (max 10 degrees)
+            const rotateY = (mouseX / (cardWidth / 2)) * 5;
+            const rotateX = -(mouseY / (cardHeight / 2)) * 5;
+            
+            // Apply transform
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        }
+        
+        function resetTilt() {
+            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        }
+       
+        // Quick View Modal
         document.addEventListener('DOMContentLoaded', function() {
-            const quickViewBtns = document.querySelectorAll('.quick-view-btn');
+            const quickViewButtons = document.querySelectorAll('[data-product]');
             const modal = document.getElementById('quick-view-modal');
             const closeModal = document.getElementById('close-modal');
-            
-            quickViewBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const productId = this.getAttribute('data-product');
-                    // Here you would fetch product details using the productId
-                    // For now, just show the modal
+           
+            quickViewButtons.forEach(button => {
+                button.addEventListener('click', () => {
                     modal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
                 });
             });
-            
-            closeModal.addEventListener('click', function() {
+           
+            closeModal.addEventListener('click', () => {
                 modal.classList.remove('active');
-                document.body.style.overflow = '';
             });
-            
-            // Close modal when clicking outside content
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
+           
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
                     modal.classList.remove('active');
-                    document.body.style.overflow = '';
                 }
             });
         });
-    </script>
+</script>
 </body>
 </html>

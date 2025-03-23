@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed | Razorpay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        danger: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fade-in 0.6s ease-out',
+                        'draw-circle': 'draw-circle 1.5s ease-out forwards',
+                        'draw-x': 'draw-x 1s ease-out forwards 0.5s',
+                    },
+                    keyframes: {
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        'draw-circle': {
+                            '0%': { 'stroke-dashoffset': '283' },
+                            '100%': { 'stroke-dashoffset': '0' }
+                        },
+                        'draw-x': {
+                            '0%': { 'stroke-dashoffset': '100' },
+                            '100%': { 'stroke-dashoffset': '0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+        
+        .card-shadow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .error-circle {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            animation: draw-circle 1.5s ease-out forwards;
+        }
+        
+        .error-line {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: draw-x 1s ease-out forwards 0.5s;
+        }
+        
+        @keyframes draw-circle {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        @keyframes draw-x {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        .btn-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+        }
+        
+        .btn-secondary-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8">
+        <div class="max-w-md w-full bg-white rounded-xl card-shadow overflow-hidden animate-fade-in" style="animation-delay: 0.1s">
+            <div class="p-8">
+                <!-- Animated Error Icon -->
+                <div class="flex justify-center mb-8">
+                    <div class="relative w-24 h-24">
+                        <svg viewBox="0 0 100 100" class="w-full h-full">
+                            <!-- Background Circle -->
+                            <circle cx="50" cy="50" r="45" fill="#FEF2F2" />
+                            
+                            <!-- Animated Circle -->
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#EF4444" stroke-width="2.5" class="error-circle" />
+                            
+                            <!-- Animated X -->
+                            <line x1="35" y1="35" x2="65" y2="65" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" class="error-line" />
+                            <line x1="65" y1="35" x2="35" y2="65" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" class="error-line" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Message -->
+                <div class="text-center mb-8 animate-fade-in" style="animation-delay: 0.3s">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-3">Payment Failed</h2>
+                    <p class="text-gray-600 mb-6">We couldn't process your payment. No money has been deducted from your account.</p>
+                    
+                    <!-- Error Details -->
+                    <div class="bg-danger-50 border border-danger-100 rounded-lg p-4 mb-6">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            <div class="ml-3 text-left">
+                                <h3 class="text-sm font-medium text-danger-800">Transaction declined</h3>
+                                <div class="mt-1 text-xs text-danger-700">
+                                    Error code: PAYMENT_AUTH_FAILED
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-sm text-gray-500 animate-fade-in" style="animation-delay: 0.4s">
+                        <p>Order ID: <span class="font-medium"><%=order.orderId  %></span></p>
+                    </div>
+                </div>
+                
+                <!-- Buttons -->
+                <div class="space-y-3 animate-fade-in" style="animation-delay: 0.5s">
+                    <button  class="retry-payment w-full btn-hover bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center"
+                    data-items='<%- JSON.stringify(order.items) %>' 
+                    data-paymentmethod="<%= order.paymentMethod %>" 
+                    data-address="<%= order.address %>" 
+                    data-totalamount="<%= order.totalAmount %>">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                        </svg>
+                        Retry Payment
+                    </button>
+                    
+                    <button class="w-full bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center btn-secondary-hover">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                        </svg>
+                        View Order Details
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="bg-gray-50 px-8 py-4 border-t border-gray-100 animate-fade-in" style="animation-delay: 0.6s">
+                <div class="flex items-center justify-between">
+                    <div class="text-xs text-gray-500">
+                        <p>Secured by</p>
+                        <img src="https://razorpay.com/build/browser/static/razorpay-logo.5cdb58df.svg" alt="Razorpay" class="h-4 mt-1">
+                    </div>
+                 
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    const retryButton = document.querySelector("button.retry-payment");
+    if(retryButton){
+        retryButton.addEventListener("click", function(){
+            const items = JSON.parse(this.getAttribute("data-items"));
+            const paymentMethod = this.getAttribute("data-paymentmethod");
+            const address = this.getAttribute("data-address");
+            const totalAmount = this.getAttribute("data-totalamount");
+            retryPayment(items, paymentMethod, address, totalAmount);
+        });
+    }
+});
+async function retryPayment(items, paymentMethod, address, totalAmount) {
+    const orderData = {
+        totalAmount: parseFloat(totalAmount),
+        items,
+     
+        paymentMethod,
+        paymentStatus: 'pending',
+        address
+    };
+    try {
+        const response = await fetch('/razorPay/createOrder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(orderData)
+         });
+         const data = await response.json();
+         if(data.success && data.order && data.order.id){
+              // Initialize Razorpay with the new order details, using the same total amount.
+              const options = {
+                  key: "<%= process.env.RAZORPAY_KEY_ID %>",
+                  amount: orderData.totalAmount * 100,
+                  currency: "INR",
+                  name: "CycloneX",
+                  description: "Retry Payment",
+                  order_id: data.order.id,
+                  handler: function(response){
+                      console.log("Payment successful on retry", response);
+                      // Call your verification function here
+                      verifyRazorpayPayment(response, data.order.id);
+                  },
+                  prefill: {
+                      name: "User Name",
+                      email: "user@example.com",
+                      contact: "9999999999"
+                  },
+                  theme: {
+                      color: "#0ea5e9"
+                  },
+                  modal: {
+                      ondismiss: function(){
+                          // If user dismisses the modal, redirect back to failure page with details.
+                          window.location.href = `/paymentfailure?orderId=${data.order.id}&totalAmount=${orderData.totalAmount}&error=Modal closed by user`;
+                      }
+                  }
+              };
+              const rzp = new Razorpay(options);
+              rzp.on('payment.failed', function(response){
+                  console.error("Payment failed on retry", response);
+                  // Redirect to failure page with the error description
+                  window.location.href = `/paymentfailure?orderId=${data.order.id}&totalAmount=${orderData.totalAmount}&error=${encodeURIComponent(response.error.description)}`;
+              });
+              rzp.open();
+         } else {
+             alert("Failed to create Razorpay order", "error");
+         }
+    
+    } catch (error) {
+        console.error("Retry payment failed", error);
+        alert("Error initiating retry payment", "error");
+    }
+}
+async function verifyRazorpayPayment(response, orderId) {
+    try {
+        const verifyResponse = await fetch('/razorPay/verifyPayment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderId: orderId
+            })
+        });
+        const result = await verifyResponse.json();
+        if(result.success){
+            // Redirect to confirmation page after successful payment verification
+            window.location.href = '/confirmation';
+        } else {
+            alert("Payment verification failed");
+        }
+    } catch (error) {
+        console.error("Error verifying payment", error);
+        alert("Error verifying payment");
+    }
+}
+
+</script>
+
+   
+</body>
+</html>

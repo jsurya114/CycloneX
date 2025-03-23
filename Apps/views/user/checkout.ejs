@@ -120,6 +120,15 @@
         .progress-bar-animation {
             transition: width 0.5s ease-in-out;
         }
+
+        /* Coupon card hover effect */
+        .coupon-card {
+            transition: all 0.3s ease;
+        }
+        .coupon-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body class="font-body bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -342,6 +351,65 @@
         <% } %>
     </div>
 </div>
+
+                            <!-- Coupon Code Section -->
+                            <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-base font-medium text-gray-800 dark:text-white">Apply Coupon Code</h4>
+                                    <button type="button" id="show-available-coupons" class="text-xs text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+                                        View Available Coupons
+                                    </button>
+                                </div>
+                                <div id="coupon-input-container" class="flex space-x-2">
+                                    <input type="text" id="coupon-code" placeholder="Enter coupon code" class="flex-1 min-w-0 block w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
+                                    <button type="button" id="apply-coupon-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                        Apply
+                                    </button>
+                                </div>
+                                <div id="remove-coupon-container" class="hidden flex items-center justify-between bg-green-50 dark:bg-green-900/20 rounded-md p-2 mt-2">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                        <span class="text-sm text-green-700 dark:text-green-300" id="active-coupon-text">Coupon applied</span>
+                                    </div>
+                                    <button type="button" id="remove-coupon-btn" class="text-xs text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+
+                          <!-- Available Coupons Section (Hidden by default) -->
+<div id="available-coupons-container" class="hidden mt-4 mb-6 border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50">
+    <h4 class="text-sm font-medium text-gray-800 dark:text-white mb-3">Available Coupons</h4>
+    <div class="space-y-3">
+        <% if(coupons && coupons.length > 0) { %>
+            <% coupons.forEach(coupon => { %>
+                <% if(!coupon.isBlocked && new Date(coupon.expireDate) >= new Date()) { %>
+                    <!-- Coupon Card -->
+                    <div class="coupon-card bg-white dark:bg-gray-800 border border-dashed border-primary-300 dark:border-primary-700 rounded-lg p-3 cursor-pointer">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h5 class="font-medium text-gray-800 dark:text-white text-sm"><%= coupon.couponCode %></h5>
+                                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                    ₹<%= coupon.offerPrice %> off on orders above ₹<%= coupon.minAmount %>
+                                </p>
+                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                    Valid till: <%= new Date(coupon.expireDate).toLocaleDateString() %>
+                                </p>
+                            </div>
+                            <button type="button" class="text-xs bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 px-2 py-1 rounded" onclick="applyCoupon('<%= coupon.couponCode %>')">
+                                Use
+                            </button>
+                        </div>
+                    </div>
+                <% } %>
+            <% }); %>
+        <% } else { %>
+            <div class="text-center py-3">
+                <p class="text-gray-600 dark:text-gray-400">No coupons available at the moment.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
                         </div>
                     </div>
                     
@@ -357,29 +425,17 @@
                         <div class="p-6">
                             <!-- Payment Options -->
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-                                <!-- Credit/Debit Card -->
-                                <!-- <div class="payment-card border border-primary-500 bg-primary-50 dark:bg-primary-900/20 rounded-xl p-4 cursor-pointer relative flex flex-col items-center justify-center h-24">
-                                    <input type="radio" name="payment" id="card" class="hidden" checked>
-                                    <label for="card" class="absolute inset-0 cursor-pointer"></label>
-                                    <i class="fas fa-credit-card text-primary-500 text-2xl mb-2"></i>
-                                    <span class="text-sm font-medium text-gray-800 dark:text-white">Card</span>
-                                </div> -->
+                                 <!-- Razorpay Payment Card -->
+      <div class="payment-card border border-gray-200 dark:border-gray-700 rounded-xl p-4 cursor-pointer relative flex flex-col items-center justify-center h-24" id="payWithRazorpay">
+        <input type="radio" name="payment" id="razorpay" value="razorpay" class="hidden">
+<label for="razorpay" class="absolute inset-0 cursor-pointer"></label>
+
+        <i class="fas fa-credit-card text-gray-600 dark:text-gray-400 text-2xl mb-2"></i>
+        <span class="text-sm font-medium text-gray-800 dark:text-white">Razor Pay</span>
+      </div>
+                           
                                 
-                                <!-- UPI -->
-                                <!-- <div class="payment-card border border-gray-200 dark:border-gray-700 rounded-xl p-4 cursor-pointer relative flex flex-col items-center justify-center h-24">
-                                    <input type="radio" name="payment" id="upi" class="hidden">
-                                    <label for="upi" class="absolute inset-0 cursor-pointer"></label>
-                                    <i class="fas fa-mobile-alt text-gray-600 dark:text-gray-400 text-2xl mb-2"></i>
-                                    <span class="text-sm font-medium text-gray-800 dark:text-white">UPI</span>
-                                </div> -->
-                                
-                                <!-- Net Banking -->
-                                <!-- <div class="payment-card border border-gray-200 dark:border-gray-700 rounded-xl p-4 cursor-pointer relative flex flex-col items-center justify-center h-24">
-                                    <input type="radio" name="payment" id="netbanking" class="hidden">
-                                    <label for="netbanking" class="absolute inset-0 cursor-pointer"></label>
-                                    <i class="fas fa-university text-gray-600 dark:text-gray-400 text-2xl mb-2"></i>
-                                    <span class="text-sm font-medium text-gray-800 dark:text-white">Net Banking</span>
-                                </div> -->
+                               
                                 
                                 <!-- Cash on Delivery -->
                                 <div class="payment-card border border-gray-200 dark:border-gray-700 rounded-xl p-4 cursor-pointer relative flex flex-col items-center justify-center h-24">
@@ -462,6 +518,7 @@
                             <!-- Order Items -->
                             
                            <!-- Order Items -->
+<!-- Order Items -->
 <div class="space-y-4 mb-6">
     <% if (cart && cart.items && cart.items.length > 0) { %>
         <% cart.items.forEach(item => { %>
@@ -472,30 +529,48 @@
                 </div>
                 <div class="ml-4 flex-1">
                     <div class="flex justify-between">
-                       <a href="/productdetails/<%= item.product._id%>"> <h4 class="text-sm font-medium text-gray-800 dark:text-white"><%= item.product.productName %></h4></a>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white">₹<%= item.product.price.toFixed(2) %></p>
+                        <a href="/productdetails/<%= item.product._id%>"> 
+                            <h4 class="text-sm font-medium text-gray-800 dark:text-white"><%= item.product.productName %></h4>
+                        </a>
+                        <div class="text-right">
+                            <% if (item.maxOffer > 0) { %>
+                                <p class="text-sm line-through text-gray-500 dark:text-gray-400">₹<%= item.product.price.toFixed(2) %></p>
+                                <p class="text-sm font-medium text-green-600 dark:text-green-400">₹<%= item.salePrice.toFixed(2) %> 
+                                    <span class="ml-1 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-1.5 py-0.5 rounded">-<%= item.maxOffer %>%</span>
+                                </p>
+                            <% } else { %>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">₹<%= item.salePrice.toFixed(2) %></p>
+                            <% } %>
+                        </div>
                     </div>
                     <div class="flex items-center mt-1">
                         <span class="text-xs text-gray-500 dark:text-gray-400">Brand: <%= item.product.brands ? item.product.brands.name : 'No Brand' %></span>
                     </div>
+                    <div class="flex items-center mt-1">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                            Subtotal: ₹<%= (cart.itemSubtotal !== undefined ? item.totalSubtotal.toFixed(2) : (item.salePrice * item.quantity).toFixed(2)) %>
+                        </span>
+                    </div>
                     <div class="flex items-center justify-between mt-3">
                         <!-- Quantity Controls -->
-                        <div class="flex items-center mt-2">
-                            <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">Qty:</span>
-                            <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                                <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'decrement')" 
-                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300">
-                                    <i class="fas fa-minus text-xs"></i>
-                                </button>
-                                <input id="quantity-<%= item.product._id %>" type="number" 
-                                    class="w-10 h-8 border-0 bg-white dark:bg-gray-800 text-center text-gray-900 dark:text-white" 
-                                    value="<%= item.quantity %>">
-                                <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'increment')" 
-                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300">
-                                    <i class="fas fa-plus text-xs"></i>
-                                </button>
-                            </div>
+                        <div class="flex items-center">
+                            <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'decrement')" 
+                                class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300">
+                                <i class="fas fa-minus text-xs"></i>
+                            </button>
+                        
+                            <input id="quantity-<%= item.product._id %>" 
+                                type="number" 
+                                class="w-10 h-8 border-0 bg-white dark:bg-gray-800 text-center text-gray-900 dark:text-white" 
+                                value="<%= item.quantity %>">
+                        
+                            <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'increment')" 
+                                class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
                         </div>
+                        
+                        
                         <!-- Delete Button -->
                         <button type="button" onclick="removeFromCart('<%= item.product._id %>')" 
                             class="flex items-center text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 transition-colors">
@@ -512,15 +587,18 @@
             <a href="/shoplist" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Continue Shopping
-            </a>        </div>
+            </a>
+        </div>
     <% } %>
 </div>
-                           
+
 <!-- Price Breakdown -->
 <dl class="space-y-4 mb-6 border-t border-gray-200 dark:border-gray-700 pt-6">
     <div class="flex items-center justify-between">
         <dt class="text-sm text-gray-600 dark:text-gray-400">Subtotal</dt>
-        <dd class="text-sm font-medium text-gray-900 dark:text-white">₹<%= subtotal.toFixed(2) %></dd>
+        <dd id="subtotalAmount" class="text-sm font-medium text-gray-900 dark:text-white">
+            ₹<%= subtotal.toFixed(2) %>
+        </dd>
     </div>
     
     <div class="flex items-center justify-between">
@@ -539,38 +617,30 @@
         </dd>
     </div>
     
-    <div class="flex items-center justify-between">
-        <dt class="text-sm text-gray-600 dark:text-gray-400">Tax</dt>
-        <dd class="text-sm font-medium text-gray-900 dark:text-white">₹<%= tax.toFixed(2) %></dd>
-    </div>
+ <!-- Tax -->
+<div class="flex items-center justify-between">
+    <dt class="text-sm text-gray-600 dark:text-gray-400">Tax (18%)</dt>
+    <dd id="taxAmount" class="text-sm font-medium text-gray-900 dark:text-white">
+        ₹<%= tax.toFixed(2) %>
+    </dd>
+</div>
     
     <div class="flex items-center justify-between">
         <dt class="flex items-center text-sm text-gray-600 dark:text-gray-400">
             <span>Discount</span>
-            <span class="ml-2 rounded-full bg-green-100 dark:bg-green-900 py-0.5 px-2 text-xs font-medium text-green-800 dark:text-green-200"><%= discountCode %></span>
+            <span id="coupon-badge" class="ml-2 rounded-full bg-green-100 dark:bg-green-900 py-0.5 px-2 text-xs font-medium text-green-800 dark:text-green-200"><%= discountCode %></span>
         </dt>
-        <dd class="text-sm font-medium text-green-600 dark:text-green-400">-₹<%= discount.toFixed(2) %></dd>
+        <dd id="discountAmount" class="text-sm font-medium text-green-600 dark:text-green-400">-₹<%= discount.toFixed(2) %></dd>
     </div>
     
-    <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
-        <dt class="text-base font-medium text-gray-900 dark:text-white">Total</dt>
-        <dd class="text-base font-bold text-primary-600 dark:text-primary-400">₹<%= total.toFixed(2) %></dd>
-    </div>
+   <!-- Total -->
+<div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
+    <dt class="text-base font-medium text-gray-900 dark:text-white">Total</dt>
+    <dd id="totalAmount" class="text-base font-bold text-primary-600 dark:text-primary-400">
+        ₹<%= finalTotal.toFixed(2) %>
+    </dd>
+</div>
 </dl>
-                            
-                            <!-- Promo Code -->
-                            <!-- <div class="mb-6">
-                                <div class="flex items-center justify-between mb-2">
-                                    <h4 class="text-sm font-medium text-gray-800 dark:text-white">Apply Promo Code</h4>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400">Optional</span>
-                                </div>
-                                <div class="flex space-x-2">
-                                    <input type="text" placeholder="Enter code" class="flex-1 min-w-0 block w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
-                                    <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
-                                        Apply
-                                    </button>
-                                </div>
-                            </div> -->
                             
                             <!-- Place Order Button -->
                             <button type="button" id="placeOrderBtn" class="w-full flex items-center justify-center px-6 py-4 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
@@ -636,284 +706,382 @@
     <%- include('partials/footer') %>
 
     <!-- Toast container -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
+    <div id="toast-container" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50"></div>
 
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
         // Function to create a Toastify notification
-        function showToast(message, type = 'info') {
-            // Create toast container if it doesn't exist
-            let toastContainer = document.getElementById('toast-container');
-            if (!toastContainer) {
-                toastContainer = document.createElement('div');
-                toastContainer.id = 'toast-container';
-                toastContainer.className = 'fixed bottom-4 right-4 z-50 flex flex-col items-end';
-                document.body.appendChild(toastContainer);
-            }
-
-            // Create toast element
-            const toast = document.createElement('div');
-            toast.className = `
-                mb-3 px-6 py-4 rounded-lg shadow-lg text-white flex items-center
-                ${type === 'error' ? 'bg-red-500' : 'bg-primary-600'}
-                transform transition-all duration-300 ease-in-out
-                opacity-0 translate-y-8
-                max-w-md
-            `;
-
-            // Add icon based on type
-            const icon = document.createElement('i');
-            icon.className = `mr-3 ${type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle'}`;
-            toast.appendChild(icon);
-
-            // Add message
-            const messageEl = document.createElement('span');
-            messageEl.textContent = message;
-            toast.appendChild(messageEl);
-
-            // Add close button
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'ml-auto text-white hover:text-gray-200 focus:outline-none';
-            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-            closeBtn.onclick = () => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(8rem)';
-                setTimeout(() => {
-                    toastContainer.removeChild(toast);
-                }, 300);
-            };
-            toast.appendChild(closeBtn);
-
-            // Add toast to container
-            toastContainer.appendChild(toast);
-
-            // Trigger animation
-            requestAnimationFrame(() => {
-                toast.style.opacity = '1';
-                toast.style.transform = 'translateY(0)';
-            });
-
-            // Remove toast after 5 seconds
+   // Toast notification function
+function showToast(message, type = 'info') {
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center';
+        document.body.appendChild(toastContainer);
+    }
+    const toast = document.createElement('div');
+    toast.className = `
+        mb-3 px-6 py-4 rounded-lg shadow-lg text-white flex items-center
+        ${type === 'error' ? 'bg-red-500' : 'bg-primary-600'}
+        transform transition-all duration-300 ease-in-out
+        opacity-0 translate-y-8
+        max-w-md
+    `;
+    const icon = document.createElement('i');
+    icon.className = `mr-3 ${type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle'}`;
+    toast.appendChild(icon);
+    const messageEl = document.createElement('span');
+    messageEl.textContent = message;
+    toast.appendChild(messageEl);
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'ml-auto text-white hover:text-gray-200 focus:outline-none';
+    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+    closeBtn.onclick = () => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(8rem)';
+        setTimeout(() => {
+            toastContainer.removeChild(toast);
+        }, 300);
+    };
+    toast.appendChild(closeBtn);
+    toastContainer.appendChild(toast);
+    requestAnimationFrame(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    });
+    setTimeout(() => {
+        if (toast.parentNode === toastContainer) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(8rem)';
             setTimeout(() => {
                 if (toast.parentNode === toastContainer) {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(8rem)';
-                    setTimeout(() => {
-                        if (toast.parentNode === toastContainer) {
-                            toastContainer.removeChild(toast);
-                        }
-                    }, 300);
+                    toastContainer.removeChild(toast);
                 }
-            }, 5000);
+            }, 300);
         }
+    }, 5000);
+}
 
-        // Handle payment method selection
-        document.addEventListener('DOMContentLoaded', function() {
-            const paymentCards = document.querySelectorAll('.payment-card');
-            const cardForm = document.getElementById('cardForm');
-            
-            paymentCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Remove selected class from all cards
-                    paymentCards.forEach(c => {
-                        c.classList.remove('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
-                        c.classList.add('border-gray-200', 'dark:border-gray-700');
-                        const icon = c.querySelector('i');
-                        icon.classList.remove('text-primary-500');
-                        icon.classList.add('text-gray-600', 'dark:text-gray-400');
-                    });
-                    
-                    // Add selected class to clicked card
-                    this.classList.remove('border-gray-200', 'dark:border-gray-700');
-                    this.classList.add('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
-                    const icon = this.querySelector('i');
-                    icon.classList.remove('text-gray-600', 'dark:text-gray-400');
-                    icon.classList.add('text-primary-500');
-                    
-                    // Show/hide card form
-                    if (this.querySelector('input').id === 'card') {
-                        cardForm.classList.remove('hidden');
-                    } else {
-                        cardForm.classList.add('hidden');
-                    }
-                    
-                    // Check the radio button
-                    this.querySelector('input').checked = true;
-                });
+// Payment method selection (no default selection)
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentCards = document.querySelectorAll('.payment-card');
+    // Ensure no payment is selected on load
+    paymentCards.forEach(card => {
+        const radio = card.querySelector('input[name="payment"]');
+        if (radio) radio.checked = false;
+        card.addEventListener('click', function() {
+            // Remove selected styling from all cards
+            paymentCards.forEach(c => {
+                c.classList.remove('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
+                c.classList.add('border-gray-200', 'dark:border-gray-700');
+                const icon = c.querySelector('i');
+                icon.classList.remove('text-primary-500');
+                icon.classList.add('text-gray-600', 'dark:text-gray-400');
+                // Uncheck each radio button
+                const r = c.querySelector('input[name="payment"]');
+                if (r) r.checked = false;
             });
-            
-            // Handle shipping option selection
-            const shippingOptions = document.querySelectorAll('.shipping-option');
-            
-            shippingOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    // Remove selected class from all options
-                    shippingOptions.forEach(o => {
-                        const radio = o.querySelector('.w-6.h-6');
-                        radio.classList.remove('border-primary-500');
-                        radio.classList.add('border-gray-300');
-                        const dot = radio.querySelector('div');
-                        dot.classList.remove('bg-primary-500');
-                        dot.classList.add('bg-transparent');
-                    });
-                    
-                    // Add selected class to clicked option
-                    const radio = this.querySelector('.w-6.h-6');
-                    radio.classList.remove('border-gray-300');
-                    radio.classList.add('border-primary-500');
-                    const dot = radio.querySelector('div');
-                    dot.classList.remove('bg-transparent');
-                    dot.classList.add('bg-primary-500');
-                    
-                    // Check the radio button
-                    this.querySelector('input').checked = true;
-                });
-            });
-            
-            // Handle address selection
-            const addressCards = document.querySelectorAll('.address-card');
-            
-            addressCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Remove selected class from all cards
-                    addressCards.forEach(c => {
-                        const radio = c.querySelector('.w-6.h-6');
-                        radio.classList.remove('border-primary-500');
-                        radio.classList.add('border-gray-300');
-                        const dot = radio.querySelector('div');
-                        dot.classList.remove('bg-primary-500');
-                        dot.classList.add('bg-transparent');
-                    });
-                    
-                    // Add selected class to clicked card
-                    const radio = this.querySelector('.w-6.h-6');
-                    radio.classList.remove('border-gray-300');
-                    radio.classList.add('border-primary-500');
-                    const dot = radio.querySelector('div');
-                    dot.classList.remove('bg-transparent');
-                    dot.classList.add('bg-primary-500');
-                    
-                    // Check the radio button
-                    this.querySelector('input').checked = true;
-                });
-            });
-            
-            // Format credit card number
-            const cardNumberInput = document.getElementById('cardNumber');
-            if (cardNumberInput) {
-                cardNumberInput.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-                    let formattedValue = '';
-                    
-                    for (let i = 0; i < value.length; i++) {
-                        if (i > 0 && i % 4 === 0) {
-                            formattedValue += ' ';
-                        }
-                        formattedValue += value[i];
-                    }
-                    
-                    e.target.value = formattedValue;
-                });
-            }
-            
-            // Format expiry date
-            const expiryInput = document.getElementById('expiry');
-            if (expiryInput) {
-                expiryInput.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    
-                    if (value.length > 2) {
-                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                    }
-                    
-                    e.target.value = value;
-                });
-            }
-            
-            // Place order button
-            const placeOrderBtn = document.getElementById('placeOrderBtn');
-            if (placeOrderBtn) {
-                placeOrderBtn.addEventListener('click', async function() {
-                 try {
+            // Apply selected styling to clicked card
+            this.classList.remove('border-gray-200', 'dark:border-gray-700');
+            this.classList.add('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
+            const icon = this.querySelector('i');
+            icon.classList.remove('text-gray-600', 'dark:text-gray-400');
+            icon.classList.add('text-primary-500');
+            // Check its radio button
+            const selectedRadio = this.querySelector('input[name="payment"]');
+            if (selectedRadio) selectedRadio.checked = true;
+        });
+    });
 
-const addressElement = document.querySelector('input[name="address"]:checked')
-const paymentMethod = document.querySelector('input[name="payment"]:checked')
-console.log("Selected address element:", addressElement); // Debug
+    // Coupon code functionality
+    const showAvailableCouponsBtn = document.getElementById('show-available-coupons');
+    const availableCouponsContainer = document.getElementById('available-coupons-container');
+    const applyCouponBtn = document.getElementById('apply-coupon-btn');
+    const couponInput = document.getElementById('coupon-code');
+ 
+    const couponInputContainer = document.getElementById('coupon-input-container');
+    const removeCouponContainer = document.getElementById('remove-coupon-container');
+    const removeCouponBtn = document.getElementById('remove-coupon-btn');
+    const activeCouponText = document.getElementById('active-coupon-text');
+    const couponBadge = document.getElementById('coupon-badge');
+    
+    
+    
+
+    // Toggle available coupons
+    showAvailableCouponsBtn.addEventListener('click', function() {
+        availableCouponsContainer.classList.toggle('hidden');
+    });
+
+    // Apply coupon button
+    applyCouponBtn.addEventListener('click', function() {
+        const couponCode = couponInput.value.trim();
+        
+        
+        if (couponCode) {
+            applyCoupon(couponCode);
+        } else {
+            showToast('Please enter a coupon code', 'error');
+        }
+    });
+
+    // Remove coupon button
+    removeCouponBtn.addEventListener('click', function() {
+        removeCoupon();
+    });
+    window.applyCoupon = async function(couponCode) {
+        document.getElementById('coupon-code').value=couponCode
+        const totalElement = document.getElementById("totalAmount");
+const totalText = totalElement.textContent; // e.g., "₹75340.00"
+const totalAmount = parseFloat(totalText.replace(/[^\d.]/g, ""));
+console.log(totalAmount); // 75340.00
+console.log('ddss',couponCode,totalAmount)
+const shippingElement = document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600");
+const shippingCharge = shippingElement ? parseFloat(shippingElement.textContent.replace(/[^\d.]/g, "")) || 0 : 0;
+    try {
+        const response = await fetch('/applycoupon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ couponCode,totalAmount,shippingCharge})
+        });
+
+        const data = await response.json();
+console.log('ddd',data)
+
+        if (data.success) {
+            document.getElementById('coupon-badge').textContent = couponCode;
+            document.getElementById('remove-coupon-container').classList.remove('hidden');
+            document.getElementById('coupon-input-container').classList.add('hidden');
+            document.getElementById('active-coupon-text').textContent = `Coupon "${couponCode}" applied`;
+
+            document.getElementById('coupon-code').disabled = true;
+            document.getElementById('apply-coupon-btn').disabled = true;
+            document.getElementById('apply-coupon-btn').classList.add('opacity-50', 'cursor-not-allowed');
 
 
-const addressId = addressElement?.value
-console.log("Selected address ID:", addressId)
 
-if(!paymentMethod){
-    showToast("Please select a payment method","error")
-    return
+            // Update Discount and Total
+            document.getElementById('discountAmount').textContent = `-₹${data.discount.toFixed(2)}`;
+document.getElementById('totalAmount').textContent = `₹${data.total.toFixed(2)}`;
+
+            document.querySelector('dd.text-base.font-bold').textContent = `₹${data.total.toFixed(2)}`;
+
+            showToast(`Coupon "${couponCode}" applied successfully!`, 'info');
+        } else {
+            showToast(data.message, 'error');
+        }
+    } catch (error) {
+        console.error("Error applying coupon:", error);
+        showToast("Failed to apply coupon", "error");
+    }
+};
+
+
+function removeCoupon() {
+    // Show the input field again
+    couponInputContainer.classList.remove('hidden');
+    removeCouponContainer.classList.add('hidden');
+    
+    // Reset displayed coupon code
+    couponInput.value = '';
+    couponBadge.textContent = '';
+
+    // Reset discount to ₹0.00
+    document.getElementById('discountAmount').textContent = '-₹0.00';
+
+    // Recalculate total without the discount
+    const subtotal = parseFloat(document.querySelector('dd.text-sm.font-medium.text-gray-900').textContent.replace(/[^\d.]/g, ""));
+    const tax = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900:last-of-type").textContent.replace(/[^\d.]/g, ""));
+    const shippingCharge = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600").textContent.replace(/[^\d.]/g, "")) || 0;
+    
+    const newTotal = subtotal + tax + shippingCharge;
+    document.getElementById('totalAmount').textContent = `₹${newTotal.toFixed(2)}`;
+
+    showToast('Coupon removed successfully!', 'info');
 }
 
-if(!addressId){
-    showToast("Please select a delivery address","error")
-}
 
 
-const items = Array.from(document.querySelectorAll('.checkout-item')).map(item=>{
-const productId = item.querySelector('input[id^="quantity-"]').id.replace('quantity-', '');
-                const quantity = parseInt(item.querySelector('input[id^="quantity-"]').value);
-                const price = parseFloat(item.querySelector('.text-sm.font-medium.text-gray-900').textContent.replace('₹', ''))
+    // Place Order button handler
+    document.getElementById('placeOrderBtn').addEventListener('click', async function() {
+    const addressElement = document.querySelector('input[name="address"]:checked');
+    const paymentMethodElement = document.querySelector('input[name="payment"]:checked');
+    
+    if (!addressElement) {
+        showToast("Please select a delivery address", "error");
+        return;
+    }
+    if (!paymentMethodElement) {
+        showToast("Please select a payment method", "error");
+        return;
+    }
 
-return {
-    product:productId,
-    quantity:quantity,
-    subtotal:quantity*price
-}
- })
- const totalAmount = parseFloat(document.querySelector('dd.text-base.font-bold').textContent.replace('₹', ''));
 
-//  const addressId = document.querySelector('input[name="selectedAddress"]:checked')?.value
- console.log("Selected address ID:", addressId)
- if(!addressId){
-    showToast('Please select a delivery address',true)
-    return
- }
- const orderData ={
-    items:items,
-    totalAmount:totalAmount,
-    paymentMethod:'COD',
-    paymentStatus:'pending',
-    address:addressId
 
- }
-console.log('orderdata',orderData)
+    const addressId = addressElement.value;
+    const paymentMethod = paymentMethodElement.value;  // ✅ Fixed payment method selection
 
-const response = await fetch('/orders/cod',{
-    method:'POST',
-    headers:{
-         'Content-Type': 'application/json'
-    },
-    body:JSON.stringify(orderData)
-}) 
-console.log(orderData)
-const data = await response.json()
-console.log('data',data)
-if(data.success){
-    showToast('Waiting for confrimation')
+    console.log('kjdkdj',paymentMethod)
 
-    setTimeout(() => {
-                    window.location.href = `/confirmation`;
-                }, 2000);
-}else{
-    showToast(data.message, true);
-}
- } catch (error) {
-    console.log(data.message,true)      
-    showToast('Failed to place order', true);     
- }
+    const items = Array.from(document.querySelectorAll('.checkout-item')).map(item => {
+        const productId = item.querySelector('input[id^="quantity-"]').id.replace('quantity-', '');
+        const quantity = parseInt(item.querySelector('input[id^="quantity-"]').value);
+        const priceText = item.querySelector('.text-sm.font-medium.text-gray-900').textContent;
+        const price = parseFloat(priceText.replace('₹', ''));
+        
+        return { product: productId, quantity, subTotal: quantity * price };
+    });
+
+    const totalText = document.querySelector('dd.text-base.font-bold').textContent;
+    const totalAmount = parseFloat(totalText.replace('₹', ''));
+    const  couponCode = document.getElementById('coupon-code').value||""
+
+    const orderData = {
+        items,
+        totalAmount,
+        paymentMethod,
+        paymentStatus: 'pending',
+        address: addressId,
+        couponCode
+    };
+
+    console.log("🚀 Payment Method Selected:", paymentMethod);
+
+    if (paymentMethod === 'razorpay') {
+        initiateRazorpay(orderData); // ✅ Now Razorpay will be triggered
+    } else {
+        processCODOrder(orderData);
+    }
 });
-            }
-            })
 
+});
+
+// Function to initiate Razorpay payment
+async function initiateRazorpay(orderData) {
+   
+    try {
+        console.log("ghjkl",orderData)
+        const response = await fetch('/razorPay/createOrder',{
+            method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+        })
+
+        const data = await response.json()
+        console.log('ordercreated:',orderData)
+
+if(!data.success||!data.order.id){
+    showToast('failed to create razorpay order')
+    return
+}
+
+const options = {
+                    key: "<%=process.env.RAZORPAY_KEY_ID%>", // Replace with your actual Razorpay Key
+                    amount: orderData.totalAmount * 100,
+                    currency: 'INR',
+                    name: 'CycloneX',
+                    description: 'Order Payment',
+                    order_id: data.order.id, 
+                    handler: function(response) {
+                        console.log("🟢 Razorpay Payment Success:", response);
+                        verifyRazorpayPayment(response, data.order.id);
+                    },
+                    prefill: {
+                        name: 'User Name',
+                        email: 'user@example.com',
+                        contact: '9999999999'
+                    },
+                    theme: {
+                        color: '#0ea5e9'
+                    },
+                    modal: {
+        ondismiss: function() {
+            // When user closes the modal, redirect to the failure page.
+            window.location.href = `/paymentfailure?orderId=${data.order.id}&error=Modal closed by user`;
+        }
+    }
+                }
+const rzp = new Razorpay(options)
+rzp.on('payment.failed', function(response) {
+                    console.error("❌ Payment Failed!", response);
+                    showToast("Payment failed: " + response.error.description);
+                    setTimeout(() => {
+        window.location.href = `/paymentfailure?orderId=${data.order.id}&error=${response.error.description}`;
+    }, 100);
+                })
+                rzp.open()
+    } catch (error) {
+        console.error("Razorpay initiation failed:", error);
+                showToast("Error initiating Razorpay payment.")
+    }
+}
+
+
+// ✅ Function to verify Razorpay Payment
+async function verifyRazorpayPayment(response, orderId) {
+    console.log('payment verifying:',response)
+    if (!response.razorpay_order_id || !response.razorpay_payment_id || !response.razorpay_signature) {
+                console.error("❌ Missing Razorpay response values!", response);
+                return;
+            }
+try {
+    const verifyResponse = await fetch('/razorPay/verifyPayment',{
+        method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                        orderId: orderId 
+                    })
+    })
+
+    const data = await verifyResponse.json()
+    console.log("this si data : ",data)
+    if(data.success){
+        showToast("Payment successful!...")
+        setTimeout(() => { window.location.href = "/confirmation"; }, 2000)
+    }else{
+        showToast("Payment verification faliled!...")
+    }
+} catch (error) {
+    console.error("Payment verification failed:", error);
+    showToast("Error verifying payment.");
+}
+
+
+
+}
+
+// Function to process Cash on Delivery or post-Razorpay order
+async function processCODOrder(orderData) {
+    try {
+        if(orderData.paymentMethod==="on"){
+        orderData.paymentMethod="COD"
+    }
+        const response = await fetch('/orders/cod', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
+        const data = await response.json();
+        if (data.success) {
+            showToast('Order placed successfully', 'info');
+            setTimeout(() => { window.location.href = '/confirmation'; }, 2000);
+        } else {
+            showToast(data.message, 'error');
+        }
+    } catch (error) {
+        showToast('Failed to place order', 'error');
+    }
+}
 
      
     </script>
+    <script src="/path/to/script.js?v=<%= Date.now() %>"></script>
+
     <script>
     async function removeFromCart(productId) {
                try {
@@ -935,43 +1103,36 @@ if(data.success){
            }
    
    
-        async function updateQuantity(productId, action) {
-               const quantityInput = document.getElementById(`quantity-${productId}`);
-               let quantity = parseInt(quantityInput.value);
-   
-               if (action === 'increment') {
-                   quantity += 1;
-               } else if (action === 'decrement' && quantity > 1) {
-                   quantity -= 1;
-               }
-   
-               try {
-                   const response = await fetch(`/checkout/${productId}`, {
-                       method: 'PUT',
-                       headers: {
-                           'Content-Type': 'application/json',
-                       },
-                       body: JSON.stringify({ quantity }),
-                   });
-                   const data = await response.json();
-                   
-                   if (data.success) {
-                       // Show success toast before reloading
-                       showToast('Cart updated successfully', 'info');
-                       setTimeout(() => {
-                           window.location.reload(); // Reload the page to reflect the changes
-                       }, 1000);
-                   } else {
-                       // Show toast only for stock unavailability
-                       if (data.message.includes('stock') || data.message.includes('available')) {
-                           showToast(data.message, 'error');
-                       }
-                   }
-               } catch (error) {
-                   console.error('Error:', error);
-                   showToast('An error occurred', 'error');
-               }
-           }
+           async function updateQuantity(productId, action) {
+    const quantityInput = document.getElementById(`quantity-${productId}`);
+    let newQuantity = parseInt(quantityInput.value);
+
+    if (action === 'increment') newQuantity++;
+    if (action === 'decrement' && newQuantity > 1) newQuantity--;
+
+    try {
+        const response = await fetch(`/checkout/${productId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quantity: newQuantity })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            quantityInput.value = newQuantity;
+
+            location.reload();
+
+          
+        } else {
+            alert(data.message || "Failed to update quantity");
+        }
+    } catch (error) {
+        console.error("Error updating quantity:", error);
+        alert("Failed to update quantity");
+    }
+}
    
            document.addEventListener('DOMContentLoaded', function() {
        // Check if free shipping is applied
@@ -1021,7 +1182,3 @@ if(data.success){
    </script>
 </body>
 </html>
-
-
-
-

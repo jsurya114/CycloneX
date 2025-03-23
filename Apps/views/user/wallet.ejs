@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX - Wallet</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"},
+                        secondary: '#f97316',
+                        dark: '#0f172a'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 8px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Card hover effects */
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Gradient backgrounds */
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+        }
+        
+        .bg-gradient-secondary {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        }
+
+        /* Credit card style */
+        .credit-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .credit-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+
+        .credit-card::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 0;
+        }
+
+        /* Transaction item hover */
+        .transaction-item {
+            transition: all 0.2s ease;
+        }
+
+        .transaction-item:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Animated gradient button */
+        .btn-gradient-animated {
+            background-size: 200% auto;
+            transition: 0.5s;
+            background-image: linear-gradient(to right, #0ea5e9 0%, #0284c7 51%, #0ea5e9 100%);
+        }
+
+        .btn-gradient-animated:hover {
+            background-position: right center;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans">
+    <%-include('partials/header') %>
+    <div class="container mx-auto p-4 max-w-7xl">
+        <!-- Page header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-display font-bold text-slate-800">My Wallet</h1>
+            <p class="text-slate-500">Manage your funds, transactions, and payment methods</p>
+        </div>
+        
+        <!-- Main content grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Left sidebar -->
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm">
+                <!-- User profile -->
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                            <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-lg text-gray-800"><%= user.fullName || 'Guest User' %></p>
+                            <p class="text-sm text-gray-500"><%= user.email || 'No email' %></p>
+                        </div>
+                    </div>
+                    <button class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+                
+                <!-- Navigation tabs -->
+                <div class="flex justify-between mb-8">
+                    <a href="/userprofile/<%= user._id %>" class="group cursor-pointer">
+                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <span class="text-xs font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">
+                            Profile
+                        </span>
+                    </a>
+                    
+                    <div class="group cursor-pointer">
+                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <span class="text-xs font-medium text-gray-600 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <div class="w-14 h-14 bg-primary-500 rounded-xl flex items-center justify-center mb-2 shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-wallet text-white text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <span class="text-xs font-medium text-primary-500 group-hover:text-primary-600 transition-colors duration-300">Wallet</span>
+                    </div>
+                </div>
+                
+                <!-- Menu items -->
+                <div class="space-y-2">
+                   
+                    <a href="#recentTransaction" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
+                        <i class="fas fa-exchange-alt mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                        <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Transactions</span>
+                    </a>
+                
+                
+                    <!-- <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group mt-4">
+                        <i class="fas fa-cog mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                        <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Settings</span>
+                    </a> -->
+                    <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 transition-colors duration-300 group">
+                        <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
+                        <span class="font-medium text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Main wallet content -->
+            <div class="md:col-span-3 space-y-6">
+                <!-- Balance cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- Main balance card -->
+                    <div class="lg:col-span-2">
+                        <div class="credit-card h-full">
+                            <div class="relative z-10">
+                                <div class="flex justify-between items-start mb-6">
+                                    <div>
+                                        <p class="text-gray-300 text-sm mb-1">Available Balance</p>
+                                        <h2 class="text-4xl font-bold text-white">₹<%= wallet && wallet.balance !== undefined ? wallet.balance.toFixed(2) : '0.00' %></h2>
+                                    </div>
+                                    
+                                </div>
+                                
+                              
+                                
+                                <div class="mt-6 pt-6 border-t border-white/10">
+                                    <div class="flex justify-between text-gray-300">
+                                        <span>Wallet ID: <%= wallet ? wallet._id : 'Not available' %></span>
+                                        <span>Virtual Wallet</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick stats -->
+                    <div class="space-y-4">
+                        <!-- Deposits -->
+                        <div class="bg-white p-4 rounded-xl shadow-sm hover-card">
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-gray-500 text-sm">Total refunds</p>
+                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i class="fas fa-arrow-up text-green-500 text-xs"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800">₹<%= wallet && wallet.deposit ? wallet.deposit.toFixed(2) : '0.00' %></h3>
+                            <div class="flex items-center text-green-500 text-sm mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i>
+                                <span>+5.3% from last month</span>
+                            </div>
+                        </div>
+                     
+                    </div>
+                </div>
+                
+               
+            <!-- Recent Transactions -->
+        <div id="recentTransaction" class="bg-white rounded-xl shadow-sm p-6 mt-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-gray-800">Recent Transactions</h2>
+                <button id="viewAllBtn" class="text-primary-500 hover:text-primary-600 transition-colors text-sm flex items-center">
+                    <span>View All</span>
+                    <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                </button>
+            </div>
+
+            <div id="transactionList" class="space-y-4">
+                <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
+                    <% wallet.transaction.slice(0, 3).forEach(function(trans) { %> <!-- Show only 3 initially -->
+                        <div class="transaction-item flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full <%= trans.transactionType === 'credit' ? 'bg-green-100' : 'bg-red-100' %> flex items-center justify-center mr-4">
+                                    <i class="fas <%= trans.transactionType === 'credit' ? 'fa-arrow-up text-green-500' : 'fa-arrow-up text-red-500' %>"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-800"><%= trans.reason || (trans.transactionType === 'credit' ? 'Deposit' : 'Withdrawal') %></p>
+                                    <p class="text-sm text-gray-500"><%= new Date(trans.date).toLocaleDateString() %> • <%= new Date(trans.date).toLocaleTimeString() %></p>
+                                </div>
+                            </div>
+                            <p class="font-medium <%= trans.transactionType === 'credit' ? 'text-green-500' : 'text-red-500' %>">
+                                <%= trans.transactionType === 'credit' ? '+' : '-' %>₹<%= trans.amount ? trans.amount.toFixed(2) : '0.00' %>
+                            </p>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-receipt text-gray-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-2">No transactions yet</h3>
+                        <p class="text-gray-500 mb-4">Your transaction history will appear here</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Hidden full transaction list -->
+            <div id="fullTransactionList" class="hidden space-y-4 mt-4">
+                <% if (wallet && wallet.transaction && wallet.transaction.length > 3) { %>
+                    <% wallet.transaction.slice(3).forEach(function(trans) { %>
+                        <div class="transaction-item flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full <%= trans.transactionType === 'credit' ? 'bg-green-100' : 'bg-red-100' %> flex items-center justify-center mr-4">
+                                    <i class="fas <%= trans.transactionType === 'credit' ? 'fa-arrow-down text-green-500' : 'fa-arrow-up text-red-500' %>"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-800"><%= trans.reason || (trans.transactionType === 'credit' ? 'Deposit' : 'Withdrawal') %></p>
+                                    <p class="text-sm text-gray-500"><%= new Date(trans.date).toLocaleDateString() %> • <%= new Date(trans.date).toLocaleTimeString() %></p>
+                                </div>
+                            </div>
+                            <p class="font-medium <%= trans.transactionType === 'credit' ? 'text-green-500' : 'text-red-500' %>">
+                                <%= trans.transactionType === 'credit' ? '+' : '-' %>₹<%= trans.amount ? trans.amount.toFixed(2) : '0.00' %>
+                            </p>
+                        </div>
+                    <% }); %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+                
+             
+            </div>
+        </div>
+    </div>
+
+    <%-include('partials/footer') %>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const viewAllBtn = document.getElementById("viewAllBtn");
+            const fullTransactionList = document.getElementById("fullTransactionList");
+        
+            if (viewAllBtn && fullTransactionList) {
+                viewAllBtn.addEventListener("click", function () {
+                    if (fullTransactionList.classList.contains("hidden")) {
+                        fullTransactionList.classList.remove("hidden");
+                        viewAllBtn.innerHTML = '<span>Show Less</span> <i class="fas fa-chevron-up ml-1 text-xs"></i>';
+                    } else {
+                        fullTransactionList.classList.add("hidden");
+                        viewAllBtn.innerHTML = '<span>View All</span> <i class="fas fa-chevron-right ml-1 text-xs"></i>';
+                    }
+                });
+            }
+        });
+
+        
+        </script>
+        
+
+
+
+
+    <script>
+        // Initialize spending chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('spendingChart').getContext('2d');
+            
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(14, 165, 233, 0.5)');
+            gradient.addColorStop(1, 'rgba(14, 165, 233, 0)');
+            
+            const spendingChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Transactions',
+                        data: [120, 190, 85, 205, 165, 250, 140],
+                        borderColor: '#0ea5e9',
+                        backgroundColor: gradient,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#0ea5e9',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleColor: '#fff',
+                            bodyColor: '#e0f2fe',
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `₹₹{context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value;
+                                },
+                                font: {
+                                    size: 12
+                                },
+                                color: '#64748b'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                color: '#64748b'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Quick amount buttons
+            const quickAmountButtons = document.querySelectorAll('.quick-amount');
+            quickAmountButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const amount = this.getAttribute('data-amount');
+                    document.getElementById('amount').value = amount;
+                });
+            });
+            
+            // Add event listeners for quick action buttons
+            const quickActionButtons = document.querySelectorAll('.grid.grid-cols-2.sm\\:grid-cols-4 button');
+            quickActionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    Toastify({
+                        text: `₹{this.querySelector('span').textContent} feature coming soon!`,
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#0ea5e9",
+                    }).showToast();
+                });
+            });
+            
+            // Add event listener for Add Funds form
+            const addFundsForm = document.getElementById('addFundsForm');
+            if (addFundsForm) {
+                addFundsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const amount = document.getElementById('amount').value;
+                    const paymentMethod = document.getElementById('payment_method').value;
+                    
+                    if (!amount || amount <= 0) {
+                        Toastify({
+                            text: "Please enter a valid amount",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#ef4444",
+                        }).showToast();
+                        return;
+                    }
+                    
+                    if (!paymentMethod) {
+                        Toastify({
+                            text: "Please select a payment method",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#ef4444",
+                        }).showToast();
+                        return;
+                    }
+                    
+                    // In a real application, you would submit the form to the server
+                    // For demo purposes, we'll just show a success message
+                    Toastify({
+                        text: `₹₹{amount} successfully added to your wallet!`,
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#10b981",
+                    }).showToast();
+                    
+                    // Reset form
+                    this.reset();
+                });
+            }
+            
+            // Add event listener for Withdraw form
+            const withdrawForm = document.getElementById('withdrawForm');
+            if (withdrawForm) {
+                withdrawForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const amount = document.getElementById('withdraw_amount').value;
+                    const withdrawMethod = document.getElementById('withdraw_method').value;
+                    
+                    if (!amount || amount <= 0) {
+                        Toastify({
+                            text: "Please enter a valid amount",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#ef4444",
+                        }).showToast();
+                        return;
+                    }
+                    
+                    if (!withdrawMethod) {
+                        Toastify({
+                            text: "Please select a withdrawal method",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#ef4444",
+                        }).showToast();
+                        return;
+                    }
+                    
+                    // In a real application, you would submit the form to the server
+                    // For demo purposes, we'll just show a success message
+                    Toastify({
+                        text: `Withdrawal request for ₹₹{amount} has been submitted!`,
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "center",
+                        backgroundColor: "#10b981",
+                    }).showToast();
+                    
+                    // Reset form
+                    this.reset();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

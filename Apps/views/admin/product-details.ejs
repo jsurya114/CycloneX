@@ -45,6 +45,12 @@
             <span class="text">Brands</span>
           </a>
         </li>
+        <li class="menu-item">
+          <a class="menu-link" href="/admin/coupons">
+            <i class="icon material-icons md-card_giftcard"></i>
+            <span class="text">Coupons</span>
+          </a>
+        </li>
         <li class="menu-item has-submenu ">
           <a class="menu-link" href="#">
             <i class="icon material-icons md-store"></i>
@@ -129,8 +135,21 @@
 
               <div class="border-t border-b py-4">
                 <div class="text-2xl font-bold text-gray-900 mb-2">
-                  ₹<%= product.price.toFixed(2) %>
+                  <% if (product.offer > 0) { %>
+                    <span class="line-through text-gray-500 text-xl">₹<%= product.price.toFixed(2) %></span>
+                    <span class="text-blue-600">₹<%= (product.price * (1 - product.offer/100)).toFixed(2) %></span>
+                  <% } else { %>
+                    ₹<%= product.price.toFixed(2) %>
+                  <% } %>
                 </div>
+                <% if (product.offer > 0) { %>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="px-3 py-1 text-sm font-semibold rounded-full 
+                                bg-orange-100 text-orange-800">
+                      <%= product.offer %>% OFF
+                    </span>
+                  </div>
+                <% } %>
                 <div class="flex items-center gap-2">
                   <span class="text-sm font-medium">Stock:</span>
                   <span class="text-sm"><%= product.stock %> items in stock</span>

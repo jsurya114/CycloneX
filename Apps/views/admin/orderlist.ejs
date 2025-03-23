@@ -1,267 +1,519 @@
 <!DOCTYPE HTML>
 <html lang="en">
-
-<%- include('partials/head') %>
-
-<body>
-    <div class="screen-overlay"></div>
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-          <a href="" class="brand-wrap">
-            <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX Dashboard - Orders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#2e1065',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Main Container -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+            </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
           </a>
-          <div>
-            <button class="btn btn-icon btn-aside-minimize">
-              <i class="text-muted material-icons md-menu_open"></i>
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
+            </a>
+            
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Brands</span>
+            </a>
+          </div>
+          
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Users</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-primary-50 text-primary-700 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2"></i>
+              <span>Orders</span>
+            </a>
+          </div>
+        </nav>
+        
+      
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- Left: Hamburger Menu -->
+          <div class="flex items-center">
+            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
+            <div class="hidden md:flex items-center ml-4">
+              <h1 class="text-xl font-semibold text-gray-800">Order Management</h1>
+              <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">Admin</span>
+            </div>
+          </div>
+          
+          <!-- Right: Actions -->
+          <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="hidden md:block relative">
+            
+            
+        
           </div>
         </div>
-        <nav>
-          <ul class="menu-aside">
-            <li class="menu-item">
-              <a class="menu-link" href="/admin/dashboard">
-                <i class="icon material-icons md-home"></i>
-                <span class="text">Dashboard</span>
-              </a>
-            </li>
-            <li class="menu-item has-submenu">
-                <a class="menu-link" href="#">
-                  <i class="icon material-icons md-shopping_bag"></i>
-                  <span class="text">Products</span>
-                  <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-                </a>
-                <ul class="submenu">
-                  <!-- <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li> -->
-                  <li><a href="/admin/addproduct" class="submenu-link">Add Product</a></li>
-                </ul>
-              </li>
-            <li class="menu-item">
-              <a class="menu-link" href="/admin/category">
-                <i class="icon material-icons md-category"></i>
-                <span class="text">Category</span>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a class="menu-link" href="/admin/brands">
-                <i class="icon material-icons md-stars"></i>
-                <span class="text">Brands</span>
-              </a>
-            </li>
-            <li class="menu-item  ">
-              <a class="menu-link" href="/admin/userlist">
-                <i class="icon material-icons md-store"></i>
-                <span class="text">Users</span>
-                <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-              </a>
-           
-            </li>
-            <li class="menu-item  active">
-                <a class="menu-link" href="/admin/orderlist">
-                  <i class="icon material-icons md-shopping_bag"></i>
-                  <span class="text">Orders</span>
-                  <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-                </a>
-                <!-- <ul class="submenu">
-                  <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li>
-                  <li><a href="/admin/orderlist" class="submenu-link">Add Product</a></li>
-                </ul> -->
-              </li>
+      </header>
 
-
-
-
-          </ul>
-        </nav>
-      </aside>
-    <main class="main-wrap">
-        <%- include('partials/header') %>
-        <h2 class="content-title card-title text-4xl mt-3">Orders</h2>
-
-        <section class="content-main">
-          <div class="content-header flex justify-between">
-          
-            <br>
-            <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-4">
+      <!-- Main Content - Scrollable area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div class="mb-4 md:mb-0">
+            <h1 class="text-2xl font-bold text-gray-900">Orders</h1>
+            <p class="text-sm text-gray-600">Manage and track customer orders</p>
+          </div>
+        </div>
+        
+        <!-- Filters Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <!-- Search & Filters -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-wrap flex-1">
               <!-- Search Input -->
-              <input
+              <div class="relative w-full sm:max-w-xs">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input
                   type="text"
                   id="searchInput"
-                  placeholder="Search Products"
-                  class="bg-white px-3 py-2 border rounded-md w-full sm:max-w-xs"
-              />
+                  placeholder="Search Orders"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5"
+                />
+              </div>
               
-              <!-- Search Button -->
-              <button
-                  id="searchBtn"
-                  class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                  Search
-              </button>
-              
-              <!-- Clear Button -->
-              <button
-                  id="clearBtn"
-                  class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              >
-                  Clear
-              </button>
-         
-    
               <!-- Status Filter Dropdown -->
-              <select id="statusFilter" class="bg-white px-3 py-2 border rounded-md">
-                  <option value="">All Status</option>
-                  <option value="active">Active</option>
-                  <option value="deactive">Deactivated</option>
+              <select id="statusFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="deliverd">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="returned">Returned</option>
               </select>
-          
-              
-          
- <!-- Sort Dropdown -->
- <select id="sortBy" class="bg-white px-3 py-2 border rounded-md">
-  <option value="">Sort By</option>
-  <option value="date_asc">old to new </option>
-  <option value="date_desc">new to old</option>
-  <option value="name_asc">Name: A to Z</option>
-  <option value="name_desc">Name: Z to A</option>
-</select>
-          </div>
-               
             </div>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-            <div class="p-6">
-              <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">OrderId</th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <% if (orders.length > 0) { %>
-                      <% orders.forEach((order, index) => { %>
-                        <tr class="hover:bg-gray-50">
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= order._id %></td>
             
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900"><%= order.fullName %></div>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= order.email %></td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$<%= order.totalAmount.toFixed(2) %></td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <% 
-                              let statusClass = "";
-                              let dotColor = "";
-                              
-                              switch(order.status) {
-                                case 'Pending':
-                                  statusClass = "bg-yellow-50 text-yellow-800";
-                                  dotColor = "bg-yellow-500";
-                                  break;
-                                case 'Processing':
-                                  statusClass = "bg-blue-50 text-blue-800";
-                                  dotColor = "bg-blue-500";
-                                  break;
-                                case 'Shipped':
-                                  statusClass = "bg-indigo-50 text-indigo-800";
-                                  dotColor = "bg-indigo-500";
-                                  break;
-                                case 'Completed':
-                                  statusClass = "bg-green-50 text-green-800";
-                                  dotColor = "bg-green-500";
-                                  break;
-                                case 'Cancelled':
-                                  statusClass = "bg-red-50 text-red-800";
-                                  dotColor = "bg-red-500";
-                                  break;
-                                case 'Refunded':
-                                  statusClass = "bg-purple-50 text-purple-800";
-                                  dotColor = "bg-purple-500";
-                                  break;
-                                case 'On Hold':
-                                  statusClass = "bg-orange-50 text-orange-800";
-                                  dotColor = "bg-orange-500";
-                                  break;
-                                case 'Backordered':
-                                  statusClass = "bg-amber-50 text-amber-800";
-                                  dotColor = "bg-amber-500";
-                                  break;
-                                case 'Failed':
-                                  statusClass = "bg-rose-50 text-rose-800";
-                                  dotColor = "bg-rose-500";
-                                  break;
-                                case 'Returned':
-                                  statusClass = "bg-pink-50 text-pink-800";
-                                  dotColor = "bg-pink-500";
-                                  break;
-                                default:
-                                  statusClass = "bg-gray-50 text-gray-800";
-                                  dotColor = "bg-gray-500";
-                              }
-                            %>
-                            <span class="px-3 py-1.5 inline-flex items-center gap-1.5 text-xs leading-5 font-semibold rounded-full <%= statusClass %> ring-1 ring-inset ring-current/10">
-                              <span class="<%= dotColor %> h-1.5 w-1.5 rounded-full"></span>
-                              <%= order.status %>
-                            </span>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= new Date(order.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></td>
-                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="/admin/orderdetailss/<%= order._id %>" class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1.5 rounded text-sm font-medium mr-2">Detail</a>
-                            <div class="relative inline-block text-left dropdown">
-                              <!-- <button type="button" class="inline-flex items-center justify-center w-8 h-8 text-gray-500 bg-gray-100 rounded-full hover:bg-gray-200 focus:outline-none" id="dropdown-button-<%= order._id %>" aria-expanded="false" aria-haspopup="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                  <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                </svg>
-                              </button> -->
-                              <div class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none dropdown-menu-<%= order._id %>" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button-<%= order._id %>">
-                                <div class="py-1" role="none">
-                                  <a href="/admin/order-detail/<%= order._id %>" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">View detail</a>
-                                  <a href="/admin/edit-order/<%= order._id %>" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100" role="menuitem">Edit info</a>
-                                  <a href="#" class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-100 delete-order" data-id="<%= order._id %>" role="menuitem">Delete</a>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      <% }) %>
-                    <% } else { %>
-                      <tr>
-                        <td colspan="7" class="px-6 py-10 text-center text-sm text-gray-500">No orders found</td>
-                      </tr>
-                    <% } %>
-                  </tbody>
-                </table>
+            <!-- Sort & Buttons -->
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Sort Dropdown -->
+              <select id="sortBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5">
+                <option value="">Sort By</option>
+                <option value="date_asc">Oldest to Newest</option>
+                <option value="date_desc">Newest to Oldest</option>
+                <option value="total_asc">Total: High to Low</option>
+                <option value="total_desc">Total: Low to High</option>
+              </select>
+              
+              <!-- Action Buttons -->
+              <div class="flex space-x-2">
+                <button
+                  id="searchBtn"
+                  class="bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <i class="fas fa-search mr-2"></i> Search
+                </button>
+                
+                <button
+                  id="clearBtn"
+                  class="bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                >
+                  <i class="fas fa-times mr-2"></i> Clear
+                </button>
               </div>
             </div>
-</div>
-               <!-- card end// -->
-            <div class="pagination-area mt-15 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
-            </div>
-        </section> <!-- content-main end// -->
-        <%- include('partials/footer') %>
-    </main>
-  <!-- Include SweetAlert2 script from CDN -->
+          </div>
+        </div>
+        
+        <!-- Orders Table Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <!-- Table Header -->
+          <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-900">Order List</h3>
+            <span class="text-sm text-gray-500">
+              <% if(orders && orders.length > 0){ %>
+                Showing <%= orders.length %> orders
+              <% } else { %>
+                No orders found
+              <% } %>
+            </span>
+          </div>
+          
+          <!-- Table Content -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <% if (orders && orders.length > 0) { %>
+                  <% orders.forEach((order, index) => { %>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= order._id %></td>
+        
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900"><%= order.fullName %></div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= order.email %></td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$<%= order.totalAmount.toFixed(2) %></td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <% 
+                          let statusClass = "";
+                          let dotColor = "";
+                          
+                          switch(order.status) {
+                            case 'Pending':
+                              statusClass = "bg-yellow-50 text-yellow-800";
+                              dotColor = "bg-yellow-500";
+                              break;
+                            case 'Processing':
+                              statusClass = "bg-blue-50 text-blue-800";
+                              dotColor = "bg-blue-500";
+                              break;
+                            case 'Shipped':
+                              statusClass = "bg-indigo-50 text-indigo-800";
+                              dotColor = "bg-indigo-500";
+                              break;
+                            case 'Delivered':
+                              statusClass = "bg-green-50 text-green-800";
+                              dotColor = "bg-green-500";
+                              break;
+                            case 'Cancelled':
+                              statusClass = "bg-red-50 text-red-800";
+                              dotColor = "bg-red-500";
+                              break;
+                            case 'Refunded':
+                              statusClass = "bg-purple-50 text-purple-800";
+                              dotColor = "bg-purple-500";
+                              break;
+                            case 'On Hold':
+                              statusClass = "bg-orange-50 text-orange-800";
+                              dotColor = "bg-orange-500";
+                              break;
+                            case 'Backordered':
+                              statusClass = "bg-amber-50 text-amber-800";
+                              dotColor = "bg-amber-500";
+                              break;
+                            case 'Failed':
+                              statusClass = "bg-rose-50 text-rose-800";
+                              dotColor = "bg-rose-500";
+                              break;
+                            case 'Returned':
+                              statusClass = "bg-pink-50 text-pink-800";
+                              dotColor = "bg-pink-500";
+                              break;
+                            default:
+                              statusClass = "bg-gray-50 text-gray-800";
+                              dotColor = "bg-gray-500";
+                          }
+                        %>
+                        <span class="px-3 py-1.5 inline-flex items-center gap-1.5 text-xs leading-5 font-semibold rounded-full <%= statusClass %> ring-1 ring-inset ring-current/10">
+                          <span class="<%= dotColor %> h-1.5 w-1.5 rounded-full"></span>
+                          <%= order.status %>
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= new Date(order.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="/admin/orderdetailss/<%= order._id %>" class="inline-flex items-center px-3 py-1.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                          <span>Detail</span>
+                        </a>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="7" class="px-6 py-10 text-center text-gray-500">
+                      <div class="flex flex-col items-center">
+                        <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-lg font-medium text-gray-700">No orders found</p>
+                        <p class="text-sm mt-1 max-w-md mx-auto">Try adjusting your search or filter to find what you're looking for.</p>
+                      </div>
+                    </td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="px-6 py-4 border-t border-gray-200">
+            <nav class="flex justify-between items-center">
+              <div class="text-sm text-gray-500">
+                Showing page <%= currentPage %> of <%= totalPages %>
+              </div>
+              <ul class="flex space-x-1">
+                <% if (currentPage > 1) { %>
+                  <li>
+                    <a href="?page=<%= currentPage - 1 %>" class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                      Previous
+                    </a>
+                  </li>
+                <% } %>
+                
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                  <li>
+                    <a href="?page=<%= i %>" class="px-3 py-2 <%= i === currentPage ? 'bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50' %> border rounded-md text-sm font-medium">
+                      <%= i %>
+                    </a>
+                  </li>
+                <% } %>
+        
+                <% if (currentPage < totalPages) { %>
+                  <li>
+                    <a href="?page=<%= currentPage + 1 %>" class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                      Next
+                    </a>
+                  </li>
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-500">© 2023 CycloneX. All rights reserved.</p>
+          <div class="flex space-x-4 mt-2 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <%- include('partials/scripts') %>
- 
+  
+  <!-- Scripts -->
+  <script>
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', openSidebar);
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+      }
+      
+      // Close sidebar on window resize if screen becomes large
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
+    });
+    
+    // Filter functionality
+    document.addEventListener('DOMContentLoaded', function () {
+      const searchInput = document.getElementById("searchInput");
+      const searchBtn = document.getElementById("searchBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const statusFilter = document.getElementById("statusFilter");
+      const sortSelect = document.getElementById("sortBy");
 
+      // Apply Filters on Search Button Click
+      searchBtn.addEventListener("click", applyFilters);
+      clearBtn.addEventListener("click", clearFilters);
+      
+      [statusFilter, sortSelect].forEach(element => {
+          element.addEventListener('change', applyFilters);
+      });
 
+      searchInput.addEventListener('keypress', function (e) {
+          if (e.key === 'Enter') applyFilters();
+      });
 
+      function applyFilters() {
+          const queryParams = new URLSearchParams();
+          const search = searchInput.value.trim();
+          const status = statusFilter.value;
+          const sort = sortSelect.value;
+
+          if (search) queryParams.append("search", search);
+          if (status) queryParams.append("status", status);
+          if (sort) queryParams.append("sort", sort);
+
+          window.location.href = `/admin/orderlist?${queryParams.toString()}`;
+      }
+
+      function clearFilters() {
+          searchInput.value = "";
+          statusFilter.value = "";
+          sortSelect.value = "";
+          applyFilters();
+      }
+
+      function restoreFiltersFromURL() {
+          const params = new URLSearchParams(window.location.search);
+          searchInput.value = params.get("search") || "";
+          statusFilter.value = params.get("status") || "";
+          sortSelect.value = params.get("sort") || "";
+      }
+
+      restoreFiltersFromURL();
+    });
+  </script>
 </body>
-
 </html>

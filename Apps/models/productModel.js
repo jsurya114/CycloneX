@@ -11,7 +11,8 @@ const ProductSchema = new mongoose.Schema({
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
   isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
+  offer: { type: Number, default: 0 }, 
   updatedAt: { type: Date },
-});
+},{timestamps:true});
 
 module.exports = mongoose.model('Product', ProductSchema);

@@ -27,8 +27,8 @@ forgotpassword: async (req, res,next) => {
         // Find user in the database
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ success: false, message: 'Email not found' });
-        }
+          return res.status(404).json({ success: false, message: 'Email not found' });
+      }
 
         // Generate OTP
         const otp = generateOTP(); // Assume this function generates a 6-digit OTP
@@ -47,14 +47,14 @@ forgotpassword: async (req, res,next) => {
         const token = jwt.sign(
             { id: user._id, email: user.email, resetPassword:true }, 
             process.env.JWT_SECRET, 
-            { expiresIn: '15m' } // Shorter expiry since it's for password reset
+            { expiresIn: '1h' } // Shorter expiry since it's for password reset
         );
 
         // Set JWT in cookies
         res.cookie('token', token, { 
             httpOnly: true, 
             secure: process.env.NODE_ENV === 'production', 
-            maxAge: 15 * 60 * 1000 // 15 minutes
+            maxAge: 1 * 60 * 24 * 1000 //  1h
         });
 
         return res.status(200).json({ success: true, message: 'OTP sent to email for password reset.' });
@@ -64,37 +64,34 @@ forgotpassword: async (req, res,next) => {
         next(error)
     }
 },
-verifyAndUpdatePassword:async (req, res,next) => {
-    console.log('invkd vrf');
-    
-    try {
-        const token = req.cookies.token;
-        if (!token) {
-            return res.status(401).json({ success: false, message: 'Unauthorized: No token provided' });
-        }
+verifyAndUpdatePassword: async (req, res, next) => {
+  console.log('invkd vrf');
+  
+  try {
+      const token = req.cookies.token;
+      if (!token) {
+          return res.status(401).json({ success: false, message: 'Unauthorized: No token provided' });
+      }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const { otp } = req.body;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const { otp } = req.body;
 
-        // Fetch OTP from the database instead of JWT payload (Assuming OTP is stored in DB)
-        const user = await User.findById(decoded.id);
-        if (!user || user.otp !== otp) {
-            return res.status(400).json({ success: false, message: 'Invalid OTP, please check your OTP' });
-        }
+      // Fetch OTP from the database
+      const user = await User.findById(decoded.id);
+      if (!user || user.otp !== otp) {
+          return res.status(400).json({ success: false, message: 'Invalid OTP, please check your OTP' });
+      }
 
-        // Optional: Clear OTP after successful verification
-        await User.findByIdAndUpdate(user._id, { otp: null });
+      // Clear OTP after successful verification
+      await User.findByIdAndUpdate(user._id, { otp: null });
 
 
-        res.clearCookie('token')
-        return res.status(200).json({ success: true, message: 'OTP verification successful'});
-         
-     
-
-    } catch (error) {
-        console.error('Error during OTP verification:', error);
-        next(error)
-    }
+      
+      return res.status(200).json({ success: true, message: 'OTP verification successful'});
+  } catch (error) {
+      console.error('Error during OTP verification:', error);
+      next(error)
+  }
 },
 resendOTP: async (req, res,next) => {
     try {

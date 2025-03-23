@@ -5,10 +5,13 @@ const cartSchema = new mongoose.Schema({
     items: [
         {
             product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-            // productName: { type: String }, // Add this line
-            quantity: { type: Number, required: true, min: 1 }
+            quantity: { type: Number, required: true, min: 1 },
+            salePrice: { type: Number, default: 0 }, // Store sale price
+            subtotal: { type: Number, default: 0 }   // Store subtotal for each item
         }
-    ]
+    ],
+    totalSubtotal: { type: Number, default: 0 } // Store total cart subtotal
 }, { timestamps: true });
 
 module.exports = mongoose.model('Cart', cartSchema);
+

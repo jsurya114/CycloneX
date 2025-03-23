@@ -4,7 +4,7 @@
             <!-- Previous Button -->
             <% if (currentPage > 1) { %>
                 <li class="page-item">
-                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm" href="?page=<%= prevPage %>&limit=3">
+                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm" href="?page=<%= prevPage %>&limit=4">
                         &laquo;
                     </a>
                 </li>
@@ -13,7 +13,7 @@
             <!-- Page Numbers -->
             <% for (let i = 1; i <= totalPages; i++) { %>
                 <li class="page-item">
-                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm <%= i === currentPage ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600 hover:border-blue-600' : '' %>" href="?page=<%= i %>&limit=3">
+                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm <%= i === currentPage ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600 hover:border-blue-600' : '' %>" href="?page=<%= i %>&limit=4">
                         <%= i %>
                     </a>
                 </li>
@@ -22,7 +22,7 @@
             <!-- Next Button -->
             <% if (currentPage < totalPages) { %>
                 <li class="page-item">
-                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm" href="?page=<%= nextPage %>&limit=3">
+                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm" href="?page=<%= nextPage %>&limit=4">
                         &raquo;
                     </a>
                 </li>

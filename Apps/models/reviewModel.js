@@ -6,5 +6,5 @@ const ReviewSchema = new mongoose.Schema({
     description: { type: String },
     likes: { type: Number, default: 0 },
     dislikes: { type: Number, default: 0 }
-  });
-  module.exports=ReviewSchema
+  }, { timestamps: true });
+  module.exports = mongoose.model('Review', ReviewSchema)

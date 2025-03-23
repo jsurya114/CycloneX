@@ -225,7 +225,7 @@
                     </span>
                     <p class="text-sm">
                         <span class="font-semibold">Special:</span> 
-                        Free delivery on orders above ₹1000
+                        Free delivery on orders above ₹20000
                     </p>
                 </li>
             </ul>
@@ -257,9 +257,10 @@
             <span class="font-medium">Add to Cart</span>         
         </button>         
     
-        <button class="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
+       <a href="/checkout/<%= product._id %>"> <button class="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
             Buy Now
-        </button>     
+        </button>   
+    </a>  
     </div>
     
 </div>
@@ -328,50 +329,65 @@
             </div>
             
             <!-- Reviews Tab (hidden by default) -->
-            <div id="reviews" class="tab-content hidden">
-                <div class="flex items-center mb-4">
-                    <div class="flex items-center mr-4">
-                        <span class="text-3xl font-bold text-gray-900 mr-2">4.5</span>
-                        <div class="flex text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <span class="text-sm text-gray-500">Based on 1,234 reviews</span>
-                </div>
-                
-                <!-- Review Item -->
-                <div class="border-t border-gray-100 py-4">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 mr-4">
-                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">JD</div>
-                        </div>
-                        <div>
-                            <div class="flex items-center mb-1">
-                                <h4 class="font-medium text-gray-900 mr-2">John Doe</h4>
-                                <span class="text-xs text-gray-500">October 10, 2023</span>
-                            </div>
-                            <div class="flex text-yellow-400 text-sm mb-2">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </div>
-                            <p class="text-sm text-gray-700">Great product! Works perfectly and looks amazing. The quality is excellent and it arrived earlier than expected.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- More reviews would go here -->
-                
-                <button class="mt-4 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200">
-                    Load more reviews
-                </button>
+         <!-- Reviews Tab (hidden by default) -->
+<div id="reviews" class="tab-content hidden">
+    <div class="flex items-center mb-4">
+        <div class="flex items-center mr-4">
+            <span class="text-3xl font-bold text-gray-900 mr-2">4.5</span>
+            <div class="flex text-yellow-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
             </div>
+        </div>
+        <span class="text-sm text-gray-500">Based on <%= review.length %> reviews</span>
+    </div>
+    
+    <% if(review && review.length > 0) { %>
+        <% review.forEach(reviewItem => { %>
+            <!-- Review Item -->
+            <div class="border-t border-gray-100 py-4">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                            <%= reviewItem.user && reviewItem.user.name ? reviewItem.user.name.charAt(0).toUpperCase() : 'U' %>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center mb-1">
+                            <h4 class="font-medium text-gray-900 mr-2"><%= reviewItem.user ? reviewItem.user.name : 'Anonymous' %></h4>
+                            
+
+                            <span class="text-xs text-gray-500"><%= new Date(reviewItem.createdAt).toLocaleDateString() %></span>
+                        </div>
+                        <div class="flex text-yellow-400 text-sm mb-2">
+                            <% for(let i = 1; i <= 5; i++) { %>
+                                <% if(i <= reviewItem.rating) { %>
+                                    <i class="fas fa-star"></i>
+                                <% } else { %>
+                                    <i class="far fa-star"></i>
+                                <% } %>
+                            <% } %>
+                        </div>
+                        <p class="text-sm text-gray-700"><%= reviewItem.description %></p>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    <% } else { %>
+        <div class="text-center py-8">
+            <p class="text-gray-500">No reviews yet. Be the first to review this product!</p>
+        </div>
+    <% } %>
+    
+    <% if(review && review.length > 3) { %>
+        <button class="mt-4 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200">
+            Load more reviews
+        </button>
+    <% } %>
+</div>
             
             <!-- Shipping Tab (hidden by default) -->
             <div id="shipping" class="tab-content hidden">
@@ -536,7 +552,7 @@
             
             if (isInWishlist) {
                 // Remove from wishlist
-                fetch(`/wishlist/${productId}`, {
+                fetch(`/wishlist/₹{productId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

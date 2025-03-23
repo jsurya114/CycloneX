@@ -139,6 +139,27 @@
             ><%= category.description %></textarea>
           </div>
 
+          <!-- Offer Percentage Field -->
+          <div>
+            <label for="offer" class="block text-sm font-medium text-gray-700 mb-1">Offer Percentage (%)</label>
+            <div class="relative">
+              <input 
+              type="number" 
+              name="offer" 
+              id="offer"
+              min="0" 
+              max="100" 
+              step="0.01"
+              value="<%= category.offer || '' %>" 
+              placeholder="Enter discount percentage (e.g. 10 for 10%)"
+            
+                class="w-full pl-3 pr-8 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
+              >
+              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <span class="text-gray-500">%</span>
+              </div>
+            </div>
+          </div>
        
           <!-- Action Buttons -->
           <div class="flex gap-3 pt-3">
@@ -168,6 +189,15 @@
     lucide.createIcons();
   </script>
   <script>
+   document.getElementById("offer").addEventListener("input", function(e) {
+    const value = parseFloat(e.target.value);
+    if (isNaN(value) || value < 0) {
+        e.target.value = 0;
+    } else if (value > 100) {
+        e.target.value = 100;
+    }
+});
+
     document.getElementById("updateCategoryBtn").addEventListener("click", async function () {
       Swal.fire({
         title: "Confirm Update",
@@ -184,11 +214,19 @@
       }).then(async (result) => {
         if (result.isConfirmed) {
           const form = document.getElementById("editCategoryForm");
-          const formData = new FormData(form);
+          const formData = {
+  name: document.getElementById("name").value,
+  slug: document.getElementById("slug").value,
+  description: document.getElementById("description").value,
+  offer: parseFloat(document.getElementById("offer").value) // Parse as float
+}
+
+console.log('dasd',formData)
           try {
             const response = await fetch(`/admin/category/update/<%= category._id %>`, {
               method: "PUT",
-              body: formData
+              headers:{'Content-Type':'application/json'},
+              body: JSON.stringify(formData)
             });
             const data = await response.json();
             if (response.ok && data.success) {

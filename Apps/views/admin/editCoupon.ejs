@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Coupon</title>
+  <!-- Using the Tailwind CSS CDN link instead of the script -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-50">
+  <div class="max-w-md mx-auto my-8 bg-white p-6 rounded-lg shadow-md">
+    <div class="flex items-center mb-6">
+      <a href="#" class="text-blue-600 hover:text-blue-800 mr-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+      </a>
+      <h1 class="text-xl font-bold text-gray-800">Edit Coupon</h1>
+    </div>
+    
+    <form id="editCouponForm" class="space-y-4 "onsubmit='return false'>
+      <div>
+        <label for="couponCode" class="block text-sm font-medium text-gray-700">Coupon Code</label>
+        <input
+          type="text"
+          name="couponCode"
+         value="<%=coupon.couponCode %>"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          id="couponCode"
+        />
+        <p id="couponCode_error" class="text-red-500 text-sm hidden"></p>
+      </div>
+      
+      <div>
+        <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
+        <input
+        type="date"
+        name="startDate"
+        value="<%= new Date(coupon.startDate).toISOString().split('T')[0] %>"
+        class="..."
+        id="startDate"
+      />
+        <p id="startDate_error" class="text-red-500 text-sm hidden"></p>
+      </div>
+      
+      <div>
+        <label for="expireDate" class="block text-sm font-medium text-gray-700">Expiry Date</label>
+        <input
+        type="date"
+        name="expireDate"
+        value="<%= new Date(coupon.expireDate).toISOString().split('T')[0] %>"
+        class="..."
+        id="expireDate"
+      />
+        <p id="expireDate_error" class="text-red-500 text-sm hidden"></p>
+      </div>
+      
+      <div>
+        <label for="offerPrice" class="block text-sm font-medium text-gray-700">Offer Price</label>
+        <input
+          type="number"
+          name="offerPrice"
+          value="<%=coupon.offerPrice %>"
+
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          id="offerPrice"
+        />
+        <p id="offerPrice_error" class="text-red-500 text-sm hidden"></p>
+      </div>
+      
+      <div>
+        <label for="minAmount" class="block text-sm font-medium text-gray-700">Minimum Amount</label>
+        <input
+          type="number"
+          name="minAmount"
+          value="<%=coupon.minAmount %>"
+
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          id="minAmount"
+        />
+        <p id="minAmount_error" class="text-red-500 text-sm hidden"></p>
+      </div>
+      
+      <div class="flex space-x-4">
+        <button
+          type="button"
+          id="updateCouponBtn"
+          class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Update Coupon
+        </button>
+        <button
+          type="button"
+          id="cancelBtn"
+          class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script>
+  document.getElementById('updateCouponBtn').addEventListener('click',async function () {
+    Swal.fire({
+        title: "Confirm Update",
+        text: "Are you sure you want to update this coupon ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, update it!",
+        cancelButtonText: "Cancel",
+        customClass: {
+          popup: 'shadow-xl',
+          confirmButton: 'bg-blue-600 text-white px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 text-sm',
+          cancelButton: 'bg-gray-100 text-gray-700 px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-gray-200 text-sm'
+        }
+    }).then(async (result)=>{
+        if(result.isConfirmed){
+            const form = document.getElementById("editCouponForm")
+            const formData = new FormData(form)
+            const  formDataObject = {};
+formData.forEach((value, key) => {
+    formDataObject[key] = value;
+})
+            try {
+                const response = await  fetch(`/admin/editcoupon/<%=coupon._id%>`,{
+                    method:'PUT',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify(formDataObject),
+                })
+                const data = await response.json()
+                if(response.ok&&data.success){
+                    Swal.fire({
+                title: "Success!",
+                text: data.message,
+                icon: "success",
+                customClass: {
+                  popup: 'shadow-xl',
+                  confirmButton: 'bg-blue-600 text-white px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 text-sm'
+                }
+            }).then(()=>{
+                window.location.href='/admin/coupons'
+            })
+                }
+                else{
+                    Swal.fire({
+                title: "Error!",
+                text: data.message || "Failed to update coupon",
+                icon: "error",
+                customClass: {
+                  popup: 'shadow-xl',
+                  confirmButton: 'bg-blue-600 text-white px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 text-sm'
+                }
+              })
+                }
+            } catch (error) {
+                console.error("Error updating coupon:", error);
+            Swal.fire({
+              title: "Error!",
+              text: "An error occurred while updating the coupon.",
+              icon: "error",
+              customClass: {
+                popup: 'shadow-xl',
+                confirmButton: 'bg-blue-600 text-white px-4 py-1.5 rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 text-sm'
+              }
+            });
+            }
+        }
+    })
+  })
+  document.getElementById('cancelBtn').addEventListener('click', function() {
+      window.location.href = '/admin/coupons';
+    });
+  </script>
+</body>
+</html>

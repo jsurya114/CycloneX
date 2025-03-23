@@ -17,6 +17,10 @@ const checkoutController = require('../../controllers/user/checkoutController');
 const { verify } = require('crypto');
 const addressController = require('../../controllers/user/addressController');
 const orderController = require('../../controllers/user/orderController');
+const walletController = require('../../controllers/user/walletController');
+const reviewController = require('../../controllers/user/reviewController');
+const settingController = require('../../controllers/user/settingsController');
+const RazorpayController = require('../../controllers/user/razorpayController');
 
 
 
@@ -67,9 +71,7 @@ router.delete('/addaddress/:userId/:addressId',addressController.deleteAddress)
 
 
 
-router.get('/order',verifyUser,orderController.getorder)
 
-router.get('/orderdetails/:orderId',orderController.order)
 
 router.get('/addtocart',verifyUser,cartController.showCartPage)
 router.post('/addtocart',cartController.addToCart)
@@ -81,15 +83,37 @@ router.post('/wishlist',cartController.addToWishlist)
 router.delete('/wishlist/:productId',cartController.removeFromWishlist)
 
 
+router.get('/settings/:id', verifyUser, settingController.userSettings);
+router.post('/updateEmail', settingController.sendOtps); // Sends OTP
+router.post('/verifyEmailOtp', settingController.verifyAndUpdate)
+
+router.post('/sendPasswordOtp', settingController.passwordSentOtp);
+router.post('/verifyPasswordOtp', settingController.passwordOtpverify);
+
 router.get('/checkout',verifyUser,checkoutController.showcheckOut)
 router.put('/checkout/:productId',cartController.updateQuantity)
 router.delete('/checkout/:productId',cartController.removeFromCart)
+router.get('/checkout/:productId', verifyUser, checkoutController.showcheckOut);
+router.post('/razorPay/createOrder',RazorpayController.createRazorpay)
+router.post('/razorPay/verifyPayment',RazorpayController.verifyRazorPayment)
+router.get('/paymentfailure',RazorpayController.failure)
+
+
+
+
+router.get('/review/:id/:orderId',verifyUser,reviewController.loadReview)
+router.post('/review/:id/:orderId',reviewController.submitReview)
+
+router.get('/order',verifyUser,orderController.getorder)
+
+router.get('/orderdetails/:orderId',orderController.order)
 
 router.post('/orders/cod',orderController.placeOrder)
 router.get('/confirmation',verifyUser,orderController.confirmation)
 router.put('/order/cancel/:orderId',orderController.cancelOrder)
 router.put('/order/return/:orderId',orderController.returnOrder)
-
-
+router.get('/wallet',verifyUser,walletController.getWallet)
+router.post('/order/return/:orderId',walletController.returnWallet)
+router.post('/applycoupon',checkoutController.applyCoupon)
 
 module.exports = router;

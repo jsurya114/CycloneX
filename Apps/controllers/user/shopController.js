@@ -1,6 +1,7 @@
 const Category = require('../../models/categoryModel');
 const Brand = require('../../models/brandModel');
 const Product = require('../../models/productModel');
+const Cart = require('../../models/cartModel')
 const jwt = require('jsonwebtoken')
 const User = require('../../models/userModel')
 const shopController = {
@@ -12,7 +13,7 @@ const shopController = {
                          const userId= decoded.id;
                         //  console.log("user",userId);
                          const user=await User.findById(userId);
-                         
+                         let cartCount =await Cart.countDocuments({user:userId})
             const { search, categoryFilter, brandsFilter, sortBy, page, limit, maxPrice } = req.query;
             let filter = { isDeleted: false };
     
@@ -73,20 +74,42 @@ const shopController = {
     
             // Pagination logic
             let currentPage = parseInt(page) || 1;
-            let itemsPerPage = parseInt(limit) || 3; // Changed to 9 for a 3x3 grid
+            let itemsPerPage = parseInt(limit) || 4; // Changed to 9 for a 3x3 grid
             let skip = (currentPage - 1) * itemsPerPage;
     
             // Count total products
             let totalProducts = await Product.countDocuments(filter);
     
+
+                        let cart = await Cart.findOne({ user: user._id }).populate('items.product');
             // Fetch paginated products
-            const product = await Product.find(filter,{})
+            const product = await Product.find(filter)
                 .sort(sortOptions)
                 .skip(skip)
                 .limit(itemsPerPage)
                 .populate('brands')
                 .populate('category');
     
+
+//compute offer
+const productWithoffer = product.map(p=>{
+    const productOffer = p.offer||0
+  const categoryOffer = (p.category && p.category.offer) ? p.category.offer : 0;
+    const maxOffer = Math.max(productOffer,categoryOffer)
+
+      // Calculate sale price if there's any discount; otherwise, remain the same as original price
+
+    const salePrice = maxOffer>0?p.price*(1-maxOffer/100):p.price
+
+
+
+     // Return a new object with additional properties for view rendering
+    return {...p.toObject(),maxOffer,salePrice}
+})
+
+
+
+
             // Calculate total pages
             let totalPages = Math.ceil(totalProducts / itemsPerPage);
     
@@ -111,8 +134,10 @@ const shopController = {
             }
     
             res.render('shoplist', {
+                cart,
+                cartCount,
                 user,
-                product,
+                product:productWithoffer,
                 categories,
                 brands,
                 breadcrumbs,

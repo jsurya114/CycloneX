@@ -159,7 +159,9 @@
   <%- include('partials/scripts') %>
   <!-- Initialize Lucide Icons -->
   <script>
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
   </script>
   <script>
     document.getElementById("updateBrandBtn").addEventListener("click", async function () {

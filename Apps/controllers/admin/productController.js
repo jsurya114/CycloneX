@@ -36,7 +36,7 @@ try {
     console.log('invoked add prod 1');
     try {
       let errors = {};
-      const { productName, description, price, brands, category, stock } = req.body;
+      const { productName, description, price, brands, category, stock,offer } = req.body;
       
       // Validate fields
       if (!productName) {
@@ -64,6 +64,9 @@ try {
       if (!brands) {
         errors.brands = "Brand is required.";
       }
+      if (isNaN(offer) || offer < 0 || offer > 100) {
+        return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 100." });
+    }
       
       if (!req.files || !req.files.mainImage || req.files.mainImage.length === 0) {
         errors.mainImage = "Main image is required.";
@@ -141,7 +144,8 @@ try {
         images: imagePaths,
         brands,
         category,
-        stock
+        stock,
+        offer
       });
       await newProduct.save();
       

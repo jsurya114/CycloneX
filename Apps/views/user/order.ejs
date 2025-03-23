@@ -236,6 +236,11 @@
     /* Product image hover effect */
     .product-image {
         transition: all 0.3s ease;
+        image-rendering: -webkit-optimize-contrast; /* Improve image clarity */
+        image-rendering: crisp-edges; /* Improve image clarity */
+        backface-visibility: hidden; /* Fix for blurry images during transitions */
+        transform: translateZ(0); /* Fix for blurry images */
+        will-change: transform; /* Optimize for animations */
     }
     
     .product-image:hover {
@@ -316,391 +321,712 @@
         50% { opacity: 1; }
         100% { opacity: 0; }
     }
+
+    /* Enhanced Order Status Animation */
+    .order-status-circle {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+        position: relative;
+    }
+
+    .order-status-circle::after {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        right: -4px;
+        bottom: -4px;
+        border-radius: 50%;
+        border: 2px solid currentColor;
+        opacity: 0;
+        animation: status-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes status-ping {
+        0% {
+            transform: scale(0.8);
+            opacity: 0.8;
+        }
+        70%, 100% {
+            transform: scale(1.7);
+            opacity: 0;
+        }
+    }
+
+    /* Order Status Progress Animation */
+    .status-progress {
+        position: relative;
+        height: 3px;
+        background: #e2e8f0;
+        border-radius: 3px;
+        overflow: hidden;
+        margin: 12px 0;
+    }
+
+    .status-progress-bar {
+        position: absolute;
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+        transition: width 1s ease;
+    }
+
+    .status-progress-bar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    /* Status Step Animation */
+    .status-step {
+        position: relative;
+        z-index: 1;
+    }
+
+    .status-step.active .status-step-icon {
+        transform: scale(1.2);
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.2);
+    }
+
+    .status-step-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    /* Enhanced product image container */
+    .product-image-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transform: translateZ(0); /* Fix for blurry images */
+    }
+
+    .product-image-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.03);
+        z-index: 1;
+    }
+
+    /* Glass morphism effect for cards */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    /* NEW: Enhanced Order Status Cycle Animation */
+    .order-status-cycle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        margin: 2rem 0;
+        padding: 0 1rem;
+    }
+
+    .cycle-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .cycle-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #94a3b8;
+        font-size: 16px;
+        position: relative;
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .cycle-label {
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #64748b;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .cycle-line {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #e2e8f0;
+        z-index: 1;
+    }
+
+    .cycle-progress {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #0ea5e9, #3b82f6);
+        z-index: 1;
+        transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Status states */
+    .cycle-step.completed .cycle-icon {
+        background: #0ea5e9;
+        border-color: #0ea5e9;
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .cycle-step.completed .cycle-label {
+        color: #0ea5e9;
+        font-weight: 600;
+    }
+
+    .cycle-step.active .cycle-icon {
+        background: white;
+        border-color: #0ea5e9;
+        color: #0ea5e9;
+        transform: scale(1.2);
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.2);
+        animation: pulse-border 2s infinite;
+    }
+
+    .cycle-step.active .cycle-label {
+        color: #0ea5e9;
+        font-weight: 600;
+    }
+
+    .cycle-step.cancelled .cycle-icon {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: white;
+    }
+
+    .cycle-step.cancelled .cycle-label {
+        color: #ef4444;
+    }
+
+    .cycle-step.returned .cycle-icon {
+        background: #8b5cf6;
+        border-color: #8b5cf6;
+        color: white;
+    }
+
+    .cycle-step.returned .cycle-label {
+        color: #8b5cf6;
+    }
+
+    @keyframes pulse-border {
+        0% {
+            box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(14, 165, 233, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+        }
+    }
+
+    /* NEW: Enhanced Image Clarity */
+    .product-image-enhanced {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        will-change: transform;
+        filter: contrast(1.05);
+        transition: all 0.3s ease;
+    }
+
+    .product-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .product-image-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0) 80%,
+            rgba(255,255,255,0.1) 100%
+        );
+        pointer-events: none;
+    }
+
+    .product-image-wrapper:hover .product-image-enhanced {
+        transform: scale(1.08);
+    }
+
+    /* NEW: Status Change Animation */
+    @keyframes status-change {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    .status-change-animation {
+        animation: status-change 0.5s ease;
+    }
 </style>
 </head>
 <body class="bg-slate-50 font-sans">
-    <%-include('partials/header') %>
+   <%-include('partials/header')  %>
     <div class="container mx-auto p-4 max-w-7xl">
-        <!-- Page header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-display font-bold text-slate-800">Order Details</h1>
-            <p class="text-slate-500">View and track your order information</p>
+        <!-- Page header with animated gradient background -->
+        <div class="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-2xl relative overflow-hidden">
+            <div class="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
+            <div class="relative z-10">
+                <h1 class="text-3xl font-display font-bold text-slate-800 flex items-center">
+                    <i class="fas fa-shopping-bag text-blue-500 mr-3"></i>
+                    Order Details
+                </h1>
+                <p class="text-slate-600 mt-2">View and track your order information</p>
+            </div>
+            <!-- Decorative elements -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-200 rounded-full opacity-20 -mr-10 -mt-10"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-indigo-200 rounded-full opacity-20 -ml-10 -mb-10"></div>
         </div>
         
         <!-- General overview -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-             <!-- Left sidebar -->
-    <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm">
-        <!-- User profile -->
-        <div class="flex items-center justify-between mb-8">
-            <div class="flex items-center space-x-4">
-                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
-                    <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
-                </div>
-                <div>
-                    <p class="font-semibold text-lg text-gray-800"><%= user.fullName || 'Guest User' %></p>
-                    <p class="text-sm text-gray-500"><%= user.email || 'No email' %></p>
-                </div>
-            </div>
-            <button class="text-gray-400 hover:text-gray-600 transition-colors">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
-        </div>
-        
-        <!-- Navigation tabs -->
-        <div class="flex justify-between mb-8">
-            <div class="group cursor-pointer">
-                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                    <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
-                </div>
-                <span class="text-xs font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">Profile</span>
-            </div>
-            <div class="group cursor-pointer">
-                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                    <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
-                </div>
-                <span class="text-xs font-medium text-gray-600 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
-            </div>
-            <div class="group cursor-pointer">
-                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                    <i class="fas fa-wallet text-green-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
-                </div>
-                <span class="text-xs font-medium text-gray-600 group-hover:text-green-500 transition-colors duration-300">Wallet</span>
-            </div>
-        </div>
-        
-        <!-- Menu items -->
-        <div class="space-y-2">
-            <a href="/order" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
-                <i class="fas fa-shopping-bag mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">My orders</span>
-            </a>
-            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
-                <i class="fas fa-star mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Reviews</span>
-            </a>
-            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
-                <i class="fas fa-map-marker-alt mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Delivery addresses</span>
-            </a>
-            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
-                <i class="fas fa-eye mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Recently viewed</span>
-            </a>
-            <a href="/wishlist" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
-                <i class="fas fa-heart mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Favourite items</span>
-            </a>
-            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group mt-4">
-                <i class="fas fa-cog mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Settings</span>
-            </a>
-            <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 transition-colors duration-300 group">
-                <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
-                <span class="font-medium text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
-            </a>
-        </div>
-    </div>
-            
-    <!-- Enhanced Order List Section -->
-    <div class="col-span-3">
-        <div class="bg-white rounded-2xl shadow-sm p-8 mb-6">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800 flex items-center">
-                        <i class="fas fa-shopping-bag text-blue-500 mr-3"></i>My Orders
-                    </h1>
-                    <p class="text-gray-600 mt-1">Track and manage your purchase history</p>
-                </div>
-                
-                <% if (orders.length > 0) { %>
-                <div class="flex space-x-2">
-                    <div class="relative">
-                        <input type="text" placeholder="Search orders..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm w-full">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+             <!-- Left sidebar with enhanced styling -->
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <!-- User profile with enhanced styling -->
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                            <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-lg text-gray-800"><%= user.fullName || 'Guest User' %></p>
+                            <p class="text-sm text-gray-500"><%= user.email || 'No email' %></p>
+                        </div>
                     </div>
-                    <select class="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-                        <option value="all">All Orders</option>
-                        <option value="pending">Pending</option>
-                        <option value="processing">Processing</option>
-                        <option value="shipped">Shipped</option>
-                        <option value="delivered">Delivered</option>
-                    </select>
-                </div>
-                <% } %>
-            </div>
-            
-            <% if (orders.length > 0) { %>
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                <div class="flex space-x-2">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                        All <span class="ml-1 bg-blue-500 text-white rounded-full w-5 h-5 inline-flex items-center justify-center"><%= orders.length %></span>
-                    </span>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 border border-gray-100 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-100 cursor-pointer transition-colors">
-                        Active
-                    </span>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 border border-gray-100 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-100 cursor-pointer transition-colors">
-                        Completed
-                    </span>
+                  
                 </div>
                 
-                <div class="flex items-center text-sm text-gray-500">
-                    <span class="mr-2">Sort by:</span>
-                    <select class="bg-transparent border-none text-gray-700 font-medium focus:outline-none focus:ring-0">
-                        <option value="newest">Newest first</option>
-                        <option value="oldest">Oldest first</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="price-low">Price: Low to High</option>
-                    </select>
+                <!-- Navigation tabs with enhanced hover effects -->
+                <div class="flex justify-between mb-8">
+                    <div class="group cursor-pointer">
+                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <span class="text-xs font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">Profile</span>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <span class="text-xs font-medium text-gray-600 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <a href="/wallet/<%  %>">  
+                              <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-wallet text-green-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                       <span class="text-xs font-medium text-gray-600 group-hover:text-green-500 transition-colors duration-300">Wallet</span>
+                       </a>
+                    </div>
+                </a>
                 </div>
+                
+                
+                    <!-- Menu items -->
+                    <div class="space-y-2">
+                        <a href="/wishlist" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
+                            <i class="fas fa-heart mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                            <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Favorite Items </span>
+                        </a>
+                    
+                      
+                        
+                        <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 transition-colors duration-300 group">
+                            <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
+                            <span class="font-medium text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
+                        </a>
+                    </div>
             </div>
-            <% } %>
             
-            <% if (orders.length === 0) { %>
-                <!-- Enhanced Empty State -->
-                <div class="relative py-16">
-                    <!-- Background decoration elements -->
-                    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                        <div class="absolute top-10 left-10 w-20 h-20 rounded-full bg-blue-50 opacity-70"></div>
-                        <div class="absolute bottom-10 right-10 w-32 h-32 rounded-full bg-blue-50 opacity-70"></div>
-                        <div class="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-indigo-50 opacity-70"></div>
-                        <div class="absolute bottom-1/3 left-1/4 w-24 h-24 rounded-full bg-indigo-50 opacity-70"></div>
+            <!-- Enhanced Order List Section -->
+            <div class="col-span-3">
+                <div class="bg-white rounded-2xl shadow-sm p-8 mb-6 hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800 flex items-center">
+                                <i class="fas fa-shopping-bag text-blue-500 mr-3"></i>My Orders
+                            </h1>
+                            <p class="text-gray-600 mt-1">Track and manage your purchase history</p>
+                        </div>
                         
-                        <!-- Decorative dots -->
-                        <div class="absolute top-1/4 left-1/3 w-2 h-2 rounded-full bg-blue-300"></div>
-                        <div class="absolute top-2/3 right-1/3 w-2 h-2 rounded-full bg-indigo-300"></div>
-                        <div class="absolute bottom-1/4 left-2/3 w-2 h-2 rounded-full bg-blue-300"></div>
-                        
-                        <!-- Decorative lines -->
-                        <div class="absolute top-1/2 left-10 w-16 h-0.5 bg-gradient-to-r from-blue-200 to-transparent rounded"></div>
-                        <div class="absolute bottom-1/3 right-10 w-20 h-0.5 bg-gradient-to-l from-indigo-200 to-transparent rounded"></div>
+                        <% if (orders.length > 0) { %>
+                        <div class="flex space-x-2">
+                            <div class="relative">
+                                <input type="text" placeholder="Search orders..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm w-full">
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                            <select class="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                                <option value="all">All Orders</option>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
+                        <% } %>
                     </div>
                     
-                    <div class="relative z-10 text-center max-w-lg mx-auto">
-                        <!-- Animated shopping bag icon -->
-                        <div class="relative mx-auto mb-8 w-40 h-40">
-                            <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full"></div>
-                            <div class="absolute inset-2 bg-white rounded-full shadow-inner"></div>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="float-animation">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-20 h-20 text-blue-500">
-                                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                                        <path d="M16 10a4 4 0 0 1-8 0"></path>
-                                    </svg>
-                                </div>
-                            </div>
+                    <% if (orders.length > 0) { %>
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                        <div class="flex space-x-2">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                                All <span class="ml-1 bg-blue-500 text-white rounded-full w-5 h-5 inline-flex items-center justify-center"><%= orders.length %></span>
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 border border-gray-100 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-100 cursor-pointer transition-colors">
+                                Active
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-600 border border-gray-100 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-100 cursor-pointer transition-colors">
+                                Completed
+                            </span>
                         </div>
                         
-                        <!-- Empty state message -->
-                        <h2 class="text-2xl font-bold text-gray-800 mb-3">Your Order List is Empty</h2>
-                        <p class="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
-                            Looks like you haven't placed any orders yet. Start shopping to fill your order history with amazing products!
-                        </p>
-                        
-                        <!-- Animated dots -->
-                        <div class="flex justify-center mb-8">
-                            <div class="flex space-x-1">
-                                <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
-                                <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
-                                <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- CTA Button with shine effect -->
-                        <a href="/products" class="shine-button inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            Explore Products
-                            <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                        
-                        <!-- Suggested categories -->
-                        <div class="mt-10">
-                            <p class="text-sm text-gray-500 mb-4">Popular categories to explore:</p>
-                            <div class="flex flex-wrap justify-center gap-2">
-                                <a href="#" class="px-4 py-2 bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 rounded-full text-sm font-medium transition-colors">
-                                    <i class="fas fa-mobile-alt mr-1"></i> Electronics
-                                </a>
-                                <a href="#" class="px-4 py-2 bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 rounded-full text-sm font-medium transition-colors">
-                                    <i class="fas fa-tshirt mr-1"></i> Fashion
-                                </a>
-                                <a href="#" class="px-4 py-2 bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 rounded-full text-sm font-medium transition-colors">
-                                    <i class="fas fa-home mr-1"></i> Home
-                                </a>
-                                <a href="#" class="px-4 py-2 bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 rounded-full text-sm font-medium transition-colors">
-                                    <i class="fas fa-gift mr-1"></i> Gifts
-                                </a>
-                            </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-2">Sort by:</span>
+                            <select class="bg-transparent border-none text-gray-700 font-medium focus:outline-none focus:ring-0">
+                                <option value="newest">Newest first</option>
+                                <option value="oldest">Oldest first</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="price-low">Price: Low to High</option>
+                            </select>
                         </div>
                     </div>
-                </div>
-            <% } else { %>
-                <div class="space-y-6">
-                    <% orders.items.forEach((order, index) => { %>
-                        <div class="order-card bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-                            <div class="flex justify-between items-center p-5 border-b border-gray-50">
-                                <div class="flex items-center space-x-3">
-                                    <% 
-                                    let statusIcon, statusColor, statusBg, statusText;
-                                    switch(order.orderStatus) {
-                                        case 'pending':
-                                            statusIcon = 'fa-clock';
-                                            statusColor = 'text-amber-500';
-                                            statusBg = 'bg-amber-50';
-                                            statusText = 'Pending';
-                                            break;
-                                        case 'processing':
-                                            statusIcon = 'fa-cog fa-spin';
-                                            statusColor = 'text-blue-500';
-                                            statusBg = 'bg-blue-50';
-                                            statusText = 'Processing';
-                                            break;
-                                        case 'shipped':
-                                            statusIcon = 'fa-truck';
-                                            statusColor = 'text-indigo-500';
-                                            statusBg = 'bg-indigo-50';
-                                            statusText = 'On the Way';
-                                            break;
-                                        case 'delivered':
-                                            statusIcon = 'fa-check-circle';
-                                            statusColor = 'text-green-500';
-                                            statusBg = 'bg-green-50';
-                                            statusText = 'Delivered';
-                                            break;
-                                        case 'cancelled':
-                                            statusIcon = 'fa-times-circle';
-                                            statusColor = 'text-red-500';
-                                            statusBg = 'bg-red-50';
-                                            statusText = 'Cancelled';
-                                            break;
-                                        case 'return request':
-                                        case 'returned':
-                                            statusIcon = 'fa-undo';
-                                            statusColor = 'text-purple-500';
-                                            statusBg = 'bg-purple-50';
-                                            statusText = order.orderStatus === 'return request' ? 'Return Requested' : 'Returned';
-                                            break;
-                                        default:
-                                            statusIcon = 'fa-info-circle';
-                                            statusColor = 'text-gray-500';
-                                            statusBg = 'bg-gray-50';
-                                            statusText = order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1);
-                                    }
-                                    %>
-                                    <div class="flex-shrink-0">
-                                        <div class="w-10 h-10 rounded-full <%= statusBg %> flex items-center justify-center <%= statusColor %>">
-                                            <i class="fas <%= statusIcon %>"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center">
-                                            <h3 class="font-semibold text-gray-800">Order #<%= order.orderId %></h3>
-                                            <span class="ml-2 px-2.5 py-1 rounded-full text-xs font-medium <%= statusBg %> <%= statusColor %> flex items-center">
-                                                <span class="w-1.5 h-1.5 rounded-full <%= statusColor %> status-indicator mr-1.5"></span>
-                                                <%= statusText %>
-                                            </span>
-                                        </div>
-                                        <p class="text-sm text-gray-500">
-                                            <i class="far fa-calendar-alt mr-1"></i> 
-                                            <%= new Date(order.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %> 
-                                            <span class="mx-1">•</span>
-                                            <i class="far fa-clock mr-1"></i>
-                                            <%= new Date(order.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) %>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-lg font-bold text-gray-800">₹<%= order.totalAmount.toFixed(2) %></div>
-                                    <div class="text-xs text-gray-500"><%= order.items.length %> <%= order.items.length === 1 ? 'item' : 'items' %></div>
-                                </div>
+                    <% } %>
+                    
+                    <% if (orders.length === 0) { %>
+                        <!-- Enhanced Empty State -->
+                        <div class="relative py-16">
+                            <!-- Background decoration elements -->
+                            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                                <div class="absolute top-10 left-10 w-20 h-20 rounded-full bg-blue-50 opacity-70"></div>
+                                <div class="absolute bottom-10 right-10 w-32 h-32 rounded-full bg-blue-50 opacity-70"></div>
+                                <div class="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-indigo-50 opacity-70"></div>
+                                <div class="absolute bottom-1/3 left-1/4 w-24 h-24 rounded-full bg-indigo-50 opacity-70"></div>
+                                
+                                <!-- Decorative dots -->
+                                <div class="absolute top-1/4 left-1/3 w-2 h-2 rounded-full bg-blue-300"></div>
+                                <div class="absolute top-2/3 right-1/3 w-2 h-2 rounded-full bg-indigo-300"></div>
+                                <div class="absolute bottom-1/4 left-2/3 w-2 h-2 rounded-full bg-blue-300"></div>
+                                
+                                <!-- Decorative lines -->
+                                <div class="absolute top-1/2 left-10 w-16 h-0.5 bg-gradient-to-r from-blue-200 to-transparent rounded"></div>
+                                <div class="absolute bottom-1/3 right-10 w-20 h-0.5 bg-gradient-to-l from-indigo-200 to-transparent rounded"></div>
                             </div>
                             
-                            <div class="p-5">
-                                <div class="flex flex-wrap items-center gap-3 mb-4">
-                                    <% const maxItemsToShow = 4; %>
-                                    <% order.items.slice(0, maxItemsToShow).forEach(item => { %>
-                                        <div class="relative group">
-                                            <div class="w-16 h-16 rounded-lg overflow-hidden border border-gray-100 shadow-sm group-hover:shadow-md transition-all duration-300">
-                                                <img src="<%= item.product.mainImage %>" alt="<%= item.product.productName %>" class="object-cover h-full w-full product-image">
-                                            </div>
-                                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 rounded-lg flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100">
-                                                <span class="text-white text-xs font-medium px-1.5 py-0.5 bg-black bg-opacity-70 rounded">
-                                                    <%= item.quantity %>x
-                                                </span>
-                                            </div>
+                            <div class="relative z-10 text-center max-w-lg mx-auto">
+                                <!-- Animated shopping bag icon -->
+                                <div class="relative mx-auto mb-8 w-40 h-40">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full"></div>
+                                    <div class="absolute inset-2 bg-white rounded-full shadow-inner"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="float-animation">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-20 h-20 text-blue-500">
+                                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                            </svg>
                                         </div>
-                                    <% }); %>
-                                    
-                                    <% if(order.items.length > maxItemsToShow) { %>
-                                        <div class="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center text-gray-500 text-sm font-medium border border-gray-100 hover:bg-gray-100 transition-colors cursor-pointer">
-                                            +<%= order.items.length - maxItemsToShow %>
-                                        </div>
-                                    <% } %>
+                                    </div>
                                 </div>
                                 
-                                <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-50">
-                                    <div class="flex items-center space-x-2">
-                                        <% if (order.orderStatus === 'shipped') { %>
-                                            <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors">
-                                                <i class="fas fa-map-marker-alt mr-1"></i> Track Order
-                                            </button>
-                                        <% } %>
-                                        
-                                        <% if (order.orderStatus === 'delivered') { %>
-                                            <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors">
-                                                <i class="fas fa-star mr-1"></i> Leave Review
-                                            </button>
-                                        <% } %>
-                                        
-                                        <% if (['pending', 'processing'].includes(order.orderStatus)) { %>
-                                            <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors">
-                                                </i>In Progress
-                                            </button>
-                                        <% } %>
+                                <!-- Empty state message -->
+                                <h2 class="text-2xl font-bold text-gray-800 mb-3">Your Order List is Empty</h2>
+                                <p class="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+                                    Looks like you haven't placed any orders yet. Start shopping to fill your order history with amazing products!
+                                </p>
+                                
+                                <!-- Animated dots -->
+                                <div class="flex justify-center mb-8">
+                                    <div class="flex space-x-1">
+                                        <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
+                                        <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
+                                        <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
                                     </div>
-                                    
-                                  
-                                      <a href="/orderdetails/<%= order.orderId %>" class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center"> 
-                                        View Details <i class="fas fa-chevron-right ml-1.5 text-xs"></i>
-                                    </a>
-                                    
+                                </div>
+                                
+                                <!-- CTA Button with shine effect -->
+                                <a href="/shoplist" class="shine-button inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1">
+                                    <i class="fas fa-shopping-cart mr-2"></i>
+                                    Explore Products
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                                
+                                <!-- Suggested categories -->
+                                <div class="mt-10">
+                                    <p class="text-sm text-gray-500 mb-4">Popular categories to explore:</p>
+                                    <div class="flex flex-wrap justify-center gap-2">
+                                        <a href="#" class="px-4 py-2 bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 rounded-full text-sm font-medium transition-colors">
+                                            <i class="fas fa-mobile-alt mr-1"></i> Electronics
+                                        </a>
+                                        <a href="#" class="px-4 py-2 bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 rounded-full text-sm font-medium transition-colors">
+                                            <i class="fas fa-tshirt mr-1"></i> Fashion
+                                        </a>
+                                        <a href="#" class="px-4 py-2 bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 rounded-full text-sm font-medium transition-colors">
+                                            <i class="fas fa-home mr-1"></i> Home
+                                        </a>
+                                        <a href="#" class="px-4 py-2 bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-600 rounded-full text-sm font-medium transition-colors">
+                                            <i class="fas fa-gift mr-1"></i> Gifts
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <% if (order.orderStatus === 'shipped' || order.orderStatus === 'processing') { %>
-                                <div class="px-5 pb-4">
-                                    <div class="w-full bg-gray-100 rounded-full h-1.5 mb-1">
-                                        <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-1.5 rounded-full" style="width: <%= order.orderStatus === 'processing' ? '40%' : '75%' %>"></div>
+                        </div>
+                    <% } else { %>
+                        <div class="space-y-6">
+                            <% orders.items.forEach((order, index) => { %>
+                                <div class="order-card bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                                    <div class="flex justify-between items-center p-5 border-b border-gray-50">
+                                        <div class="flex items-center space-x-3">
+                                            <% 
+                                            let statusIcon, statusColor, statusBg, statusText;
+                                            switch(order.orderStatus) {
+                                                case 'pending':
+                                                    statusIcon = 'fa-clock';
+                                                    statusColor = 'text-amber-500';
+                                                    statusBg = 'bg-amber-50';
+                                                    statusText = 'Pending';
+                                                    break;
+                                                case 'processing':
+                                                    statusIcon = 'fa-cog fa-spin';
+                                                    statusColor = 'text-blue-500';
+                                                    statusBg = 'bg-blue-50';
+                                                    statusText = 'Processing';
+                                                    break;
+                                                case 'shipped':
+                                                    statusIcon = 'fa-truck';
+                                                    statusColor = 'text-indigo-500';
+                                                    statusBg = 'bg-indigo-50';
+                                                    statusText = 'On the Way';
+                                                    break;
+                                                case 'delivered':
+                                                    statusIcon = 'fa-check-circle';
+                                                    statusColor = 'text-green-500';
+                                                    statusBg = 'bg-green-50';
+                                                    statusText = 'Delivered';
+                                                    break;
+                                                case 'cancelled':
+                                                    statusIcon = 'fa-times-circle';
+                                                    statusColor = 'text-red-500';
+                                                    statusBg = 'bg-red-50';
+                                                    statusText = 'Cancelled';
+                                                    break;
+                                                case 'return request':
+                                                case 'returned':
+                                                    statusIcon = 'fa-undo';
+                                                    statusColor = 'text-purple-500';
+                                                    statusBg = 'bg-purple-50';
+                                                    statusText = order.orderStatus === 'return request' ? 'Return Requested' : 'Returned';
+                                                    break;
+                                                default:
+                                                    statusIcon = 'fa-info-circle';
+                                                    statusColor = 'text-gray-500';
+                                                    statusBg = 'bg-gray-50';
+                                                    statusText = order.orderStatus.charAt(0).toUpperCase() + order.orderStatus.slice(1);
+                                            }
+                                            %>
+                                            <div class="flex-shrink-0">
+                                                <div class="w-10 h-10 rounded-full <%= statusBg %> flex items-center justify-center <%= statusColor %>">
+                                                    <i class="fas <%= statusIcon %>"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center">
+                                                    <h3 class="font-semibold text-gray-800">Order #<%= order.orderId %></h3>
+                                                    <span class="ml-2 px-2.5 py-1 rounded-full text-xs font-medium <%= statusBg %> <%= statusColor %> flex items-center">
+                                                        <span class="w-1.5 h-1.5 rounded-full <%= statusColor %> status-indicator mr-1.5"></span>
+                                                        <%= statusText %>
+                                                    </span>
+                                                </div>
+                                                <p class="text-sm text-gray-500">
+                                                    <i class="far fa-calendar-alt mr-1"></i> 
+                                                    <%= new Date(order.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %> 
+                                                    <span class="mx-1">•</span>
+                                                    <i class="far fa-clock mr-1"></i>
+                                                    <%= new Date(order.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-lg font-bold text-gray-800">₹<%= order.totalAmount.toFixed(2) %></div>
+                                            <div class="text-xs text-gray-500"><%= order.items.length %> <%= order.items.length === 1 ? 'item' : 'items' %></div>
+                                        </div>
                                     </div>
-                                    <div class="flex justify-between text-xs text-gray-500">
-                                        <span>Order Placed</span>
-                                        <span>Processing</span>
-                                        <span>Shipped</span>
-                                        <span>Delivered</span>
+                                    
+                                    <div class="p-5">
+                                        <!-- NEW: Enhanced Order Status Cycle -->
+                                        <div class="order-status-cycle mb-6">
+                                            <div class="cycle-line"></div>
+                                            <div class="cycle-progress" style="width: 
+                                                <% if (order.orderStatus === 'pending') { %>25%<% } 
+                                                else if (order.orderStatus === 'processing') { %>50%<% } 
+                                                else if (order.orderStatus === 'shipped') { %>75%<% } 
+                                                else if (order.orderStatus === 'delivered') { %>100%<% } 
+                                                else if (order.orderStatus === 'cancelled') { %>100%<% } 
+                                                else if (order.orderStatus === 'returned' || order.orderStatus === 'return request') { %>100%<% } 
+                                                else { %>0%<% } %>">
+                                            </div>
+                                            
+                                            <div class="cycle-step <%= order.orderStatus !== 'pending' ? 'completed' : 'active' %>">
+                                                <div class="cycle-icon">
+                                                    <i class="fas fa-clipboard-check"></i>
+                                                </div>
+                                                <div class="cycle-label">Ordered</div>
+                                            </div>
+                                            
+                                            <div class="cycle-step <%= order.orderStatus === 'processing' ? 'active' : (order.orderStatus === 'shipped' || order.orderStatus === 'delivered' ? 'completed' : '') %>">
+                                                <div class="cycle-icon">
+                                                    <i class="fas fa-cog"></i>
+                                                </div>
+                                                <div class="cycle-label">Processing</div>
+                                            </div>
+                                            
+                                            <div class="cycle-step <%= order.orderStatus === 'shipped' ? 'active' : (order.orderStatus === 'delivered' ? 'completed' : '') %>">
+                                                <div class="cycle-icon">
+                                                    <i class="fas fa-truck"></i>
+                                                </div>
+                                                <div class="cycle-label">Shipped</div>
+                                            </div>
+                                            
+                                            <div class="cycle-step <%= order.orderStatus === 'delivered' ? 'active' : '' %>">
+                                                <div class="cycle-icon">
+                                                    <i class="fas fa-home"></i>
+                                                </div>
+                                                <div class="cycle-label">Delivered</div>
+                                            </div>
+                                            
+                                            <% if (order.orderStatus === 'cancelled') { %>
+                                            <div class="cycle-step cancelled">
+                                                <div class="cycle-icon">
+                                                    <i class="fas fa-times"></i>
+                                                </div>
+                                                <div class="cycle-label">Cancelled</div>
+                                            </div>
+                                            <% } %>
+                                            
+                                            <% if (order.orderStatus === 'returned' || order.orderStatus === 'return request') { %>
+                                            <div class="cycle-step returned">
+                                                <div class="cycle-icon">
+                                                    <i class="fas fa-undo"></i>
+                                                </div>
+                                                <div class="cycle-label"><%= order.orderStatus === 'return request' ? 'Return Requested' : 'Returned' %></div>
+                                            </div>
+                                            <% } %>
+                                        </div>
+                                        
+                                      
+                                      
+                                        
+                                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-50">
+                                            <div class="flex items-center space-x-2">
+                                                <% if (order.orderStatus === 'shipped') { %>
+                                                    <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors flex items-center">
+                                                        <i class="fas fa-map-marker-alt mr-1"></i> Track Order
+                                                    </button>
+                                                <% } %>
+                                                
+                                                <% order.items.forEach(item => { %>
+                                                    <% if (order.orderStatus === 'delivered') { %>
+                                                        <a href="/review/<%= item.product._id %>/<%= order.orderId %>">
+                                                            <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors flex items-center">
+                                                                <i class="fas fa-star mr-1"></i> Leave Review
+                                                            </button>
+                                                        </a>
+                                                    <% } %>
+                                                <% }); %>
+                                                
+                                                
+                                                <% if (['pending', 'processing'].includes(order.orderStatus)) { %>
+                                                    <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors flex items-center">
+                                                        <i class="fas fa-spinner fa-spin mr-1"></i> In Progress
+                                                    </button>
+                                                <% } %>
+                                            </div>
+                                            
+                                            <a href="/orderdetails/<%= order.orderId %>" class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center"> 
+                                                View Details <i class="fas fa-chevron-right ml-1.5 text-xs"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            <% } %>
+                            <% }); %>
+                            
+                            <!-- Pagination - Only shown when there are orders -->
+                            <div class="flex justify-center mt-8">
+                                <nav class="flex items-center space-x-1">
+                                    <a href="#" class="px-3 py-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50">
+                                        <i class="fas fa-chevron-left text-xs"></i>
+                                    </a>
+                                    <a href="#" class="px-3 py-1.5 rounded-md text-white bg-blue-500 hover:bg-blue-600">1</a>
+                                    <a href="#" class="px-3 py-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50">2</a>
+                                    <a href="#" class="px-3 py-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50">3</a>
+                                    <a href="#" class="px-3 py-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50">
+                                        <i class="fas fa-chevron-right text-xs"></i>
+                                    </a>
+                                </nav>
+                            </div>
                         </div>
-                    <% }); %>
-                    
-                    <!-- Pagination - Only shown when there are orders -->
-                    <div class="flex justify-center mt-8">
-                        <nav class="flex items-center space-x-1">
-                            <a href="#" class="px-3 py-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50">
-                                <i class="fas fa-chevron-left text-xs"></i>
-                            </a>
-                            <a href="#" class="px-3 py-1.5 rounded-md text-white bg-blue-500 hover:bg-blue-600">1</a>
-                            <a href="#" class="px-3 py-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50">2</a>
-                            <a href="#" class="px-3 py-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50">3</a>
-                            <a href="#" class="px-3 py-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50">
-                                <i class="fas fa-chevron-right text-xs"></i>
-                            </a>
-                        </nav>
-                    </div>
+                    <% } %>
                 </div>
-            <% } %>
-        </div>
-    </div>
+            </div>
         </div>
     </div>
 
@@ -708,78 +1034,174 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Copy tracking number functionality
-        const copyTrackingBtn = document.getElementById('copyTrackingBtn');
-        if (copyTrackingBtn) {
-            copyTrackingBtn.addEventListener('click', function() {
-                const trackingNumber = this.previousElementSibling.textContent;
-                navigator.clipboard.writeText(trackingNumber).then(() => {
-                    // Show toast notification
-                    Toastify({
-                        text: "Tracking number copied to clipboard!",
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "center",
-                        backgroundColor: "#10b981",
-                    }).showToast();
-                }).catch(err => {
-                    console.error('Failed to copy: ', err);
-                });
+        const searchInput = document.getElementById("searchInput");
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+    
+        // Debounce function to limit how often a function can be called
+        function debounce(func, delay) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+    
+        // Apply search filters
+        function applyFilters() {
+            const queryParams = new URLSearchParams();
+            const search = searchInput?.value.trim();
+            
+            if (search) {
+                queryParams.append("search", search);
+            }
+            
+            window.location.href = `/order?${queryParams.toString()}`;
+        }
+    
+        // Clear all filters
+        function clearFilters() {
+            if (searchInput) searchInput.value = "";
+            window.location.href = '/order';
+        }
+    
+        // Restore filters from URL
+        function restoreFiltersFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const searchParam = params.get("search");
+            
+            if (searchInput && searchParam) {
+                searchInput.value = searchParam;
+            }
+        }
+    
+        // Toggle mobile menu
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener("click", function() {
+                mobileMenu.classList.toggle("hidden");
             });
         }
+    
+        // Add event listeners
+        if (searchInput) {
+            // Handle Enter key press
+            searchInput.addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    applyFilters();
+                }
+            });
+            
+            // Apply filters after typing (with debounce)
+            searchInput.addEventListener("input", debounce(function() {
+                // Only apply filters if the search term has a minimum length
+                if (this.value.trim().length >= 2 || this.value.trim().length === 0) {
+                    applyFilters();
+                }
+            }, 500));
+        }
+    
+        // Add a clear button to the search input
+        if (searchInput && searchInput.value) {
+            const clearButton = document.createElement("button");
+            clearButton.innerHTML = '<i class="fas fa-times-circle"></i>';
+            clearButton.className = "absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600";
+            clearButton.addEventListener("click", clearFilters);
+            
+            searchInput.parentNode.appendChild(clearButton);
+        }
+    
+        // Restore filters from URL on page load
+        restoreFiltersFromURL();
         
-        // Print receipt functionality
-        const printButton = document.querySelector('button:has(.fa-print)');
-        if (printButton) {
-            printButton.addEventListener('click', function() {
-                window.print();
-                Toastify({
-                    text: "Printing order receipt...",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "center",
-                    backgroundColor: "#0ea5e9",
-                }).showToast();
+        // Animate order status progress bars
+        const animateStatusBars = () => {
+            const statusBars = document.querySelectorAll('.status-progress-bar, .cycle-progress');
+            statusBars.forEach(bar => {
+                const currentWidth = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = currentWidth;
+                }, 300);
             });
-        }
+        };
         
-        // Download invoice functionality
-        const downloadButton = document.querySelector('button:has(.fa-download)');
-        if (downloadButton) {
-            downloadButton.addEventListener('click', function() {
-                // In a real application, this would generate and download an invoice
-                Toastify({
-                    text: "Invoice download started",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "center",
-                    backgroundColor: "#0ea5e9",
-                }).showToast();
+        // Animate status change when status updates
+        const animateStatusChange = () => {
+            const statusElements = document.querySelectorAll('.cycle-step.active .cycle-icon');
+            statusElements.forEach(el => {
+                el.classList.add('status-change-animation');
+                setTimeout(() => {
+                    el.classList.remove('status-change-animation');
+                }, 500);
             });
-        }
+        };
         
-        // Support button functionality
-        const supportButton = document.querySelector('button:has(.fa-headset)');
-        if (supportButton) {
-            supportButton.addEventListener('click', function() {
-                // In a real application, this would open a support chat or form
-                Toastify({
-                    text: "Support request initiated",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "center",
-                    backgroundColor: "#0ea5e9",
-                }).showToast();
+        // Run animations after page load
+        setTimeout(() => {
+            animateStatusBars();
+            animateStatusChange();
+        }, 500);
+        
+        // Function to handle status updates
+        window.updateOrderStatus = function(orderId, newStatus) {
+            // Find the order card
+            const orderCard = document.querySelector(`[data-order-id="${orderId}"]`);
+            if (!orderCard) return;
+            
+            // Update the status visually
+            const statusElement = orderCard.querySelector('.cycle-progress');
+            const statusSteps = orderCard.querySelectorAll('.cycle-step');
+            
+            // Reset all steps
+            statusSteps.forEach(step => {
+                step.classList.remove('active', 'completed');
             });
-        }
+            
+            // Update progress based on new status
+            let progressWidth = '0%';
+            if (newStatus === 'pending') progressWidth = '25%';
+            else if (newStatus === 'processing') progressWidth = '50%';
+            else if (newStatus === 'shipped') progressWidth = '75%';
+            else if (newStatus === 'delivered' || newStatus === 'cancelled' || newStatus === 'returned') progressWidth = '100%';
+            
+            // Animate the progress change
+            statusElement.style.width = '0%';
+            setTimeout(() => {
+                statusElement.style.width = progressWidth;
+            }, 100);
+            
+            // Update the steps
+            statusSteps.forEach((step, index) => {
+                const stepLabel = step.querySelector('.cycle-label').textContent.toLowerCase();
+                
+                if (stepLabel === newStatus || 
+                    (newStatus === 'delivered' && stepLabel === 'delivered') ||
+                    (newStatus === 'cancelled' && stepLabel === 'cancelled') ||
+                    (newStatus === 'returned' && stepLabel === 'returned')) {
+                    step.classList.add('active');
+                } else if (
+                    (newStatus === 'processing' && stepLabel === 'ordered') ||
+                    (newStatus === 'shipped' && ['ordered', 'processing'].includes(stepLabel)) ||
+                    (newStatus === 'delivered' && ['ordered', 'processing', 'shipped'].includes(stepLabel))
+                ) {
+                    step.classList.add('completed');
+                }
+            });
+            
+            // Add animation class to active step
+            const activeStep = orderCard.querySelector('.cycle-step.active');
+            if (activeStep) {
+                const icon = activeStep.querySelector('.cycle-icon');
+                icon.classList.add('status-change-animation');
+                setTimeout(() => {
+                    icon.classList.remove('status-change-animation');
+                }, 500);
+            }
+        };
     });
 </script>
 <script>
- 
     async function orders(orderId) {
         if(!orderId){
         console.log('no orderID provided')

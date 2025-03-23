@@ -1,321 +1,502 @@
-
 <!DOCTYPE HTML>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <title>CycloneX</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="/backend/imgs/logos/cyclonelogo.png">
-    <!-- Template CSS -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX Dashboard - Order Detail</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="/backend/css/main.css" rel="stylesheet" type="text/css" />
-      <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Your existing CSS and other head elements -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#2e1065',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
 </head>
-
-<body>
-    <div class="screen-overlay"></div>
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-          <a href="" class="brand-wrap">
-            <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
+<body class="bg-gray-50 font-sans">
+  <!-- Main Container -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+            </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
           </a>
-          <div>
-            <button class="btn btn-icon btn-aside-minimize">
-              <i class="text-muted material-icons md-menu_open"></i>
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
+            </a>
+            
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Brands</span>
+            </a>
+          </div>
+          
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Users</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-primary-50 text-primary-700 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2"></i>
+              <span>Orders</span>
+            </a>
+          </div>
+        </nav>
+        
+     
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- Left: Hamburger Menu -->
+          <div class="flex items-center">
+            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
+            <div class="hidden md:flex items-center ml-4">
+              <h1 class="text-xl font-semibold text-gray-800">Order Management</h1>
+              <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">Admin</span>
+            </div>
+          </div>
+          
+         
+        </div>
+      </header>
+
+      <!-- Main Content - Scrollable area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Order Detail Section -->
+        <section class="max-w-7xl mx-auto">
+          <!-- Header -->
+          <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Order Detail</h1>
+            <p class="text-gray-600">Details for Order ID: <%= orders.orderId %></p>
+          </div>
+          
+          <!-- Main Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <!-- Card Header -->
+            <div class="border-b border-gray-100 p-6">
+              <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <div>
+                  <div class="flex items-center text-gray-700 mb-1">
+                    <i class="material-icons text-gray-500 text-sm mr-2">calendar_today</i>
+                    <span class="font-medium"><%= new Date(orders.timestamp).toLocaleString() %></span>
+                  </div>
+                  <div class="text-sm text-gray-500">Order ID: <%= orders.orderId %></div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                  <form id="orderForm" data-order-id="<%= orders.orderId %>">
+                    <div class="flex gap-2">
+                      <select
+                        name="orderStatus"
+                        id="orderStatus"
+                        class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        <% if (orders.orderStatus === "returned" || orders.orderStatus === "return request") { %> disabled <% } %>>
+                        <option value="<%= orders.orderStatus %>" selected>Status: <%= orders.orderStatus %></option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="return request">Return Request</option>
+                        <option value="returned">Returned</option>
+                      </select>
+                      
+                      <button
+                        type="submit"
+                        class="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+                        <% if (orders.orderStatus === "returned" || orders.orderStatus === "return request") { %> disabled <% } %>>
+                        Save
+                      </button>
+                    </div>
+                  </form>
+                  <div class="flex gap-2">
+                    <a href="#" class="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
+                      <i class="material-icons">print</i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <!-- Card Body -->
+            <div class="p-6">
+              <!-- Order Info Cards -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Customer Info -->
+                <div class="flex bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
+                  <div class="mr-4 flex-shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
+                      <i class="material-icons text-primary-600">person</i>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Customer</h3>
+                    <p class="text-gray-600 text-sm mb-2 leading-relaxed">
+                      <%= orders.fullName %> <br>
+                      <%= orders.email %> <br>
+                      <%= orders.mobileNum %>
+                    </p>
+                    <% if (orders.email !== "N/A") { %>
+                    
+                    <% } %>
+                  </div>
+                </div>
+          
+                <!-- Order Info -->
+                <div class="flex bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
+                  <div class="mr-4 flex-shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                      <i class="material-icons text-green-600">local_shipping</i>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Order Info</h3>
+                    <p class="text-gray-600 text-sm mb-2 leading-relaxed">
+                      Shipping: <%= orders.shippingMethod || 'Standard' %> <br>
+                      Pay method: <%= orders.paymentMethod || 'N/A' %> <br>
+                      Status: <%= orders.status %>
+                    </p>
+                    <a href="#" class="text-sm text-primary-600 hover:text-primary-800 font-medium">Download info</a>
+                  </div>
+                </div>
+          
+                <!-- Delivery Info -->
+                <div class="flex bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
+                  <div class="mr-4 flex-shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-secondary-100 flex items-center justify-center">
+                      <i class="material-icons text-secondary-600">place</i>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Deliver to</h3>
+                    <% if (orders.shippingAddress) { %>
+                      <p class="text-gray-600 text-sm mb-2 leading-relaxed">
+                        City: <%= orders.shippingAddress.state %>, <%= orders.shippingAddress.country %> <br>
+                        <%= orders.shippingAddress.mobileNum %> <br>
+                        <%= orders.shippingAddress.address %> <br>
+                        <%= orders.shippingAddress.email || '' %><br>
+                        <%= orders.shippingAddress.pincode %> <br>
+                        <%= orders.shippingAddress.landmark %> <br>
+                      </p>
+                    <% } else { %>
+                      <p class="text-gray-600 text-sm mb-2">No shipping address provided</p>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+          
+              <!-- Order Details and Payment -->
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Products Table -->
+                <div class="lg:col-span-8">
+                  <div class="overflow-x-auto rounded-xl border border-gray-100">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/5">Product</th>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Unit Price</th>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Quantity</th>
+                          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white divide-y divide-gray-200">
+                        <% if (orders.items && orders.items.length > 0) { %>
+                          <% orders.items.forEach(item => { %>
+                            <tr class="hover:bg-gray-50">
+                              <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                  <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-md overflow-hidden">
+                                    <% if (item.product && item.product.images && item.product.images.length > 0) { %>
+                                      <img src="<%= item.product.images[0] %>" class="h-full w-full object-cover" alt="<%= item.product.name %>">
+                                    <% } else { %>
+                                      <img src="/placeholder.svg?height=40&width=40" class="h-full w-full object-cover" alt="Product">
+                                    <% } %>
+                                  </div>
+                                  <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900"><%= item.product ? item.product.productName : 'Product' %></div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">₹<%= item.product? item.product.price: '0.00' %></td>
+                              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= item.quantity %></td>
+                              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">₹<%= (item.product.price && item.quantity) ? (item.product.price * item.quantity).toFixed(2) : '0.00' %></td>
+                            </tr>
+                          <% }); %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No items in this order</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+          
+                  <!-- Order Summary -->
+                  <div class="mt-6 flex justify-content-start">
+                    <div class="w-full max-w-xs">
+                      <div class="flex justify-between py-2 text-sm">
+                        <span class="text-gray-600">Subtotal:</span>
+                        <span class="font-medium text-gray-900">₹<%= orders.subtotal ? orders.subtotal.toFixed(2) : (orders.totalAmount - (orders.shippingCost || 0)).toFixed(2) %></span>
+                      </div>
+                      <div class="flex justify-between py-2 text-sm">
+                        <span class="text-gray-600">Shipping cost:</span>
+                        <span class="font-medium text-gray-900">₹<%= orders.shippingCost ? orders.shippingCost.toFixed(2) : '0.00' %></span>
+                      </div>
+                      <% if (orders.discount) { %>
+                        <div class="flex justify-between py-2 text-sm">
+                          <span class="text-gray-600">Discount:</span>
+                          <span class="font-medium text-green-600">₹<%= orders.discount.toFixed(2) %></span>
+                        </div>
+                      <% } %>
+                      <div class="flex justify-between py-2 text-sm border-t border-gray-200 mt-2 pt-2">
+                        <span class="text-gray-800 font-medium">Grand total:</span>
+                        <span class="font-bold text-lg text-gray-900">₹<%= orders.totalAmount.toFixed(2) %></span>
+                      </div>
+                      <div class="flex justify-between py-2 text-sm">
+                        <span class="text-gray-600">Status:</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                          <% if (orders.status === 'Paid' || orders.status === 'Delivered') { %>
+                            bg-green-100 text-green-800
+                          <% } else if (orders.status === 'Shipped') { %>
+                            bg-blue-100 text-blue-800
+                          <% } else if (orders.status === 'Pending') { %>
+                            bg-yellow-100 text-yellow-800
+                          <% } else if (orders.status === 'Cancelled') { %>
+                            bg-red-100 text-red-800
+                          <% } else { %>
+                            bg-gray-100 text-gray-800
+                          <% } %>
+                        ">
+                          <%= orders.status %>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+          
+               
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-500">© 2023 CycloneX. All rights reserved.</p>
+          <div class="flex space-x-4 mt-2 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-instagram"></i>
+            </a>
           </div>
         </div>
-    </aside>
-    <main class="main-wrap">
-        <%-include('partials/header')  %>
-        <section class="max-w-7xl mx-auto px-4 py-8">
-            <!-- Header -->
-            <div class="mb-6">
-              <h1 class="text-2xl font-bold text-gray-800">Order Detail</h1>
-              <p class="text-gray-600">Details for Order ID: <%= orders.orderId %></p>
-            </div>
-          
-            <!-- Main Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <!-- Card Header -->
-              <div class="border-b border-gray-100 p-6">
-                <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                  <div>
-                    <div class="flex items-center text-gray-700 mb-1">
-                      <i class="material-icons text-gray-500 text-sm mr-2">calendar_today</i>
-                      <span class="font-medium"><%= new Date(orders.timestamp).toLocaleString() %></span>
-                    </div>
-                    <div class="text-sm text-gray-500">Order ID: <%= orders.orderId %></div>
-                  </div>
-                  <div class="flex flex-col sm:flex-row gap-3">
-                    <form id="orderForm" data-order-id="<%= orders.orderId %>">
-                      <select
-    name="orderStatus"
-    id="orderStatus"
-    class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-    <% if (orders.orderStatus === "returned" || orders.orderStatus === "return request") { %> disabled <% } %>>
-    <option value="<%= orders.orderStatus %>" selected>Status: <%= orders.orderStatus %></option>
-    <option value="pending">Pending</option>
-    <option value="processing">Processing</option>
-    <option value="shipped">Shipped</option>
-    <option value="delivered">Delivered</option>
-    <option value="cancelled">Cancelled</option>
-    <option value="return request">Return Request</option>
-    <option value="returned">Returned</option>
-</select>
+      </footer>
+    </div>
+  </div>
 
-<button
-type="submit"
-class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-<% if (orders.orderStatus === "returned" || orders.orderStatus === "return request") { %> disabled <% } %>>
-Save
-</button>
-
-
-                    </form>
-                    <div class="flex gap-2">
-                      <a href="#" class="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
-                        <i class="material-icons">print</i>
-                      </a>
-                    </div>
-                  </div>
-                  
-                  
-                </div>
-              </div>
-          
-              <!-- Card Body -->
-              <div class="p-6">
-                <!-- Order Info Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <!-- Customer Info -->
-                  <div class="flex bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
-                    <div class="mr-4 flex-shrink-0">
-                      <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                        <i class="material-icons text-blue-600">person</i>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 class="font-semibold text-gray-800 mb-2">Customer</h3>
-                      <p class="text-gray-600 text-sm mb-2 leading-relaxed">
-                        <%= orders.fullName %> <br>
-                        <%= orders.email %> <br>
-                        <%= orders.mobileNum %>
-                      </p>
-                      <% if (orders.email !== "N/A") { %>
-                      
-                      <% } %>
-                    </div>
-                  </div>
-          
-                  <!-- Order Info -->
-                  <div class="flex bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
-                    <div class="mr-4 flex-shrink-0">
-                      <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                        <i class="material-icons text-green-600">local_shipping</i>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 class="font-semibold text-gray-800 mb-2">Order Info</h3>
-                      <p class="text-gray-600 text-sm mb-2 leading-relaxed">
-                        Shipping: <%= orders.shippingMethod || 'Standard' %> <br>
-                        Pay method: <%= orders.paymentMethod || 'N/A' %> <br>
-                        Status: <%= orders.status %>
-                      </p>
-                      <a href="#" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Download info</a>
-                    </div>
-                  </div>
-          
-                  <!-- Delivery Info -->
-                  <div class="flex bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
-                    <div class="mr-4 flex-shrink-0">
-                      <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
-                        <i class="material-icons text-purple-600">place</i>
-                      </div>
-                    </div>
-                    <div>
-                      <h3 class="font-semibold text-gray-800 mb-2">Deliver to</h3>
-                      <% if (orders.shippingAddress) { %>
-                        <p class="text-gray-600 text-sm mb-2 leading-relaxed">
-                          City: <%= orders.shippingAddress.state %>, <%= orders.shippingAddress.country %> <br>
-                          <%= orders.shippingAddress.mobileNum %> <br>
-                          <%= orders.shippingAddress.address %> <br>
-                          <%= orders.shippingAddress.email || '' %><br>
-                          <%= orders.shippingAddress.pincode %> <br>
-                          <%= orders.shippingAddress.landmark %> <br>
-                        </p>
-                      <% } else { %>
-                        <p class="text-gray-600 text-sm mb-2">No shipping address provided</p>
-                      <% } %>
-                      
-                    </div>
-                  </div>
-                </div>
-          
-                <!-- Order Details and Payment -->
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  <!-- Products Table -->
-                  <div class="lg:col-span-8">
-                    <div class="overflow-x-auto rounded-xl border border-gray-100">
-                      <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                          <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/5">Product</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Unit Price</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Quantity</th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Total</th>
-                          </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                          <% if (orders.items && orders.items.length > 0) { %>
-                            <% orders.items.forEach(item => { %>
-                              <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                  <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-md overflow-hidden">
-                                      <% if (item.product && item.product.images && item.product.images.length > 0) { %>
-                                        <img src="<%= item.product.images[0] %>" class="h-full w-full object-cover" alt="<%= item.product.name %>">
-                                      <% } else { %>
-                                        <img src="/placeholder.svg?height=40&width=40" class="h-full w-full object-cover" alt="Product">
-                                      <% } %>
-                                    </div>
-                                    <div class="ml-4">
-                                      <div class="text-sm font-medium text-gray-900"><%= item.product ? item.product.productName : 'Product' %></div>
-                                    
-                                    </div>
-                                  </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">₹<%= item.product? item.product.price: '0.00' %></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= item.quantity %></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">₹<%= (item.product.price && item.quantity) ? (item.product.price * item.quantity).toFixed(2) : '0.00' %></td>                              </tr>
-                            <% }); %>
-                          <% } else { %>
-                            <tr>
-                              <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No items in this order</td>
-                            </tr>
-                          <% } %>
-                        </tbody>
-                      </table>
-                    </div>
-          
-                    <!-- Order Summary -->
-                    <div class="mt-6 flex justify-content-start">
-                      <div class="w-full max-w-xs">
-                        <div class="flex justify-between py-2 text-sm">
-                          <span class="text-gray-600">Subtotal:</span>
-                          <span class="font-medium text-gray-900">₹<%= orders.subtotal ? orders.subtotal.toFixed(2) : (orders.totalAmount - (orders.shippingCost || 0)).toFixed(2) %></span>
-                        </div>
-                        <div class="flex justify-between py-2 text-sm">
-                          <span class="text-gray-600">Shipping cost:</span>
-                          <span class="font-medium text-gray-900">₹<%= orders.shippingCost ? orders.shippingCost.toFixed(2) : '0.00' %></span>
-                        </div>
-                        <% if (orders.discount) { %>
-                          <div class="flex justify-between py-2 text-sm">
-                            <span class="text-gray-600">Discount:</span>
-                            <span class="font-medium text-green-600">₹<%= orders.discount.toFixed(2) %></span>
-                          </div>
-                        <% } %>
-                        <div class="flex justify-between py-2 text-sm border-t border-gray-200 mt-2 pt-2">
-                          <span class="text-gray-800 font-medium">Grand total:</span>
-                          <span class="font-bold text-lg text-gray-900">₹<%= orders.totalAmount.toFixed(2) %></span>
-                        </div>
-                        <div class="flex justify-between py-2 text-sm">
-                          <span class="text-gray-600">Status:</span>
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                            <% if (orders.status === 'Paid' || orders.status === 'Delivered') { %>
-                              bg-green-100 text-green-800
-                            <% } else if (orders.status === 'Shipped') { %>
-                              bg-blue-100 text-blue-800
-                            <% } else if (orders.status === 'Pending') { %>
-                              bg-yellow-100 text-yellow-800
-                            <% } else if (orders.status === 'Cancelled') { %>
-                              bg-red-100 text-red-800
-                            <% } else { %>
-                              bg-gray-100 text-gray-800
-                            <% } %>
-                          ">
-                            <%= orders.status %>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-          
-                  <!-- Payment Info & Notes -->
-                  <div class="lg:col-span-4">
-                    <!-- Payment Info -->
-                    <div class="bg-white rounded-xl border border-gray-100 p-5 mb-6 shadow-sm">
-                      <h3 class="font-semibold text-gray-800 mb-4 text-base">Payment Information</h3>
-                      <div class="text-sm text-gray-600">
-                        <div class="flex items-center mb-3 pb-3 border-b border-gray-100">
-                          <div class="w-10 h-6 bg-gray-100 rounded flex items-center justify-center mr-3">
-                            <img src="/placeholder.svg?height=20&width=30" class="h-4 object-contain" alt="MasterCard">
-                          </div>
-                          <span class="font-medium">Master Card **** **** 4768</span>
-                        </div>
-                        <div class="space-y-1">
-                          <div class="flex">
-                            <span class="text-gray-500 w-1/3">Business:</span>
-                            <span class="font-medium text-gray-700">Grand Market LLC</span>
-                          </div>
-                          <div class="flex">
-                            <span class="text-gray-500 w-1/3">Phone:</span>
-                            <span class="font-medium text-gray-700">+1 (800) 555-154-52</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section> <!-- content-main end// -->
-        <%-include('partials/footer')  %>
-    </main>
- <%-include('partials/scripts')  %>
- <script>
-    document.getElementById("orderForm").addEventListener("submit", async function (event) {
-  event.preventDefault(); // Prevent default form submission
-
-  const orderId = this.dataset.orderId; // Get order ID from the form's data attribute
-  const orderStatus = document.getElementById("orderStatus").value; // Get selected status
-
-  try {
-    const response = await fetch(`/admin/updateorderstatus/${orderId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ orderStatus }), // Send order status as JSON
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Scripts -->
+  <script>
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', openSidebar);
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+      }
+      
+      // Close sidebar on window resize if screen becomes large
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
     });
+    
+    // Order status update form
+    document.getElementById("orderForm").addEventListener("submit", async function (event) {
+      event.preventDefault(); // Prevent default form submission
 
-    if (!response.ok) {
-      throw new Error("Failed to update order status");
-    }
+      const orderId = this.dataset.orderId; // Get order ID from the form's data attribute
+      const orderStatus = document.getElementById("orderStatus").value; // Get selected status
 
-    const result = await response.json();
-    location.reload()
-    alert("Order status updated successfully!");
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Error updating order status");
-  }
-});
+      try {
+        const response = await fetch(`/admin/updateorderstatus/${orderId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ orderStatus }), // Send order status as JSON
+        });
 
- </script>
+        if (!response.ok) {
+          throw new Error("Failed to update order status");
+        }
+
+        const result = await response.json();
+        
+        // Show success message and reload page
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Order status updated successfully',
+          confirmButtonColor: '#0284c7'
+        }).then(() => {
+          location.reload();
+        });
+        
+      } catch (error) {
+        console.error("Error:", error);
+        
+        // Show error message
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to update order status',
+          confirmButtonColor: '#0284c7'
+        });
+      }
+    });
+  </script>
 </body>
-
 </html>

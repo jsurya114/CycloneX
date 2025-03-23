@@ -1,7 +1,7 @@
 const { name } = require('ejs');
 const uploads = require('../../config/multer');
 const Category = require('../../models/categoryModel');
-
+const Offer = require('../../models/offerModel')
 const categoryController = {
   category: async (req,res,next) => {
     try {
@@ -58,9 +58,9 @@ let sortOptions = { createdAt: -1 };
   addCategory: async (req,res,next) => {
     console.log('invoked add cat');
     try {
-      const { name, slug, description } = req.body;
+      const { name, slug, description, offer} = req.body;
       //validation
-      if (!name || !slug || !description) {
+      if (!name || !slug || !description||offer===undefined||offer===null) {
         return res.status(400).json({ success: false, field:'all', message: "All fields are required."  });
       }
       if(!/[A-Za-z\s]/.test(name)){
@@ -74,7 +74,9 @@ if(!/^[a-z0-9]+$/.test(slug)){
               return res.status(400).json({ success: false, field: "description", message: "Description must be at least 10 characters long." })
             }
       
-   
+            if (isNaN(offer) || offer < 0 || offer > 100) {
+              return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 100." });
+          }
 
       const existingCategory = await Category.findOne({$or:[{name:{$regex:new RegExp(`^${name}$`,'i')}},{slug:{$regex:new RegExp(`^${slug}$`,'i')}}]});
    if(existingCategory) {  
@@ -90,7 +92,7 @@ if(!/^[a-z0-9]+$/.test(slug)){
         name,
         slug,
         description,
-       
+       offer
       });
 
       await newCategory.save();
@@ -115,9 +117,11 @@ if(!/^[a-z0-9]+$/.test(slug)){
 
   editcategory: async (req,res,next) => {
     try {
-     const {name,slug,description} =req.body
+      console.log('off',req.body)
+     const {name,slug,description,offer} =req.body
+     console.log('offer',offer)
      const categoryId =req.params.id
-     if(!name||!slug||!description){
+     if(!name||!slug||!description||offer===undefined||offer===null){
       return res.status(400).json({success:false,
         field:'all',
         message: "All fields are required." })
@@ -139,6 +143,11 @@ if(!/^[a-z0-9]+$/.test(slug)){
         message: "Description must be at least 10 characters long." });
     }
 
+
+    if (isNaN(offer) || offer < 0 || offer > 100) {
+      return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 100." });
+  }
+
     // Check for duplicate category name and slug
     const existingCategory = await Category.findOne({ _id: { $ne: categoryId }, $or: [{ name: { $regex: new RegExp(`^${name}$`, 'i') } }, // Case-insensitive match
       { slug: { $regex: new RegExp(`^${slug}$`, 'i') } }] });
@@ -152,7 +161,7 @@ if(!/^[a-z0-9]+$/.test(slug)){
     
     }
 
-    await Category.findByIdAndUpdate(categoryId, { name, slug, description });
+    await Category.findByIdAndUpdate(categoryId, { name, slug, description ,offer});
     res.status(200).json({ success: true, message: "Category updated successfully" });
 
     } catch (error) {

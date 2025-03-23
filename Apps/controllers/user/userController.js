@@ -3,8 +3,12 @@ const Brand = require('../../models/brandModel')
 const Product =require('../../models/productModel')
 const { category } = require('../admin/categoryController')
  const User= require('../../models/userModel')
+ const Cart = require('../../models/cartModel')
+ const Order = require('../../models/orderModel')
  const Address = require('../../models/addressModel')
 const jwt = require('jsonwebtoken')
+const Review = require('../../models/reviewModel')
+const Wishlist=require("../../models/wislistModel")
 const userController = {
     home: async (req, res,next) => {
         try {
@@ -16,13 +20,15 @@ const userController = {
              const userId= decoded.id;
             //  console.log("user",userId);
              const user=await User.findById(userId);
+             let cartCount =await Cart.countDocuments({user:userId})
+             let orderCount=await Order.countDocuments({user:userId})
             const categories = await Category.find({});
             const brands = await Brand.find({});
             if (search) {
                 filter.$or = [
                     { productName: { $regex: search.trim(), $options: "i" } },
-                    { 'brand.name': { $regex: search.trim(), $options: "i" } },
-                    { 'category.name': { $regex: search.trim(), $options: "i" } },
+                    { brands: { $regex: search.trim(), $options: "i" } },
+                    { category: { $regex: search.trim(), $options: "i" } },
                 ];
             }
     
@@ -44,7 +50,7 @@ const userController = {
                 }
             }
     
-            let sortOptions = { createdAt: -1 };
+            let sortOptions = { maxOffer:-1,createdAt: -1 };
             if (sortBy) {
                 switch (sortBy) {
                     case 'priceLowHigh':
@@ -76,7 +82,26 @@ const userController = {
                 .skip(skip)
                 .limit(itemsPerPage)
                 .populate({ path: 'brands', select: 'name' }) // Ensure only needed fields are populated
-                .populate({ path: 'category', select: 'name' }) 
+                .populate({ path: 'category',select:'offer' }) 
+
+
+                const productWithoffer = product.map(p=>{
+                    const productOffer = p.offer||0
+                  const categoryOffer = (p.category && p.category.offer) ? p.category.offer : 0;
+                    const maxOffer = Math.max(productOffer,categoryOffer)
+                    console.log(Math.max(productOffer, categoryOffer))
+                      // Calculate sale price if there's any discount; otherwise, remain the same as original price
+                
+                    const salePrice = maxOffer>0?p.price*(1-maxOffer/100):p.price
+                
+                
+                
+                     // Return a new object with additional properties for view rendering
+                    return {...p.toObject(),maxOffer,salePrice}
+                })
+                
+
+
 
     // Calculate total pages
     let totalPages = Math.ceil(totalProducts / itemsPerPage);
@@ -109,8 +134,11 @@ const userController = {
 const filteredProducts = product.filter(pro => pro.category && pro.brands)
             res.render('home', {
                 user,
-                product: filteredProducts, 
+cartCount,
+
+                product: productWithoffer, 
                 categories,
+                filteredProducts,
                 brands,
                 breadcrumbs,
                 success: req.query.added === 'true',
@@ -140,7 +168,9 @@ const filteredProducts = product.filter(pro => pro.category && pro.brands)
                         const categories = await Category.find({});
                                    const brands = await Brand.find({});
         const product = await Product.findById(id).populate('category').populate('brands')
+        const review = await Review.find({ product: id }).populate('user', 'name')
 
+        let cartCount =await Cart.countDocuments({user:userId})
         const breadcrumbs = [
             { name: 'Home', url: '/' },
             { name: product.category.name, url: `/home?categoryFilter=${encodeURIComponent(product.category.name)}` },
@@ -157,7 +187,7 @@ const filteredProducts = product.filter(pro => pro.category && pro.brands)
 
         }).limit(10).populate('brands')
    
-        res.status(200).render('productdetails',{product,user:user._id,relatedProducts, breadcrumbs,brands})
+        res.status(200).render('productdetails',{product,user:user._id,relatedProducts, breadcrumbs,brands,cartCount,review})
         
         } catch (error) {
             console.error(error)
@@ -181,13 +211,20 @@ try
 const user = await User.findById(userId)
 
 const users= req.user.id
-
+const wishlist = await Wishlist.countDocuments({ user: userId });
+let cartCount =await Cart.countDocuments({user:userId})
+let orderCount=await Order.countDocuments({user:userId})
+let reviewCount =await Review.countDocuments({user:userId})
+const returnOrderCount = await Order.countDocuments({ user: userId, orderStatus: "returned" })
   const {productId}=req.body
   const product= await Product.findById(productId)
 if(!userId) return res.status(404).json({success:false,message:'invalid input'})
+    const orders = await Order.find({ user: userId })
+.populate("items.product")
+.populate("address")
+.sort({ timestamp: -1 })
 
-
-        res.status(200).render('userprofile',{user,users,product: product || { _id: '' }})}
+        res.status(200).render('userprofile',{user,users,product: product || { _id: '' },wishlistCount:wishlist,cartCount,orderCount,returnOrderCount,orders,reviewCount})}
         catch(error){
             next(error)
         }
@@ -320,7 +357,8 @@ try {
     next(error)
 }
 
-    }
+    },
+  
         
     } 
     module.exports=userController

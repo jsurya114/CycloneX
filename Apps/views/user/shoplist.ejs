@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,20 +12,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        primary: '#2563eb',
-                        secondary: '#f97316',
-                        dark: '#0f172a'
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#8B5CF6',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif']
+                        'sans': ['Poppins', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'custom': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02)',
+                        'card': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+                        'hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
                     }
                 }
             }
@@ -34,6 +43,17 @@
 
     <!-- Custom Styles -->
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F9FAFB;
+            transition: background-color 0.3s ease;
+        }
+
+        .dark body {
+            background-color: #111827;
+            color: #F9FAFB;
+        }
+
         /* Custom scrollbar for Webkit browsers */
         ::-webkit-scrollbar {
             width: 8px;
@@ -41,26 +61,43 @@
         }
         
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #F1F5F9;
+            border-radius: 8px;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1F2937;
         }
         
         ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
+            background: #CBD5E1;
+            border-radius: 8px;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4B5563;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: #94A3B8;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #6B7280;
         }
 
         /* Price range slider styling */
         input[type="range"] {
             -webkit-appearance: none;
             width: 100%;
-            height: 4px;
-            background: #e5e7eb;
-            border-radius: 5px;
+            height: 6px;
+            background: #E2E8F0;
+            border-radius: 10px;
             outline: none;
+        }
+        
+        .dark input[type="range"] {
+            background: #374151;
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -68,21 +105,29 @@
             appearance: none;
             width: 18px;
             height: 18px;
-            background: #2563eb;
+            background: #3B82F6;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
+        
+        .dark input[type="range"]::-webkit-slider-thumb {
+            border-color: #1F2937;
+        }
 
         input[type="range"]::-moz-range-thumb {
             width: 18px;
             height: 18px;
-            background: #2563eb;
+            background: #3B82F6;
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .dark input[type="range"]::-moz-range-thumb {
+            border-color: #1F2937;
         }
 
         /* Checkbox styling */
@@ -95,62 +140,695 @@
         }
 
         .custom-checkbox:hover {
-            background-color: #f3f4f6;
-            border-radius: 0.375rem;
+            background-color: #F1F5F9;
+            border-radius: 0.5rem;
+        }
+        
+        .dark .custom-checkbox:hover {
+            background-color: #374151;
         }
 
         .custom-checkbox input[type="checkbox"] {
-            width: 1rem;
-            height: 1rem;
+            width: 1.1rem;
+            height: 1.1rem;
             margin-right: 0.5rem;
             border-radius: 0.25rem;
-            border: 1.5px solid #d1d5db;
+            border: 1.5px solid #CBD5E1;
             transition: all 0.2s;
+        }
+        
+        .dark .custom-checkbox input[type="checkbox"] {
+            border-color: #4B5563;
         }
 
         .custom-checkbox input[type="checkbox"]:checked {
-            background-color: #2563eb;
-            border-color: #2563eb;
+            background-color: #3B82F6;
+            border-color: #3B82F6;
+        }
+
+        /* Filter dropdown animation */
+        .filter-dropdown {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+        }
+
+        .filter-dropdown.open {
+            max-height: 2000px;
+            transition: max-height 0.5s cubic-bezier(0.9, 0, 0.3, 0.9);
+        }
+
+        /* Quick view modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            overflow: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            border-radius: 0.5rem;
+            max-width: 800px;
+            width: 90%;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
+        }
+        
+        .dark .modal-content {
+            background-color: #1F2937;
+            color: #F9FAFB;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        /* Card hover effect */
+        .product-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+
+        /* Badge styles */
+        .badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            z-index: 10;
+        }
+
+        /* Button hover effect */
+        .btn-hover-effect {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-hover-effect:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transition: all 0.6s ease;
+        }
+
+        .btn-hover-effect:hover:after {
+            left: 100%;
+        }
+
+        /* Filter toggle animation */
+        .filter-toggle {
+            transition: transform 0.3s ease;
+        }
+
+        .filter-toggle.open {
+            transform: rotate(180deg);
+        }
+        
+        /* Enhanced product card styles */
+        .product-card {
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white;
+            border: 1px solid rgba(229, 231, 235, 0.5);
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .dark .product-card {
+            background: #1F2937;
+            border-color: rgba(75, 85, 99, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: rgba(209, 213, 219, 0.8);
+        }
+        
+        .dark .product-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            border-color: rgba(75, 85, 99, 0.8);
+        }
+        
+        /* Update the card-image-container and card-image styles to ensure images fit properly */
+        .product-card .card-image-container {
+            height: 240px;
+            overflow: hidden;
+            border-radius: 16px 16px 0 0;
+            position: relative;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            perspective: 1000px; /* Add perspective for 3D effect */
+        }
+        
+        .dark .product-card .card-image-container {
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+        }
+
+        .product-card .card-image {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            object-position: center;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            animation: rotate3d 15s infinite linear;
+        }
+        
+        /* 3D Rotation Animation */
+        @keyframes rotate3d {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+        
+        /* Pause animation on hover for better UX */
+        .product-card:hover .card-image {
+            animation-play-state: paused;
+        }
+        
+        .product-card .card-content {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+            background: white;
+            border-radius: 0 0 16px 16px;
+            border-top: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        
+        .dark .product-card .card-content {
+            background: #1F2937;
+            border-top-color: rgba(75, 85, 99, 0.5);
+        }
+        
+        .product-card .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .product-card .price-tag {
+            position: relative;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            font-weight: 700;
+            color: #3B82F6;
+            transition: all 0.3s ease;
+        }
+        
+        .dark .product-card .price-tag {
+            background: rgba(59, 130, 246, 0.2);
+        }
+        
+        .product-card:hover .price-tag {
+            background: rgba(59, 130, 246, 0.15);
+            transform: scale(1.05);
+        }
+        
+        .dark .product-card:hover .price-tag {
+            background: rgba(59, 130, 246, 0.25);
+        }
+        
+        .product-card .add-to-cart {
+            background: linear-gradient(to right, #3B82F6, #2563EB);
+            color: white;
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+        }
+
+        .product-card .add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.3);
+        }
+        
+        .product-card .rating {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .product-card .product-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            line-height: 1.4;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 3.15rem;
+        }
+        
+        .dark .product-card .product-title {
+            color: #F9FAFB;
+        }
+        
+        .product-card .brand-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(4px);
+        }
+        
+        .product-card .wishlist-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
+            background: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .dark .product-card .wishlist-btn {
+            background: #374151;
+        }
+        
+        .product-card .wishlist-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .product-card .quick-view-btn {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(31, 41, 55, 0.8);
+            color: white;
+            text-align: center;
+            padding: 0.75rem;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            font-weight: 500;
+        }
+        
+        .dark .product-card .quick-view-btn {
+            background: rgba(15, 23, 42, 0.8);
+        }
+        
+        .product-card:hover .quick-view-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Enhanced filter section */
+        .filter-section {
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .filter-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #E5E7EB;
+        }
+        
+        .dark .filter-header {
+            color: #F9FAFB;
+            border-bottom-color: #4B5563;
+        }
+        
+        /* Enhanced modal */
+        .enhanced-modal {
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .modal-product-image {
+            height: 350px;
+            width: 100%;
+            object-fit: contain;
+            background: linear-gradient(to bottom right, #f9fafb, #f3f4f6);
+            transform-style: preserve-3d;
+            animation: rotate3d 15s infinite linear;
+        }
+        
+        .dark .modal-product-image {
+            background: linear-gradient(to bottom right, #1F2937, #111827);
+        }
+        
+        .modal-product-details {
+            padding: 2rem;
+        }
+        
+        .modal-product-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 1rem;
+        }
+        
+        .dark .modal-product-title {
+            color: #F9FAFB;
+        }
+        
+        .modal-product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3B82F6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+        
+        .dark .empty-state {
+            background: #1F2937;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .empty-state-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            color: #9CA3AF;
+        }
+        
+        .dark .empty-state-icon {
+            color: #6B7280;
+        }
+        
+        .empty-state-text {
+            font-size: 1.25rem;
+            color: #4B5563;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dark .empty-state-text {
+            color: #D1D5DB;
+        }
+        
+        .empty-state-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #3B82F6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .empty-state-button:hover {
+            background: #2563EB;
+        }
+
+        /* Enhance the price display */
+        .product-card .price-display {
+            display: flex;
+            flex-direction: column;
+            margin-top: 0.5rem;
+        }
+
+        .product-card .original-price {
+            text-decoration: line-through;
+            color: #9CA3AF;
+            font-size: 0.875rem;
+        }
+        
+        .dark .product-card .original-price {
+            color: #6B7280;
+        }
+
+        .product-card .sale-price {
+            font-weight: 700;
+            color: #3B82F6;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .product-card .regular-price {
+            font-weight: 700;
+            color: #3B82F6;
+            font-size: 1.25rem;
+        }
+
+        .product-card .discount-badge {
+            background-color: #FEE2E2;
+            color: #3B82F6;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .dark .product-card .discount-badge {
+            background-color: rgba(254, 226, 226, 0.2);
+        }
+
+        /* Enhance the brand badge */
+        .product-card .offer-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        .product-card .new-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            z-index: 10;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Enhance the brand tag */
+        .product-card .brand-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: #F3F4F6;
+            color: #4B5563;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .dark .product-card .brand-tag {
+            background-color: #374151;
+            color: #D1D5DB;
+        }
+        
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #3B82F6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.25rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(30deg);
+        }
+        
+        /* 3D Floating Animation for Cards */
+        .product-card {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        /* Hover effect to pause floating */
+        .product-card:hover {
+            animation-play-state: paused;
+            transform: translateY(-8px) scale(1.02);
+        }
+        
+        /* 3D Card Tilt Effect */
+        .product-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+        }
+        
+        .tilt-card {
+            transition: transform 0.5s ease;
+            transform-style: preserve-3d;
         }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="text-gray-800 dark:text-gray-100">
     <!-- Header -->
-   <%-include('partials/header')  %>
+    <%-include('partials/header') %>
 
     <!-- Page Title -->
-    <div class="bg-gradient-to-r from-primary to-blue-700 py-4">
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-bold text-white mb-2">Shop</h1>
-            <div class="flex items-center text-blue-100">
-                
+            <h1 class="text-4xl font-heading font-bold text-gray-900 dark:text-white mb-2 relative">
+                Discover Our Collection
+                <span class="absolute -bottom-2 left-0 w-20 h-1 bg-primary rounded-full"></span>
+            </h1>
+            <div class="flex items-center text-gray-500 dark:text-gray-400 mt-4">
                 <%- include('partials/breadcrumbs') %>
-            </div>  
+            </div>
         </div>
     </div>
-    
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex flex-col lg:flex-row gap-8">
-            <!-- Sidebar Filters -->
-            <div class="lg:w-1/4">
-                <div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
-                    <h2 class="text-xl font-bold mb-6">Filters</h2>
-                    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Filter & Sort Toggle Button -->
+        <div class="mb-8 flex justify-center">
+            <button id="filterToggleBtn" class="flex items-center justify-center space-x-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full shadow-sm hover:shadow-md transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <span class="font-medium">Filters & Sorting</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 filter-toggle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Filter & Sort Section (Hidden by Default) -->
+        <div id="filterSection" class="filter-dropdown mb-10">
+            <div class="filter-section bg-white dark:bg-gray-800 rounded-2xl shadow-custom p-6 border border-gray-100 dark:border-gray-700">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     <!-- Categories -->
-                    <div class="mb-6">
-                        <h3 class="font-semibold mb-3">Categories</h3>
+                    <div>
+                        <h3 class="filter-header font-heading">Categories</h3>
                         <div id="categoryFiltersContainer">
-                            <div class="space-y-2">
+                            <div class="space-y-1">
                                 <label class="custom-checkbox">
                                     <input type="checkbox" id="allCategories" class="accent-primary" name="categoryFilter" checked>
-                                    <span class="ml-2">All Categories</span>
+                                    <span class="ml-2 dark:text-gray-300">All Categories</span>
                                 </label>
                                 <% categories.forEach(cat => { %>
                                 <label class="custom-checkbox">
                                     <input type="checkbox" class="accent-primary" name="categoryFilter" value="<%= cat.name %>" disabled>
-                                    <span class="ml-2"><%= cat.name %></span>
+                                    <span class="ml-2 dark:text-gray-300"><%= cat.name %></span>
                                 </label>
                                 <% }) %>
                             </div>
@@ -158,8 +836,8 @@
                     </div>
                     
                     <!-- Price Range -->
-                    <div class="mb-6">
-                        <h3 class="font-semibold mb-3">Price Range</h3>
+                    <div>
+                        <h3 class="filter-header font-heading">Price Range</h3>
                         <input 
                             type="range" 
                             min="0" 
@@ -169,657 +847,895 @@
                             id="priceRange"
                         >
                         <div class="flex justify-between mt-2">
-                            <span class="text-sm text-gray-600">₹0</span>
-                            <span class="text-sm font-medium" id="priceValue">₹10,000</span>
-                            <span class="text-sm text-gray-600">₹200,000</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">₹0</span>
+                            <span class="text-sm font-medium text-primary" id="priceValue">₹100,000</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">₹200,000</span>
                         </div>
                     </div>
                     
                     <!-- Brands -->
-                    <div class="mb-6">
-                        <h3 class="font-semibold mb-3">Brands</h3>
-                        <div id="brandFiltersContainer" class="space-y-2">
+                    <div>
+                        <h3 class="filter-header font-heading">Brands</h3>
+                        <div id="brandFiltersContainer" class="space-y-1">
                             <label class="custom-checkbox">
                                 <input type="checkbox" id="allBrands" class="accent-primary" name="brandsFilter" checked>
-                                <span class="ml-2">All Brands</span>
+                                <span class="ml-2 dark:text-gray-300">All Brands</span>
                             </label>
                             <% brands.forEach(brand => { %>
                             <label class="custom-checkbox">
                                 <input type="checkbox" class="accent-primary" name="brandsFilter" value="<%= brand.name %>" disabled>
-                                <span class="ml-2"><%= brand.name %></span>
+                                <span class="ml-2 dark:text-gray-300"><%= brand.name %></span>
                             </label>
                             <% }); %>
                         </div>
                     </div>
                     
-                    
-                    <!-- Colors -->
-                    <!-- <div class="mb-6">
-                        <h3 class="font-semibold mb-3">Colors</h3>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="w-8 h-8 rounded-full bg-black border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
-                            <button class="w-8 h-8 rounded-full bg-red-500 border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
-                            <button class="w-8 h-8 rounded-full bg-blue-500 border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
-                            <button class="w-8 h-8 rounded-full bg-green-500 border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
-                            <button class="w-8 h-8 rounded-full bg-yellow-500 border-2 border-white ring-2 ring-gray-300 hover:ring-primary transition-all duration-200"></button>
-                        </div>
-                    </div> -->
-                    
-                    <!-- Apply Filters Button -->
-                    <button class="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 transition-colors duration-200">
-                        Apply Filters
-                    </button>
-                </div>
-            </div>
+                    <!-- Sort and Actions -->
+                    <div>
+                        <h3 class="filter-header font-heading">Sort By</h3>
+                        <select id="sortBy" class="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+                            <option value="">Featured</option>
+                            <option value="priceLowHigh">Price: Low to High</option>
+                            <option value="priceHighLow">Price: High to Low</option>
+                            <option value="newest">Newest</option>
+                            <option value="aToZ">A to Z</option>
+                            <option value="zToA">Z to A</option>
+                        </select>
 
-            <!-- Products Grid -->
-            <div class="lg:w-3/4">
-                <!-- Sort and View Options -->
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-                    <div class="flex flex-wrap items-center justify-between gap-4">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-gray-600">Sort by:</span>
-                            <select id="sortBy" class="border rounded-md px-2 py-1 focus:outline-none focus:border-primary">
-                                <option value="">Featured</option>
-                                <option value="priceLowHigh">Price: Low to High</option>
-                                <option value="priceHighLow">Price: High to Low</option>
-                                <option value="newest">Newest</option>
-                                <option value="aToZ">A to Z</option>
-                                <option value="zToA">Z to A</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-gray-600">View:</span>
+                        <div class="flex items-center space-x-4 mt-4">
+                            <span class="text-gray-700 dark:text-gray-300">View:</span>
                             <button class="p-2 bg-primary text-white rounded-md">
                                 <i class="fas fa-th"></i>
                             </button>
-                            <button class="p-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200">
+                            <button class="p-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600">
                                 <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+
+                        <!-- Apply and Clear Buttons -->
+                        <div class="mt-6 space-y-3">
+                            <button class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors duration-200 btn-hover-effect">
+                                Apply Filters
+                            </button>
+                            <button id="clearBtn" class="w-full bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
+                                Clear Filters
                             </button>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-            <!-- Products list-->
-         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Product Card -->
-    <% if (product.length > 0) { %>
-        <% product.forEach(pro => { %>
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden group">
-        <div class="relative">
-            <a href="/productdetails/<%= pro._id%>" class="block w-full h-full"> 
-                <img 
-                    src="/<%= pro.mainImage %>" 
-                    alt="<%= pro.productName %>" 
-                    class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300"
-                >
-            </a>
-            <div class="absolute top-4 left-4">
-                <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
-                    <%= pro.brands ? pro.brands.name : 'No Brand' %>
-                </span>
-            </div>
-            <!-- Wishlist Button -->
-            <button 
-            onclick="addToWishlist('<%= pro._id %>', this)" 
-            class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
-            aria-label="Add to wishlist"
-        >
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="20" 
-                height="20" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2" 
-                stroke-linecap="round" 
-                stroke-linejoin="round" 
-                class="wishlist-icon text-gray-500 transition-colors duration-200"
-                data-product-id="<%= pro._id %>"
-            >
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-        </button>
-            <button class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-4 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-gray-100">
-                Quick View
-            </button>
-        </div>
-        <div class="p-4">
-            <a href="/productdetails/<%= pro._id%>" class="text-base font-medium text-gray-800 hover:text-blue-600 transition-colors line-clamp-2"> 
-                <h3 class="text-lg font-semibold mb-2"><%= pro.productName %></h3>
-            </a>
-           
-            <div class="flex items-center mb-2">
-                <div class="flex text-yellow-400">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-                <span class="text-gray-500 text-sm ml-2">(4.5)</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-xl font-bold text-primary">₹<%= pro.price %></span>
-                <button onclick="addToCart('<%= pro._id %>')" 
-                    class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>             
-                    <span class="font-medium">Add to Cart</span>         
-                </button>
-            </div>
-        </div>
-    </div>
-    <% }) %>
-<% } else { %>
-    <div class="col-span-full">
-        <div class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-search mx-auto mb-4">
-                <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
-                <path d="M16.5 9.4 7.55 4.24"/>
-                <polyline points="3.29 7 12 12 20.71 7"/>
-                <line x1="12" y1="22" x2="12" y2="12"/>
-                <circle cx="18.5" cy="15.5" r="2.5"/>
-                <path d="M20.27 17.27 22 19"/>
-            </svg>
-            <p class="text-gray-500 text-lg mb-4">No products found.</p>
-            <button onclick="window.location.href='/'" class="btn-primary flex items-center gap-2 mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m15 18-6-6 6-6"/>
-                </svg>
-                Back to All Products
-            </button>
-        </div>
-    </div>
-<% } %>
-</div>
-
-                <!-- Pagination -->
-                  
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Product Card -->
             <% if (product.length > 0) { %>
-                <div class="mt-10 text-center">
-                    <%- include('partials/pagination')%>
+                <% product.forEach(pro => { %>
+                <div class="product-card tilt-card">
+                    <!-- Product Image Container -->
+                    <div class="card-image-container">
+                        <!-- Offer Badge -->
+                        <% if (pro.maxOffer > 0) { %>
+                        <div class="offer-badge">
+                            <%= pro.maxOffer %>% OFF
+                        </div>
+                        <% } else { %>
+                        <div class="new-badge">
+                            New
+                        </div>
+                        <% } %>
+                        
+                        <!-- Wishlist Button -->
+                        <button 
+                            onclick="addToWishlist('<%= pro._id %>', this)" 
+                            class="wishlist-btn"
+                            aria-label="Add to wishlist"
+                        >
+                            <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                width="20" 
+                                height="20" 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                stroke-width="2" 
+                                stroke-linecap="round" 
+                                stroke-linejoin="round" 
+                                class="wishlist-icon text-gray-500 transition-colors duration-200"
+                                data-product-id="<%= pro._id %>"
+                            >
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                        
+                        <a href="/productdetails/<%= pro._id%>" class="block"> 
+                            <img 
+                                src="/<%= pro.mainImage %>" 
+                                alt="<%= pro.productName %>" 
+                                class="card-image"
+                            >
+                        </a>
+                        
+                        <!-- Quick View Button -->
+                        <button 
+                            onclick="openQuickView('<%= pro._id %>', '<%= pro.productName %>', '/<%= pro.mainImage %>', '<%= pro.price %>', '<%= pro.brands ? pro.brands.name : 'No Brand' %>', '<%= pro.maxOffer %>', '<%= pro.salePrice %>')" 
+                            class="quick-view-btn"
+                        >
+                            <i class="fas fa-eye mr-2"></i> Quick View
+                        </button>
+                    </div>
+                    
+                    <div class="card-content">
+                        <a href="/productdetails/<%= pro._id%>" class="block"> 
+                            <h3 class="product-title"><%= pro.productName %></h3>
+                        </a>
+                        
+                        <% if (pro.brands) { %>
+                        <div class="brand-tag">
+                            <i class="fas fa-tag mr-1 text-gray-400"></i>
+                            <%= pro.brands.name %>
+                        </div>
+                        <% } %>
+                        
+                        <div class="rating">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
+                        </div>
+                        
+                        <div class="card-actions">
+                            <div class="price-display">
+                                <% if (pro.maxOffer > 0) { %>
+                                    <span class="original-price">₹<%= pro.price %></span>
+                                    <div class="sale-price">
+                                        ₹<%= Math.round(pro.salePrice) %>
+                                        <span class="discount-badge">
+                                            <i class="fas fa-bolt mr-1"></i>
+                                            <%= pro.maxOffer %>% OFF
+                                        </span>
+                                    </div>
+                                <% } else { %>
+                                    <span class="regular-price">₹<%= pro.price %></span>
+                                <% } %>
+                            </div>
+                            <button onclick="addToCart('<%= pro._id %>')" 
+                                class="add-to-cart"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>             
+                                <span class="font-medium">Add</span>         
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            <% } else { %>
+                <div class="col-span-full">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+                            <path d="M16.5 9.4 7.55 4.24"/>
+                            <polyline points="3.29 7 12 12 20.71 7"/>
+                            <line x1="12" y1="22" x2="12" y2="12"/>
+                            <circle cx="18.5" cy="15.5" r="2.5"/>
+                            <path d="M20.27 17.27 22 19"/>
+                        </svg>
+                        <p class="empty-state-text">No products found in our collection.</p>
+                        <button onclick="window.location.href='/'" class="empty-state-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m15 18-6-6 6-6"/>
+                            </svg>
+                            Back to All Products
+                        </button>
+                    </div>
                 </div>
             <% } %>
+        </div>
+
+        <!-- Pagination -->
+        <% if (product.length > 0) { %>
+            <div class="mt-12 text-center">
+                <%- include('partials/pagination')%>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div id="quickViewModal" class="modal">
+        <div class="modal-content enhanced-modal p-0 overflow-hidden">
+            <div class="flex flex-col md:flex-row">
+                <!-- Product Image -->
+                <div class="md:w-1/2 bg-gray-50 dark:bg-gray-800 p-8 flex items-center justify-center">
+                    <img id="modalProductImage" src="/placeholder.svg" alt="Product" class="modal-product-image">
+                </div>
+                
+                <!-- Product Details -->
+                <div class="md:w-1/2 modal-product-details">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span id="modalProductBrand" class="inline-block bg-primary/10 text-primary text-xs font-semibold px-2.5 py-1 rounded-full mb-2"></span>
+                            <h2 id="modalProductName" class="modal-product-title"></h2>
+                        </div>
+                        <button onclick="closeQuickView()" class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
+                    </div>
+                    
+                    <div class="mb-6" id="modalPriceContainer"></div>
+
+                    
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">
+                        Experience premium quality and performance with this exceptional product. Perfect for enthusiasts and professionals alike.
+                    </p>
+                    
+                    <div class="modal-action-buttons">
+                        <button id="modalAddToCart" onclick="" class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-all duration-300 btn-hover-effect flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            Add to Cart
+                        </button>
+                        <a id="modalViewDetails" href="" class="flex-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-300 text-center">
+                            View Details
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-<!-- Toast Notification -->
-<div id="toast" class="hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
-    <span id="toast-message"></span>
-</div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 dark:bg-gray-700 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        <span id="toast-message"></span>
+    </div>
+    
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:block"></i>
+    </button>
+
     <!-- Footer -->
-   <%-include('partials/footer') %>
+    <%-include('partials/footer') %>
 
-   
-
-
-
-<script>
-    function showToast(message, isError = false) {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toast-message');
-
-        toastMessage.textContent = message;
-        toast.classList.remove('hidden');
-
-        if (isError) {
-            toast.classList.add('bg-red-500');
-        } else {
-            toast.classList.remove('bg-red-500');
-            toast.classList.add('bg-gray-800');
-        }
-
-        setTimeout(() => {
-            toast.classList.add('hidden');
-        }, 3000); // Hide after 3 seconds
-    }
-    function addToWishlist(productId, button) {
-    // Get the SVG element inside the button
-    const wishlistIcon = button.querySelector('.wishlist-icon');
-    const path = wishlistIcon.querySelector('path');
-    
-    // Check if it's already in wishlist (has filled color)
-    const isInWishlist = wishlistIcon.classList.contains('text-red-500');
-    
-    if (isInWishlist) {
-        // Remove from wishlist
-        fetch(`/wishlist/${productId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update UI - change to unfilled heart
-                wishlistIcon.classList.remove('text-red-500');
-                wishlistIcon.classList.add('text-gray-500');
-                button.classList.remove('bg-red-50');
-                button.classList.add('bg-white');
-                
-                // Set fill to none
-                if (path) path.setAttribute('fill', 'none');
-                
-                showToast('Product removed from wishlist!');
-            } else {
-                showToast(data.message, true);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('An error occurred.', true);
-        });
-    } else {
-        // Add to wishlist
-        fetch('/wishlist', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                productId
-            }),
-            credentials: 'include'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update UI - change to filled heart
-                wishlistIcon.classList.remove('text-gray-500');
-                wishlistIcon.classList.add('text-red-500');
-                button.classList.remove('bg-white');
-                button.classList.add('bg-red-50');
-                
-                // Set fill to current color (red)
-                if (path) path.setAttribute('fill', 'currentColor');
-                
-                showToast('Product added to wishlist!');
-            } else {
-                showToast(data.message, true);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('An error occurred.', true);
-        });
-    }
-}
-
-// Initialize wishlist status on page load
-// Initialize wishlist status on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if user is logged in (has a token cookie)
-    const hasCookie = document.cookie.split(';').some(item => item.trim().startsWith('token='));
-    if (!hasCookie) return;
-    
-    // Get all wishlist icons
-    const wishlistIcons = document.querySelectorAll('.wishlist-icon');
-    
-    // Make a single request to get all wishlist items
-    fetch('/wishlistStatus', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        credentials: 'include' 
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-    console.log('Wishlist data:', data);
-    
-    if (data.success && Array.isArray(data.wishlistItems)) {
-        // Update the icon colors for items in wishlist
-        wishlistIcons.forEach(icon => {
-            const productId = icon.dataset.productId;
-            
-            if (data.wishlistItems.includes(productId)) {
-                // Get the button parent
-                const button = icon.closest('button');
-                
-                // Set the fill attribute directly on the SVG path
-                const path = icon.querySelector('path');
-                if (path) path.setAttribute('fill', 'currentColor');
-                
-                // Update classes
-                icon.classList.remove('text-gray-500');
-                icon.classList.add('text-red-500');
-                
-                // Update button background
-                if (button) {
-                    button.classList.remove('bg-white');
-                    button.classList.add('bg-red-50');
-                }
-            }
-        });
-    } else {
-        console.log('No wishlist items found or invalid data format:', data);
-        // Add a visible notification if needed
-    }
-})
-});
-
-
-</script>
-    <!-- JavaScript for Price Range -->
+    <!-- JavaScript -->
     <script>
+        // Toggle Filter Section
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterToggleBtn = document.getElementById('filterToggleBtn');
+            const filterSection = document.getElementById('filterSection');
+            const filterToggleIcon = document.querySelector('.filter-toggle');
+            
+            // Hide filter section by default
+            filterSection.classList.remove('open');
+            
+            filterToggleBtn.addEventListener('click', function() {
+                filterSection.classList.toggle('open');
+                filterToggleIcon.classList.toggle('open');
+            });
+            
+            // Dark mode toggle functionality
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && 
+                 window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+            }
+            
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                localStorage.setItem('darkMode', html.classList.contains('dark'));
+            });
+            
+            // Initialize 3D tilt effect
+            initTiltEffect();
+        });
+        
+        // 3D Tilt Effect for Cards
+        function initTiltEffect() {
+            const cards = document.querySelectorAll('.tilt-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', handleTilt);
+                card.addEventListener('mouseleave', resetTilt);
+            });
+        }
+        
+        function handleTilt(e) {
+            const card = this;
+            const cardRect = card.getBoundingClientRect();
+            const cardWidth = cardRect.width;
+            const cardHeight = cardRect.height;
+            
+            // Calculate mouse position relative to card center
+            const centerX = cardRect.left + cardWidth / 2;
+            const centerY = cardRect.top + cardHeight / 2;
+            const mouseX = e.clientX - centerX;
+            const mouseY = e.clientY - centerY;
+            
+            // Calculate rotation (max 10 degrees)
+            const rotateY = (mouseX / (cardWidth / 2)) * 5;
+            const rotateX = -(mouseY / (cardHeight / 2)) * 5;
+            
+            // Apply transform
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        }
+        
+        function resetTilt() {
+            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        }
+
+        function openQuickView(productId, productName, productImage, productPrice, productBrand, maxOffer, salePrice) {
+            const modal = document.getElementById('quickViewModal');
+            const modalProductName = document.getElementById('modalProductName');
+            const modalProductImage = document.getElementById('modalProductImage');
+            const modalProductBrand = document.getElementById('modalProductBrand');
+            const modalPriceContainer = document.getElementById('modalPriceContainer');
+            const modalAddToCart = document.getElementById('modalAddToCart');
+            const modalViewDetails = document.getElementById('modalViewDetails');
+            
+            // Set modal content
+            modalProductName.textContent = productName;
+            modalProductImage.src = productImage;
+            modalProductBrand.textContent = productBrand;
+            
+            // Update price display dynamically
+            if (maxOffer > 0) {
+                modalPriceContainer.innerHTML = `
+                    <span class="text-gray-500 dark:text-gray-400 text-lg line-through">₹${productPrice}</span>
+                    <span class="text-2xl font-bold text-red-500">₹${Math.round(salePrice)}</span>
+                    <span class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-semibold px-2 py-1 rounded-full flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        ${maxOffer}% OFF
+                    </span>
+                `;
+            } else {
+                modalPriceContainer.innerHTML = `<span class="text-2xl font-bold text-primary">₹${productPrice}</span>`;
+            }
+            
+            // Set button actions
+            modalAddToCart.setAttribute('onclick', `addToCart('${productId}')`);
+            modalViewDetails.href = `/productdetails/${productId}`;
+            
+            // Show modal and prevent body scrolling
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeQuickView() {
+            const modal = document.getElementById('quickViewModal');
+            modal.classList.remove('show');
+            
+            // Re-enable body scrolling
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside the content
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('quickViewModal');
+            if (event.target === modal) {
+                closeQuickView();
+            }
+        });
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+
+            if (isError) {
+                toast.classList.add('bg-red-500');
+                toast.classList.remove('bg-gray-800', 'dark:bg-gray-700');
+            } else {
+                toast.classList.remove('bg-red-500');
+                toast.classList.add('bg-gray-800', 'dark:bg-gray-700');
+            }
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        function addToWishlist(productId, button) {
+            // Get the SVG element inside the button
+            const wishlistIcon = button.querySelector('.wishlist-icon');
+            const path = wishlistIcon.querySelector('path');
+            
+            // Check if it's already in wishlist (has filled color)
+            const isInWishlist = wishlistIcon.classList.contains('text-red-500');
+            
+            if (isInWishlist) {
+                // Remove from wishlist
+                fetch(`/wishlist/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI - change to unfilled heart
+                        wishlistIcon.classList.remove('text-red-500');
+                        wishlistIcon.classList.add('text-gray-500');
+                        button.classList.remove('bg-red-50', 'dark:bg-red-900/20');
+                        button.classList.add('bg-white', 'dark:bg-gray-700');
+                        
+                        // Set fill to none
+                        if (path) path.setAttribute('fill', 'none');
+                        
+                        showToast('Product removed from wishlist!');
+                    } else {
+                        showToast(data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred.', true);
+                });
+            } else {
+                // Add to wishlist
+                fetch('/wishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId
+                    }),
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI - change to filled heart
+                        wishlistIcon.classList.remove('text-gray-500');
+                        wishlistIcon.classList.add('text-red-500');
+                        button.classList.remove('bg-white', 'dark:bg-gray-700');
+                        button.classList.add('bg-red-50', 'dark:bg-red-900/20');
+                        
+                        // Set fill to current color (red)
+                        if (path) path.setAttribute('fill', 'currentColor');
+                        
+                        showToast('Product added to wishlist!');
+                    } else {
+                        showToast(data.message, true);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('An error occurred.', true);
+                });
+            }
+        }
+
+        // Initialize wishlist status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in (has a token cookie)
+            const hasCookie = document.cookie.split(';').some(item => item.trim().startsWith('token='));
+            if (!hasCookie) return;
+            
+            // Get all wishlist icons
+            const wishlistIcons = document.querySelectorAll('.wishlist-icon');
+            
+            // Make a single request to get all wishlist items
+            fetch('/wishlistStatus', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include' 
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Wishlist data:', data);
+                
+                if (data.success && Array.isArray(data.wishlistItems)) {
+                    // Update the icon colors for items in wishlist
+                    wishlistIcons.forEach(icon => {
+                        const productId = icon.dataset.productId;
+                        
+                        if (data.wishlistItems.includes(productId)) {
+                            // Get the button parent
+                            const button = icon.closest('button');
+                            
+                            // Set the fill attribute directly on the SVG path
+                            const path = icon.querySelector('path');
+                            if (path) path.setAttribute('fill', 'currentColor');
+                            
+                            // Update classes
+                            icon.classList.remove('text-gray-500');
+                            icon.classList.add('text-red-500');
+                            
+                            // Update button background
+                            if (button) {
+                                button.classList.remove('bg-white', 'dark:bg-gray-700');
+                                button.classList.add('bg-red-50', 'dark:bg-red-900/20');
+                            }
+                        }
+                    });
+                } else {
+                    console.log('No wishlist items found or invalid data format:', data);
+                }
+            });
+            
+            // Equalize card heights for consistent layout
+            equalizeCardHeights();
+        });
+
+        // JavaScript for Price Range
         const priceRange = document.getElementById('priceRange');
         const priceValue = document.getElementById('priceValue');
 
-        priceRange.addEventListener('input', function() {
-            const value = this.value;
-            priceValue.textContent = '₹' + parseInt(value).toLocaleString();
-        });
-    </script>
-
-
-<script>
-
-function addToCart(productId) {
-    fetch('/addtocart', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-           
-            productId: productId,
-            quantity: 1 // Default quantity
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showToast('Product added to cart!');
-        } else {
-            showToast(data.message, true);
+        if (priceRange && priceValue) {
+            priceRange.addEventListener('input', function() {
+                const value = this.value;
+                priceValue.textContent = '₹' + parseInt(value).toLocaleString();
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('An error occurred.', true);
-    });
-}
 
+        function addToCart(productId) {
+            fetch('/addtocart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: 1 // Default quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Product added to cart!');
+                    
+                    // Close modal if it's open
+                    const modal = document.getElementById('quickViewModal');
+                    if (modal.classList.contains('show')) {
+                        closeQuickView();
+                    }
+                } else {
+                    showToast(data.message, true);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred.', true);
+            });
+        }
 
-
- // This would replace your existing JavaScript file content
-document.addEventListener('DOMContentLoaded', function () {
-    const searchInput = document.getElementById("searchInput");
-    const sortSelect = document.getElementById("sortBy");
-    const clearBtn = document.getElementById("clearBtn");
-    const applyFiltersBtn = document.querySelector('button.w-full.bg-primary.text-white');
-    const priceRange = document.getElementById("priceRange");
-    const priceValue = document.getElementById("priceValue");
-
-    // Update price value display
-    if (priceRange && priceValue) {
-        priceRange.addEventListener('input', function() {
-            priceValue.textContent = `₹${parseInt(this.value).toLocaleString()}`;
-        });
-    }
-
-    // Ensure all product cards have equal height
-    function equalizeCardHeights() {
-        const productCards = document.querySelectorAll('.product-cart-wrap');
-        let maxHeight = 0;
-        
-        // Reset heights first
-        productCards.forEach(card => {
-            card.style.height = 'auto';
-            const height = card.offsetHeight;
-            maxHeight = Math.max(maxHeight, height);
-        });
-        
-        // Set all cards to the height of the tallest
-        productCards.forEach(card => {
-            card.style.height = `${maxHeight}px`;
-        });
-    }
-
-    // Debounce function to delay execution
-    function debounce(func, delay) {
-        let timer;
-        return function (...args) {
-            clearTimeout(timer);
-            timer = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
-
-    // Apply filters when input changes (debounced)
-    function applyFilters() {
-        const queryParams = new URLSearchParams();
-
-        // Get search value
-        const search = searchInput?.value.trim();
-        
-        // Get checked categories
-        const checkedCategories = document.querySelectorAll('input[name="categoryFilter"]:checked');
-        let categoryValues = [];
-        
-        checkedCategories.forEach(checkbox => {
-            if (checkbox.id !== 'allCategories') {
-                // Get the category name from the span element next to the checkbox
-                const categoryName = checkbox.nextElementSibling.textContent.trim();
-                categoryValues.push(categoryName);
+        // Ensure all product cards have equal height
+        // Update the equalizeCardHeights function to run after images load
+        function equalizeCardHeights() {
+            const productCards = document.querySelectorAll('.product-card');
+            
+            // Wait for all images to load before calculating heights
+            const images = document.querySelectorAll('.card-image');
+            let imagesLoaded = 0;
+            
+            function onImageLoad() {
+                imagesLoaded++;
+                if (imagesLoaded === images.length) {
+                    // All images loaded, now calculate heights
+                    let maxHeight = 0;
+                    
+                    // Reset heights first
+                    productCards.forEach(card => {
+                        card.style.height = 'auto';
+                        const height = card.offsetHeight;
+                        maxHeight = Math.max(maxHeight, height);
+                    });
+                    
+                    // Set all cards to the height of the tallest
+                    productCards.forEach(card => {
+                        card.style.height = `${maxHeight}px`;
+                    });
+                }
             }
-        });
-
-        // Get checked brands
-        const checkedBrands = document.querySelectorAll('input[name="brandsFilter"]:checked');
-        let brandValues = [];
-        
-        checkedBrands.forEach(checkbox => {
-            if (checkbox.id !== 'allBrands') {
-                // Get the brand name from the span element next to the checkbox
-                const brandName = checkbox.nextElementSibling.textContent.trim();
-                brandValues.push(brandName);
-            }
-        });
-
-        // Get price range
-        const maxPrice = priceRange?.value;
-
-        // Get sort value
-        const sort = sortSelect?.value;
-
-        // Add non-empty filters to query params
-        if (search) queryParams.append("search", search);
-        if (categoryValues.length > 0 && !document.getElementById('allCategories').checked) {
-            queryParams.append("categoryFilter", categoryValues[0]); // Currently backend handles only one category
-        }
-        if (brandValues.length > 0 && !document.getElementById('allBrands').checked) {
-            queryParams.append("brandsFilter", brandValues[0]); // Currently backend handles only one brand
-        }
-        if (maxPrice) queryParams.append("maxPrice", maxPrice);
-        if (sort) queryParams.append("sortBy", sort);
-
-        // Navigate to filtered URL
-        window.location.href = `/shoplist?${queryParams.toString()}`;
-    }
-
-    // Function to handle "All Categories" checkbox
-    function handleAllCategories() {
-        const allCategoriesCheckbox = document.getElementById('allCategories');
-        const categoryCheckboxes = document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)');
-        
-        if (allCategoriesCheckbox) {
-            allCategoriesCheckbox.addEventListener('change', function() {
-                categoryCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                    checkbox.disabled = this.checked;
-                });
+            
+            // Check if images are already loaded
+            images.forEach(img => {
+                if (img.complete) {
+                    onImageLoad();
+                } else {
+                    img.addEventListener('load', onImageLoad);
+                }
             });
             
-            // If any individual category is checked, uncheck "All Categories"
-            categoryCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
+            // If there are no images, just equalize heights
+            if (images.length === 0) {
+                let maxHeight = 0;
+                
+                productCards.forEach(card => {
+                    card.style.height = 'auto';
+                    const height = card.offsetHeight;
+                    maxHeight = Math.max(maxHeight, height);
+                });
+                
+                productCards.forEach(card => {
+                    card.style.height = `${maxHeight}px`;
+                });
+            }
+        }
+
+        // Debounce function to delay execution
+        function debounce(func, delay) {
+            let timer;
+            return function (...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // Main functionality for filters and sorting
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById("searchInput");
+            const sortSelect = document.getElementById("sortBy");
+            const clearBtn = document.getElementById("clearBtn");
+            const applyFiltersBtn = document.querySelector('button.w-full.bg-primary');
+            const priceRange = document.getElementById("priceRange");
+            const priceValue = document.getElementById("priceValue");
+
+            // Apply filters when input changes (debounced)
+            function applyFilters() {
+                const queryParams = new URLSearchParams();
+
+                // Get search value
+                const search = searchInput?.value.trim();
+                
+                // Get checked categories
+                const checkedCategories = document.querySelectorAll('input[name="categoryFilter"]:checked');
+                let categoryValues = [];
+                
+                checkedCategories.forEach(checkbox => {
+                    if (checkbox.id !== 'allCategories') {
+                        // Get the category name from the span element next to the checkbox
+                        const categoryName = checkbox.nextElementSibling.textContent.trim();
+                        categoryValues.push(categoryName);
+                    }
+                });
+
+                // Get checked brands
+                const checkedBrands = document.querySelectorAll('input[name="brandsFilter"]:checked');
+                let brandValues = [];
+                
+                checkedBrands.forEach(checkbox => {
+                    if (checkbox.id !== 'allBrands') {
+                        // Get the brand name from the span element next to the checkbox
+                        const brandName = checkbox.nextElementSibling.textContent.trim();
+                        brandValues.push(brandName);
+                    }
+                });
+
+                // Get price range
+                const maxPrice = priceRange?.value;
+
+                // Get sort value
+                const sort = sortSelect?.value;
+
+                // Add non-empty filters to query params
+                if (search) queryParams.append("search", search);
+                if (categoryValues.length > 0 && !document.getElementById('allCategories').checked) {
+                    queryParams.append("categoryFilter", categoryValues[0]); // Currently backend handles only one category
+                }
+                if (brandValues.length > 0 && !document.getElementById('allBrands').checked) {
+                    queryParams.append("brandsFilter", brandValues[0]); // Currently backend handles only one brand
+                }
+                if (maxPrice) queryParams.append("maxPrice", maxPrice);
+                if (sort) queryParams.append("sortBy", sort);
+
+                // Navigate to filtered URL
+                window.location.href = `/shoplist?${queryParams.toString()}`;
+            }
+
+            // Function to handle "All Categories" checkbox
+            function handleAllCategories() {
+                const allCategoriesCheckbox = document.getElementById('allCategories');
+                const categoryCheckboxes = document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)');
+                
+                if (allCategoriesCheckbox) {
+                    allCategoriesCheckbox.addEventListener('change', function() {
+                        categoryCheckboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                            checkbox.disabled = this.checked;
+                        });
+                    });
+                    
+                    // If any individual category is checked, uncheck "All Categories"
+                    categoryCheckboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', function() {
+                            if (this.checked) {
+                                allCategoriesCheckbox.checked = false;
+                            }
+                        });
+                    });
+                }
+            }
+
+            // Function to handle "All Brands" checkbox
+            function handleAllBrands() {
+                const allBrandsCheckbox = document.getElementById('allBrands');
+                const brandCheckboxes = document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)');
+                
+                if (allBrandsCheckbox) {
+                    allBrandsCheckbox.addEventListener('change', function() {
+                        brandCheckboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                            checkbox.disabled = this.checked;
+                        });
+                    });
+                    
+                    // If any individual brand is checked, uncheck "All Brands"
+                    brandCheckboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', function() {
+                            if (this.checked) {
+                                allBrandsCheckbox.checked = false;
+                            }
+                        });
+                    });
+                }
+            }
+
+            // Clear all filters
+            function clearFilters() {
+                const allCategoriesCheckbox = document.getElementById('allCategories');
+                const allBrandsCheckbox = document.getElementById('allBrands');
+                
+                if (searchInput) searchInput.value = "";
+                if (allCategoriesCheckbox) allCategoriesCheckbox.checked = true;
+                if (allBrandsCheckbox) allBrandsCheckbox.checked = true;
+                
+                document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.disabled = true;
+                });
+                
+                document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.disabled = true;
+                });
+                
+                if (sortSelect) sortSelect.value = "";
+                if (priceRange) priceRange.value = priceRange.max / 2;
+                if (priceValue) priceValue.textContent = `₹${parseInt(priceRange.value).toLocaleString()}`;
+                
+                window.location.href = '/shoplist';
+            }
+
+            // Restore filter values from URL on page load
+            function restoreFiltersFromURL() {
+                const params = new URLSearchParams(window.location.search);
+                
+                // Restore search
+                if (searchInput) searchInput.value = params.get("search") || "";
+                
+                // Restore category filters
+                const categoryParam = params.get("categoryFilter");
+                if (categoryParam) {
+                    const allCategoriesCheckbox = document.getElementById('allCategories');
+                    if (allCategoriesCheckbox) {
                         allCategoriesCheckbox.checked = false;
                     }
-                });
-            });
-        }
-    }
-
-    // Function to handle "All Brands" checkbox
-    function handleAllBrands() {
-        const allBrandsCheckbox = document.getElementById('allBrands');
-        const brandCheckboxes = document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)');
-        
-        if (allBrandsCheckbox) {
-            allBrandsCheckbox.addEventListener('change', function() {
-                brandCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                    checkbox.disabled = this.checked;
-                });
-            });
-            
-            // If any individual brand is checked, uncheck "All Brands"
-            brandCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
+                    
+                    // Check the appropriate category checkbox
+                    document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
+                        const categoryName = checkbox.nextElementSibling.textContent.trim();
+                        checkbox.checked = categoryName === categoryParam;
+                        checkbox.disabled = false;
+                    });
+                }
+                
+                // Restore brand filters
+                const brandParam = params.get("brandsFilter");
+                if (brandParam) {
+                    const allBrandsCheckbox = document.getElementById('allBrands');
+                    if (allBrandsCheckbox) {
                         allBrandsCheckbox.checked = false;
                     }
-                });
-            });
-        }
-    }
+                    
+                    // Check the appropriate brand checkbox
+                    document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
+                        const brandName = checkbox.nextElementSibling.textContent.trim();
+                        checkbox.checked = brandName === brandParam;
+                        checkbox.disabled = false;
+                    });
+                }
+                
+                // Restore price range
+                const maxPriceParam = params.get("maxPrice");
+                if (maxPriceParam && priceRange && priceValue) {
+                    priceRange.value = maxPriceParam;
+                    priceValue.textContent = `₹${parseInt(maxPriceParam).toLocaleString()}`;
+                }
+                
+                // Restore sort
+                if (sortSelect) {
+                    sortSelect.value = params.get("sortBy") || "";
+                }
+            }
 
-    // Clear all filters
-    function clearFilters() {
-        const allCategoriesCheckbox = document.getElementById('allCategories');
-        const allBrandsCheckbox = document.getElementById('allBrands');
-        
-        if (searchInput) searchInput.value = "";
-        if (allCategoriesCheckbox) allCategoriesCheckbox.checked = true;
-        if (allBrandsCheckbox) allBrandsCheckbox.checked = true;
-        
-        document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
-            checkbox.checked = false;
-            checkbox.disabled = true;
-        });
-        
-        document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
-            checkbox.checked = false;
-            checkbox.disabled = true;
-        });
-        
-        if (sortSelect) sortSelect.value = "";
-        if (priceRange) priceRange.value = priceRange.max / 2;
-        if (priceValue) priceValue.textContent = `₹${parseInt(priceRange.value).toLocaleString()}`;
-        
-        window.location.href = '/shoplist';
-    }
-
-    // Restore filter values from URL on page load
-    function restoreFiltersFromURL() {
-        const params = new URLSearchParams(window.location.search);
-        
-        // Restore search
-        if (searchInput) searchInput.value = params.get("search") || "";
-        
-        // Restore category filters
-        const categoryParam = params.get("categoryFilter");
-        if (categoryParam) {
-            const allCategoriesCheckbox = document.getElementById('allCategories');
-            if (allCategoriesCheckbox) {
-                allCategoriesCheckbox.checked = false;
+            // Add event listeners
+            if (searchInput) {
+                searchInput.addEventListener("input", debounce(applyFilters, 500));
             }
             
-            // Check the appropriate category checkbox
-            document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
-                const categoryName = checkbox.nextElementSibling.textContent.trim();
-                checkbox.checked = categoryName === categoryParam;
-                checkbox.disabled = false;
-            });
-        }
-        
-        // Restore brand filters
-        const brandParam = params.get("brandsFilter");
-        if (brandParam) {
-            const allBrandsCheckbox = document.getElementById('allBrands');
-            if (allBrandsCheckbox) {
-                allBrandsCheckbox.checked = false;
+            if (sortSelect) {
+                sortSelect.addEventListener("change", applyFilters);
             }
             
-            // Check the appropriate brand checkbox
-            document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
-                const brandName = checkbox.nextElementSibling.textContent.trim();
-                checkbox.checked = brandName === brandParam;
-                checkbox.disabled = false;
+            if (clearBtn) {
+                clearBtn.addEventListener("click", clearFilters);
+            }
+            
+            if (applyFiltersBtn) {
+                applyFiltersBtn.addEventListener("click", applyFilters);
+            }
+            
+            if (priceRange) {
+                priceRange.addEventListener("change", applyFilters);
+            }
+
+            // Initialize checkbox handlers
+            handleAllCategories();
+            handleAllBrands();
+            
+            // Initialize filters from URL
+            restoreFiltersFromURL();
+            
+            // Run equalize heights on page load and window resize
+            equalizeCardHeights();
+            window.addEventListener('resize', debounce(equalizeCardHeights, 200));
+            
+            // Run again after images load for more accurate heights
+            window.addEventListener('load', equalizeCardHeights);
+        });
+
+        // Add this to ensure images load properly
+        document.addEventListener('DOMContentLoaded', function() {
+            // Preload images for better display
+            const productImages = document.querySelectorAll('.card-image');
+            productImages.forEach(img => {
+                const src = img.getAttribute('src');
+                if (src) {
+                    const preloadImg = new Image();
+                    preloadImg.src = src;
+                }
             });
-        }
-        
-        // Restore price range
-        const maxPriceParam = params.get("maxPrice");
-        if (maxPriceParam && priceRange && priceValue) {
-            priceRange.value = maxPriceParam;
-            priceValue.textContent = `₹${parseInt(maxPriceParam).toLocaleString()}`;
-        }
-        
-        // Restore sort
-        if (sortSelect) {
-            sortSelect.value = params.get("sortBy") || "";
-        }
-    }
-
-    // Add event listeners
-    if (searchInput) {
-        searchInput.addEventListener("input", debounce(applyFilters, 500));
-    }
-    
-    if (sortSelect) {
-        sortSelect.addEventListener("change", applyFilters);
-    }
-    
-    if (clearBtn) {
-        clearBtn.addEventListener("click", clearFilters);
-    }
-    
-    if (applyFiltersBtn) {
-        applyFiltersBtn.addEventListener("click", applyFilters);
-    }
-    
-    if (priceRange) {
-        priceRange.addEventListener("change", applyFilters);
-    }
-
-    // Initialize checkbox handlers
-    handleAllCategories();
-    handleAllBrands();
-    
-    // Initialize filters from URL
-    restoreFiltersFromURL();
-    
-    // Add animation to product cards
-    const productCards = document.querySelectorAll('.product-cart-wrap');
-    productCards.forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.classList.add('transform', 'translate-y-[-5px]');
         });
-        card.addEventListener('mouseleave', () => {
-            card.classList.remove('transform', 'translate-y-[-5px]');
-        });
-    });
-
-    // Run equalize heights on page load and window resize
-    equalizeCardHeights();
-    window.addEventListener('resize', debounce(equalizeCardHeights, 200));
-    
-    // Run again after images load for more accurate heights
-    window.addEventListener('load', equalizeCardHeights);
-});
-
-</script>
+    </script>
 </body>
 </html>

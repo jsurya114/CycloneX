@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { type } = require('os');
+
 const OrderSchema = new mongoose.Schema({
     orderId: { type: String, required: true, unique: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

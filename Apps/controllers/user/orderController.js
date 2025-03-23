@@ -3,8 +3,10 @@ const Cart = require('../../models/cartModel')
 const User = require('../../models/userModel')
 const jwt = require('jsonwebtoken')
 const Wishlist = require('../../models/wislistModel')
+const Coupon = require('../../models/couponModel')
 const Order= require('../../models/orderModel')
 const Address = require('../../models/addressModel')
+const Wallet = require('../../models/walletModel')
 const { v4: uuidv4 } = require('uuid')
 const { timeStamp } = require('console')
 
@@ -12,7 +14,7 @@ const { timeStamp } = require('console')
 const orderController={
     placeOrder:async (req,res,next) => {
 try {
-    console.log('here1');
+    console.log('here1',req.body);
     
     const token =req.cookies.token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -25,7 +27,10 @@ if(!user){
 
 }
 
-const {totalAmount,paymentMethod,paymentStatus,address}=req.body
+
+const {productId,totalAmount,paymentMethod,paymentStatus,address,couponCode}=req.body
+
+console.log('methrt',paymentMethod)
 if(!totalAmount||!address||!paymentStatus){
     return res.status(400).json({success:false,message:'Your cart is empty. Please add some products.' })
 
@@ -45,15 +50,26 @@ if(!cart||!cart.items||cart.items.length===0){
 }
 console.log('cart',cart)
 
+const coupon = await Coupon.findOne({couponCode:couponCode})
+console.log('coupon',coupon)
+
+if(coupon){
+    coupon.user.push(userId)
+    await coupon.save()
+}
+
 let outOfStockItems = []
 let items =[]
 console.log('cartitems',cart?.items)
 for(const item of cart.items)
 {
-    const product = await Product.findById(item.product)
+    const product = await Product.findById(item.product).populate('category')
 if(!product){
     return res.status(404).json({success:false,message:'product not found'})
 
+}
+if(product.isDeleted||product.category&&product.category.isBlocked){
+    return res.status(400).json({ success: false, message: 'Product is unavailable' })
 }
 
 
@@ -68,7 +84,7 @@ if(product.stock<item.quantity){
     items.push({
 product:product._id,
 quantity:item.quantity,
-subTotal:item.quantity*product.price
+subTotal:item.quantity*item.salePrice
     })
 }
 
@@ -81,21 +97,28 @@ if(outOfStockItems.length>0){
 }
 const orderId= uuidv4()
 console.log('orderId',orderId)
+
 const currentDate=new Date()
 
 const newOrder= new Order({
     orderId:orderId,
     user:userId,
-    paymentMethod:paymentMethod,
-    paymentStatus:paymentStatus,
-    orderStatus:'pending',
+    paymentMethod: paymentMethod.toLowerCase().trim(),
+    paymentStatus: paymentMethod.toLowerCase() === "razorpay" ? "processing" : "paid",
+    orderStatus:'processing',
     address:address,
     totalAmount:totalAmount,
     items:items,
-    timestamp:currentDate
+    timestamp:currentDate,
 })
 
 await newOrder.save()
+
+for(let item of newOrder.items){
+    await Product.updateOne({_id:item.product._id},{$inc:{stock:-item.quantity}})
+}
+
+
 
 await Cart.findOneAndUpdate({user:userId},{$set:{items:[]}})
 
@@ -118,6 +141,7 @@ await wishlist.save()
 
 
 
+
 return res.status(201).json({success:true,message:'order placed successfull',
     method: paymentMethod,
     order: newOrder
@@ -134,7 +158,7 @@ confirmation:async (req,res,next) => {
     res.status(200).render('confirmation')
 },
 getorder:async (req,res,next) => {
-    const token = req.cookies.token
+   try{ const token = req.cookies.token
     const decoded =jwt.verify(token, process.env.JWT_SECRET)
     const userId = decoded.id
 
@@ -147,21 +171,32 @@ getorder:async (req,res,next) => {
     if(!user){
         return res.status(404).json({success:false,message:'user not found'})
     }
+    let cartCount =await Cart.countDocuments({user:userId})
+console.log('fgfdg',req.query)
+const {search}=req.query
 
-    const orderlist = await Order.find({user:userId}).populate('items.product').populate('address').sort({timestamp:-1})
+let filter = {};
 
+if (search) {
+    filter.$or = [{ productName: { $regex: search.trim(), $options: "i" } }]
+}
+console.log('eserer',search)
+    const orderlist = await Order.find({user:userId,...filter}).populate('items.product').populate('address').sort({timestamp:-1})
+console.log('asdd',orderlist.items)
     // console.log('orders',orders)
 
-if(!orderlist||orderlist.legnth===0){
-    return res.status(404).render('order',{orders:[],user:user})
+if(!orderlist||orderlist.length===0){
+    return res.status(404).render('order',{orders:[],user:user,cartCount:cartCount})
 }
 const orders ={
     items:orderlist
 }
-console.log('idd',orders);
+console.log('idd',orders.items);
 
-    res.status(200).render('order',{orders:orders,user:user})
-
+    res.status(200).render('order',{orders:orders,user:user,cartCount:cartCount})
+}catch(error){
+    next(error)
+}
 },
 
 
@@ -176,26 +211,41 @@ try {
     }
 
     const user = await User.findById(userId)
+    let cartCount =await Cart.countDocuments({user:userId})
    
     const orderId = req.params.orderId
 
 
     const order = await Order.findOne({orderId}) .populate('items.product').populate('address')
    
+    console.log('dfjlasjd',order)
 if(!order){
     return res.status(404).json({success:false,message:'Order not found'})
 }
 
 
 
-    res.render('orderdetails',{orders:order,user:user})
+
+    res.render('orderdetails',{orders:order,user:user,cartCount:cartCount})
 } catch (error) {
     next(error)
 }      
     },
     cancelOrder:async (req,res,next) => {
         try {
+
+            const token =req.cookies.token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+              const userId = decoded.id;
+              console.log('here2',userId)
+        const user = await User.findById(userId)
+        console.log('rewq',req.body)
+        if(!user){
+            return res.status(400).json({success:false,message:'Unauthorized'})
+        
+        }
 console.log('para',req.params)
+
           const orderId = req.params.orderId
           const {cancelReason} = req.body
           console.log('peresdfsd',orderId)
@@ -205,11 +255,48 @@ console.log('para',req.params)
           }
 
       
-          const order = await Order.findOne({orderId})
+          const order = await Order.findOne({orderId}).populate('items.product')
 
           if(!order){
             return res.status(404).json({success:false,message:'Order not found'})
           }
+
+          if(order.paymentMethod==='Razorpay'){
+
+      
+            let wallet = await Wallet.findOne({user:userId})
+            if(!wallet){
+                wallet =await Wallet.create({user:userId,balance,transaction:[]})
+            
+            }
+            wallet.transaction.push({transactionType:'credit',amount:order.totalAmount,reason:`Refund for Order ${orderId}`})
+            
+            wallet.balance+=order.totalAmount
+            await wallet.save()
+            
+            for(let item of order.items){
+                await Product.updateOne({_id:item.product._id},{$inc:{stock:item.quantity}})
+            }
+
+            order.cancelReason=cancelReason
+          order.orderStatus="cancelled"
+
+
+              await order.save()
+               
+              return res.status(200).json({
+                message: "Order Cancelled! Your money will be credited to your wallet.",
+                success: true,
+              });
+  
+            
+                            }
+            
+
+                            for(let item of order.items){
+                                await Product.updateOne({_id:item.product._id},{$inc:{stock:item.quantity}})
+                            }
+          
           order.cancelReason=cancelReason
           order.orderStatus="cancelled"
           await order.save()
@@ -223,6 +310,19 @@ console.log('para',req.params)
       
       },
       returnOrder:async (req,res,next) => {
+
+        const token =req.cookies.token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          const userId = decoded.id;
+          console.log('here2',userId)
+    const user = await User.findById(userId)
+    console.log('rewq',req.body)
+    if(!user){
+        return res.status(400).json({success:false,message:'Unauthorized'})
+    
+    }
+
+
         console.log('rew',req.params)
         const orderId = req.params.orderId
         const {returnReason}=req.body
@@ -231,11 +331,48 @@ console.log('para',req.params)
                 }
       
             
-                const order = await Order.findOne({orderId})
+                const order = await Order.findOne({orderId}).populate('items.product')
       
                 if(!order){
                   return res.status(404).json({success:false,message:'Order not found'})
                 }
+
+                if(order.paymentMethod==='cod'){
+                    for(let item of order.items){
+                        await Product.updateOne({_id:item.product},{$inc:{'quantity':item.quantity}})
+                    }
+                    let wallet = await  Wallet.findOne({user:userId})
+                    if(!wallet){
+                        wallet = await Wallet.create({user:userId,balance,transaction:[]})
+                    }
+
+                    wallet.transaction.push({transactionType:'credit',amount:order.totalAmount,reason:`Refund for Order ${orderId}`})
+                    wallet.balance+=order.totalAmount
+                    await wallet.save()
+
+for(let item of order.items){
+    await Product.updateOne({_id:item.product._id},{$inc:{stock:item.quantity}})
+}
+
+
+                    order.returnReason=returnReason
+                    order.orderStatus='return request'
+                    await order.save()
+
+                    return res.status(200).json({
+                        message: "Order return returned ! Your money will be credited to your wallet.",
+                        success: true,
+                      });
+                }
+
+
+
+                for(let item of order.items){
+                    await Product.updateOne({_id:item.product._id},{$inc:{stock:item.quantity}})
+                }
+
+
+                
                 order.returnReason=returnReason
                 order.orderStatus="return request"
                 await order.save()
