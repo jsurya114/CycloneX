@@ -470,7 +470,7 @@
         });
 
         if (!response.ok) {
-          throw new Error("Failed to update order status");
+          throw new Error("Failed to update order statuss");
         }
 
         const result = await response.json();
@@ -492,7 +492,7 @@
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Failed to update order status',
+          text: 'delivered order cannot be edited',
           confirmButtonColor: '#0284c7'
         });
       }

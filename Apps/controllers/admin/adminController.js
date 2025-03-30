@@ -167,14 +167,14 @@ if (sortBy) {
 let currentPage=parseInt(page)||1
 let itemsPerPage=parseInt(limit)||4
 let skip =(currentPage-1)*itemsPerPage
-let totalProducts=await Product.countDocuments(filter)
+let totalUsers = await User.countDocuments(filter)
 
 
             const user = await User.find(filter).sort(sortOptions)
             .skip(skip)
             .limit(itemsPerPage)
 
-            let totalPages = Math.ceil(totalProducts/itemsPerPage)
+            let totalPages = Math.ceil(totalUsers/itemsPerPage)
             res.render('userlist',{user,message:null,
                 currentPage,
                 totalPages,

@@ -35,7 +35,7 @@ if(!totalAmount||!address||!paymentStatus){
     return res.status(400).json({success:false,message:'Your cart is empty. Please add some products.' })
 
 }
-const addressDoc=await Address.findById(address)
+const addressDoc=await Address.findById(address)//actually we are taking the addressId
 if(!addressDoc){
     return res.status(404).json({success:false,message:'Address not found'})
 
@@ -54,7 +54,7 @@ const coupon = await Coupon.findOne({couponCode:couponCode})
 console.log('coupon',coupon)
 
 if(coupon){
-    coupon.user.push(userId)
+    coupon.usedBy.push(userId)
     await coupon.save()
 }
 
@@ -104,8 +104,8 @@ const newOrder= new Order({
     orderId:orderId,
     user:userId,
     paymentMethod: paymentMethod.toLowerCase().trim(),
-    paymentStatus: paymentMethod.toLowerCase() === "razorpay" ? "processing" : "paid",
-    orderStatus:'processing',
+    paymentStatus: paymentMethod.toLowerCase() === "razorpay" ? "processing" : "pending",
+    orderStatus:'processing',   
     address:address,
     totalAmount:totalAmount,
     items:items,
@@ -142,7 +142,7 @@ await wishlist.save()
 
 
 
-return res.status(201).json({success:true,message:'order placed successfull',
+return res.status(201).json({success:true,message:'order placed successfully',
     method: paymentMethod,
     order: newOrder
 })
@@ -180,8 +180,14 @@ let filter = {};
 if (search) {
     filter.$or = [{ productName: { $regex: search.trim(), $options: "i" } }]
 }
+let page =parseInt(req.query.page)||1
+let limit =parseInt(req.query.limit)|| 3
+
+let currentPage = page
+let itemsPerPage = limit
+let skip = (currentPage-1)*itemsPerPage
 console.log('eserer',search)
-    const orderlist = await Order.find({user:userId,...filter}).populate('items.product').populate('address').sort({timestamp:-1})
+    const orderlist = await Order.find({user:userId,...filter}).populate('items.product').populate('address').sort({timestamp:-1}).limit(itemsPerPage).skip(skip)
 console.log('asdd',orderlist.items)
     // console.log('orders',orders)
 
@@ -193,7 +199,20 @@ const orders ={
 }
 console.log('idd',orders.items);
 
-    res.status(200).render('order',{orders:orders,user:user,cartCount:cartCount})
+
+
+let totalOrders=await Order.countDocuments()
+let totalPages=Math.ceil(totalOrders/itemsPerPage)
+    res.status(200).render('order',{orders:orders,user:user,cartCount:cartCount,
+        currentPage,
+                totalPages,
+                hasNextPage: currentPage < totalPages,
+                hasPrevPage: currentPage > 1,
+                nextPage: currentPage < totalPages ? currentPage + 1 : null,
+                prevPage: currentPage > 1 ? currentPage - 1 : null,
+       
+
+    })
 }catch(error){
     next(error)
 }
@@ -266,7 +285,7 @@ console.log('para',req.params)
       
             let wallet = await Wallet.findOne({user:userId})
             if(!wallet){
-                wallet =await Wallet.create({user:userId,balance,transaction:[]})
+                wallet =await Wallet.create({user:userId,balance:0,transaction:[]})
             
             }
             wallet.transaction.push({transactionType:'credit',amount:order.totalAmount,reason:`Refund for Order ${orderId}`})
@@ -343,7 +362,7 @@ console.log('para',req.params)
                     }
                     let wallet = await  Wallet.findOne({user:userId})
                     if(!wallet){
-                        wallet = await Wallet.create({user:userId,balance,transaction:[]})
+                        wallet = await Wallet.create({user:userId,balance:0,transaction:[]})
                     }
 
                     wallet.transaction.push({transactionType:'credit',amount:order.totalAmount,reason:`Refund for Order ${orderId}`})

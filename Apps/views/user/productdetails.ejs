@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CycloneX</title>
+        <title>CycloneX ProductDetails</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <script>
@@ -175,7 +175,7 @@
     <h1 class="text-2xl font-bold text-gray-800"><%= product.productName %></h1>
     <p class="text-sm text-gray-500 mt-2">Brand: <span class="font-semibold"><%= product.brands.name %></span></p>
     <div class="mt-4">
-        <span class="text-3xl font-bold text-gray-800">₹<%= product.price %></span>
+        <span class="text-3xl font-bold text-gray-800">₹<%= salePrice.toFixed(2) %></span>
         <span class="text-sm text-gray-500 ml-2">(Inclusive of all taxes)</span>
     </div>
 
@@ -184,7 +184,7 @@
         <!-- Discount Badge -->
         <% if(product.discount) { %>
             <div class="inline-flex items-center bg-red-100 px-3 py-1 rounded-full">
-                <span class="text-red-600 font-semibold"><%= product.discount %>% Off</span>
+                <span class="text-red-600 font-semibold"><%= maxOffer %>% Off</span>
             </div>
         <% } %>
 
@@ -213,8 +213,8 @@
                         </svg>
                     </span>
                     <p class="text-sm">
-                        <span class="font-semibold">Bank Offer:</span> 
-                        10% off on HDFC Bank Credit Cards, up to ₹1500
+                        <span class="font-semibold">Maximum Offer:</span> 
+                        <%=maxOffer %>% for this product
                     </p>
                 </li>
                 <li class="flex items-center">
@@ -257,7 +257,7 @@
             <span class="font-medium">Add to Cart</span>         
         </button>         
     
-       <a href="/checkout/<%= product._id %>"> <button class="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
+       <a href="/checkout"> <button class="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
             Buy Now
         </button>   
     </a>  

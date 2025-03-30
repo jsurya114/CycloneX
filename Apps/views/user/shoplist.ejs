@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop - CyclePro</title>
+    <title>CycloneX Shop</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,6 +13,9 @@
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <!-- Tailwind Configuration -->
     <script>
@@ -300,7 +303,7 @@
             border-color: rgba(75, 85, 99, 0.8);
         }
         
-        /* Update the card-image-container and card-image styles to ensure images fit properly */
+        /* Update the card-image-container for Three.js canvas */
         .product-card .card-image-container {
             height: 240px;
             overflow: hidden;
@@ -310,37 +313,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
-            perspective: 1000px; /* Add perspective for 3D effect */
         }
         
         .dark .product-card .card-image-container {
             background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
         }
 
+        /* Hide the original image when Three.js is active */
         .product-card .card-image {
-            max-height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-            object-position: center;
-            transform-style: preserve-3d;
-            transition: transform 0.5s ease;
-            animation: rotate3d 15s infinite linear;
+            display: none;
         }
         
-        /* 3D Rotation Animation */
-        @keyframes rotate3d {
-            0% {
-                transform: rotateY(0deg);
-            }
-            100% {
-                transform: rotateY(360deg);
-            }
-        }
-        
-        /* Pause animation on hover for better UX */
-        .product-card:hover .card-image {
-            animation-play-state: paused;
+        /* Three.js canvas styling */
+        .product-card .three-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
         
         .product-card .card-content {
@@ -521,17 +509,22 @@
             overflow: hidden;
         }
         
-        .modal-product-image {
+        /* Three.js modal container */
+        .modal-product-container {
             height: 350px;
             width: 100%;
-            object-fit: contain;
             background: linear-gradient(to bottom right, #f9fafb, #f3f4f6);
-            transform-style: preserve-3d;
-            animation: rotate3d 15s infinite linear;
+            position: relative;
         }
         
-        .dark .modal-product-image {
+        .dark .modal-product-container {
             background: linear-gradient(to bottom right, #1F2937, #111827);
+        }
+        
+        .modal-three-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
         
         .modal-product-details {
@@ -672,7 +665,7 @@
             font-weight: 600;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            background: linear-gradient(135deg, #f63b3b 0%, #eb3c25 100%);
             color: white;
             box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
             backdrop-filter: blur(4px);
@@ -699,17 +692,18 @@
         .product-card .brand-tag {
             display: inline-flex;
             align-items: center;
-            background-color: #F3F4F6;
-            color: #4B5563;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: #dee4ea;
             font-size: 0.75rem;
             font-weight: 600;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
             margin-bottom: 0.75rem;
         }
+      
         
         .dark .product-card .brand-tag {
-            background-color: #374151;
+            background-color: #373b51;
             color: #D1D5DB;
         }
         
@@ -745,331 +739,449 @@
             transform: rotate(30deg);
         }
         
-        /* 3D Floating Animation for Cards */
-        .product-card {
-            animation: float 6s ease-in-out infinite;
+        /* Loading indicator for Three.js */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: #3B82F6;
+            animation: spin 1s ease-in-out infinite;
+            z-index: 5;
         }
         
-        @keyframes float {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-            100% {
-                transform: translateY(0px);
-            }
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
         }
-        
-        /* Hover effect to pause floating */
-        .product-card:hover {
-            animation-play-state: paused;
-            transform: translateY(-8px) scale(1.02);
-        }
-        
-        /* 3D Card Tilt Effect */
-        .product-card {
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
-        }
-        
-        .tilt-card {
-            transition: transform 0.5s ease;
-            transform-style: preserve-3d;
-        }
+
+        /* List view styles */
+        .products-list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.products-list-view .product-card {
+    display: flex;
+    flex-direction: column;
+    max-height: none;
+    width: 100%;
+    margin: 0;
+}
+
+/* Responsive list view */
+@media (min-width: 768px) {
+    .products-list-view .product-card {
+        flex-direction: row;
+        height: 240px;
+    }
+    
+    .products-list-view .product-card .card-image-container {
+        width: 240px;
+        min-width: 240px;
+        height: 100%;
+        border-radius: 16px 0 0 16px;
+    }
+    
+    .products-list-view .product-card .card-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-radius: 0 16px 16px 0;
+        border-top: none;
+        border-left: 1px solid rgba(229, 231, 235, 0.5);
+        height: 100%;
+        flex: 1;
+    }
+    
+    .dark .products-list-view .product-card .card-content {
+        border-left-color: rgba(75, 85, 99, 0.5);
+    }
+}
+
+/* Mobile list view */
+@media (max-width: 767px) {
+    .products-list-view .product-card .card-image-container {
+        height: 200px;
+        width: 100%;
+        border-radius: 16px 16px 0 0;
+    }
+    
+    .products-list-view .product-card .card-content {
+        border-radius: 0 0 16px 16px;
+    }
+}
+
+.products-list-view .product-card .product-title {
+    height: auto;
+    -webkit-line-clamp: 1;
+    margin-bottom: 0.5rem;
+}
+
+.products-list-view .product-card .brand-tag {
+    margin-bottom: 0.5rem;
+}
+
+/* Improve card content layout in list view */
+@media (min-width: 768px) {
+    .products-list-view .product-card .card-content {
+        padding: 1.25rem;
+    }
+    
+    .products-list-view .product-card .card-actions {
+        margin-top: auto;
+    }
+}
+
+/* Make view toggle responsive */
+.view-toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 640px) {
+    .view-toggle-container {
+        justify-content: center;
+    }
+}
+
+.view-toggle-btn {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    margin-left: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-toggle-btn.active {
+    background-color: #3B82F6;
+    color: white;
+}
+
+.view-toggle-btn:not(.active) {
+    background-color: #F3F4F6;
+    color: #4B5563;
+}
+
+.dark .view-toggle-btn:not(.active) {
+    background-color: #374151;
+    color: #D1D5DB;
+}
+
+.view-toggle-btn:hover:not(.active) {
+    background-color: #E5E7EB;
+}
+
+.dark .view-toggle-btn:hover:not(.active) {
+    background-color: #4B5563;
+}
     </style>
 </head>
 <body class="text-gray-800 dark:text-gray-100">
-    <!-- Header -->
-    <%-include('partials/header') %>
+<!-- Header -->
+<header class="bg-white shadow-md sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+            <!-- Logo -->
+            <a href="/" class="flex items-center space-x-2">
+                <img src="/frontend/imgs/logos/cyclonelogo.png" alt="" class="w-24 md:w-32 h-auto">
+            </a>
+                         
+            <!-- Navigation -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="/" class="text-dark hover:text-primary font-medium relative group">
+                    Home
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/shoplist" class="text-dark hover:text-primary font-medium relative group">
+                    Shop
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <!-- <a href="/order" class="text-dark hover:text-primary font-medium relative group">
+                    Order
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a> -->
+                <!-- <a href="/about" class="text-dark hover:text-primary font-medium relative group">
+                    About
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a>
+                <a href="/contact" class="text-dark hover:text-primary font-medium relative group">
+                    Contact
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </a> -->
+            </nav>
+                         
+            <!-- Icons -->
+            <div class="flex items-center space-x-2 md:space-x-4">
+              <!-- Search - Hidden on mobile, shown on larger screens -->
+              <div class="hidden md:block w-full md:w-auto">
+                <div class="relative">
+                    <input type="text" placeholder="Search..." id="searchInput" class="w-full border border-gray-300 rounded-full py-2 px-4 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+              </div>
 
-    <!-- Page Title -->
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-heading font-bold text-gray-900 dark:text-white mb-2 relative">
-                Discover Our Collection
-                <span class="absolute -bottom-2 left-0 w-20 h-1 bg-primary rounded-full"></span>
-            </h1>
-            <div class="flex items-center text-gray-500 dark:text-gray-400 mt-4">
-                <%- include('partials/breadcrumbs') %>
+              <% if(user){ %>
+                <a id="submitFormData" href="/userprofile/<%=user._id  %>" class="text-dark hover:text-primary">
+                    <i class="fas fa-user text-xl"></i>
+                </a>
+                <a href="/addtocart" class="text-dark hover:text-primary relative">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"><%=cartCount %></span>
+                </a>
+              <% } else { %>
+                <a href="/addtocart" class="text-dark hover:text-primary relative">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"><%=cartCount %></span>
+                </a>
+              <% } %>
+              
+              <!-- Mobile menu button -->
+              <button class="md:hidden text-dark p-2" id="mobile-menu-button" aria-label="Toggle menu">
+                  <i class="fas fa-bars text-xl"></i>
+              </button>
             </div>
+        </div>
+                 
+        <!-- Mobile Search - Only visible on mobile -->
+        <div class="mt-3 md:hidden">
+            <div class="relative">
+                <input type="text" placeholder="Search for cycles..." id="mobileSearchInput" class="w-full border border-gray-300 rounded-full py-2 px-4 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden mt-4 pb-4 border-t border-gray-200 pt-3" id="mobile-menu">
+            <nav class="flex flex-col space-y-3">
+                <a href="/" class="text-dark hover:text-primary font-medium py-2">Home</a>
+                <a href="/shoplist" class="text-dark hover:text-primary font-medium py-2">Shop</a>
+                <!-- <a href="/orders" class="text-dark hover:text-primary font-medium py-2">Orders</a> -->
+                <!-- <a href="/about" class="text-dark hover:text-primary font-medium py-2">About</a>
+                <a href="/contact" class="text-dark hover:text-primary font-medium py-2">Contact</a> -->
+                <% if(user){ %>
+                <a href="/userprofile/<%=user._id %>" class="text-dark hover:text-primary font-medium py-2">My Profile</a>
+                <% } %>
+            </nav>
         </div>
     </div>
+</header>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <!-- Filter & Sort Toggle Button -->
-        <div class="mb-8 flex justify-center">
-            <button id="filterToggleBtn" class="flex items-center justify-center space-x-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full shadow-sm hover:shadow-md transition-all duration-300">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
-                <span class="font-medium">Filters & Sorting</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 filter-toggle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-            </button>
+
+
+<!-- Page Title -->
+<div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-4xl font-heading font-bold text-gray-900 dark:text-white mb-2 relative">
+            Discover Our Collection
+            <span class="absolute -bottom-2 left-0 w-20 h-1 bg-primary rounded-full"></span>
+        </h1>
+        <div class="flex items-center text-gray-500 dark:text-gray-400 mt-4">
+            <%- include('partials/breadcrumbs') %>
         </div>
+    </div>
+</div>
 
-        <!-- Filter & Sort Section (Hidden by Default) -->
-        <div id="filterSection" class="filter-dropdown mb-10">
-            <div class="filter-section bg-white dark:bg-gray-800 rounded-2xl shadow-custom p-6 border border-gray-100 dark:border-gray-700">
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <!-- Categories -->
-                    <div>
-                        <h3 class="filter-header font-heading">Categories</h3>
-                        <div id="categoryFiltersContainer">
-                            <div class="space-y-1">
-                                <label class="custom-checkbox">
-                                    <input type="checkbox" id="allCategories" class="accent-primary" name="categoryFilter" checked>
-                                    <span class="ml-2 dark:text-gray-300">All Categories</span>
-                                </label>
-                                <% categories.forEach(cat => { %>
-                                <label class="custom-checkbox">
-                                    <input type="checkbox" class="accent-primary" name="categoryFilter" value="<%= cat.name %>" disabled>
-                                    <span class="ml-2 dark:text-gray-300"><%= cat.name %></span>
-                                </label>
-                                <% }) %>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Price Range -->
-                    <div>
-                        <h3 class="filter-header font-heading">Price Range</h3>
-                        <input 
-                            type="range" 
-                            min="0" 
-                            max="200000" 
-                            value="100000" 
-                            class="w-full"
-                            id="priceRange"
-                        >
-                        <div class="flex justify-between mt-2">
-                            <span class="text-sm text-gray-500 dark:text-gray-400">₹0</span>
-                            <span class="text-sm font-medium text-primary" id="priceValue">₹100,000</span>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">₹200,000</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Brands -->
-                    <div>
-                        <h3 class="filter-header font-heading">Brands</h3>
-                        <div id="brandFiltersContainer" class="space-y-1">
-                            <label class="custom-checkbox">
-                                <input type="checkbox" id="allBrands" class="accent-primary" name="brandsFilter" checked>
-                                <span class="ml-2 dark:text-gray-300">All Brands</span>
-                            </label>
-                            <% brands.forEach(brand => { %>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" class="accent-primary" name="brandsFilter" value="<%= brand.name %>" disabled>
-                                <span class="ml-2 dark:text-gray-300"><%= brand.name %></span>
-                            </label>
-                            <% }); %>
-                        </div>
-                    </div>
-                    
-                    <!-- Sort and Actions -->
-                    <div>
-                        <h3 class="filter-header font-heading">Sort By</h3>
-                        <select id="sortBy" class="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
-                            <option value="">Featured</option>
-                            <option value="priceLowHigh">Price: Low to High</option>
-                            <option value="priceHighLow">Price: High to Low</option>
-                            <option value="newest">Newest</option>
-                            <option value="aToZ">A to Z</option>
-                            <option value="zToA">Z to A</option>
-                        </select>
-
-                        <div class="flex items-center space-x-4 mt-4">
-                            <span class="text-gray-700 dark:text-gray-300">View:</span>
-                            <button class="p-2 bg-primary text-white rounded-md">
-                                <i class="fas fa-th"></i>
-                            </button>
-                            <button class="p-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600">
-                                <i class="fas fa-list"></i>
-                            </button>
-                        </div>
-
-                        <!-- Apply and Clear Buttons -->
-                        <div class="mt-6 space-y-3">
-                            <button class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors duration-200 btn-hover-effect">
-                                Apply Filters
-                            </button>
-                            <button id="clearBtn" class="w-full bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
-                                Clear Filters
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Products Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Product Card -->
-            <% if (product.length > 0) { %>
-                <% product.forEach(pro => { %>
-                <div class="product-card tilt-card">
-                    <!-- Product Image Container -->
-                    <div class="card-image-container">
-                        <!-- Offer Badge -->
-                        <% if (pro.maxOffer > 0) { %>
-                        <div class="offer-badge">
-                            <%= pro.maxOffer %>% OFF
-                        </div>
-                        <% } else { %>
-                        <div class="new-badge">
-                            New
-                        </div>
-                        <% } %>
-                        
-                        <!-- Wishlist Button -->
-                        <button 
-                            onclick="addToWishlist('<%= pro._id %>', this)" 
-                            class="wishlist-btn"
-                            aria-label="Add to wishlist"
-                        >
-                            <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                width="20" 
-                                height="20" 
-                                viewBox="0 0 24 24" 
-                                fill="none" 
-                                stroke="currentColor" 
-                                stroke-width="2" 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                class="wishlist-icon text-gray-500 transition-colors duration-200"
-                                data-product-id="<%= pro._id %>"
-                            >
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                            </svg>
-                        </button>
-                        
-                        <a href="/productdetails/<%= pro._id%>" class="block"> 
-                            <img 
-                                src="/<%= pro.mainImage %>" 
-                                alt="<%= pro.productName %>" 
-                                class="card-image"
-                            >
-                        </a>
-                        
-                        <!-- Quick View Button -->
-                        <button 
-                            onclick="openQuickView('<%= pro._id %>', '<%= pro.productName %>', '/<%= pro.mainImage %>', '<%= pro.price %>', '<%= pro.brands ? pro.brands.name : 'No Brand' %>', '<%= pro.maxOffer %>', '<%= pro.salePrice %>')" 
-                            class="quick-view-btn"
-                        >
-                            <i class="fas fa-eye mr-2"></i> Quick View
-                        </button>
-                    </div>
-                    
-                    <div class="card-content">
-                        <a href="/productdetails/<%= pro._id%>" class="block"> 
-                            <h3 class="product-title"><%= pro.productName %></h3>
-                        </a>
-                        
-                        <% if (pro.brands) { %>
-                        <div class="brand-tag">
-                            <i class="fas fa-tag mr-1 text-gray-400"></i>
-                            <%= pro.brands.name %>
-                        </div>
-                        <% } %>
-                        
-                        <div class="rating">
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                            <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
-                        </div>
-                        
-                        <div class="card-actions">
-                            <div class="price-display">
-                                <% if (pro.maxOffer > 0) { %>
-                                    <span class="original-price">₹<%= pro.price %></span>
-                                    <div class="sale-price">
-                                        ₹<%= Math.round(pro.salePrice) %>
-                                        <span class="discount-badge">
-                                            <i class="fas fa-bolt mr-1"></i>
-                                            <%= pro.maxOffer %>% OFF
-                                        </span>
-                                    </div>
-                                <% } else { %>
-                                    <span class="regular-price">₹<%= pro.price %></span>
-                                <% } %>
-                            </div>
-                            <button onclick="addToCart('<%= pro._id %>')" 
-                                class="add-to-cart"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>             
-                                <span class="font-medium">Add</span>         
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <% }) %>
-            <% } else { %>
-                <div class="col-span-full">
-                    <div class="empty-state">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
-                            <path d="M16.5 9.4 7.55 4.24"/>
-                            <polyline points="3.29 7 12 12 20.71 7"/>
-                            <line x1="12" y1="22" x2="12" y2="12"/>
-                            <circle cx="18.5" cy="15.5" r="2.5"/>
-                            <path d="M20.27 17.27 22 19"/>
-                        </svg>
-                        <p class="empty-state-text">No products found in our collection.</p>
-                        <button onclick="window.location.href='/'" class="empty-state-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="m15 18-6-6 6-6"/>
-                            </svg>
-                            Back to All Products
-                        </button>
-                    </div>
-                </div>
-            <% } %>
-        </div>
-
-        <!-- Pagination -->
-        <% if (product.length > 0) { %>
-            <div class="mt-12 text-center">
-                <%- include('partials/pagination')%>
-            </div>
-        <% } %>
+<!-- Main Content -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Filter & Sort Toggle Button -->
+    <div class="mb-8 flex justify-center">
+        <button id="filterToggleBtn" class="flex items-center justify-center space-x-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-full shadow-sm hover:shadow-md transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            <span class="font-medium">Filters & Sorting</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 filter-toggle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
     </div>
 
-    <!-- Quick View Modal -->
-    <div id="quickViewModal" class="modal">
-        <div class="modal-content enhanced-modal p-0 overflow-hidden">
-            <div class="flex flex-col md:flex-row">
-                <!-- Product Image -->
-                <div class="md:w-1/2 bg-gray-50 dark:bg-gray-800 p-8 flex items-center justify-center">
-                    <img id="modalProductImage" src="/placeholder.svg" alt="Product" class="modal-product-image">
+    <!-- View Toggle Buttons (Moved outside filter section) -->
+    <div class="view-toggle-container mb-6">
+        <span class="text-gray-700 dark:text-gray-300 mr-2">View:</span>
+        <button id="gridViewBtn" class="view-toggle-btn active" aria-label="Grid view">
+            <i class="fas fa-th"></i>
+        </button>
+        <button id="listViewBtn" class="view-toggle-btn" aria-label="List view">
+            <i class="fas fa-list"></i>
+        </button>
+    </div>
+
+    <!-- Filter & Sort Section (Hidden by Default) -->
+    <div id="filterSection" class="filter-dropdown mb-10">
+        <div class="filter-section bg-white dark:bg-gray-800 rounded-2xl shadow-custom p-6 border border-gray-100 dark:border-gray-700">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <!-- Categories -->
+                <div>
+                    <h3 class="filter-header font-heading">Categories</h3>
+                    <div id="categoryFiltersContainer">
+                        <div class="space-y-1">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" id="allCategories" class="accent-primary" name="categoryFilter" checked>
+                                <span class="ml-2 dark:text-gray-300">All Categories</span>
+                            </label>
+                            <% categories.forEach(cat => { %>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" class="accent-primary" name="categoryFilter" value="<%= cat.name %>" disabled>
+                                <span class="ml-2 dark:text-gray-300"><%= cat.name %></span>
+                            </label>
+                            <% }) %>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Product Details -->
-                <div class="md:w-1/2 modal-product-details">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span id="modalProductBrand" class="inline-block bg-primary/10 text-primary text-xs font-semibold px-2.5 py-1 rounded-full mb-2"></span>
-                            <h2 id="modalProductName" class="modal-product-title"></h2>
-                        </div>
-                        <button onclick="closeQuickView()" class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                <!-- Price Range -->
+                <div>
+                    <h3 class="filter-header font-heading">Price Range</h3>
+                    <input 
+                    type="range" 
+                    min="0" 
+                    max="45000" 
+                    value="25000" 
+                    class="w-full"
+                    id="priceRange"
+                    >
+                    <div class="flex justify-between mt-2">
+                        <span class="text-sm text-gray-500 dark:text-gray-400">₹0</span>
+                        <span class="text-sm font-medium text-primary" id="priceValue">₹25,000</span>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">₹45,000</span>
+                    </div>
+                </div>
+                
+                <!-- Brands -->
+                <div>
+                    <h3 class="filter-header font-heading">Brands</h3>
+                    <div id="brandFiltersContainer" class="space-y-1">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="allBrands" class="accent-primary" name="brandsFilter" checked>
+                            <span class="ml-2 dark:text-gray-300">All Brands</span>
+                        </label>
+                        <% brands.forEach(brand => { %>
+                        <label class="custom-checkbox">
+                            <input type="checkbox" class="accent-primary" name="brandsFilter" value="<%= brand.name %>" disabled>
+                            <span class="ml-2 dark:text-gray-300"><%= brand.name %></span>
+                        </label>
+                        <% }); %>
+                    </div>
+                </div>
+                
+                <!-- Sort and Actions -->
+                <div>
+                    <h3 class="filter-header font-heading">Sort By</h3>
+                    <select id="sortBy" class="w-full border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+                        <option value="">Featured</option>
+                        <option value="priceLowHigh">Price: Low to High</option>
+                        <option value="priceHighLow">Price: High to Low</option>
+                        <option value="newest">Newest</option>
+                        <option value="aToZ">A to Z</option>
+                        <option value="zToA">Z to A</option>
+                    </select>
+
+                    <!-- Apply and Clear Buttons -->
+                    <div class="mt-6 space-y-3">
+                        <button class="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors duration-200 btn-hover-effect">
+                            Apply Filters
+                        </button>
+                        <button id="clearBtn" class="w-full bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200">
+                            Clear Filters
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="productsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Product Card -->
+        <% if (product.length > 0) { %>
+            <% product.forEach(pro => { %>
+            <div class="product-card" data-product-id="<%= pro._id %>">
+                <!-- Product Image Container -->
+                <div class="card-image-container">
+                    <!-- Loading Spinner for Three.js -->
+                    <div class="loading-spinner"></div>
                     
-                    <div class="flex items-center mb-4">
+                    <!-- Three.js Canvas -->
+                    <canvas class="three-canvas"></canvas>
+                    
+                    <!-- Original Image (hidden, used as texture for Three.js) -->
+                    <img 
+                        src="/<%= pro.mainImage %>" 
+                        alt="<%= pro.productName %>" 
+                        class="card-image "
+                        data-src="/<%= pro.mainImage %>"
+                        crossorigin="anonymous"
+                        
+                    >
+                    
+                    <!-- Offer Badge -->
+                    <% if (pro.maxOffer > 0) { %>
+                    <div class="offer-badge">
+                        <%= pro.maxOffer %>% OFF
+                    </div>
+                    <% } else { %>
+                    <div class="new-badge">
+                        New
+                    </div>
+                    <% } %>
+                    
+                    <!-- Wishlist Button -->
+                    <button 
+                        onclick="addToWishlist('<%= pro._id %>', this)" 
+                        class="wishlist-btn"
+                        aria-label="Add to wishlist"
+                    >
+                        <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            width="20" 
+                            height="20" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            stroke-width="2" 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            class="wishlist-icon text-gray-500 transition-colors duration-200"
+                            data-product-id="<%= pro._id %>"
+                        >
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </button>
+                    
+                    <!-- Quick View Button -->
+                    <button 
+                        onclick="openQuickView('<%= pro._id %>', '<%= pro.productName %>', '/<%= pro.mainImage %>', '<%= pro.price %>', '<%= pro.brands ? pro.brands.name : 'No Brand' %>', '<%= pro.maxOffer %>', '<%= pro.salePrice %>')" 
+                        class="quick-view-btn"
+                    >
+                        <i class="fas fa-eye mr-2"></i> Quick View
+                    </button>
+                </div>
+                
+                <div class="card-content">
+                    <a href="/productdetails/<%= pro._id%>" class="block"> 
+                        <h3 class="product-title"><%= pro.productName %></h3>
+                    </a>
+                    
+                    <% if (pro.brands) { %>
+                    <div class="brand-tag">
+                        <i class="fas fa-tag mr-1 text-gray-400"></i>
+                        <%= pro.brands.name %>
+                    </div>
+                    <% } %>
+                    
+                    <div class="rating">
                         <div class="flex text-yellow-400">
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
@@ -1080,354 +1192,942 @@
                         <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
                     </div>
                     
-                    <div class="mb-6" id="modalPriceContainer"></div>
-
-                    
-                    <p class="text-gray-600 dark:text-gray-400 mb-6">
-                        Experience premium quality and performance with this exceptional product. Perfect for enthusiasts and professionals alike.
-                    </p>
-                    
-                    <div class="modal-action-buttons">
-                        <button id="modalAddToCart" onclick="" class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-all duration-300 btn-hover-effect flex items-center justify-center gap-2">
+                    <div class="card-actions">
+                        <div class="price-display">
+                            <% if (pro.maxOffer > 0) { %>
+                                <span class="original-price">₹<%= pro.price %></span>
+                                <div class="sale-price">
+                                    ₹<%= Math.round(pro.salePrice) %>
+                                    <span class="discount-badge">
+                                        <i class="fas fa-bolt mr-1"></i>
+                                        <%= pro.maxOffer %>% OFF
+                                    </span>
+                                </div>
+                            <% } else { %>
+                                <span class="regular-price">₹<%= pro.price %></span>
+                            <% } %>
+                        </div>
+                        <button onclick="addToCart('<%= pro._id %>')" 
+                            class="add-to-cart"
+                        >
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                            Add to Cart
+                            </svg>             
+                            <span class="font-medium">Add</span>         
                         </button>
-                        <a id="modalViewDetails" href="" class="flex-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-300 text-center">
-                            View Details
-                        </a>
                     </div>
+                </div>
+            </div>
+            <% }) %>
+        <% } else { %>
+            <div class="col-span-full">
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+                        <path d="M16.5 9.4 7.55 4.24"/>
+                        <polyline points="3.29 7 12 12 20.71 7"/>
+                        <line x1="12" y1="22" x2="12" y2="12"/>
+                        <circle cx="18.5" cy="15.5" r="2.5"/>
+                        <path d="M20.27 17.27 22 19"/>
+                    </svg>
+                    <p class="empty-state-text">No products found in our collection.</p>
+                    <button onclick="window.location.href='/shoplist'" class="empty-state-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m15 18-6-6 6-6"/>
+                        </svg>
+                        Back to All Products
+                    </button>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Pagination -->
+    <% if (product.length > 0) { %>
+        <div class="mt-12 text-center">
+            <%- include('partials/pagination')%>
+        </div>
+    <% } %>
+</div>
+
+<!-- Quick View Modal -->
+<div id="quickViewModal" class="modal">
+    <div class="modal-content enhanced-modal p-0 overflow-hidden">
+        <div class="flex flex-col md:flex-row">
+            <!-- Product Image with Three.js -->
+            <div class="md:w-1/2 modal-product-container">
+                <!-- Loading Spinner for Three.js -->
+                <div class="loading-spinner"></div>
+                
+                <!-- Three.js Canvas -->
+                <canvas id="modalThreeCanvas" class="modal-three-canvas"></canvas>
+                
+                <!-- Hidden Image for Three.js Texture -->
+                <img id="modalProductImage" src="/placeholder.svg" alt="Product" style="display: none;" crossorigin="anonymous">
+            </div>
+            
+            <!-- Product Details -->
+            <div class="md:w-1/2 modal-product-details">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span id="modalProductBrand" class="inline-block bg-primary/10 text-primary text-xs font-semibold px-2.5 py-1 rounded-full mb-2"></span>
+                        <h2 id="modalProductName" class="modal-product-title"></h2>
+                    </div>
+                    <button onclick="closeQuickView()" class="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
+                </div>
+                
+                <div class="mb-6" id="modalPriceContainer"></div>
+
+                
+                <p class="text-gray-600 dark:text-gray-400 mb-6">
+                    Experience premium quality and performance with this exceptional product. Perfect for enthusiasts and professionals alike.
+                </p>
+                
+                <div class="modal-action-buttons">
+                    <button id="modalAddToCart" onclick="" class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-all duration-300 btn-hover-effect flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Add to Cart
+                    </button>
+                    <a id="modalViewDetails" href="" class="flex-1 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-all duration-300 text-center">
+                        View Details
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 dark:bg-gray-700 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-        <span id="toast-message"></span>
-    </div>
+<!-- Toast Notification -->
+<div id="toast" class="hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 dark:bg-gray-700 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+    <span id="toast-message"></span>
+</div>
+
+<!-- Dark Mode Toggle Button -->
+<button id="darkModeToggle" class="dark-mode-toggle">
+    <i class="fas fa-moon dark:hidden"></i>
+    <i class="fas fa-sun hidden dark:block"></i>
+</button>
+
+<!-- Footer -->
+<%-include('partials/footer') %>
+<%-include('partials/loader') %>
+
+<!-- JavaScript -->
+<script>
+    // Three.js Product Card Renderer
+    class ProductRenderer {
+        constructor() {
+            this.scenes = new Map();
+            this.renderers = new Map();
+            this.cameras = new Map();
+            this.textures = new Map();
+            this.meshes = new Map();
+            this.animationFrames = new Map();
+            this.isInitialized = false;
+            this.modalScene = null;
+            this.modalRenderer = null;
+            this.modalCamera = null;
+            this.modalMesh = null;
+            this.modalAnimationFrame = null;
+            this.mouseInteractionEnabled = true;
+        }
+        
+        // Initialize all product cards with Three.js
+        init() {
+            if (this.isInitialized) return;
+            
+            const productCards = document.querySelectorAll('.product-card');
+            productCards.forEach(card => {
+                const productId = card.dataset.productId;
+                const canvas = card.querySelector('.three-canvas');
+                const img = card.querySelector('.card-image');
+                
+                if (canvas && img && productId) {
+                    this.initProductCard(productId, canvas, img);
+                }
+            });
+            
+            this.isInitialized = true;
+            
+            // Add resize event listener
+            window.addEventListener('resize', this.handleResize.bind(this));
+        }
+        
+        // Initialize a single product card
+        initProductCard(productId, canvas, img) {
+            // Create scene
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf9fafb);
+            
+            // Check if dark mode is active
+            if (document.documentElement.classList.contains('dark')) {
+                scene.background = new THREE.Color(0x1f2937);
+            }
+            
+            // Create camera
+            const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            camera.position.z = 1.5;
+            
+            // Create renderer
+            const renderer = new THREE.WebGLRenderer({ 
+                canvas: canvas,
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Create lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+            
+            const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+            backLight.position.set(-1, -1, -1);
+            scene.add(backLight);
+            
+            // Load texture
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.crossOrigin = 'anonymous';
+            
+            // Show loading spinner
+            const loadingSpinner = canvas.parentElement.querySelector('.loading-spinner');
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'block';
+            }
+            
+            // Load the image as texture
+            textureLoader.load(
+                img.dataset.src,
+                (texture) => {
+                    // Create a plane geometry with proper aspect ratio
+                    const aspectRatio = texture.image.width / texture.image.height;
+                    let width = 1;
+                    let height = 1 / aspectRatio;
+                    
+                    // Adjust if image is taller than wide
+                    if (aspectRatio < 1) {
+                        width = aspectRatio;
+                        height = 1;
+                    }
+                    
+                    const geometry = new THREE.PlaneGeometry(width, height, 1, 1);
+                    const material = new THREE.MeshStandardMaterial({ 
+                        map: texture,
+                        side: THREE.DoubleSide,
+                        transparent: true
+                    });
+                    
+                    const mesh = new THREE.Mesh(geometry, material);
+                    scene.add(mesh);
+                    
+                    // Store references
+                    this.textures.set(productId, texture);
+                    this.meshes.set(productId, mesh);
+                    
+                    // Hide loading spinner
+                    if (loadingSpinner) {
+                        loadingSpinner.style.display = 'none';
+                    }
+                    
+                    // Start animation
+                    this.animate(productId);
+                },
+                undefined,
+                (error) => {
+                    console.error('Error loading texture:', error);
+                    // Hide loading spinner on error
+                    if (loadingSpinner) {
+                        loadingSpinner.style.display = 'none';
+                    }
+                }
+            );
+            
+            // Store references
+            this.scenes.set(productId, scene);
+            this.cameras.set(productId, camera);
+            this.renderers.set(productId, renderer);
+            
+            // Add mouse interaction
+            canvas.addEventListener('mousemove', (event) => {
+                this.handleMouseMove(event, productId, canvas);
+            });
+            
+            canvas.addEventListener('mouseleave', () => {
+                this.resetRotation(productId);
+            });
+            
+            // Add touch interaction for mobile
+            canvas.addEventListener('touchmove', (event) => {
+                if (event.touches.length === 1) {
+                    event.preventDefault();
+                    const touch = event.touches[0];
+                    const mouseEvent = new MouseEvent('mousemove', {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                    this.handleMouseMove(mouseEvent, productId, canvas);
+                }
+            });
+            
+            canvas.addEventListener('touchend', () => {
+                this.resetRotation(productId);
+            });
+            
+            // Add double-tap to reset rotation
+            let lastTap = 0;
+            canvas.addEventListener('touchstart', (event) => {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 300 && tapLength > 0) {
+                    this.resetRotation(productId);
+                }
+                lastTap = currentTime;
+            });
+        }
+        
+        // Handle mouse movement for interactive rotation
+        handleMouseMove(event, productId, canvas) {
+            if (!this.mouseInteractionEnabled) return;
+            
+            const mesh = this.meshes.get(productId);
+            if (!mesh) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            // Rotate based on mouse position - more pronounced rotation
+            mesh.rotation.y = x * 1.2;
+            mesh.rotation.x = y * 0.8;
+            
+            // Add slight z-axis rotation for more realism
+            mesh.rotation.z = x * y * 0.2;
+            
+            // Add slight position shift for parallax effect
+            mesh.position.x = x * 0.1;
+            mesh.position.y = y * 0.1;
+        }
+        
+        // Reset rotation when mouse leaves
+        resetRotation(productId) {
+            const mesh = this.meshes.get(productId);
+            if (!mesh) return;
+            
+            // Smoothly animate back to default rotation
+            this.animateToDefaultPosition(mesh);
+        }
+        
+        // Smoothly animate to default position
+        animateToDefaultPosition(mesh) {
+            const duration = 1000; // ms
+            const startTime = Date.now();
+            const startRotation = {
+                x: mesh.rotation.x,
+                y: mesh.rotation.y,
+                z: mesh.rotation.z
+            };
+            const startPosition = {
+                x: mesh.position.x,
+                y: mesh.position.y,
+                z: mesh.position.z
+            };
+            
+            const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function (ease-out)
+                const easeOut = t => 1 - Math.pow(1 - t, 3);
+                const easedProgress = easeOut(progress);
+                
+                // Interpolate rotation
+                mesh.rotation.x = startRotation.x * (1 - easedProgress);
+                mesh.rotation.y = startRotation.y * (1 - easedProgress) + (0.005 * easedProgress); // Slight rotation for idle animation
+                mesh.rotation.z = startRotation.z * (1 - easedProgress);
+                
+                // Interpolate position
+                mesh.position.x = startPosition.x * (1 - easedProgress);
+                mesh.position.y = startPosition.y * (1 - easedProgress);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        }
+        
+        // Animation loop for a specific product
+        animate(productId) {
+            const scene = this.scenes.get(productId);
+            const camera = this.cameras.get(productId);
+            const renderer = this.renderers.get(productId);
+            const mesh = this.meshes.get(productId);
+            
+            if (!scene || !camera || !renderer || !mesh) return;
+            
+            const animateFrame = () => {
+                // Auto-rotate slightly when not being interacted with
+                if (!this.mouseInteractionEnabled || 
+                    (Math.abs(mesh.rotation.x) < 0.05 && Math.abs(mesh.rotation.y) < 0.05)) {
+                    mesh.rotation.y += 0.005;
+                }
+                
+                renderer.render(scene, camera);
+                const frameId = requestAnimationFrame(animateFrame);
+                this.animationFrames.set(productId, frameId);
+            };
+            
+            animateFrame();
+        }
+        
+        // Initialize the modal 3D view
+        initModal(imageSrc) {
+            const canvas = document.getElementById('modalThreeCanvas');
+            const loadingSpinner = canvas.parentElement.querySelector('.loading-spinner');
+            
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'block';
+            }
+            
+            // Create scene
+            this.modalScene = new THREE.Scene();
+            this.modalScene.background = new THREE.Color(0xf9fafb);
+            
+            // Check if dark mode is active
+            if (document.documentElement.classList.contains('dark')) {
+                this.modalScene.background = new THREE.Color(0x1f2937);
+            }
+            
+            // Create camera
+            this.modalCamera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            this.modalCamera.position.z = 1.5;
+            
+            // Create renderer
+            this.modalRenderer = new THREE.WebGLRenderer({ 
+                canvas: canvas,
+                antialias: true,
+                alpha: true
+            });
+            this.modalRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            this.modalRenderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Create lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            this.modalScene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            this.modalScene.add(directionalLight);
+            
+            const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+            backLight.position.set(-1, -1, -1);
+            this.modalScene.add(backLight);
+            
+            // Add spotlight for dramatic effect
+            const spotLight = new THREE.SpotLight(0xffffff, 0.5);
+            spotLight.position.set(0, 2, 2);
+            spotLight.angle = Math.PI / 6;
+            spotLight.penumbra = 0.2;
+            this.modalScene.add(spotLight);
+            
+            // Load texture
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.crossOrigin = 'anonymous';
+            
+            // Load the image as texture
+            textureLoader.load(
+                imageSrc,
+                (texture) => {
+                    // Create a plane geometry with proper aspect ratio
+                    const aspectRatio = texture.image.width / texture.image.height;
+                    let width = 1;
+                    let height = 1 / aspectRatio;
+                    
+                    // Adjust if image is taller than wide
+                    if (aspectRatio < 1) {
+                        width = aspectRatio;
+                        height = 1;
+                    }
+                    
+                    const geometry = new THREE.PlaneGeometry(width, height, 1, 1);
+                    const material = new THREE.MeshStandardMaterial({ 
+                        map: texture,
+                        side: THREE.DoubleSide,
+                        transparent: true
+                    });
+                    
+                    this.modalMesh = new THREE.Mesh(geometry, material);
+                    this.modalScene.add(this.modalMesh);
+                    
+                    // Hide loading spinner
+                    if (loadingSpinner) {
+                        loadingSpinner.style.display = 'none';
+                    }
+                    
+                    // Start animation
+                    this.animateModal();
+                },
+                undefined,
+                (error) => {
+                    console.error('Error loading texture:', error);
+                    // Hide loading spinner on error
+                    if (loadingSpinner) {
+                        loadingSpinner.style.display = 'none';
+                    }
+                }
+            );
+            
+            // Add mouse interaction
+            canvas.addEventListener('mousemove', (event) => {
+                this.handleModalMouseMove(event, canvas);
+            });
+            
+            canvas.addEventListener('mouseleave', () => {
+                this.resetModalRotation();
+            });
+            
+            // Add touch interaction for mobile
+            canvas.addEventListener('touchmove', (event) => {
+                if (event.touches.length === 1) {
+                    event.preventDefault();
+                    const touch = event.touches[0];
+                    const mouseEvent = new MouseEvent('mousemove', {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                    this.handleModalMouseMove(mouseEvent, canvas);
+                }
+            });
+            
+            canvas.addEventListener('touchend', () => {
+                this.resetModalRotation();
+            });
+            
+            // Add double-tap to reset rotation
+            let lastTap = 0;
+            canvas.addEventListener('touchstart', (event) => {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 300 && tapLength > 0) {
+                    this.resetModalRotation();
+                }
+                lastTap = currentTime;
+            });
+        }
+        
+        // Handle mouse movement for modal
+        handleModalMouseMove(event, canvas) {
+            if (!this.modalMesh) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            // Rotate based on mouse position - more pronounced rotation for modal
+            this.modalMesh.rotation.y = x * 1.5;
+            this.modalMesh.rotation.x = y * 1.0;
+            
+            // Add slight z-axis rotation for more realism
+            this.modalMesh.rotation.z = x * y * 0.3;
+            
+            // Add slight position shift for parallax effect
+            this.modalMesh.position.x = x * 0.15;
+            this.modalMesh.position.y = y * 0.15;
+        }
+        
+        // Reset modal rotation
+        resetModalRotation() {
+            if (!this.modalMesh) return;
+            
+            // Smoothly animate back to default rotation
+            this.animateToDefaultPosition(this.modalMesh);
+        }
+        
+        // Animation loop for modal
+        animateModal() {
+            if (!this.modalScene || !this.modalCamera || !this.modalRenderer || !this.modalMesh) return;
+            
+            const animateFrame = () => {
+                // Auto-rotate slightly when not being interacted with
+                if (Math.abs(this.modalMesh.rotation.x) < 0.05 && Math.abs(this.modalMesh.rotation.y) < 0.05) {
+                    this.modalMesh.rotation.y += 0.005;
+                }
+                
+                this.modalRenderer.render(this.modalScene, this.modalCamera);
+                this.modalAnimationFrame = requestAnimationFrame(animateFrame);
+            };
+            
+            animateFrame();
+        }
+        
+        // Clean up modal resources
+        cleanupModal() {
+            if (this.modalAnimationFrame) {
+                cancelAnimationFrame(this.modalAnimationFrame);
+                this.modalAnimationFrame = null;
+            }
+            
+            if (this.modalMesh) {
+                this.modalScene.remove(this.modalMesh);
+                this.modalMesh.geometry.dispose();
+                this.modalMesh.material.dispose();
+                this.modalMesh = null;
+            }
+            
+            this.modalScene = null;
+            this.modalCamera = null;
+            this.modalRenderer = null;
+        }
+        
+        // Handle window resize
+        handleResize() {
+            // Resize all product card renderers
+            this.renderers.forEach((renderer, productId) => {
+                const canvas = renderer.domElement;
+                const camera = this.cameras.get(productId);
+                
+                if (canvas && camera) {
+                    const width = canvas.clientWidth;
+                    const height = canvas.clientHeight;
+                    
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+                    
+                    renderer.setSize(width, height);
+                }
+            });
+            
+            // Resize modal renderer if active
+            if (this.modalRenderer && this.modalCamera) {
+                const canvas = this.modalRenderer.domElement;
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                
+                this.modalCamera.aspect = width / height;
+                this.modalCamera.updateProjectionMatrix();
+                
+                this.modalRenderer.setSize(width, height);
+            }
+        }
+        
+        // Enable/disable mouse interaction
+        setMouseInteraction(enabled) {
+            this.mouseInteractionEnabled = enabled;
+        }
+        
+        // Clean up all resources
+        cleanup() {
+            // Cancel all animation frames
+            this.animationFrames.forEach((frameId) => {
+                cancelAnimationFrame(frameId);
+            });
+            
+            // Dispose of all meshes, materials, and geometries
+            this.meshes.forEach((mesh) => {
+                mesh.geometry.dispose();
+                mesh.material.dispose();
+            });
+            
+            // Clear all maps
+            this.scenes.clear();
+            this.renderers.clear();
+            this.cameras.clear();
+            this.textures.clear();
+            this.meshes.clear();
+            this.animationFrames.clear();
+            
+            // Clean up modal
+            this.cleanupModal();
+            
+            // Remove resize event listener
+            window.removeEventListener('resize', this.handleResize.bind(this));
+            
+            this.isInitialized = false;
+        }
+    }
+
+    // Toggle Filter Section
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterToggleBtn = document.getElementById('filterToggleBtn');
+        const filterSection = document.getElementById('filterSection');
+        const filterToggleIcon = document.querySelector('.filter-toggle');
+        
+        // Hide filter section by default
+        filterSection.classList.remove('open');
+        
+        filterToggleBtn.addEventListener('click', function() {
+            filterSection.classList.toggle('open');
+            filterToggleIcon.classList.toggle('open');
+        });
+        
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or use system preference
+        if (localStorage.getItem('darkMode') === 'true' || 
+            (!localStorage.getItem('darkMode') && 
+             window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+        
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', function() {
+            html.classList.toggle('dark');
+            localStorage.setItem('darkMode', html.classList.contains('dark'));
+            
+            // Update Three.js scene backgrounds
+            updateThreeJsBackgrounds();
+        });
+        
+        // Initialize Three.js for product cards
+        const productRenderer = new ProductRenderer();
+        productRenderer.init();
+        
+        // Make productRenderer globally accessible
+        window.productRenderer = productRenderer;
+        
+        // View toggle functionality
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const listViewBtn = document.getElementById('listViewBtn');
+        const productsContainer = document.getElementById('productsContainer');
+        
+        // Set default view (grid)
+        productsContainer.classList.remove('products-list-view');
+        
+        // Toggle to grid view
+        gridViewBtn.addEventListener('click', function() {
+            productsContainer.classList.remove('products-list-view');
+            gridViewBtn.classList.add('active');
+            listViewBtn.classList.remove('active');
+            
+            // Save preference
+            localStorage.setItem('viewMode', 'grid');
+            
+            // Force resize to ensure Three.js canvases are properly sized
+            setTimeout(function() {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        });
+        
+        // Toggle to list view
+        listViewBtn.addEventListener('click', function() {
+            productsContainer.classList.add('products-list-view');
+            listViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+            
+            // Save preference
+            localStorage.setItem('viewMode', 'list');
+            
+            // Force resize to ensure Three.js canvases are properly sized
+            setTimeout(function() {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        });
+        
+        // Load saved view preference
+        const savedViewMode = localStorage.getItem('viewMode');
+        if (savedViewMode === 'list') {
+            productsContainer.classList.add('products-list-view');
+            listViewBtn.classList.add('active');
+            gridViewBtn.classList.remove('active');
+            
+            // Force resize after a short delay to ensure proper rendering
+            setTimeout(function() {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        } else {
+            productsContainer.classList.remove('products-list-view');
+            gridViewBtn.classList.add('active');
+            listViewBtn.classList.remove('active');
+        }
+    });
     
-    <!-- Dark Mode Toggle Button -->
-    <button id="darkModeToggle" class="dark-mode-toggle">
-        <i class="fas fa-moon dark:hidden"></i>
-        <i class="fas fa-sun hidden dark:block"></i>
-    </button>
-
-    <!-- Footer -->
-    <%-include('partials/footer') %>
-
-    <!-- JavaScript -->
-    <script>
-        // Toggle Filter Section
-        document.addEventListener('DOMContentLoaded', function() {
-            const filterToggleBtn = document.getElementById('filterToggleBtn');
-            const filterSection = document.getElementById('filterSection');
-            const filterToggleIcon = document.querySelector('.filter-toggle');
-            
-            // Hide filter section by default
-            filterSection.classList.remove('open');
-            
-            filterToggleBtn.addEventListener('click', function() {
-                filterSection.classList.toggle('open');
-                filterToggleIcon.classList.toggle('open');
+    // Update Three.js backgrounds when dark mode changes
+    function updateThreeJsBackgrounds() {
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        
+        // Update all product card scenes
+        if (window.productRenderer) {
+            window.productRenderer.scenes.forEach(scene => {
+                scene.background = new THREE.Color(isDarkMode ? 0x1f2937 : 0xf9fafb);
             });
             
-            // Dark mode toggle functionality
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            const html = document.documentElement;
-            
-            // Check for saved theme preference or use system preference
-            if (localStorage.getItem('darkMode') === 'true' || 
-                (!localStorage.getItem('darkMode') && 
-                 window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                html.classList.add('dark');
+            // Update modal scene if it exists
+            if (window.productRenderer.modalScene) {
+                window.productRenderer.modalScene.background = new THREE.Color(isDarkMode ? 0x1f2937 : 0xf9fafb);
             }
-            
-            // Toggle dark mode
-            darkModeToggle.addEventListener('click', function() {
-                html.classList.toggle('dark');
-                localStorage.setItem('darkMode', html.classList.contains('dark'));
-            });
-            
-            // Initialize 3D tilt effect
-            initTiltEffect();
-        });
-        
-        // 3D Tilt Effect for Cards
-        function initTiltEffect() {
-            const cards = document.querySelectorAll('.tilt-card');
-            
-            cards.forEach(card => {
-                card.addEventListener('mousemove', handleTilt);
-                card.addEventListener('mouseleave', resetTilt);
-            });
         }
+    }
+
+    function openQuickView(productId, productName, productImage, productPrice, productBrand, maxOffer, salePrice) {
+        const modal = document.getElementById('quickViewModal');
+        const modalProductName = document.getElementById('modalProductName');
+        const modalProductBrand = document.getElementById('modalProductBrand');
+        const modalPriceContainer = document.getElementById('modalPriceContainer');
+        const modalAddToCart = document.getElementById('modalAddToCart');
+        const modalViewDetails = document.getElementById('modalViewDetails');
         
-        function handleTilt(e) {
-            const card = this;
-            const cardRect = card.getBoundingClientRect();
-            const cardWidth = cardRect.width;
-            const cardHeight = cardRect.height;
-            
-            // Calculate mouse position relative to card center
-            const centerX = cardRect.left + cardWidth / 2;
-            const centerY = cardRect.top + cardHeight / 2;
-            const mouseX = e.clientX - centerX;
-            const mouseY = e.clientY - centerY;
-            
-            // Calculate rotation (max 10 degrees)
-            const rotateY = (mouseX / (cardWidth / 2)) * 5;
-            const rotateX = -(mouseY / (cardHeight / 2)) * 5;
-            
-            // Apply transform
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        // Set modal content
+        modalProductName.textContent = productName;
+        modalProductBrand.textContent = productBrand;
+        
+        // Update price display dynamically
+        if (maxOffer > 0) {
+            modalPriceContainer.innerHTML = `
+                <span class="text-gray-500 dark:text-gray-400 text-lg line-through">₹${productPrice}</span>
+                <span class="text-2xl font-bold text-red-500">₹${Math.round(salePrice)}</span>
+                <span class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-semibold px-2 py-1 rounded-full flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    ${maxOffer}% OFF
+                </span>
+            `;
+        } else {
+            modalPriceContainer.innerHTML = `<span class="text-2xl font-bold text-primary">₹${productPrice}</span>`;
         }
         
-        function resetTilt() {
-            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-        }
-
-        function openQuickView(productId, productName, productImage, productPrice, productBrand, maxOffer, salePrice) {
-            const modal = document.getElementById('quickViewModal');
-            const modalProductName = document.getElementById('modalProductName');
-            const modalProductImage = document.getElementById('modalProductImage');
-            const modalProductBrand = document.getElementById('modalProductBrand');
-            const modalPriceContainer = document.getElementById('modalPriceContainer');
-            const modalAddToCart = document.getElementById('modalAddToCart');
-            const modalViewDetails = document.getElementById('modalViewDetails');
-            
-            // Set modal content
-            modalProductName.textContent = productName;
-            modalProductImage.src = productImage;
-            modalProductBrand.textContent = productBrand;
-            
-            // Update price display dynamically
-            if (maxOffer > 0) {
-                modalPriceContainer.innerHTML = `
-                    <span class="text-gray-500 dark:text-gray-400 text-lg line-through">₹${productPrice}</span>
-                    <span class="text-2xl font-bold text-red-500">₹${Math.round(salePrice)}</span>
-                    <span class="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-semibold px-2 py-1 rounded-full flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        ${maxOffer}% OFF
-                    </span>
-                `;
-            } else {
-                modalPriceContainer.innerHTML = `<span class="text-2xl font-bold text-primary">₹${productPrice}</span>`;
-            }
-            
-            // Set button actions
-            modalAddToCart.setAttribute('onclick', `addToCart('${productId}')`);
-            modalViewDetails.href = `/productdetails/${productId}`;
-            
-            // Show modal and prevent body scrolling
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeQuickView() {
-            const modal = document.getElementById('quickViewModal');
-            modal.classList.remove('show');
-            
-            // Re-enable body scrolling
-            document.body.style.overflow = 'auto';
+        // Set button actions
+        modalAddToCart.setAttribute('onclick', `addToCart('${productId}')`);
+        modalViewDetails.href = `/productdetails/${productId}`;
+        
+        // Initialize Three.js for modal
+        if (window.productRenderer) {
+            window.productRenderer.initModal(productImage);
         }
         
-        // Close modal when clicking outside the content
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('quickViewModal');
-            if (event.target === modal) {
-                closeQuickView();
-            }
-        });
+        // Show modal and prevent body scrolling
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
 
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
+    function closeQuickView() {
+        const modal = document.getElementById('quickViewModal');
+        modal.classList.remove('show');
+        
+        // Clean up Three.js resources
+        if (window.productRenderer) {
+            window.productRenderer.cleanupModal();
+        }
+        
+        // Re-enable body scrolling
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Close modal when clicking outside the content
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('quickViewModal');
+        if (event.target === modal) {
+            closeQuickView();
+        }
+    });
 
-            toastMessage.textContent = message;
-            toast.classList.remove('hidden');
+    function showToast(message, isError = false) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
 
-            if (isError) {
-                toast.classList.add('bg-red-500');
-                toast.classList.remove('bg-gray-800', 'dark:bg-gray-700');
-            } else {
-                toast.classList.remove('bg-red-500');
-                toast.classList.add('bg-gray-800', 'dark:bg-gray-700');
-            }
+        toastMessage.textContent = message;
+        toast.classList.remove('hidden');
 
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000); // Hide after 3 seconds
+        if (isError) {
+            toast.classList.add('bg-red-500');
+            toast.classList.remove('bg-gray-800', 'dark:bg-gray-700');
+        } else {
+            toast.classList.remove('bg-red-500');
+            toast.classList.add('bg-gray-800', 'dark:bg-gray-700');
         }
 
-        function addToWishlist(productId, button) {
-            // Get the SVG element inside the button
-            const wishlistIcon = button.querySelector('.wishlist-icon');
-            const path = wishlistIcon.querySelector('path');
-            
-            // Check if it's already in wishlist (has filled color)
-            const isInWishlist = wishlistIcon.classList.contains('text-red-500');
-            
-            if (isInWishlist) {
-                // Remove from wishlist
-                fetch(`/wishlist/${productId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Update UI - change to unfilled heart
-                        wishlistIcon.classList.remove('text-red-500');
-                        wishlistIcon.classList.add('text-gray-500');
-                        button.classList.remove('bg-red-50', 'dark:bg-red-900/20');
-                        button.classList.add('bg-white', 'dark:bg-gray-700');
-                        
-                        // Set fill to none
-                        if (path) path.setAttribute('fill', 'none');
-                        
-                        showToast('Product removed from wishlist!');
-                    } else {
-                        showToast(data.message, true);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred.', true);
-                });
-            } else {
-                // Add to wishlist
-                fetch('/wishlist', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        productId
-                    }),
-                    credentials: 'include'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Update UI - change to filled heart
-                        wishlistIcon.classList.remove('text-gray-500');
-                        wishlistIcon.classList.add('text-red-500');
-                        button.classList.remove('bg-white', 'dark:bg-gray-700');
-                        button.classList.add('bg-red-50', 'dark:bg-red-900/20');
-                        
-                        // Set fill to current color (red)
-                        if (path) path.setAttribute('fill', 'currentColor');
-                        
-                        showToast('Product added to wishlist!');
-                    } else {
-                        showToast(data.message, true);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred.', true);
-                });
-            }
-        }
+        setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 3000); // Hide after 3 seconds
+    }
 
-        // Initialize wishlist status on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is logged in (has a token cookie)
-            const hasCookie = document.cookie.split(';').some(item => item.trim().startsWith('token='));
-            if (!hasCookie) return;
-            
-            // Get all wishlist icons
-            const wishlistIcons = document.querySelectorAll('.wishlist-icon');
-            
-            // Make a single request to get all wishlist items
-            fetch('/wishlistStatus', {
-                method: 'GET',
+    function addToWishlist(productId, button) {
+        // Get the SVG element inside the button
+        const wishlistIcon = button.querySelector('.wishlist-icon');
+        const path = wishlistIcon.querySelector('path');
+        
+        // Check if it's already in wishlist (has filled color)
+        const isInWishlist = wishlistIcon.classList.contains('text-red-500');
+        
+        if (isInWishlist) {
+            // Remove from wishlist
+            fetch(`/wishlist/${productId}`, {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include' 
+                credentials: 'include'
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log('Wishlist data:', data);
-                
-                if (data.success && Array.isArray(data.wishlistItems)) {
-                    // Update the icon colors for items in wishlist
-                    wishlistIcons.forEach(icon => {
-                        const productId = icon.dataset.productId;
-                        
-                        if (data.wishlistItems.includes(productId)) {
-                            // Get the button parent
-                            const button = icon.closest('button');
-                            
-                            // Set the fill attribute directly on the SVG path
-                            const path = icon.querySelector('path');
-                            if (path) path.setAttribute('fill', 'currentColor');
-                            
-                            // Update classes
-                            icon.classList.remove('text-gray-500');
-                            icon.classList.add('text-red-500');
-                            
-                            // Update button background
-                            if (button) {
-                                button.classList.remove('bg-white', 'dark:bg-gray-700');
-                                button.classList.add('bg-red-50', 'dark:bg-red-900/20');
-                            }
-                        }
-                    });
+                if (data.success) {
+                    // Update UI - change to unfilled heart
+                    wishlistIcon.classList.remove('text-red-500');
+                    wishlistIcon.classList.add('text-gray-500');
+                    button.classList.remove('bg-red-50', 'dark:bg-red-900/20');
+                    button.classList.add('bg-white', 'dark:bg-gray-700');
+                    
+                    // Set fill to none
+                    if (path) path.setAttribute('fill', 'none');
+                    
+                    showToast('Product removed from wishlist!');
                 } else {
-                    console.log('No wishlist items found or invalid data format:', data);
+                    showToast(data.message, true);
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred.', true);
             });
-            
-            // Equalize card heights for consistent layout
-            equalizeCardHeights();
-        });
-
-        // JavaScript for Price Range
-        const priceRange = document.getElementById('priceRange');
-        const priceValue = document.getElementById('priceValue');
-
-        if (priceRange && priceValue) {
-            priceRange.addEventListener('input', function() {
-                const value = this.value;
-                priceValue.textContent = '₹' + parseInt(value).toLocaleString();
-            });
-        }
-
-        function addToCart(productId) {
-            fetch('/addtocart', {
+        } else {
+            // Add to wishlist
+            fetch('/wishlist', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    productId: productId,
-                    quantity: 1 // Default quantity
-                })
+                    productId
+                }),
+                credentials: 'include'
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Product added to cart!');
+                    // Update UI - change to filled heart
+                    wishlistIcon.classList.remove('text-gray-500');
+                    wishlistIcon.classList.add('text-red-500');
+                    button.classList.remove('bg-white', 'dark:bg-gray-700');
+                    button.classList.add('bg-red-50', 'dark:bg-red-900/20');
                     
-                    // Close modal if it's open
-                    const modal = document.getElementById('quickViewModal');
-                    if (modal.classList.contains('show')) {
-                        closeQuickView();
-                    }
+                    // Set fill to current color (red)
+                    if (path) path.setAttribute('fill', 'currentColor');
+                    
+                    showToast('Product added to wishlist!');
                 } else {
                     showToast(data.message, true);
                 }
@@ -1437,305 +2137,397 @@
                 showToast('An error occurred.', true);
             });
         }
+    }
 
-        // Ensure all product cards have equal height
-        // Update the equalizeCardHeights function to run after images load
-        function equalizeCardHeights() {
-            const productCards = document.querySelectorAll('.product-card');
-            
-            // Wait for all images to load before calculating heights
-            const images = document.querySelectorAll('.card-image');
-            let imagesLoaded = 0;
-            
-            function onImageLoad() {
-                imagesLoaded++;
-                if (imagesLoaded === images.length) {
-                    // All images loaded, now calculate heights
-                    let maxHeight = 0;
-                    
-                    // Reset heights first
-                    productCards.forEach(card => {
-                        card.style.height = 'auto';
-                        const height = card.offsetHeight;
-                        maxHeight = Math.max(maxHeight, height);
-                    });
-                    
-                    // Set all cards to the height of the tallest
-                    productCards.forEach(card => {
-                        card.style.height = `${maxHeight}px`;
-                    });
-                }
+    // Initialize wishlist status on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is logged in (has a token cookie)
+        const hasCookie = document.cookie.split(';').some(item => item.trim().startsWith('token='));
+        if (!hasCookie) return;
+        
+        // Get all wishlist icons
+        const wishlistIcons = document.querySelectorAll('.wishlist-icon');
+        
+        // Make a single request to get all wishlist items
+        fetch('/wishlistStatus', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include' 
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Wishlist data:', data);
             
-            // Check if images are already loaded
-            images.forEach(img => {
-                if (img.complete) {
-                    onImageLoad();
-                } else {
-                    img.addEventListener('load', onImageLoad);
+            if (data.success && Array.isArray(data.wishlistItems)) {
+                // Update the icon colors for items in wishlist
+                wishlistIcons.forEach(icon => {
+                    const productId = icon.dataset.productId;
+                    
+                    if (data.wishlistItems.includes(productId)) {
+                        // Get the button parent
+                        const button = icon.closest('button');
+                        
+                        // Set the fill attribute directly on the SVG path
+                        const path = icon.querySelector('path');
+                        if (path) path.setAttribute('fill', 'currentColor');
+                        
+                        // Update classes
+                        icon.classList.remove('text-gray-500');
+                        icon.classList.add('text-red-500');
+                        
+                        // Update button background
+                        if (button) {
+                            button.classList.remove('bg-white', 'dark:bg-gray-700');
+                            button.classList.add('bg-red-50', 'dark:bg-red-900/20');
+                        }
+                    }
+                });
+            } else {
+                console.log('No wishlist items found or invalid data format:', data);
+            }
+        });
+    });
+
+    // JavaScript for Price Range
+    const priceRange = document.getElementById('priceRange');
+    const priceValue = document.getElementById('priceValue');
+
+    // Update price value when the slider moves
+    priceRange.addEventListener('input', function() {
+        priceValue.textContent = `₹${parseInt(this.value).toLocaleString()}`;
+    });
+
+    // Apply filter when the slider is changed
+    priceRange.addEventListener('change', function() {
+        const selectedPrice = this.value;
+        const url = new URL(window.location.href);
+        
+        // Update the maxPrice parameter in the URL
+        url.searchParams.set('maxPrice', selectedPrice);
+
+        // Redirect to the updated URL to apply the filter
+        window.location.href = url.toString();
+    })
+
+    function addToCart(productId) {
+        fetch('/addtocart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: productId,
+                quantity: 1 // Default quantity
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Product added to cart!');
+                
+                // Close modal if it's open
+                const modal = document.getElementById('quickViewModal');
+                if (modal.classList.contains('show')) {
+                    closeQuickView();
+                }
+            } else {
+                showToast(data.message, true);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('An error occurred.', true);
+        });
+    }
+
+    // Debounce function to delay execution
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    // Main functionality for filters and sorting
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById("searchInput");
+        const sortSelect = document.getElementById("sortBy");
+        const clearBtn = document.getElementById("clearBtn");
+        const applyFiltersBtn = document.querySelector('button.w-full.bg-primary');
+        const priceRange = document.getElementById("priceRange");
+        const priceValue = document.getElementById("priceValue");
+
+        // Apply filters when input changes (debounced)
+        function applyFilters() {
+            const queryParams = new URLSearchParams();
+
+            // Get search value
+            const search = searchInput?.value.trim();
+            
+            // Get checked categories
+            const checkedCategories = document.querySelectorAll('input[name="categoryFilter"]:checked');
+            let categoryValues = [];
+            
+            checkedCategories.forEach(checkbox => {
+                if (checkbox.id !== 'allCategories') {
+                    // Get the category name from the span element next to the checkbox
+                    const categoryName = checkbox.nextElementSibling.textContent.trim();
+                    categoryValues.push(categoryName);
                 }
             });
+
+            // Get checked brands
+            const checkedBrands = document.querySelectorAll('input[name="brandsFilter"]:checked');
+            let brandValues = [];
             
-            // If there are no images, just equalize heights
-            if (images.length === 0) {
-                let maxHeight = 0;
-                
-                productCards.forEach(card => {
-                    card.style.height = 'auto';
-                    const height = card.offsetHeight;
-                    maxHeight = Math.max(maxHeight, height);
-                });
-                
-                productCards.forEach(card => {
-                    card.style.height = `${maxHeight}px`;
-                });
+            checkedBrands.forEach(checkbox => {
+                if (checkbox.id !== 'allBrands') {
+                    // Get the brand name from the span element next to the checkbox
+                    const brandName = checkbox.nextElementSibling.textContent.trim();
+                    brandValues.push(brandName);
+                }
+            });
+
+            // Get price range
+            const maxPrice = priceRange?.value;
+
+            // Get sort value
+            const sort = sortSelect?.value;
+
+            // Add non-empty filters to query params
+            if (search) queryParams.append("search", search);
+            if (categoryValues.length > 0 && !document.getElementById('allCategories').checked) {
+                queryParams.append("categoryFilter", categoryValues[0]); // Currently backend handles only one category
             }
+            if (brandValues.length > 0 && !document.getElementById('allBrands').checked) {
+                queryParams.append("brandsFilter", brandValues[0]); // Currently backend handles only one brand
+            }
+            if (maxPrice) queryParams.append("maxPrice", maxPrice);
+            if (sort) queryParams.append("sortBy", sort);
+
+            // Navigate to filtered URL
+            window.location.href = `/shoplist?${queryParams.toString()}`;
         }
 
-        // Debounce function to delay execution
-        function debounce(func, delay) {
-            let timer;
-            return function (...args) {
-                clearTimeout(timer);
-                timer = setTimeout(() => func.apply(this, args), delay);
-            };
-        }
-
-        // Main functionality for filters and sorting
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchInput = document.getElementById("searchInput");
-            const sortSelect = document.getElementById("sortBy");
-            const clearBtn = document.getElementById("clearBtn");
-            const applyFiltersBtn = document.querySelector('button.w-full.bg-primary');
-            const priceRange = document.getElementById("priceRange");
-            const priceValue = document.getElementById("priceValue");
-
-            // Apply filters when input changes (debounced)
-            function applyFilters() {
-                const queryParams = new URLSearchParams();
-
-                // Get search value
-                const search = searchInput?.value.trim();
-                
-                // Get checked categories
-                const checkedCategories = document.querySelectorAll('input[name="categoryFilter"]:checked');
-                let categoryValues = [];
-                
-                checkedCategories.forEach(checkbox => {
-                    if (checkbox.id !== 'allCategories') {
-                        // Get the category name from the span element next to the checkbox
-                        const categoryName = checkbox.nextElementSibling.textContent.trim();
-                        categoryValues.push(categoryName);
-                    }
-                });
-
-                // Get checked brands
-                const checkedBrands = document.querySelectorAll('input[name="brandsFilter"]:checked');
-                let brandValues = [];
-                
-                checkedBrands.forEach(checkbox => {
-                    if (checkbox.id !== 'allBrands') {
-                        // Get the brand name from the span element next to the checkbox
-                        const brandName = checkbox.nextElementSibling.textContent.trim();
-                        brandValues.push(brandName);
-                    }
-                });
-
-                // Get price range
-                const maxPrice = priceRange?.value;
-
-                // Get sort value
-                const sort = sortSelect?.value;
-
-                // Add non-empty filters to query params
-                if (search) queryParams.append("search", search);
-                if (categoryValues.length > 0 && !document.getElementById('allCategories').checked) {
-                    queryParams.append("categoryFilter", categoryValues[0]); // Currently backend handles only one category
-                }
-                if (brandValues.length > 0 && !document.getElementById('allBrands').checked) {
-                    queryParams.append("brandsFilter", brandValues[0]); // Currently backend handles only one brand
-                }
-                if (maxPrice) queryParams.append("maxPrice", maxPrice);
-                if (sort) queryParams.append("sortBy", sort);
-
-                // Navigate to filtered URL
-                window.location.href = `/shoplist?${queryParams.toString()}`;
-            }
-
-            // Function to handle "All Categories" checkbox
-            function handleAllCategories() {
-                const allCategoriesCheckbox = document.getElementById('allCategories');
-                const categoryCheckboxes = document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)');
-                
-                if (allCategoriesCheckbox) {
-                    allCategoriesCheckbox.addEventListener('change', function() {
-                        categoryCheckboxes.forEach(checkbox => {
-                            checkbox.checked = false;
-                            checkbox.disabled = this.checked;
-                        });
-                    });
-                    
-                    // If any individual category is checked, uncheck "All Categories"
+        // Function to handle "All Categories" checkbox
+        function handleAllCategories() {
+            const allCategoriesCheckbox = document.getElementById('allCategories');
+            const categoryCheckboxes = document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)');
+            
+            if (allCategoriesCheckbox) {
+                allCategoriesCheckbox.addEventListener('change', function() {
                     categoryCheckboxes.forEach(checkbox => {
-                        checkbox.addEventListener('change', function() {
-                            if (this.checked) {
-                                allCategoriesCheckbox.checked = false;
-                            }
-                        });
+                        checkbox.checked = false;
+                        checkbox.disabled = this.checked;
                     });
-                }
-            }
-
-            // Function to handle "All Brands" checkbox
-            function handleAllBrands() {
-                const allBrandsCheckbox = document.getElementById('allBrands');
-                const brandCheckboxes = document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)');
+                });
                 
-                if (allBrandsCheckbox) {
-                    allBrandsCheckbox.addEventListener('change', function() {
-                        brandCheckboxes.forEach(checkbox => {
-                            checkbox.checked = false;
-                            checkbox.disabled = this.checked;
-                        });
+                // If any individual category is checked, uncheck "All Categories"
+                categoryCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            allCategoriesCheckbox.checked = false;
+                        }
                     });
-                    
-                    // If any individual brand is checked, uncheck "All Brands"
+                });
+            }
+        }
+
+        // Function to handle "All Brands" checkbox
+        function handleAllBrands() {
+            const allBrandsCheckbox = document.getElementById('allBrands');
+            const brandCheckboxes = document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)');
+            
+            if (allBrandsCheckbox) {
+                allBrandsCheckbox.addEventListener('change', function() {
                     brandCheckboxes.forEach(checkbox => {
-                        checkbox.addEventListener('change', function() {
-                            if (this.checked) {
-                                allBrandsCheckbox.checked = false;
-                            }
-                        });
+                        checkbox.checked = false;
+                        checkbox.disabled = this.checked;
                     });
-                }
+                });
+                
+                // If any individual brand is checked, uncheck "All Brands"
+                brandCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            allBrandsCheckbox.checked = false;
+                        }
+                    });
+                });
             }
+        }
 
-            // Clear all filters
-            function clearFilters() {
+        // Clear all filters
+        function clearFilters() {
+            const allCategoriesCheckbox = document.getElementById('allCategories');
+            const allBrandsCheckbox = document.getElementById('allBrands');
+            
+            if (searchInput) searchInput.value = "";
+            if (allCategoriesCheckbox) allCategoriesCheckbox.checked = true;
+            if (allBrandsCheckbox) allBrandsCheckbox.checked = true;
+            
+            document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.disabled = true;
+            });
+            
+            document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.disabled = true;
+            });
+            
+            if (sortSelect) sortSelect.value = "";
+            if (priceRange) priceRange.value = priceRange.max / 2;
+            if (priceValue) priceValue.textContent = `₹${parseInt(priceRange.value).toLocaleString()}`;
+            
+            window.location.href = '/shoplist';
+        }
+
+        // Restore filter values from URL on page load
+        function restoreFiltersFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            
+            // Restore search
+            if (searchInput) searchInput.value = params.get("search") || "";
+            
+            // Restore category filters
+            const categoryParam = params.get("categoryFilter");
+            if (categoryParam) {
                 const allCategoriesCheckbox = document.getElementById('allCategories');
-                const allBrandsCheckbox = document.getElementById('allBrands');
+                if (allCategoriesCheckbox) {
+                    allCategoriesCheckbox.checked = false;
+                }
                 
-                if (searchInput) searchInput.value = "";
-                if (allCategoriesCheckbox) allCategoriesCheckbox.checked = true;
-                if (allBrandsCheckbox) allBrandsCheckbox.checked = true;
-                
+                // Check the appropriate category checkbox
                 document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
-                    checkbox.checked = false;
-                    checkbox.disabled = true;
+                    const categoryName = checkbox.nextElementSibling.textContent.trim();
+                    checkbox.checked = categoryName === categoryParam;
+                    checkbox.disabled = false;
                 });
+            }
+            
+            // Restore brand filters
+            const brandParam = params.get("brandsFilter");
+            if (brandParam) {
+                const allBrandsCheckbox = document.getElementById('allBrands');
+                if (allBrandsCheckbox) {
+                    allBrandsCheckbox.checked = false;
+                }
                 
+                // Check the appropriate brand checkbox
                 document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
-                    checkbox.checked = false;
-                    checkbox.disabled = true;
+                    const brandName = checkbox.nextElementSibling.textContent.trim();
+                    checkbox.checked = brandName === brandParam;
+                    checkbox.disabled = false;
                 });
-                
-                if (sortSelect) sortSelect.value = "";
-                if (priceRange) priceRange.value = priceRange.max / 2;
-                if (priceValue) priceValue.textContent = `₹${parseInt(priceRange.value).toLocaleString()}`;
-                
-                window.location.href = '/shoplist';
-            }
-
-            // Restore filter values from URL on page load
-            function restoreFiltersFromURL() {
-                const params = new URLSearchParams(window.location.search);
-                
-                // Restore search
-                if (searchInput) searchInput.value = params.get("search") || "";
-                
-                // Restore category filters
-                const categoryParam = params.get("categoryFilter");
-                if (categoryParam) {
-                    const allCategoriesCheckbox = document.getElementById('allCategories');
-                    if (allCategoriesCheckbox) {
-                        allCategoriesCheckbox.checked = false;
-                    }
-                    
-                    // Check the appropriate category checkbox
-                    document.querySelectorAll('input[name="categoryFilter"]:not(#allCategories)').forEach(checkbox => {
-                        const categoryName = checkbox.nextElementSibling.textContent.trim();
-                        checkbox.checked = categoryName === categoryParam;
-                        checkbox.disabled = false;
-                    });
-                }
-                
-                // Restore brand filters
-                const brandParam = params.get("brandsFilter");
-                if (brandParam) {
-                    const allBrandsCheckbox = document.getElementById('allBrands');
-                    if (allBrandsCheckbox) {
-                        allBrandsCheckbox.checked = false;
-                    }
-                    
-                    // Check the appropriate brand checkbox
-                    document.querySelectorAll('input[name="brandsFilter"]:not(#allBrands)').forEach(checkbox => {
-                        const brandName = checkbox.nextElementSibling.textContent.trim();
-                        checkbox.checked = brandName === brandParam;
-                        checkbox.disabled = false;
-                    });
-                }
-                
-                // Restore price range
-                const maxPriceParam = params.get("maxPrice");
-                if (maxPriceParam && priceRange && priceValue) {
-                    priceRange.value = maxPriceParam;
-                    priceValue.textContent = `₹${parseInt(maxPriceParam).toLocaleString()}`;
-                }
-                
-                // Restore sort
-                if (sortSelect) {
-                    sortSelect.value = params.get("sortBy") || "";
-                }
-            }
-
-            // Add event listeners
-            if (searchInput) {
-                searchInput.addEventListener("input", debounce(applyFilters, 500));
             }
             
+            // Restore price range
+            const maxPriceParam = params.get("maxPrice");
+            if (maxPriceParam && priceRange && priceValue) {
+                priceRange.value = maxPriceParam;
+                priceValue.textContent = `₹${parseInt(maxPriceParam).toLocaleString()}`;
+            }
+            
+            // Restore sort
             if (sortSelect) {
-                sortSelect.addEventListener("change", applyFilters);
+                sortSelect.value = params.get("sortBy") || "";
             }
-            
-            if (clearBtn) {
-                clearBtn.addEventListener("click", clearFilters);
-            }
-            
-            if (applyFiltersBtn) {
-                applyFiltersBtn.addEventListener("click", applyFilters);
-            }
-            
-            if (priceRange) {
-                priceRange.addEventListener("change", applyFilters);
-            }
+        }
 
-            // Initialize checkbox handlers
-            handleAllCategories();
-            handleAllBrands();
-            
-            // Initialize filters from URL
-            restoreFiltersFromURL();
-            
-            // Run equalize heights on page load and window resize
-            equalizeCardHeights();
-            window.addEventListener('resize', debounce(equalizeCardHeights, 200));
-            
-            // Run again after images load for more accurate heights
-            window.addEventListener('load', equalizeCardHeights);
+        // Add event listeners
+        if (searchInput) {
+            searchInput.addEventListener("input", debounce(applyFilters, 500));
+        }
+        
+        if (sortSelect) {
+            sortSelect.addEventListener("change", applyFilters);
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener("click", clearFilters);
+        }
+        
+        if (applyFiltersBtn) {
+            applyFiltersBtn.addEventListener("click", applyFilters);
+        }
+        
+        if (priceRange) {
+            priceRange.addEventListener("change", applyFilters);
+        }
+
+        // Initialize checkbox handlers
+        handleAllCategories();
+        handleAllBrands();
+        
+        // Initialize filters from URL
+        restoreFiltersFromURL();
+        
+        // Run again after images load for more accurate heights
+        window.addEventListener('load', function() {
+            // Ensure Three.js is properly initialized after all content is loaded
+            setTimeout(function() {
+                // Force resize to ensure Three.js canvases are properly sized
+                window.dispatchEvent(new Event('resize'));
+            }, 500);
         });
-
-        // Add this to ensure images load properly
-        document.addEventListener('DOMContentLoaded', function() {
-            // Preload images for better display
-            const productImages = document.querySelectorAll('.card-image');
-            productImages.forEach(img => {
-                const src = img.getAttribute('src');
-                if (src) {
-                    const preloadImg = new Image();
-                    preloadImg.src = src;
+    });
+</script>
+<script>
+    // Mobile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function() {
+                // Toggle the 'hidden' class on the mobile menu
+                mobileMenu.classList.toggle('hidden');
+                
+                // Change the icon based on menu state
+                const icon = mobileMenuButton.querySelector('i');
+                if (icon) {
+                    if (mobileMenu.classList.contains('hidden')) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    } else {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    }
                 }
             });
-        });
-    </script>
+        }
+        
+        // Ensure search functionality works on both desktop and mobile
+        const searchInput = document.getElementById('searchInput');
+        const mobileSearchInput = document.getElementById('mobileSearchInput');
+        
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                const searchTerm = event.target.value.trim();
+                if (searchTerm) {
+                    window.location.href = `/shoplist?search=${encodeURIComponent(searchTerm)}`;
+                }
+            }
+        }
+        
+        if (searchInput) {
+            searchInput.addEventListener('keypress', handleSearch);
+        }
+        
+        if (mobileSearchInput) {
+            mobileSearchInput.addEventListener('keypress', handleSearch);
+        }
+    });
+</script>
 </body>
 </html>
+

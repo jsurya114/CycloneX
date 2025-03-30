@@ -49,18 +49,17 @@ return res.status(400).json({success:false,message:'cart is empty'})
 
 const now = Date.now()
 const coupons = await Coupon.find({
-    isBlocked:false,
-    startDate: { $lte: now },
-    expireDate: { $gte: now }
-})
+    $or: [
+        { user: userId }, // ✅ Coupons assigned to this user
+        { user: { $size: 0 } } // ✅ General coupons with an empty userId array
+    ],
+    usedBy: { $nin: [userId] } }).lean();
 
 
 
 let standartShipping=100
-let expressShipping=150
-let sameDayShipping=300
 
-const shippingMethod = req.query.shipping||'standard'
+const shippingMethod = (req.query.shipping||'standard').toLowerCase()
 
 
 
@@ -70,8 +69,8 @@ let discount = 0;
 let taxRate = 0.18;
 let tax = 0;           // ✅ Moved tax declaration here
 let finalTotal = 0;    // ✅ Added default value here
-let freeShipping = false;
 let shippingCharge = 0;
+let freeShipping =false
 
  if (cart && cart.items.length > 0) {
     cart.items = cart.items.map(item => {
@@ -96,27 +95,20 @@ let shippingCharge = 0;
 
     subtotal = cart.items.reduce((sum, item) => sum + (item.subtotal || 0), 0);
     tax = subtotal * taxRate
+    console.log('Subtotal:', subtotal)
+  
+    freeShipping = subtotal>=5000
+   if(shippingMethod==='standard'&&freeShipping){
+    shippingCharge=0
    
-    if(subtotal>80000){
-        freeShipping=true
-        shippingCharge=0
-    }
-    else{
-        if(shippingMethod==='express'){
-            shippingCharge=expressShipping
-        }else if(shippingMethod==='sameDay'){
-            shippingCharge=sameDayShipping
-           
-        }else{
-            shippingCharge=standartShipping
-        }
-    }
+   }
     
      finalTotal = subtotal + tax + shippingCharge;
-   
+   console.log('finalTotal',finalTotal)
 }
+console.log('Shipping Charge:', shippingCharge)
           
-console.log('toaot', subtotal, tax, shippingCharge, finalTotal )
+console.log('toaot', subtotal, tax,  finalTotal )
 
 
         res.render('checkout',{
@@ -134,8 +126,7 @@ console.log('toaot', subtotal, tax, shippingCharge, finalTotal )
         discountCode: "",
         shippingOptions: {
             standard: standartShipping,
-            express: expressShipping,
-            sameDay: sameDayShipping
+
         },
         selectedShipping: shippingMethod,
         freeShipping,
@@ -161,22 +152,27 @@ console.log('toaot', subtotal, tax, shippingCharge, finalTotal )
 if(!coupon){
     return res.status(404).json({success:false,message:'coupon expired'})
 }
-if(totalAmount<coupon.minAmount){
-    return res.status(400).json({success:false,message:`This coupon is applicable on orders above ₹${coupon.minAmount}. Please add more items to your cart.`})
-}
+
+
 // const userObjectId = new mongoose.Types.ObjectId(userId); // Convert to ObjectId
 
 
-if(coupon.user&&coupon.user.includes(userId)){
+if(coupon.usedBy&&coupon.usedBy.includes(userId)){
     return res.status(400).json({
         success: false,
         message: "You have already used this coupon."
     })
 }
+if(totalAmount<coupon.minAmount){
+    return res.status(400).json({success:false,message:`This coupon is applicable on orders above ₹${coupon.minAmount}. Please add more items to your cart.`})
+}
 const discount = Math.min(coupon.offerPrice, totalAmount,shippingCharge);
 const total = totalAmount - discount
 
 console.log('jsj',discount)
+
+
+
 
 
 return res.status(200).json({success:true,discount,couponId:coupon._id,total})
@@ -190,6 +186,7 @@ return res.status(200).json({success:true,discount,couponId:coupon._id,total})
 
 
     }
+,
 
 
    

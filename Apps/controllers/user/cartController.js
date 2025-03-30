@@ -72,7 +72,7 @@ const cartController={
 
 
 
-let referenceProduct= cart?.items?.length>0?cart.items[0].product:null
+let referenceProduct= cart?.items?.length>0?cart.items.product:null
 
 let relatedProducts=[]
 if(referenceProduct){

@@ -14,7 +14,7 @@ const shopController = {
                         //  console.log("user",userId);
                          const user=await User.findById(userId);
                          let cartCount =await Cart.countDocuments({user:userId})
-            const { search, categoryFilter, brandsFilter, sortBy, page, limit, maxPrice } = req.query;
+            const { search, categoryFilter, brandsFilter, sortBy, page, limit, maxPrice ,minPrice} = req.query;
             let filter = { isDeleted: false };
     
             const categories = await Category.find({isBlocked:false});
@@ -46,8 +46,14 @@ const shopController = {
             }
     
             // Price filter
-            if (maxPrice) {
-                filter.price = { $lte: parseInt(maxPrice) };
+            if (minPrice || maxPrice) {
+                filter.price = {};
+                if (minPrice) {
+                    filter.price.$gte = parseInt(minPrice); // Greater than or equal to minPrice
+                }
+                if (maxPrice) {
+                    filter.price.$lte = parseInt(maxPrice); // Less than or equal to maxPrice
+                }
             }
     
             // Sort options
@@ -74,7 +80,7 @@ const shopController = {
     
             // Pagination logic
             let currentPage = parseInt(page) || 1;
-            let itemsPerPage = parseInt(limit) || 4; // Changed to 9 for a 3x3 grid
+            let itemsPerPage = parseInt(limit) || 12; // Changed to 9 for a 3x3 grid
             let skip = (currentPage - 1) * itemsPerPage;
     
             // Count total products
@@ -113,6 +119,9 @@ const productWithoffer = product.map(p=>{
             // Calculate total pages
             let totalPages = Math.ceil(totalProducts / itemsPerPage);
     
+
+           
+
             // Build breadcrumbs
             let breadcrumbs = [
                 { name: 'Home', url: '/' },

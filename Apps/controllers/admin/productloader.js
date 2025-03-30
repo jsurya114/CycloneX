@@ -23,6 +23,7 @@ if(!product){
 if(!product.category){
     product.category=null
 }
+console.log('product',product)
 res.render('editproduct',{product,brands,category})
         } catch (error) {
             console.error(error);
@@ -32,7 +33,8 @@ res.render('editproduct',{product,brands,category})
     editProduct:async (req,res,next) => {
         try {
             console.log('jdjdj',req.body)
-            const { productId, productName, description, price, brands, category, stock ,offer} = req.body;
+            console.log('files',req.files)
+            const { productId, productName,description, price, brands, category, stock ,offer} = req.body;
             console.log('productId, productName, description, price, brands, category, stock ,offer',productId, productName, description, price, brands, category, stock ,offer)
             // Validation
             let errors = {};
@@ -65,6 +67,7 @@ res.render('editproduct',{product,brands,category})
             // Prepare update object
             const updateData = {
                 productName,
+        
                 description,
                 price,
                 brands,
@@ -73,11 +76,14 @@ res.render('editproduct',{product,brands,category})
                 offer
                 
             };
+            console.log('req.file',req.files)
             
             // Handle main image if provided
             if (req.files && req.files.mainImage && req.files.mainImage.length > 0) {
-                updateData.mainImage = req.files.mainImage[0].path.replace('public/', '');
+                updateData.mainImage = req.files.mainImage[0].path.replace(/\\/g, '/').replace('public/', '')
+
             }
+            console.log('updateData.mainImage',updateData.mainImage)
             
             // Handle additional images if provided
             if (req.files && req.files.images && req.files.images.length > 0) {
@@ -85,14 +91,17 @@ res.render('editproduct',{product,brands,category})
                 if (existingProduct.images && existingProduct.images.length > 0) {
                     updateData.images = [
                         ...existingProduct.images,
-                        ...req.files.images.map(file => file.path.replace('public/', ''))
+                        ...req.files.images.map(file => file.path.replace(/\\/g, '/').replace('public/', ''))
                     ];
                 } else {
-                    updateData.images = req.files.images.map(file => file.path.replace('public/', ''));
+                    updateData.images = req.files.images.map(file => file.path.replace(/\\/g, '/').replace('public/', ''));
                 }
             }
+            console.log('updatedata',updateData.images)
+            
             
             await Product.findByIdAndUpdate(productId, updateData, { new: true });
+            
             res.status(200).json({ success: true, message: 'Product updated successfully' });
         } catch (error) {
             console.error(error);
@@ -104,6 +113,10 @@ res.render('editproduct',{product,brands,category})
         try {
             const productId = req.params.id;
             const { type, image, index } = req.body;
+            console.log(",ain im,ag",image);
+            
+            console.log("type :",type);
+            
             
             const product = await Product.findById(productId);
             
@@ -112,21 +125,24 @@ res.render('editproduct',{product,brands,category})
             }
             
             // Handle file deletion from filesystem
-            const imagePath = path.join('public', image);
+            const imagePath = path.join( image);
             if (fs.existsSync(imagePath)) {
                 fs.unlinkSync(imagePath);
             }
+            console.log('imagePath',imagePath)
             
             // Update database based on image type
             if (type === 'main') {
                 // Clear main image
-                product.mainImage = '';
+                // product.mainImage = '';
+                await Product.findByIdAndUpdate(productId,{mainImage:' '},{runValidators:false})
             } else if (type === 'additional') {
                 // Remove specific image from array
                 product.images.splice(index, 1);
+                await product.save();
             }
             
-            await product.save();
+       
             
             res.status(200).json({ success: true, message: 'Image deleted successfully' });
         } catch (error) {

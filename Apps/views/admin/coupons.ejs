@@ -1,257 +1,426 @@
 <!DOCTYPE HTML>
 <html lang="en">
-  <%- include('partials/head') %>
-<body>
-  <div class="screen-overlay"></div>
-  <aside class="navbar-aside" id="offcanvas_aside">
-    <div class="aside-top">
-      <a href="" class="brand-wrap">
-        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-      </a>
-      <div>
-        <button class="btn btn-icon btn-aside-minimize">
-          <i class="text-muted material-icons md-menu_open"></i>
-        </button>
-      </div>
-    </div>
-    <nav>
-      <ul class="menu-aside">
-        <li class="menu-item ">
-          <a class="menu-link" href="/admin/dashboard">
-            <i class="icon material-icons md-home"></i>
-            <span class="text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a class="menu-link" href="/admin/product-list2">
-            <i class="icon material-icons md-shopping_bag"></i>
-            <span class="text">Products</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/category">
-            <i class="icon material-icons md-category"></i>
-            <span class="text">Category</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/brands">
-            <i class="icon material-icons md-stars"></i>
-            <span class="text">Brands</span>
-          </a>
-        </li>
-        <li class="menu-item active">
-          <a class="menu-link" href="/admin/coupons">
-            <i class="icon material-icons md-card_giftcard"></i>
-            <span class="text">Coupons</span>
-          </a>
-        </li>
-        <li class="menu-item  ">
-          <a class="menu-link" href="/admin/userlist">
-            <i class="icon material-icons md-store"></i>
-            <span class="text">Users</span>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a class="menu-link" href="/admin/orderlist">
-            <i class="icon material-icons md-shopping_bag"></i>
-            <span class="text">Orders</span>
-          </a>
-        </li>
-      </ul>
-      <br><br>
-    </nav>
-  </aside>
-  <main class="main-wrap">
-    <%- include('partials/header') %>
-    <section class="content-main">
-      <div class="content-header">
-        <div>
-          <h2 class="content-title card-title text-4xl">Coupons</h2>
-        </div>
-        <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-4">
-          <!-- Search Input -->
-          <input 
-              type="text" 
-              id="searchInput" 
-              placeholder="Search Coupons" 
-              class="bg-white px-3 py-2 border rounded-md w-full sm:max-w-xs"
-          />
-          <!-- Search Button -->
-          <button 
-            id="searchBtn" 
-            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Search
-          </button>
-          <!-- Clear Button -->
-          <button 
-            id="clearBtn" 
-            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          >
-            Clear
-          </button>
-          <!-- Status Filter Dropdown -->
-          <select id="statusFilter" class="bg-white px-3 py-2 border rounded-md">
-              <option value="">All</option>
-              <option value="active">Active</option>
-              <option value="deactive">Expired</option>
-          </select>
-        </div>
-      </div>
-      <!-- Card Container with max width adjusted -->
-      <div class="bg-white shadow-sm rounded-lg overflow-hidden max-w-7xl mx-auto">
-        <div class="p-6">
-          <!-- Grid layout: Form on left, Coupons Table on right -->
-          <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <!-- Add Coupon Form -->
-            <div class="col-span-1">
-              <form id="addCouponForm"  class="space-y-4">
-                <div>
-                  <label for="couponCode" class="block text-sm font-medium text-gray-700">Coupon Code</label>
-                  <input
-                    type="text"
-                    name="couponCode"
-                    placeholder="e.g. SUMMER20"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="couponCode"
-                  />
-                  <p id="couponCode_error" class="text-red-500 text-sm hidden"></p>
-                </div>
-                
-                <div>
-                  <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
-                  <input
-                    type="date"
-                    name="startDate"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="startDate"
-                  />
-                  <p id="startDate_error" class="text-red-500 text-sm hidden"></p>
-                </div>
-                
-               
-                
-                <div>
-                  <label for="expireDate" class="block text-sm font-medium text-gray-700">Expiry Date</label>
-                  <input
-                    type="date"
-                    name="expireDate"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="expireDate"
-                  />
-                  <p id="expireDate_error" class="text-red-500 text-sm hidden"></p>
-                </div>
-                
-                <div>
-                  <label for="offerPrice" class="block text-sm font-medium text-gray-700">Offer Price</label>
-                  <input
-                    type="number"
-                    name="offerPrice"
-                    placeholder="e.g. 100"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="offerPrice"
-                  />
-                  <p id="offerPrice_error" class="text-red-500 text-sm hidden"></p>
-                </div>
-                
-                <div>
-                  <label for="minAmount" class="block text-sm font-medium text-gray-700">Minimum Amount</label>
-                  <input
-                    type="number"
-                    name="minAmount"
-                    placeholder="e.g. 500"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="minAmount"
-                  />
-                  <p id="minAmount_error" class="text-red-500 text-sm hidden"></p>
-                </div>
-                
-                <div>
-                  <button
-                    type="submit"
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Create Coupon
-                  </button>
-                </div>
-              </form>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycloneX Dashboard - Coupons</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+      tailwind.config = {
+          darkMode: 'class',
+          theme: {
+              extend: {
+                  colors: {
+                      primary: {
+                          50: '#f0f9ff',
+                          100: '#e0f2fe',
+                          200: '#bae6fd',
+                          300: '#7dd3fc',
+                          400: '#38bdf8',
+                          500: '#0ea5e9',
+                          600: '#0284c7',
+                          700: '#0369a1',
+                          800: '#075985',
+                          900: '#0c4a6e',
+                          950: '#082f49',
+                      },
+                      secondary: {
+                          50: '#f5f3ff',
+                          100: '#ede9fe',
+                          200: '#ddd6fe',
+                          300: '#c4b5fd',
+                          400: '#a78bfa',
+                          500: '#8b5cf6',
+                          600: '#7c3aed',
+                          700: '#6d28d9',
+                          800: '#5b21b6',
+                          900: '#4c1d95',
+                          950: '#2e1065',
+                      },
+                  },
+              },
+          },
+      }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+      body {
+          font-family: 'Inter', sans-serif;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      
+      @keyframes pulse {
+          0%, 100% {
+              opacity: 1;
+          }
+          50% {
+              opacity: 0.5;
+          }
+      }
+      
+      .animate-pulse {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Main Container -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
             </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
+          </a>
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
+            </a>
+            
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Brands</span>
+            </a>
+          </div>
+          
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Users</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-primary-50 text-primary-700 group">
+              <i class="fas fa-gift w-5 h-5 mr-2"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Orders</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </aside>
 
-            <!-- Coupons Table -->
-            <div class="col-span-3">
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- Left: Hamburger Menu -->
+          <div class="flex items-center">
+            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div class="hidden md:flex items-center ml-4">
+              <h1 class="text-xl font-semibold text-gray-800">Coupon Management</h1>
+              <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">Admin</span>
+            </div>
+          </div>
+          
+          <!-- Right: Actions -->
+          <div class="flex items-center space-x-4">
+            <!-- Search -->
+            <div class="hidden md:block relative">
+              <!-- Placeholder for any header actions -->
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content - Scrollable area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div class="mb-4 md:mb-0">
+            <h1 class="text-2xl font-bold text-gray-900">Coupons</h1>
+            <p class="text-sm text-gray-600">Create and manage discount coupons for your store</p>
+          </div>
+        </div>
+        
+        <!-- Filters Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <!-- Search & Filters -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-wrap flex-1">
+              <!-- Search Input -->
+              <div class="relative w-full sm:max-w-xs">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Search Coupons"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5"
+                />
+              </div>
+              
+              <!-- Status Filter Dropdown -->
+              <select id="statusFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="deactive">Expired</option>
+              </select>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="flex space-x-2">
+                <button
+                  id="searchBtn"
+                  class="bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <i class="fas fa-search mr-2"></i> Search
+                </button>
+                
+                <button
+                  id="clearBtn"
+                  class="bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                >
+                  <i class="fas fa-times mr-2"></i> Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <!-- Add Coupon Form Card -->
+          <div class="lg:col-span-1">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div class="px-6 py-5 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Create New Coupon</h3>
+              </div>
+              <div class="p-6">
+                <form id="addCouponForm" class="space-y-4">
+                  <div>
+                    <label for="couponCode" class="block text-sm font-medium text-gray-700 mb-1">Coupon Code</label>
+                    <input
+                      type="text"
+                      name="couponCode"
+                      placeholder="e.g. SUMMER20"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      id="couponCode"
+                    />
+                    <p id="couponCode_error" class="text-red-500 text-sm mt-1 hidden"></p>
+                  </div>
+                  
+                  <div>
+                    <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <input
+                      type="date"
+                      name="startDate"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      id="startDate"
+                    />
+                    <p id="startDate_error" class="text-red-500 text-sm mt-1 hidden"></p>
+                  </div>
+                  
+                  <div>
+                    <label for="expireDate" class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                    <input
+                      type="date"
+                      name="expireDate"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      id="expireDate"
+                    />
+                    <p id="expireDate_error" class="text-red-500 text-sm mt-1 hidden"></p>
+                  </div>
+                  
+                  <div>
+                    <label for="offerPrice" class="block text-sm font-medium text-gray-700 mb-1">Offer Price</label>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="text-gray-500">₹</span>
+                      </div>
+                      <input
+                        type="number"
+                        name="offerPrice"
+                        placeholder="e.g. 100"
+                        class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        id="offerPrice"
+                      />
+                    </div>
+                    <p id="offerPrice_error" class="text-red-500 text-sm mt-1 hidden"></p>
+                  </div>
+                  
+                  <div>
+                    <label for="minAmount" class="block text-sm font-medium text-gray-700 mb-1">Minimum Amount</label>
+                    <div class="relative">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="text-gray-500">₹</span>
+                      </div>
+                      <input
+                        type="number"
+                        name="minAmount"
+                        placeholder="e.g. 500"
+                        class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                        id="minAmount"
+                      />
+                    </div>
+                    <p id="minAmount_error" class="text-red-500 text-sm mt-1 hidden"></p>
+                  </div>
+                  
+                  <div class="pt-2">
+                    <button
+                      type="submit"
+                      class="w-full bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center"
+                    >
+                      <i class="fas fa-plus-circle mr-2"></i>
+                      Create Coupon
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Coupons Table Card -->
+          <div class="lg:col-span-3">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <!-- Table Header -->
+              <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900">Coupon List</h3>
+                <span class="text-sm text-gray-500">
+                  <% if(coupons && coupons.length > 0){ %>
+                    Showing <%= coupons.length %> coupons
+                  <% } else { %>
+                    No coupons found
+                  <% } %>
+                </span>
+              </div>
+              
+              <!-- Table Content -->
               <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-gray-200">
+                <table class="min-w-full divide-y divide-gray-200">
                   <thead class="bg-gray-50">
                     <tr>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Code</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Start Date</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Min. Amount</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Expires</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Status</th>
-                      <th class="p-3 text-center text-sm font-semibold text-gray-700">Actions</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Min. Amount</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expires</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody class="bg-white divide-y divide-gray-200">
                     <% if(coupons && coupons.length > 0){ %>
-                    <% coupons.forEach(coupon => { %>
-                      <tr class="border-b border-gray-200 hover:bg-gray-50">
-                        <td class="p-3 text-sm text-gray-700"><b><%= coupon.couponCode %></b></td>
-                        <td class="p-3 text-sm text-gray-700">
-                          <%= new Date(coupon.startDate).toLocaleDateString() %>
-                        </td>
-                      
-                        <td class="p-3 text-sm text-gray-700">$<%= coupon.minAmount %></td>
-                        <td class="p-3 text-sm text-gray-700">
-                          <%= new Date(coupon.expireDate).toLocaleDateString() %>
-                        </td>
-                        <td class="p-3">
-                          <% if (coupon.isBlocked) { %>
-                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
-                              Deactive
-                            </span>
-                          <% } else { %>
-                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                              Active
-                            </span>
-                          <% } %>
-                        </td>
-                        <td class="p-3 text-center">
-                          <div class="flex justify-center space-x-2">
-                            <!-- Edit Button -->
-                            <a
-                              href="/admin/editcoupon/<%= coupon._id %>"
-                              class="text-blue-500 hover:text-blue-700"
-                              data-id="<%= coupon._id %>"
-                            >
-                              <i class="fas fa-pencil-alt" style="font-size: 1.2rem;"></i>
-                            </a>
-                            
-                            <!-- Toggle Switch -->
-                            <label class="relative inline-flex items-center cursor-pointer">
-                              <input 
-                                type="checkbox" 
-                                data-id="<%= coupon._id %>" 
-                                class="sr-only peer toggle-checkbox" 
-                                <%= coupon.isBlocked ? '' : 'checked' %>
-                              />
-                              <div class="w-11 h-6 rounded-full bg-red-200 
-                                          peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 
-                                          dark:peer-focus:ring-red-800
-                                          peer-checked:bg-green-600 relative
-                                          after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                                          after:border-gray-300 after:border after:rounded-full 
-                                          after:h-5 after:w-5 after:transition-all 
-                                          peer-checked:after:translate-x-full peer-checked:after:border-white">
-                              </div>
-                            </label>
-                          </div>
-                        </td>
-                      </tr>
-                    <% }) %>
+                      <% coupons.forEach(coupon => { %>
+                        <tr class="hover:bg-gray-50">
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="font-medium text-gray-900"><%= coupon.couponCode %></span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <%= new Date(coupon.startDate).toLocaleDateString() %>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm font-medium text-gray-900">₹<%= coupon.minAmount %></span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <%= new Date(coupon.expireDate).toLocaleDateString() %>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <% if (coupon.isBlocked) { %>
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                <span class="bg-red-400 h-1.5 w-1.5 rounded-full mr-1.5"></span>
+                                Deactive
+                              </span>
+                            <% } else { %>
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <span class="bg-green-400 h-1.5 w-1.5 rounded-full mr-1.5"></span>
+                                Active
+                              </span>
+                            <% } %>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-center">
+                            <div class="flex justify-center space-x-3">
+                              <!-- Edit Button -->
+                              <a
+                                href="/admin/editcoupon/<%= coupon._id %>"
+                                class="text-blue-600 hover:text-blue-800 transition-colors"
+                                data-id="<%= coupon._id %>"
+                              >
+                                <i class="fas fa-edit"></i>
+                              </a>
+                              
+                              <!-- Toggle Switch -->
+                              <label class="relative inline-flex items-center cursor-pointer">
+                                <input 
+                                  type="checkbox" 
+                                  data-id="<%= coupon._id %>" 
+                                  class="sr-only peer toggle-checkbox" 
+                                  <%= coupon.isBlocked ? '' : 'checked' %>
+                                />
+                                <div class="w-11 h-6 rounded-full bg-gray-200 
+                                            peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300
+                                            dark:peer-focus:ring-primary-800
+                                            peer-checked:bg-primary-600 relative
+                                            after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                                            after:border-gray-300 after:border after:rounded-full 
+                                            after:h-5 after:w-5 after:transition-all 
+                                            peer-checked:after:translate-x-full peer-checked:after:border-white">
+                                </div>
+                              </label>
+                            </div>
+                          </td>
+                        </tr>
+                      <% }) %>
                     <% } else { %>
                       <tr>
-                        <td colspan="7" class="text-center p-3">No coupons found</td>
+                        <td colspan="6" class="px-6 py-10 text-center text-gray-500">
+                          <div class="flex flex-col items-center">
+                            <i class="fas fa-gift text-4xl text-gray-300 mb-3"></i>
+                            <p class="text-lg font-medium text-gray-700">No coupons found</p>
+                            <p class="text-sm mt-1 max-w-md mx-auto">Try creating your first coupon using the form on the left.</p>
+                          </div>
+                        </td>
                       </tr>
                     <% } %>
                   </tbody>
@@ -260,294 +429,344 @@
             </div>
           </div>
         </div>
-      </div><!-- End card -->
-    </section> <!-- content-main end// -->
-    <%- include('partials/footer') %>
-  </main>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-500">© 2023 CycloneX. All rights reserved.</p>
+          <div class="flex space-x-4 mt-2 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
 
   <!-- Include SweetAlert2 script from CDN -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <%- include('partials/scripts') %>
+  
+  <!-- Scripts -->
   <script>
-    // Create a SweetAlert mixin configured as a toast at the top right corner
-    // Create a SweetAlert mixin configured as a toast at the top right corner
-const Toast = Swal.mixin({
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 3000,
-  timerProgressBar: true,
-  customClass: {
-    popup: 'bg-white p-2 rounded shadow-md text-sm',
-    confirmButton: 'bg-blue-600 text-white px-2 py-1 rounded text-sm'
-  },
-  buttonsStyling: false,
-});
-
-document.getElementById('addCouponForm').addEventListener('submit', async function (e) {
-  e.preventDefault(); // Prevent default form submission
-  
-  // Clear any previous inline errors
-  document.querySelectorAll('[id$="_error"]').forEach(el => el.classList.add('hidden'));
-  
-  // Retrieve form field values
-  const couponCode = document.getElementById('couponCode').value.trim();
-  const startDate = document.getElementById('startDate').value.trim();
-  const expireDate = document.getElementById('expireDate').value.trim();
-  const offerPrice = document.getElementById('offerPrice').value.trim();
-  const minAmount = document.getElementById('minAmount').value.trim();
-  
-  let hasError = false;
-  
-  // Validate coupon code
-  if (!couponCode) {
-    document.getElementById('couponCode_error').textContent = 'Coupon code is required';
-    document.getElementById('couponCode_error').classList.remove('hidden');
-    hasError = true;
-  } else if (!/[A-Z]/.test(couponCode)) {
-    document.getElementById('couponCode_error').textContent = 'Coupon code must contain at least one uppercase letter';
-    document.getElementById('couponCode_error').classList.remove('hidden');
-    hasError = true;
-  }
-  
-  // Validate start date
-  if (!startDate) {
-    document.getElementById('startDate_error').textContent = 'Start date is required';
-    document.getElementById('startDate_error').classList.remove('hidden');
-    hasError = true;
-  }
-  
-  // Validate expiry date
-  if (!expireDate) {
-    document.getElementById('expireDate_error').textContent = 'Expiry date is required';
-    document.getElementById('expireDate_error').classList.remove('hidden');
-    hasError = true;
-  } else {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const expiryDate = new Date(expireDate);
-    if (expiryDate <= today) {
-      document.getElementById('expireDate_error').textContent = 'Expiry date must be in the future';
-      document.getElementById('expireDate_error').classList.remove('hidden');
-      hasError = true;
-    }
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', openSidebar);
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+      }
+      
+      // Close sidebar on window resize if screen becomes large
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
+    });
     
-    // Check if expiry date is after start date
-    if (new Date(expireDate) <= new Date(startDate)) {
-      document.getElementById('expireDate_error').textContent = 'Expiry date should be after start date';
-      document.getElementById('expireDate_error').classList.remove('hidden');
-      hasError = true;
-    }
-  }
-  
-  // Validate offer price
-  if (!offerPrice) {
-    document.getElementById('offerPrice_error').textContent = 'Offer price is required';
-    document.getElementById('offerPrice_error').classList.remove('hidden');
-    hasError = true;
-  } else if (isNaN(offerPrice) || parseFloat(offerPrice) <= 0) {
-    document.getElementById('offerPrice_error').textContent = 'Offer price must be a positive number';
-    document.getElementById('offerPrice_error').classList.remove('hidden');
-    hasError = true;
-  }
-  
-  // Validate minimum amount
-  if (!minAmount) {
-    document.getElementById('minAmount_error').textContent = 'Minimum amount is required';
-    document.getElementById('minAmount_error').classList.remove('hidden');
-    hasError = true;
-  } else if (isNaN(minAmount) || parseFloat(minAmount) <= 0) {
-    document.getElementById('minAmount_error').textContent = 'Minimum amount must be a positive number';
-    document.getElementById('minAmount_error').classList.remove('hidden');
-    hasError = true;
-  }
-  
-  // If there are validation errors, show a toast alert and abort submission
-  if (hasError) {
-    Toast.fire({
-      icon: 'error',
-      title: 'Please fix the errors in the form.'
-    });
-    return;
-  }
-  
-
-
- 
-
-  try {
-
-    const formData = {
-      couponCode: document.getElementById('couponCode').value.trim(),
-      startDate: document.getElementById('startDate').value.trim(),
-      expireDate: document.getElementById('expireDate').value.trim(),
-      offerPrice: document.getElementById('offerPrice').value.trim(),
-      minAmount: document.getElementById('minAmount').value.trim()
-    };
-    const response = await fetch('/admin/addcoupon', {
-      method: 'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(formData)
-    });
-    const data = await response.json();
-    if (response.ok && data.success) {
-      Toast.fire({
-        icon: 'success',
-        title: data.message,
-      }).then(() => {
-        location.reload();
-      });
-    } else {
-      Toast.fire({
-        icon: 'error',
-        title: data.message || 'An error occurred'
-      });
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    Toast.fire({
-      icon: 'error',
-      title: 'An error occurred. Please try again.'
-    });
-  }
-});
-
-// Toggle Coupon Status
-document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
-  switchElement.addEventListener('change', async function (e) {
-    e.preventDefault();
-
-    const couponId = this.getAttribute('data-id');
-    const newStatus = !this.checked; // Use directly, don't invert
-
-    if (!couponId) {
-      console.error('Coupon ID not found');
-      return;
-    }
-
-    // Show confirmation dialog
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Do you want to ${newStatus ? 'deactivate ' : 'activate'} this coupon?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, update it!',
-      cancelButtonText: 'Cancel'
+    // Create a SweetAlert mixin configured as a toast at the top right corner
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        popup: 'bg-white p-2 rounded shadow-md text-sm',
+        confirmButton: 'bg-blue-600 text-white px-2 py-1 rounded text-sm'
+      },
+      buttonsStyling: false,
     });
 
-    if (!result.isConfirmed) {
-      this.checked = !newStatus; // Revert if canceled
-      return;
-    }
+    document.getElementById('addCouponForm').addEventListener('submit', async function (e) {
+      e.preventDefault(); // Prevent default form submission
+      
+      // Clear any previous inline errors
+      document.querySelectorAll('[id$="_error"]').forEach(el => el.classList.add('hidden'));
+      
+      // Retrieve form field values
+      const couponCode = document.getElementById('couponCode').value.trim();
+      const startDate = document.getElementById('startDate').value.trim();
+      const expireDate = document.getElementById('expireDate').value.trim();
+      const offerPrice = document.getElementById('offerPrice').value.trim();
+      const minAmount = document.getElementById('minAmount').value.trim();
+      
+      let hasError = false;
+      
+      // Validate coupon code
+      if (!couponCode) {
+        document.getElementById('couponCode_error').textContent = 'Coupon code is required';
+        document.getElementById('couponCode_error').classList.remove('hidden');
+        hasError = true;
+      } else if (!/[A-Z]/.test(couponCode)) {
+        document.getElementById('couponCode_error').textContent = 'Coupon code must contain at least one uppercase letter';
+        document.getElementById('couponCode_error').classList.remove('hidden');
+        hasError = true;
+      }
+      
+      // Validate start date
+      if (!startDate) {
+        document.getElementById('startDate_error').textContent = 'Start date is required';
+        document.getElementById('startDate_error').classList.remove('hidden');
+        hasError = true;
+      }
+      
+      // Validate expiry date
+      if (!expireDate) {
+        document.getElementById('expireDate_error').textContent = 'Expiry date is required';
+        document.getElementById('expireDate_error').classList.remove('hidden');
+        hasError = true;
+      } else {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const expiryDate = new Date(expireDate);
+        if (expiryDate <= today) {
+          document.getElementById('expireDate_error').textContent = 'Expiry date must be in the future';
+          document.getElementById('expireDate_error').classList.remove('hidden');
+          hasError = true;
+        }
+        
+        // Check if expiry date is after start date
+        if (new Date(expireDate) <= new Date(startDate)) {
+          document.getElementById('expireDate_error').textContent = 'Expiry date should be after start date';
+          document.getElementById('expireDate_error').classList.remove('hidden');
+          hasError = true;
+        }
+      }
+      
+      // Validate offer price
+      if (!offerPrice) {
+        document.getElementById('offerPrice_error').textContent = 'Offer price is required';
+        document.getElementById('offerPrice_error').classList.remove('hidden');
+        hasError = true;
+      } else if (isNaN(offerPrice) || parseFloat(offerPrice) <= 0) {
+        document.getElementById('offerPrice_error').textContent = 'Offer price must be a positive number';
+        document.getElementById('offerPrice_error').classList.remove('hidden');
+        hasError = true;
+      }
+      
+      // Validate minimum amount
+      if (!minAmount) {
+        document.getElementById('minAmount_error').textContent = 'Minimum amount is required';
+        document.getElementById('minAmount_error').classList.remove('hidden');
+        hasError = true;
+      } else if (isNaN(minAmount) || parseFloat(minAmount) <= 0) {
+        document.getElementById('minAmount_error').textContent = 'Minimum amount must be a positive number';
+        document.getElementById('minAmount_error').classList.remove('hidden');
+        hasError = true;
+      }
+      
+      // If there are validation errors, show a toast alert and abort submission
+      if (hasError) {
+        Toast.fire({
+          icon: 'error',
+          title: 'Please fix the errors in the form.'
+        });
+        return;
+      }
+      
+      try {
+        const formData = {
+          couponCode: document.getElementById('couponCode').value.trim(),
+          startDate: document.getElementById('startDate').value.trim(),
+          expireDate: document.getElementById('expireDate').value.trim(),
+          offerPrice: document.getElementById('offerPrice').value.trim(),
+          minAmount: document.getElementById('minAmount').value.trim()
+        };
+        const response = await fetch('/admin/addcoupon', {
+          method: 'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(formData)
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          Toast.fire({
+            icon: 'success',
+            title: data.message,
+          }).then(() => {
+            location.reload();
+          });
+        } else {
+          Toast.fire({
+            icon: 'error',
+            title: data.message || 'An error occurred'
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Toast.fire({
+          icon: 'error',
+          title: 'An error occurred. Please try again.'
+        });
+      }
+    });
 
-    try {
-      const response = await fetch(`/admin/listcoupon/${couponId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isBlocked: newStatus }) // Send correct key
+    // Toggle Coupon Status
+    document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
+      switchElement.addEventListener('change', async function (e) {
+        e.preventDefault();
+
+        const couponId = this.getAttribute('data-id');
+        const newStatus = !this.checked; // Use directly, don't invert
+
+        if (!couponId) {
+          console.error('Coupon ID not found');
+          return;
+        }
+
+        // Show confirmation dialog
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: `Do you want to ${newStatus ? 'deactivate ' : 'activate'} this coupon?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, update it!',
+          cancelButtonText: 'Cancel'
+        });
+
+        if (!result.isConfirmed) {
+          this.checked = !newStatus; // Revert if canceled
+          return;
+        }
+
+        try {
+          const response = await fetch(`/admin/listcoupon/${couponId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ isBlocked: newStatus }) // Send correct key
+          });
+
+          const data = await response.json();
+          if(!response.ok){
+            throw new Error('Failed to update status')
+          }
+          Toast.fire({
+            icon: 'success',
+            title: 'Coupon status has been updated.',
+            timer: 2000
+          })
+
+          this.checked = !newStatus;
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000)
+        } catch (error) {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: error.message || 'An error occurred. Please try again.',
+            showConfirmButton: false,
+            timer: 3000
+          });
+
+          this.checked = !newStatus; // Revert toggle on failure
+        }
+      });
+    });
+
+    // Search functionality for Coupons
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('searchInput');
+      const searchBtn = document.getElementById("searchBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const statusFilter = document.getElementById("statusFilter");
+
+      searchBtn.addEventListener("click", applyFilters);
+      clearBtn.addEventListener("click", clearFilters);
+      statusFilter.addEventListener('change', applyFilters);
+
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          applyFilters();
+        }
       });
 
-      const data = await response.json();
-if(!response.ok){
-throw new Error('Failed to update status')
-}
-Toast.fire({
-  icon: 'success',
-          title: 'coupon status has been updated.',
-          timer: 2000
-})
+      function applyFilters() {
+        const queryParams = new URLSearchParams();
+        const search = searchInput.value.trim();
+        const status = statusFilter.value;
 
-this.checked = newStatus;
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000)
-    } catch (error) {
-      Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'error',
-        title: error.message || 'An error occurred. Please try again.',
-        showConfirmButton: false,
-        timer: 3000
+        if (search) queryParams.append("search", search);
+        if (status) queryParams.append("statusFilter", status);
+
+        window.location.href = `/admin/coupons?${queryParams.toString()}`;
+      }
+
+      function clearFilters() {
+        searchInput.value = "";
+        statusFilter.value = "";
+        applyFilters();
+      }
+
+      function restoreFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        searchInput.value = params.get("search") || "";
+        statusFilter.value = params.get("statusFilter") || "";
+      }
+
+      restoreFiltersFromURL();
+
+      // Set minimum date for date fields
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Set minimum date for start date to today
+      const startDateInput = document.getElementById('startDate');
+      startDateInput.setAttribute('min', today);
+      
+      // Set default value for start date to today
+      startDateInput.value = today;
+      
+      // Update expiry date constraints when start date changes
+      startDateInput.addEventListener('change', function() {
+        const expireDateInput = document.getElementById('expireDate');
+        expireDateInput.setAttribute('min', this.value);
+        
+        // If expiry date is before or equal to start date, set it to the day after start date
+        if (new Date(expireDateInput.value) <= new Date(this.value)) {
+          const nextDay = new Date(this.value);
+          nextDay.setDate(nextDay.getDate() + 1);
+          expireDateInput.value = nextDay.toISOString().split('T')[0];
+        }
       });
-
-      this.checked = !newStatus; // Revert toggle on failure
-    }
-  });
-});
-
-// Search functionality for Coupons
-document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('searchInput');
-  const searchBtn = document.getElementById("searchBtn");
-  const clearBtn = document.getElementById("clearBtn");
-  const statusFilter = document.getElementById("statusFilter");
-
-  searchBtn.addEventListener("click", applyFilters);
-  clearBtn.addEventListener("click", clearFilters);
-  statusFilter.addEventListener('change', applyFilters);
-
-  searchInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      applyFilters();
-    }
-  });
-
-  function applyFilters() {
-    const queryParams = new URLSearchParams();
-
-    const search = searchInput.value.trim();
-    const status = statusFilter.value;
-
-    if (search) queryParams.append("search", search);
-    if (status) queryParams.append("statusFilter", status);
-
-    window.location.href = `/admin/coupons?${queryParams.toString()}`;
-  }
-
-  function clearFilters() {
-    searchInput.value = "";
-    statusFilter.value = "";
-    applyFilters();
-  }
-
-  function restoreFiltersFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    searchInput.value = params.get("search") || "";
-    statusFilter.value = params.get("statusFilter") || "";
-  }
-
-  restoreFiltersFromURL();
-
-  // Set minimum date for date fields
-  const today = new Date().toISOString().split('T')[0];
-  
-  // Set minimum date for start date to today
-  const startDateInput = document.getElementById('startDate');
-  startDateInput.setAttribute('min', today);
-  
-  // Set default value for start date to today
-  startDateInput.value = today;
-  
-  // Update expiry date constraints when start date changes
-  startDateInput.addEventListener('change', function() {
-    const expireDateInput = document.getElementById('expireDate');
-    expireDateInput.setAttribute('min', this.value);
-    
-    // If expiry date is before or equal to start date, set it to the day after start date
-    if (new Date(expireDateInput.value) <= new Date(this.value)) {
-      const nextDay = new Date(this.value);
-      nextDay.setDate(nextDay.getDate() + 1);
-      expireDateInput.value = nextDay.toISOString().split('T')[0];
-    }
-  });
-  
-  // Set minimum date for expiry date
-  const expireDateInput = document.getElementById('expireDate');
-  expireDateInput.setAttribute('min', today);
-});
+      
+      // Set minimum date for expiry date
+      const expireDateInput = document.getElementById('expireDate');
+      expireDateInput.setAttribute('min', today);
+    });
   </script>
 </body>
 </html>

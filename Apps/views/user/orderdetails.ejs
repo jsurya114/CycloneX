@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details - CycloneX</title>
+    <title> CycloneX OrderDetails</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -56,6 +56,7 @@
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-primary-50 font-sans min-h-screen">
     <%-include('partials/header') %>
+
     <div class="container mx-auto px-4 py-8 max-w-5xl">
         <!-- Header with improved styling -->
 
@@ -532,8 +533,8 @@
 
                                     
                                     <div class="p-4 text-right">
-                                        <p class="text-lg font-semibold text-gray-800">₹<%= (item.product.price * item.quantity).toFixed(2) %></p>
-                                        <p class="text-sm text-gray-500">₹<%= item.product.price.toFixed(2) %></p>
+                                        <p class="text-lg font-semibold text-gray-800">₹<%= (item.subTotal* item.quantity).toFixed(2) %></p>
+                                        <p class="text-sm text-gray-500">₹<%= item.subTotal.toFixed(2) %></p>
                                     </div>
                                 </div>
                             <% }); %>
@@ -583,6 +584,8 @@
    
     </div>
     <%-include('partials/footer') %>
+
+    <%-include('partials/loader') %>
     <script>
         // Animation for staggered items
         document.addEventListener('DOMContentLoaded', function() {

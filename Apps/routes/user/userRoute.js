@@ -26,7 +26,7 @@ const RazorpayController = require('../../controllers/user/razorpayController');
 
 
 router.use(userEnsure);
-
+router.get('/landing',authController.landing)
 router.get('/', userEnsure, nocache, authController.logins);
 router.post('/', authController.loginspost);
 router.get('/signup', authController.signup);
@@ -65,7 +65,7 @@ router.get('/userprofile/:userId',verifyUser,userController.showUserProfile)
 router.post('/userprofile/:userId',userController.userAddress)
 
 router.get('/addaddress/:userId',verifyUser,addressController.getUserAddress)
-router.get('/addaddress/:userId/:addressId',addressController.specificAddress)
+router.get('/addaddress/:userId/:addressId',verifyUser,addressController.specificAddress)
 router.post('/addaddress/:userId',addressController.manageAddress)
 router.delete('/addaddress/:userId/:addressId',addressController.deleteAddress)
 
@@ -77,7 +77,7 @@ router.get('/addtocart',verifyUser,cartController.showCartPage)
 router.post('/addtocart',cartController.addToCart)
 router.put('/addtocart/:productId',cartController.updateQuantity)
 router.delete('/addtocart/:productId',cartController.removeFromCart)
-router.get('/wishlist',cartController.showWhishlistPage)
+router.get('/wishlist',verifyUser,cartController.showWhishlistPage)
 router.post('/wishlistStatus',cartController.addToWishlist)
 router.post('/wishlist',cartController.addToWishlist)
 router.delete('/wishlist/:productId',cartController.removeFromWishlist)
@@ -96,7 +96,7 @@ router.delete('/checkout/:productId',cartController.removeFromCart)
 router.get('/checkout/:productId', verifyUser, checkoutController.showcheckOut);
 router.post('/razorPay/createOrder',RazorpayController.createRazorpay)
 router.post('/razorPay/verifyPayment',RazorpayController.verifyRazorPayment)
-router.get('/paymentfailure',RazorpayController.failure)
+router.get('/paymentfailure',verifyUser,RazorpayController.failure)
 
 
 
@@ -115,5 +115,6 @@ router.put('/order/return/:orderId',orderController.returnOrder)
 router.get('/wallet',verifyUser,walletController.getWallet)
 router.post('/order/return/:orderId',walletController.returnWallet)
 router.post('/applycoupon',checkoutController.applyCoupon)
+
 
 module.exports = router;

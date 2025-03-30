@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CycloneX</title>
+    <title>CycloneX MyProfile</title>
      <!-- Tailwind CSS CDN -->
      <script src="https://cdn.tailwindcss.com"></script>
     
@@ -212,6 +212,47 @@
                         </a>
                     </div>
                 </div>
+
+                    <!-- Referral Code Section -->
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-2xl shadow-sm mt-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-display font-bold text-lg text-slate-800">Referral Program</h3>
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-indigo-500 flex items-center justify-center text-white shadow-md">
+                                <i class="fas fa-gift text-sm"></i>
+                            </div>
+                        </div>
+                        
+                        <p class="text-sm text-slate-600 mb-4">Share with friends and earn rewards!</p>
+                        
+                        <!-- Referral code display -->
+                        <div class="bg-white p-4 rounded-xl border border-purple-100 mb-4 relative overflow-hidden">
+                            <div class="absolute -right-6 -top-6 w-16 h-16 bg-purple-100 rounded-full opacity-50"></div>
+                            <div class="absolute -left-4 -bottom-4 w-12 h-12 bg-indigo-100 rounded-full opacity-50"></div>
+                            
+                            <p class="text-xs text-slate-500 mb-1">Your Referral Code</p>
+                            <div class="flex items-center justify-between">
+                                <p class="font-mono font-bold text-lg text-indigo-700 tracking-wider"><%= refferalCode ||'NA' %></p>
+                                <button class="text-indigo-600 hover:text-indigo-800 transition-colors" onclick="copyReferralCode()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Referral stats -->
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div class="bg-white p-3 rounded-lg border border-purple-100">
+                                <p class="text-xs text-slate-500 mb-1">Referrals</p>
+                                <p class="font-bold text-lg text-slate-800"><%=couponCount %>Coupons Available</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-purple-100">
+                                <p class="text-xs text-slate-500 mb-1">Rewards</p>
+                                <p class="font-bold text-lg text-slate-800">           <%= newUserrefferal ? newUserrefferal.couponCode : 'No Rewards Yet' %></p>
+                            </div>
+                        </div>
+                        
+                        
+                    
+                    </div>
             </div>
             
             <!-- Right content area -->
@@ -524,6 +565,7 @@
 
 <%-include('partials/footer')  %>
 
+<%-include('partials/loader') %>
 <%-include('partials/userscript')  %>
 
 <script>
@@ -986,6 +1028,57 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize by loading user addresses
     loadUserAddresses();
 });
+
+// Referral code copy functionality
+function copyReferralCode() {
+    const code = "CYCX2024";
+    navigator.clipboard.writeText(code).then(() => {
+        Toastify({
+            text: "Referral code copied to clipboard!",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#8b5cf6",
+        }).showToast();
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        Toastify({
+            text: "Failed to copy referral code",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#ef4444",
+        }).showToast();
+    });
+}
+
+
+
+function copyReferralCode() {
+    const referralCode = document.querySelector('.font-mono.font-bold').textContent;
+    navigator.clipboard.writeText(referralCode).then(() => {
+        Toastify({
+            text: "Referral code copied to clipboard!",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#8b5cf6",
+        }).showToast();
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        Toastify({
+            text: "Failed to copy referral code",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#ef4444",
+        }).showToast();
+    })
+}
 </script>
 
 </body>

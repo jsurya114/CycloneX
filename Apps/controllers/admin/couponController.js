@@ -5,8 +5,18 @@ const { category } = require('./categoryController')
 const couponController={
  getCoupon:async (req,res,next) => {
     try{ 
+        const { search, statusFilter } = req.query
+        let filter = {}
+        if (search) {
+            filter.couponCode = { $regex: new RegExp(search, "i") };
+        }
+        if (statusFilter === "active") {
+            filter.isBlocked = false;
+        } else if (statusFilter === "deactive") {
+            filter.isBlocked = true;
+        }
 
-        const coupons = await Coupon.find()
+        const coupons = await Coupon.find(filter)
         if(!coupons){
             return res.status(404).json({success:false,message:'coupon not found'})
         }
@@ -25,6 +35,15 @@ if(!couponCode||!startDate||!expireDate||!offerPrice||!minAmount){
     return res.status(400).json({ success: false, field:'all', message: "All fields are required."  });
 
 }
+const today = new Date().toISOString().split('T')[0]
+
+if (startDate < today) {
+    return res.status(400).json({ success: false, message: 'Start date cannot be in the past.' });
+}
+if (expireDate <= startDate) {
+    return res.status(400).json({ success: false, message: 'Expiry date must be after the start date.' });
+}
+
 const existingCoupon = await Coupon.findOne({
     couponCode: { $regex: new RegExp(`^${couponCode}$`, 'i') }
   });

@@ -3,8 +3,13 @@ const bcrypt = require('bcryptjs');
 const User = require('../../models/userModel');
 const sendEmail=require('../../services/email')
 const nodemailer = require('nodemailer');
+const Cart = require('../../models/cartModel')
 const jwt = require('jsonwebtoken');
+const Product = require('../../models/productModel')
+const Category = require('../../models/categoryModel')
 const generateOTP = require('../../services/otp');
+const RefferalCode = require('../../services/referral');
+const Coupon = require('../../models/couponModel')
 
 
 // Check if email credentials exist
@@ -22,6 +27,20 @@ if (!process.env.JWT_SECRET) {
 
 
 const authController = {
+landing:async (req,res,next) => {
+  try {
+    
+                           
+                    
+                             const categories = await Category.find({});
+                             const product = await Product.find({})
+    return res.status(200).render('landing',{categories,product})
+  } catch (error) {
+    next(error)
+  }
+},
+
+
     logins: async (req, res,next) => {
         res.render('logins', {
             logoPath: '/frontend/imgs/logos/cyclonelogo.png'
@@ -83,8 +102,8 @@ const authController = {
 
     createUser: async (req, res,next) => {
         try {
-         
-          const { fullname, email, phone, password, confirm_password } = req.body;
+         console.log('req.body',req.body)
+          const { fullname, email, phone, password, confirm_password,refferalCode } = req.body;
       
           if (/\d/.test(fullname)) {
             return res.status(400).json({ success: false, message: 'Fullname cannot contain numbers' });
@@ -122,18 +141,30 @@ const authController = {
           if (userExist) {
             return res.status(400).json({ success: false, message: 'User already exists' });
           }
+
+     //generate refferal code for new user
+          const newRefferalCode = RefferalCode.generateReferralCode()
+
+     console.log('referalcode',refferalCode)
+
+          let refferer = null
+          if(refferalCode){
+            console.log('reached here');
+            
+            refferer = await User.findOne({ refferalCode })
+            console.log('reached here2')
+            if(!refferer){
+              return res.status(400).json({success:false,message:'invalid refferal code'})
+            }
+          }
+          console.log('refferer',refferer)
+          console.log('newRefferalCode',newRefferalCode)
+
+
       
           const salt = await bcrypt.genSalt(5);
           const hashedPassword = await bcrypt.hash(password, salt);
-          const otp = 
-          
-          
-          
-          
-          
-          
-          
-          generateOTP();
+          const otp = generateOTP();
           console.log(otp);
           const otpExpires = new Date(Date.now() + (1 * 60 * 1000));
       
@@ -144,18 +175,65 @@ const authController = {
             password: hashedPassword,
             isVerified: false,
             otp,
-            otpExpires
+            otpExpires,
+            refferalCode:newRefferalCode,
+            refferedBy:refferer?refferer._id:null
           });
       
           await newUser.save();
+console.log('newUser',newUser)
+//if there is a refferer create coupon for both user
+if(refferer){
+const newUserrefferal = new Coupon({
+  user:newUser._id,
+  couponCode:`WELCOME${newUser._id.toString().slice(-4)}`,
+  offerPrice:250,
+  minAmount:5000,
+  startDate:new Date(),
+  expireDate:new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  isBlocked:false,
+  refferedBy:refferer._id
+
+})
+await newUserrefferal.save()
+console.log('newUserrefferal',newUserrefferal)
+
+
+
+const existUserCoupon=new Coupon({
+  user:refferer._id,
+  couponCode:`REFERRAL${refferer._id.toString().slice(-4)}`,
+  offerPrice:350,
+  minAmount:5000,
+  startDate:new Date(),
+  expireDate:new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  isBlocked:false
+
+})
+
+
+await existUserCoupon.save()
+
+console.log('existUserCoupon',existUserCoupon)
+
+
+await refferer.save()
+
+
+console.log('refferer',refferer)
+}
+
+
+
+
       
           await sendEmail(email, 'Your OTP for Account Verification', 
             `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in 1 minute.</p>`
           );
         
-
+console.log('refferalCode:newRefferalCode',newRefferalCode)
       
-          res.status(201).json({ success: true, message: 'Signup successful. OTP sent to email.' });
+          res.status(201).json({ success: true, message: 'Signup successful. OTP sent to email.' ,refferalCode:newRefferalCode,});
       
         } catch (error) {
           console.error('Error during signup:', error);

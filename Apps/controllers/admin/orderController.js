@@ -113,13 +113,20 @@ updateOrderStatus:async (req,res,next) => {
     if(!order){
       return res.status(404).send('order not found')
     }
+    if(order.orderStatus==='delivered'){
+      return res.status(400).json({success:false,message:'delivered order cannot be edited'})
+    }
     
     order.orderStatus=orderStatus
+
+    if(order.orderStatus==='delivered'&&order.paymentMethod==='cod'){
+    order.paymentStatus='paid'
+    }
 
     if(order.orderStatus==='returned'){
       console.log('order.itme',order.items)
 for(const item of order.items){
-  await Product.updateOne({_Id:item.product},{$inc:{"quantity":item.quantity}})
+  await Product.updateOne({_id:item.product},{$inc:{stock:item.quantity}})
 }
 let wallet = await Wallet.findOne({user})
 console.log('wall',wallet)
@@ -138,14 +145,16 @@ wallet.transaction.push({
   reason:`Refund for Order #${orderId}`
 
 })
+
 wallet.balance+=order.totalAmount
 await wallet.save()
+order.paymentStatus='refunded'
 
-
+await order.save()
     }
    
     await order.save()
-    return res.status(200).json({success:false,message:'order status updated'})
+    return res.status(200).json({success:true,message:'order status updated'})
 
   } catch (error) {
     next(error)

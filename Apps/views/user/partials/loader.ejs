@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bouncing Ball Loader</title>
+  <style>
+    /* Overlay styles */
+    .cycle-loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+    
+    /* Hide class for when loading is complete */
+    .cycle-loader-overlay.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    /* From Uiverse.io by mobinkakei */
+    .wrapper {
+      width: 200px;
+      height: 60px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .circle {
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      border-radius: 50%;
+      background-color: #fff;
+      left: 15%;
+      transform-origin: 50%;
+      animation: circle7124 .5s alternate infinite ease;
+    }
+    
+    @keyframes circle7124 {
+      0% {
+        top: 60px;
+        height: 5px;
+        border-radius: 50px 50px 25px 25px;
+        transform: scaleX(1.7);
+      }
+      
+      40% {
+        height: 20px;
+        border-radius: 50%;
+        transform: scaleX(1);
+      }
+      
+      100% {
+        top: 0%;
+      }
+    }
+    
+    .circle:nth-child(2) {
+      left: 45%;
+      animation-delay: .2s;
+    }
+    
+    .circle:nth-child(3) {
+      left: auto;
+      right: 15%;
+      animation-delay: .3s;
+    }
+    
+    .shadow {
+      width: 20px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: rgba(0,0,0,0.9);
+      position: absolute;
+      top: 62px;
+      transform-origin: 50%;
+      z-index: -1;
+      left: 15%;
+      filter: blur(1px);
+      animation: shadow046 .5s alternate infinite ease;
+    }
+    
+    @keyframes shadow046 {
+      0% {
+        transform: scaleX(1.5);
+      }
+      
+      40% {
+        transform: scaleX(1);
+        opacity: .7;
+      }
+      
+      100% {
+        transform: scaleX(.2);
+        opacity: .4;
+      }
+    }
+    
+    .shadow:nth-child(4) {
+      left: 45%;
+      animation-delay: .2s
+    }
+    
+    .shadow:nth-child(5) {
+      left: auto;
+      right: 15%;
+      animation-delay: .3s;
+    }
+  </style>
+  
+  <script>
+    // Make sure the loader is created early
+    document.write('<div class="cycle-loader-overlay" id="cycleLoaderOverlay"><div class="wrapper"><div class="circle"></div><div class="circle"></div><div class="circle"></div><div class="shadow"></div><div class="shadow"></div><div class="shadow"></div></div></div>');
+    
+    // Set up multiple methods to detect page load completion
+    // Method 1: Standard window load event
+    window.addEventListener('load', hideLoader);
+    
+    // Method 2: DOMContentLoaded event (faster than load, may be enough in some cases)
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set a backup timer to ensure loader eventually hides
+      setTimeout(hideLoader, 5000); // 5-second backup timeout
+      
+      // Try to detect when critical content is loaded
+      const mainContent = document.getElementById('mainContent');
+      if (mainContent) {
+        // If main content exists, consider page ready enough to hide loader
+        setTimeout(hideLoader, 500);
+      }
+    });
+    
+    // Method 3: Readystatechange events
+    document.addEventListener('readystatechange', function() {
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        setTimeout(hideLoader, 800);
+      }
+    });
+    
+    // Central function to hide the loader
+    let loaderHidden = false;
+    function hideLoader() {
+      if (loaderHidden) return; // Prevent multiple calls
+      
+      const loaderOverlay = document.getElementById('cycleLoaderOverlay');
+      if (!loaderOverlay) return;
+      
+      loaderHidden = true;
+      loaderOverlay.classList.add('hide');
+      
+      // Remove from DOM after fade-out
+      setTimeout(function() {
+        if (loaderOverlay.parentNode) {
+          loaderOverlay.parentNode.removeChild(loaderOverlay);
+        }
+      }, 600);
+    }
+    
+    // Super fallback - hide loader after max time no matter what
+    setTimeout(hideLoader, 10000); // Absolute maximum 10 seconds
+  </script>
+</head>
+<body>
+
+</body>
+</html>

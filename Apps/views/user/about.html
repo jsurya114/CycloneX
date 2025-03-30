@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CycloneX - Premium Cycling Experience</title>
+       
+        <!-- Use the latest Tailwind CDN with direct import -->
+        <script src="https://cdn.tailwindcss.com"></script>
+       
+        <!-- Font Awesome for icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+       
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+       
+        <!-- Tailwind Configuration -->
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Poppins', 'sans-serif']
+                        },
+                        colors: {
+                            primary: '#3b82f6',
+                            secondary: '#f43f5e',
+                            dark: '#0f172a'
+                        },
+                        animation: {
+                            'spin-slow': 'spin 8s linear infinite',
+                            'bounce-slow': 'bounce 3s infinite',
+                            'fade-in': 'fadeIn 0.5s ease-in-out',
+                            'slide-in': 'slideIn 0.7s ease-in-out',
+                            'zoom-in': 'zoomIn 0.7s ease-in-out',
+                            'float': 'float 6s ease-in-out infinite',
+                            'rotate-y': 'rotateY 15s infinite linear'
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0' },
+                                '100%': { opacity: '1' }
+                            },
+                            slideIn: {
+                                '0%': { transform: 'translateX(30px)', opacity: '0' },
+                                '100%': { transform: 'translateX(0)', opacity: '1' }
+                            },
+                            zoomIn: {
+                                '0%': { transform: 'scale(1.1)', opacity: '0' },
+                                '100%': { transform: 'scale(1)', opacity: '1' }
+                            },
+                            float: {
+                                '0%, 100%': { transform: 'translateY(0)' },
+                                '50%': { transform: 'translateY(-10px)' }
+                            },
+                            rotateY: {
+                                '0%': { transform: 'rotateY(0deg)' },
+                                '100%': { transform: 'rotateY(360deg)' }
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+       
+        <!-- Custom Styles -->
+        <style>
+    
+    
+    
+            
+            /* Base styles in case Tailwind fails */
+            body {
+                font-family: 'Poppins', sans-serif;
+                background-color: #f8fafc;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+            
+            .dark body {
+                background-color: #0f172a;
+                color: #f8fafc;
+            }
+           
+            /* Enhanced Banner Slider */
+            .slider-container {
+                position: relative;
+                overflow: hidden;
+            }
+           
+            .slider-item {
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.8s ease-in-out, transform 1s ease, visibility 0.8s;
+                transform: scale(1.05);
+            }
+           
+            .slider-item.active {
+                opacity: 1;
+                visibility: visible;
+                transform: scale(1);
+                z-index: 1;
+            }
+           
+            /* Slide content animations */
+            .slider-item.active .slide-title {
+                animation: slideInRight 0.8s ease-out forwards;
+            }
+           
+            .slider-item.active .slide-description {
+                animation: slideInRight 0.8s ease-out 0.2s forwards;
+            }
+           
+            .slider-item.active .slide-buttons {
+                animation: slideInRight 0.8s ease-out 0.4s forwards;
+            }
+           
+            .slider-item.active .slide-image {
+                animation: zoomIn 1s ease-out forwards;
+            }
+           
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(50px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+           
+            @keyframes zoomIn {
+                from {
+                    transform: scale(1.1);
+                    opacity: 0;
+                }
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+           
+            /* Improved Category Circles */
+            .category-circle {
+                transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+           
+            .category-circle:hover {
+                transform: translateY(-10px);
+            }
+           
+            .circle-image {
+                transition: all 0.6s ease;
+            }
+           
+            .category-circle:hover .circle-image {
+                transform: scale(1.1);
+            }
+           
+            /* Product Cards */
+            .product-card {
+                transition: all 0.3s ease;
+                transform-style: preserve-3d;
+                perspective: 1000px;
+                animation: float 6s ease-in-out infinite;
+            }
+           
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                animation-play-state: paused;
+            }
+            
+            .dark .product-card {
+                background-color: #1e293b;
+                border-color: #334155;
+            }
+            
+            .dark .product-card .product-title {
+                color: #f8fafc;
+            }
+            
+            /* 3D Product Images - Only for product cards */
+            .product-card img {
+                transform-style: preserve-3d;
+                transition: transform 0.5s ease;
+                animation: rotate-y 15s infinite linear;
+            }
+            
+            .product-card:hover img {
+                animation-play-state: paused;
+            }
+           
+            /* Slider Progress Bar */
+            .slider-progress {
+                height: 4px;
+                background: rgba(255, 255, 255, 0.3);
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 10;
+            }
+           
+            .slider-progress-bar {
+                height: 100%;
+                background: #fff;
+                width: 0;
+                transition: width 5s linear;
+            }
+           
+            .slider-progress.active .slider-progress-bar {
+                width: 100%;
+            }
+           
+            /* Modal */
+            .modal {
+                position: fixed;
+                inset: 0;
+                background-color: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 50;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+                backdrop-filter: blur(5px);
+            }
+           
+            .modal.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+           
+            .modal-content {
+                background-color: white;
+                border-radius: 1rem;
+                max-width: 80%;
+                width: 100%;
+                max-height: 90vh;
+                overflow: auto;
+                transform: scale(0.95);
+                transition: transform 0.3s ease;
+            }
+            
+            .dark .modal-content {
+                background-color: #1e293b;
+                color: #f8fafc;
+            }
+           
+            .modal.active .modal-content {
+                transform: scale(1);
+            }
+           
+            /* Enhanced Slider Dots */
+            .slider-dot {
+                position: relative;
+                transition: all 0.3s ease;
+                overflow: hidden;
+            }
+           
+            .slider-dot::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(255, 255, 255, 0.7);
+                border-radius: 50%;
+                transform: scale(0);
+                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+           
+            .slider-dot.active::before {
+                transform: scale(1);
+            }
+           
+            /* Slide content initial state for animations */
+            .slide-title, .slide-description, .slide-buttons {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+           
+            .slide-image {
+                opacity: 0;
+                transform: scale(1.1);
+            }
+           
+            /* Floating elements animation */
+            .floating-element {
+                animation: float 6s ease-in-out infinite;
+            }
+           
+            /* Gradient overlay for slider */
+            .slider-gradient-overlay {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to right, rgba(30, 41, 59, 0.7), rgba(30, 41, 59, 0.3));
+                z-index: 0;
+            }
+            
+            .dark .slider-gradient-overlay {
+                background: linear-gradient(to right, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.4));
+            }
+           
+            /* Particle effect */
+            .particle {
+                position: absolute;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.5);
+                pointer-events: none;
+                z-index: 1;
+            }
+            
+            /* Dark mode styles */
+            .dark .bg-white {
+                background-color: #1e293b;
+            }
+            
+            .dark .bg-gray-50 {
+                background-color: #0f172a;
+            }
+            
+            .dark .text-gray-800 {
+                color: #f8fafc;
+            }
+            
+            .dark .text-gray-600 {
+                color: #cbd5e1;
+            }
+            
+            .dark .text-gray-500 {
+                color: #94a3b8;
+            }
+            
+            .dark .border-gray-100 {
+                border-color: #334155;
+            }
+            
+            .dark .shadow-lg {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            }
+            
+            /* Dark mode toggle button */
+            .dark-mode-toggle {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                background: #3B82F6;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                z-index: 40;
+                transition: all 0.3s ease;
+            }
+            
+            .dark-mode-toggle:hover {
+                transform: scale(1.1);
+            }
+            
+            .dark-mode-toggle i {
+                font-size: 1.25rem;
+                transition: transform 0.5s ease;
+            }
+            
+            .dark-mode-toggle:hover i {
+                transform: rotate(30deg);
+            }
+            
+            /* 3D Card Tilt Effect */
+            .tilt-card {
+                transition: transform 0.5s ease;
+                transform-style: preserve-3d;
+            }
+        </style>
+    
+    
+    
+    </head> x
+<body class="bg-gray-50 text-dark">
+    <!-- Header (from previous document) -->
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-2">
+                    <img src="/frontend/imgs/logos/cyclonelogo.png" alt="" class="w-32 h-25">
+                </a>
+                         
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="/" class="text-dark hover:text-primary font-medium relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="/shoplist" class="text-dark hover:text-primary font-medium relative group">
+                        Shop
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="/contact" class="text-dark hover:text-primary font-medium relative group">
+                        Contact
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                </nav>
+                         
+                <!-- Icons -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-full md:w-1/3">
+                        <div class="relative">
+                            <input type="text" placeholder="Search for cycles..." id="searchInput" class="w-full border border-gray-300 rounded-full py-2 px-4 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    <button class="text-dark hover:text-primary relative">
+                        <a href="/addtocart"><i class="fas fa-shopping-cart text-xl"></i></a>
+                        <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button class="md:hidden text-dark" id="mobile-menu-button">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+                 
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden mt-4 pb-4" id="mobile-menu">
+                <nav class="flex flex-col space-y-3">
+                    <a href="/" class="text-dark hover:text-primary font-medium">Home</a>
+                    <a href="/shoplist" class="text-dark hover:text-primary font-medium">Shop</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary mb-6">Ride with CycloneX</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">Empowering cyclists with premium bikes, innovative design, and a passion for two-wheeled adventures.</p>
+        </section>
+
+        <!-- Our Story Section -->
+        <section class="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+                <h2 class="text-3xl font-bold mb-6 text-primary">Our Story</h2>
+                <p class="text-gray-700 mb-4">
+                    Founded in 2020, CycloneX emerged from a simple dream: to create bicycles that are more than just transportation. We believe cycling is an art form, a lifestyle, and a powerful way to connect with the world around us.
+                </p>
+                <p class="text-gray-700">
+                    Our journey began in a small workshop, driven by cyclists who were tired of compromise. We wanted bikes that didn't just move, but inspired movement – bikes that combine cutting-edge technology, sustainable design, and unparalleled performance.
+                </p>
+            </div>
+            <div class="bg-gray-200 rounded-lg overflow-hidden shadow-lg">
+                <img src="/api/placeholder/600/400" alt="CycloneX Workshop" class="w-full h-full object-cover">
+            </div>
+        </section>
+
+        <!-- Mission and Values -->
+        <section class="bg-white rounded-lg shadow-md p-12 mb-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-primary mb-4">Our Mission</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    To revolutionize cycling by creating high-performance, sustainable bicycles that empower riders to explore, challenge, and enjoy their journey.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <i class="fas fa-leaf text-5xl text-primary mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">Sustainability</h3>
+                    <p class="text-gray-600">Committed to eco-friendly materials and production processes that minimize environmental impact.</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-bicycle text-5xl text-primary mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">Innovation</h3>
+                    <p class="text-gray-600">Constantly pushing the boundaries of bicycle design and technology.</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-users text-5xl text-primary mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-3">Community</h3>
+                    <p class="text-gray-600">Building a global community of passionate cyclists who inspire and support each other.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Highlight -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-primary mb-12">Meet Our Team</h2>
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="bg-gray-200 rounded-full w-48 h-48 mx-auto mb-6 overflow-hidden">
+                        <img src="/api/placeholder/300/300" alt="Team Member" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2">Elena Rodriguez</h3>
+                    <p class="text-gray-600">Founder & CEO</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-200 rounded-full w-48 h-48 mx-auto mb-6 overflow-hidden">
+                        <img src="/api/placeholder/300/300" alt="Team Member" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2">Marcus Chen</h3>
+                    <p class="text-gray-600">Chief Design Officer</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-200 rounded-full w-48 h-48 mx-auto mb-6 overflow-hidden">
+                        <img src="/api/placeholder/300/300" alt="Team Member" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2">Aisha Patel</h3>
+                    <p class="text-gray-600">Head of Engineering</p>
+                </div>
+                <div class="text-center">
+                    <div class="bg-gray-200 rounded-full w-48 h-48 mx-auto mb-6 overflow-hidden">
+                        <img src="/api/placeholder/300/300" alt="Team Member" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="font-semibold text-xl mb-2">Lucas Bianchi</h3>
+                    <p class="text-gray-600">Customer Experience Lead</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (from previous document) -->
+    <footer class="bg-dark text-white ">
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <img src="/frontend/imgs/logos/cyclonelogo.png" alt="" class="w-32 h-30">
+                    </h3>
+                    <p class="text-gray-400 mb-4">Premium cycles and accessories for every rider.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">FAQs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Mountain Bikes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Road Bikes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">City Bikes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">Electric Bikes</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Contact</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                            <span class="text-gray-400">Hamburgs,Germany</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span class="text-gray-400">+91 8590184265</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span class="text-gray-400">cyclonex.gethelp.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">© 2024 CycloneX. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

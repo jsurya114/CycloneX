@@ -137,6 +137,10 @@
                             <i class="fas fa-clipboard-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
                             <span>Orders</span>
                         </a>
+                        <a href="/admin/logout" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-exit-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>logout</span>
+                        </a>
                     </div>
                 </nav>
                 
@@ -264,7 +268,7 @@
                     
                    <!-- Products Card -->
 <!-- Coupon Price Taken Card -->
-<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+<!-- <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
     <div class="p-5">
         <div class="flex items-center">
             <div class="flex-shrink-0 bg-amber-100 rounded-lg p-3">
@@ -280,7 +284,7 @@
         </div>
     </div>
     <div class="bg-gradient-to-r from-amber-500 to-amber-600 h-1"></div>
-</div>
+</div> -->
 
                 </div>
                 
@@ -336,14 +340,14 @@
                         <%= order.paymentStatus === 'Paid' ? 'bg-green-100 text-green-800' : 
                         order.paymentStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
                         'bg-red-100 text-red-800' %>">
-                        <%= order.paymentStatus %>
+                <%= order.paymentStatus %>
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-500"><%= order.paymentMethod %></div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a href="/admin/orders/<%= order._id %>" class="text-primary-600 hover:text-primary-900">View</a>
+                    <a href="/admin/orderdetailss/<%= order.orderid %>" class="text-primary-600 hover:text-primary-900">View</a>
                 </td>
             </tr>
         <% }); %>
@@ -359,16 +363,37 @@
                         </table>
                     </div>
                     <div class="px-6 py-4 border-t border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-500">
-                                Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">42</span> results
-                            </div>
-                            <div class="flex space-x-2">
-                                <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Previous</button>
-                                <button class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Next</button>
-                            </div>
-                        </div>
-                    </div>
+                        <nav class="flex justify-between items-center">
+                          <div class="text-sm text-gray-500">
+                            Showing page <%= currentPage %> of <%= totalPages %>
+                          </div>
+                          <ul class="flex space-x-1">
+                            <% if (currentPage > 1) { %>
+                              <li>
+                                <a href="?page=<%= currentPage - 1 %>" class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                  Previous
+                                </a>
+                              </li>
+                            <% } %>
+                            
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                              <li>
+                                <a href="?page=<%= i %>" class="px-3 py-2 <%= i === currentPage ? 'bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50' %> border rounded-md text-sm font-medium">
+                                  <%= i %>
+                                </a>
+                              </li>
+                            <% } %>
+                    
+                            <% if (currentPage < totalPages) { %>
+                              <li>
+                                <a href="?page=<%= currentPage + 1 %>" class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                  Next
+                                </a>
+                              </li>
+                            <% } %>
+                          </ul>
+                        </nav>
+                      </div>
                 </div>
 
 
@@ -381,6 +406,9 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+
+        
+
     <script>
         // Initialize Chart
         document.addEventListener('DOMContentLoaded', function() {

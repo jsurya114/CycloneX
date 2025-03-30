@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CycloneX - Checkout</title>
+    <title>CycloneX  Checkout</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -266,13 +266,138 @@
                             </div>
                             
                             <div class="mt-5 flex justify-center md:justify-start">
-                             
+                                <button id="showAddAddressForm" type="button" class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-lg flex items-center transition-colors shadow-md">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Add New Address
+                                </button>
                             </div>
+                        </div>
+
+                        <!-- Add New Address Form (Initially Hidden) -->
+                        <div id="addAddressForm" class="hidden p-6 border-t border-gray-200 dark:border-gray-700">
+                            <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-5">Add New Address</h4>
+                            
+                            <form id="newAddressForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Full Name -->
+                                <div>
+                                    <label for="fullName" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Full Name</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-user text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="fullName" name="fullName" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white" placeholder="Enter your full name">
+                                    </div>
+                                </div>
+                                
+                                <!-- Email Address -->
+                                <div>
+                                    <label for="email" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Email Address</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-envelope text-gray-400"></i>
+                                        </div>
+                                        <input type="email" id="email" name="email" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white" placeholder="Enter your email">
+                                    </div>
+                                </div>
+                                
+                                <!-- Mobile Number -->
+                                <div>
+                                    <label for="mobile" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Mobile Number</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-phone text-gray-400"></i>
+                                        </div>
+                                        <input type="tel" id="mobile" name="mobile" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white" placeholder="Enter your mobile number">
+                                    </div>
+                                </div>
+                                
+                                <!-- Country -->
+                                <div>
+                                    <label for="country" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Country</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-globe text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="country" name="country" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white" placeholder="Enter your country">
+                                    </div>
+                                </div>
+                                
+                                <!-- State -->
+                                <div>
+                                    <label for="state" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">State</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-map text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="state" name="state" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white" placeholder="Enter your state">
+                                    </div>
+                                </div>
+                                
+                                <!-- Address -->
+                                <div>
+                                    <label for="address" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Address</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-home text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="address" name="address" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white" placeholder="Enter your address">
+                                    </div>
+                                </div>
+                                
+                                <!-- Pincode -->
+                                <div>
+                                    <label for="pincode" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Pincode</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-map-pin text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="pincode" name="pincode" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white" placeholder="Enter your pincode">
+                                    </div>
+                                </div>
+                                
+                                <!-- Landmark -->
+                                <div>
+                                    <label for="landmark" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Landmark</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-landmark text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="landmark" name="landmark" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white" placeholder="Enter nearby landmark">
+                                    </div>
+                                </div>
+                                
+                                <!-- Address Type -->
+                                <div>
+                                    <label for="addressType" class="text-gray-700 dark:text-gray-300 font-medium mb-2 block">Address Type</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-tag text-gray-400"></i>
+                                        </div>
+                                        <select id="addressType" name="addressType" class="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-200 dark:bg-gray-700 dark:text-white">
+                                            <option value="Home">Home</option>
+                                            <option value="Work">Work</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Submit and Cancel buttons -->
+                                <div class="md:col-span-2 flex gap-4 mt-4">
+                                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg flex items-center transition-colors shadow-md">
+                                        <i class="fas fa-save mr-2"></i>
+                                        Save Address
+                                    </button>
+                                    <button type="button" id="cancelAddAddress" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-3 px-6 rounded-lg flex items-center transition-colors">
+                                        <i class="fas fa-times mr-2"></i>
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                             
                           <!-- Shipping Options -->
 <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-    <h4 class="text-base font-medium text-gray-800 dark:text-white mb-4">Shipping Method</h4>
+    <!-- <h4 class="text-base font-medium text-gray-800 dark:text-white mb-4">Shipping Method</h4> -->
     <div class="space-y-3">
         <% if (freeShipping) { %>
             <!-- Free Shipping Notice -->
@@ -286,71 +411,8 @@
                 </div>
             </div>
         <% } %>
-
-        <!-- Standard Shipping -->
-        <div class="shipping-option border border-gray-200 dark:border-gray-700 rounded-xl p-4 <%= freeShipping ? 'opacity-50' : 'cursor-pointer hover:border-primary-500 dark:hover:border-primary-500' %> relative">
-            <input type="radio" name="shipping" id="standard" class="hidden" <%= (selectedShipping === 'standard' || freeShipping) ? 'checked' : '' %> 
-                <%= freeShipping ? 'disabled' : 'onchange="window.location.href=\'?shipping=standard\'"' %>>
-            <label for="standard" class="absolute inset-0 <%= freeShipping ? '' : 'cursor-pointer' %>"></label>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <div class="w-5 h-5 rounded-full border-2 <%= (selectedShipping === 'standard' || freeShipping) ? 'border-primary-500' : 'border-gray-300' %> flex items-center justify-center mr-3">
-                        <div class="w-3 h-3 rounded-full <%= (selectedShipping === 'standard' || freeShipping) ? 'bg-primary-500' : 'bg-transparent' %>"></div>
-                    </div>
-                    <div>
-                        <h5 class="font-medium text-gray-800 dark:text-white">Standard Shipping</h5>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Delivery in 3-5 business days</p>
-                    </div>
-                </div>
-                <span class="font-medium text-primary-600 dark:text-primary-400"><%= freeShipping ? 'Free' : '₹' + shippingOptions.standard.toFixed(2) %></span>
-            </div>
-        </div>
-        
-        <!-- Express Shipping -->
-        <div class="shipping-option border border-gray-200 dark:border-gray-700 rounded-xl p-4 <%= freeShipping ? 'opacity-50' : 'cursor-pointer hover:border-primary-500 dark:hover:border-primary-500' %> relative">
-            <input type="radio" name="shipping" id="express" class="hidden" <%= selectedShipping === 'express' && !freeShipping ? 'checked' : '' %>
-                <%= freeShipping ? 'disabled' : 'onchange="window.location.href=\'?shipping=express\'"' %>>
-            <label for="express" class="absolute inset-0 <%= freeShipping ? '' : 'cursor-pointer' %>"></label>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <div class="w-5 h-5 rounded-full border-2 <%= selectedShipping === 'express' && !freeShipping ? 'border-primary-500' : 'border-gray-300' %> flex items-center justify-center mr-3">
-                        <div class="w-3 h-3 rounded-full <%= selectedShipping === 'express' && !freeShipping ? 'bg-primary-500' : 'bg-transparent' %>"></div>
-                    </div>
-                    <div>
-                        <h5 class="font-medium text-gray-800 dark:text-white">Express Shipping</h5>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Delivery in 1-2 business days</p>
-                    </div>
-                </div>
-                <span class="font-medium text-primary-600 dark:text-primary-400">₹<%= shippingOptions.express.toFixed(2) %></span>
-            </div>
-        </div>
-        
-        <!-- Same Day Delivery -->
-        <div class="shipping-option border border-gray-200 dark:border-gray-700 rounded-xl p-4 <%= freeShipping ? 'opacity-50' : 'cursor-pointer hover:border-primary-500 dark:hover:border-primary-500' %> relative">
-            <input type="radio" name="shipping" id="sameday" class="hidden" <%= selectedShipping === 'sameDay' && !freeShipping ? 'checked' : '' %>
-                <%= freeShipping ? 'disabled' : 'onchange="window.location.href=\'?shipping=sameDay\'"' %>>
-            <label for="sameday" class="absolute inset-0 <%= freeShipping ? '' : 'cursor-pointer' %>"></label>
-            <div class="flex justify-between items-center">
-                <div class="flex items-center">
-                    <div class="w-5 h-5 rounded-full border-2 <%= selectedShipping === 'sameDay' && !freeShipping ? 'border-primary-500' : 'border-gray-300' %> flex items-center justify-center mr-3">
-                        <div class="w-3 h-3 rounded-full <%= selectedShipping === 'sameDay' && !freeShipping ? 'bg-primary-500' : 'bg-transparent' %>"></div>
-                    </div>
-                    <div>
-                        <h5 class="font-medium text-gray-800 dark:text-white">Same Day Delivery</h5>
-                        <p class="text-sm text-gray-600 dark:text-gray-400">Delivery within 24 hours</p>
-                    </div>
-                </div>
-                <span class="font-medium text-primary-600 dark:text-primary-400">₹<%= shippingOptions.sameDay.toFixed(2) %></span>
-            </div>
-        </div>
-        
-        <% if (subtotal > 20000) { %>
-            <div class="mt-2 text-sm text-green-600 dark:text-green-400">
-                <i class="fas fa-check-circle mr-1"></i> Free shipping applied for orders over ₹20,000!
-            </div>
-        <% } %>
+   
     </div>
-</div>
 
                             <!-- Coupon Code Section -->
                             <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
@@ -520,6 +582,7 @@
                            <!-- Order Items -->
 <!-- Order Items -->
 <div class="space-y-4 mb-6">
+    <input type="hidden" id="userProfile" data-id="<%=user._id%>">
     <% if (cart && cart.items && cart.items.length > 0) { %>
         <% cart.items.forEach(item => { %>
             <div class="flex items-start p-3 border border-gray-100 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors checkout-item">
@@ -705,10 +768,29 @@
     
     <%- include('partials/footer') %>
 
+    <%-include('partials/loader') %>
     <!-- Toast container -->
     <div id="toast-container" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50"></div>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+    <!-- <script>
+       document.addEventListener('DOMContentLoaded', function() {
+    const shippingOptions = document.querySelectorAll('.shipping-option input[type="radio"]');
+    
+    shippingOptions.forEach(option => {
+        option.addEventListener('change', function() {
+            const selectedValue = this.value;
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('shipping', selectedValue);
+            window.location.href = currentUrl.toString();
+        });
+    });
+});
+
+        </script> -->
+
 
     <script>
         // Function to create a Toastify notification
@@ -807,8 +889,79 @@ document.addEventListener('DOMContentLoaded', function() {
     const activeCouponText = document.getElementById('active-coupon-text');
     const couponBadge = document.getElementById('coupon-badge');
     
+    // Add New Address Form Toggle
+    const showAddAddressFormBtn = document.getElementById('showAddAddressForm');
+    const addAddressForm = document.getElementById('addAddressForm');
+    const cancelAddAddressBtn = document.getElementById('cancelAddAddress');
     
+    // Toggle address form visibility
+    showAddAddressFormBtn.addEventListener('click', function() {
+        addAddressForm.classList.toggle('hidden');
+        // Scroll to the form
+        addAddressForm.scrollIntoView({ behavior: 'smooth' });
+    });
     
+    // Cancel button for address form
+    cancelAddAddressBtn.addEventListener('click', function() {
+        addAddressForm.classList.add('hidden');
+        document.getElementById('newAddressForm').reset();
+    });
+    
+    // Handle address form submission
+    const newAddressForm = document.getElementById('newAddressForm');
+    newAddressForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        try {
+            
+            // Collect form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                mobile: document.getElementById('mobile').value,
+                country: document.getElementById('country').value,
+                state: document.getElementById('state').value,
+                address: document.getElementById('address').value,
+                pincode: document.getElementById('pincode').value,
+                landmark: document.getElementById('landmark').value,
+                addressType: document.getElementById('addressType').value,
+              
+            };
+           
+           
+            const userId = document.getElementById('userProfile').dataset.id;  
+            console.log('jdjd',userId)
+            const response = await fetch(`/addaddress/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            if(result.success){
+                showToast('Address added successfully!', 'info');
+            }
+
+
+            // Here you would normally send this data to your server
+            // For demo purposes, we'll just show a success message
+           
+            
+            // Reset form and hide it
+            newAddressForm.reset();
+            addAddressForm.classList.add('hidden');
+            
+            // In a real application, you would reload the addresses or add the new one to the DOM
+            setTimeout(() => {
+                window.location.reload(); // Reload to show the new address
+            }, 1500);
+        } catch (error) {
+            console.error('Error:', error);
+            showToast('Failed to add address', 'error');
+        }
+    });
 
     // Toggle available coupons
     showAvailableCouponsBtn.addEventListener('click', function() {
@@ -900,12 +1053,17 @@ function removeCoupon() {
     document.getElementById('totalAmount').textContent = `₹${newTotal.toFixed(2)}`;
 
     showToast('Coupon removed successfully!', 'info');
+    location.reload()
 }
 
 
 
     // Place Order button handler
     document.getElementById('placeOrderBtn').addEventListener('click', async function() {
+        
+
+
+
     const addressElement = document.querySelector('input[name="address"]:checked');
     const paymentMethodElement = document.querySelector('input[name="payment"]:checked');
     
@@ -1055,6 +1213,7 @@ try {
 
 }
 
+
 // Function to process Cash on Delivery or post-Razorpay order
 async function processCODOrder(orderData) {
     try {
@@ -1136,7 +1295,7 @@ async function processCODOrder(orderData) {
    
            document.addEventListener('DOMContentLoaded', function() {
        // Check if free shipping is applied
-       const freeShipping = <%= freeShipping %>;
+       const freeShipping = "<%= freeShipping %>";
        
        // Handle shipping option selection
        const shippingOptions = document.querySelectorAll('.shipping-option');

@@ -1,89 +1,409 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycloneX  Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <!-- Favicon -->
-  <link rel="shortcut icon" type="image/x-icon" href="/frontend/imgs/logos/cyclonelogo.png" />
-  <!-- Template CSS -->
-  <link href="/frontend/css/main.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"},
+            secondary: '#f97316',
+            dark: '#0f172a'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
+          },
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    
+    .card-shadow {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .input-shadow:focus {
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    
+    .btn-shadow {
+      box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.2), 0 2px 4px -2px rgba(14, 165, 233, 0.2);
+    }
+    
+    .btn-shadow:hover {
+      box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3), 0 4px 6px -4px rgba(14, 165, 233, 0.2);
+    }
+    
+    .social-btn-shadow {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .social-btn-shadow:hover {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Floating animation for decorative elements */
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+    
+    .float-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .float-animation-delay {
+      animation: float 6s ease-in-out 2s infinite;
+    }
+    
+    /* Slide animation for the image slider */
+    @keyframes slide {
+      0% { opacity: 0; transform: translateX(-20px); }
+      5% { opacity: 1; transform: translateX(0); }
+      25% { opacity: 1; transform: translateX(0); }
+      30% { opacity: 0; transform: translateX(20px); }
+      100% { opacity: 0; transform: translateX(20px); }
+    }
+    
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+      background-size: cover;
+      background-position: center;
+    }
+    
+    .slide-1 {
+      animation: slide 15s infinite;
+      animation-delay: 0s;
+      opacity: 1; /* Start with first slide visible */
+    }
+    
+    .slide-2 {
+      animation: slide 15s infinite;
+      animation-delay: 5s;
+    }
+    
+    .slide-3 {
+      animation: slide 15s infinite;
+      animation-delay: 10s;
+    }
+    
+    .active-dot {
+      width: 24px;
+      border-radius: 4px;
+    }
+  </style>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-gray-100">
-  <!-- Main Content -->
-  <div class="bg-white shadow-xl rounded-lg overflow-hidden w-[450px] p-6 border border-gray-200">
-    <!-- Logo -->
-    <div class="flex justify-center mb-6">
-      <img src="<%= logoPath %>" alt="Logo" class="w-32 h-auto" />
-    </div>
+<body class="min-h-screen w-full bg-slate-50 flex items-center justify-center p-4 md:p-6">
+  <!-- Decorative elements -->
+  <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+    <!-- Gradient circles -->
+    <div class="absolute top-[15%] left-[10%] w-64 h-64 rounded-full bg-primary-200/30 blur-3xl opacity-30 float-animation"></div>
+    <div class="absolute bottom-[20%] right-[15%] w-80 h-80 rounded-full bg-primary-100/30 blur-3xl opacity-30 float-animation-delay"></div>
     
-    <!-- Heading -->
-    <h2 class="text-2xl font-semibold text-gray-700 text-center mb-6">Welcome Back</h2>
-    
-    <!-- Error Message Display -->
-    <div id="errorField" class="text-red-600 mb-4 text-center"></div>
-    
-    <!-- Login Form -->
-    <div class="space-y-4">
-      <input id="emailInput" type="email" name="email" placeholder="Email" 
-        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    <!-- Small decorative dots -->
+    <div class="hidden lg:block absolute top-[20%] right-[25%] w-2 h-2 rounded-full bg-primary-400"></div>
+    <div class="hidden lg:block absolute top-[30%] right-[30%] w-1 h-1 rounded-full bg-primary-300"></div>
+    <div class="hidden lg:block absolute top-[25%] right-[28%] w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+    <div class="hidden lg:block absolute bottom-[20%] left-[25%] w-2 h-2 rounded-full bg-primary-400"></div>
+    <div class="hidden lg:block absolute bottom-[30%] left-[30%] w-1 h-1 rounded-full bg-primary-300"></div>
+    <div class="hidden lg:block absolute bottom-[25%] left-[28%] w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+  </div>
+  
+  <!-- Main card container -->
+  <div class="w-full max-w-5xl relative z-10">
+    <div class="flex flex-col lg:flex-row rounded-2xl overflow-hidden card-shadow">
+      <!-- Left side - Image slider section -->
+      <div class="w-full lg:w-5/12 bg-slate-900 p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
+        <!-- Logo -->
+        <div class="mb-8 lg:mb-0">
+          <img src="<%= logoPath %>" alt="Cyclone" class="h-16 w-auto">
+        </div>
+        
+        <!-- Image Slider -->
+        <div class="relative h-64 w-full mb-6 overflow-hidden rounded-xl shadow-lg">
+          <div class="slide slide-1 h-full w-full">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cat_Road_CY24.jpg-AmQUZkNFWkn96QuJDYW6sYp6FvZPEb.jpeg" alt="Road Cycling" class="w-full h-full object-cover object-center">
+            <div class="absolute inset-0 bg-gradient-to-t from-primary-900/70 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 w-full p-6">
+              <h3 class="text-xl font-bold text-white">Road Cycling</h3>
+              <p class="text-white/90 text-sm">Explore open roads and scenic routes</p>
+            </div>
+          </div>
+          
+          <div class="slide slide-2 h-full w-full">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cat_Mountain_CY24.jpg-aalImhQdSd5296JrBiN8CYOgQ493j1.jpeg" alt="Mountain Biking" class="w-full h-full object-cover object-center">
+            <div class="absolute inset-0 bg-gradient-to-t from-primary-900/70 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 w-full p-6">
+              <h3 class="text-xl font-bold text-white">Mountain Biking</h3>
+              <p class="text-white/90 text-sm">Conquer challenging trails</p>
+            </div>
+          </div>
+          
+          <div class="slide slide-3 h-full w-full">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cat_Gravel_CY25.jpg-gCUqzrdh1ycyr9q1r6m8Gjr2TbyWMU.jpeg" alt="Gravel Riding" class="w-full h-full object-cover object-center">
+            <div class="absolute inset-0 bg-gradient-to-t from-primary-900/70 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 w-full p-6">
+              <h3 class="text-xl font-bold text-white">Gravel Riding</h3>
+              <p class="text-white/90 text-sm">The perfect mix of road and off-road</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Slider dots -->
+        <div class="flex justify-center gap-2 mb-6">
+          <div class="h-2 w-6 bg-primary-500 rounded-md active-dot"></div>
+          <div class="h-2 w-2 bg-primary-300 rounded-full"></div>
+          <div class="h-2 w-2 bg-primary-300 rounded-full"></div>
+        </div>
+        
+        <!-- Content -->
+        <div class="relative z-10">
+          <h2 class="text-2xl font-bold text-white mb-4">Join Our Community</h2>
+          <p class="text-slate-300 mb-6">Create an account to access exclusive features, save your preferences, and connect with other members.</p>
+          
+          <!-- Features list -->
+          <div class="space-y-3">
+            <div class="flex items-center text-slate-300">
+              <div class="w-6 h-6 rounded-full bg-primary-900/50 flex items-center justify-center mr-3 text-primary-400">
+                <i class="fas fa-check text-xs"></i>
+              </div>
+              <span>Personalized experience</span>
+            </div>
+            <div class="flex items-center text-slate-300">
+              <div class="w-6 h-6 rounded-full bg-primary-900/50 flex items-center justify-center mr-3 text-primary-400">
+                <i class="fas fa-check text-xs"></i>
+              </div>
+              <span>Save your favorite content</span>
+            </div>
+            <div class="flex items-center text-slate-300">
+              <div class="w-6 h-6 rounded-full bg-primary-900/50 flex items-center justify-center mr-3 text-primary-400">
+                <i class="fas fa-check text-xs"></i>
+              </div>
+              <span>Connect with like-minded people</span>
+            </div>
+          </div>
+        </div>
+      </div>
       
-      <input id="passwordInput" type="password" name="password" placeholder="Password" 
-        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      
-      <button id="loginBtn" class="w-full py-2 text-white font-semibold rounded-md bg-blue-600 hover:bg-blue-700 transition shadow-md">
-        Login
-      </button>
-    </div>
-    
-    <!-- Forgot Password -->
-    <div class="text-center my-4">
-      <a href="/forgotpassword" class="text-blue-600 hover:underline">Forgot Password?</a>
-    </div>
-    
-    <!-- Divider -->
-    <div class="flex items-center my-4">
-      <div class="flex-grow border-t border-gray-300"></div>
-      <span class="mx-3 text-gray-400">OR</span>
-      <div class="flex-grow border-t border-gray-300"></div>
-    </div>
-    
- <!-- Social Signup -->
- <div class="flex gap-3 mb-6">
-  <a href="/auth/google/callback" 
-      class="flex-1 py-2 flex items-center justify-center rounded border border-gray-300 text-sm font-medium
-      hover:bg-gray-50 transition-colors">
-      <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" class="w-5 h-5 mr-2">
-      Sign up with Google
-  </a>
-
-</div>
-    
-    <!-- Signup Link -->
-    <div class="text-center mt-4">
-      <p class="text-gray-600">Don't have an account? 
-        <a href="/signup" class="text-blue-600 font-semibold hover:underline">Sign up</a>
-      </p>
+      <!-- Right side - Login form -->
+      <div class="w-full lg:w-7/12 bg-white p-8 lg:p-12 flex items-center">
+        <div class="w-full max-w-md mx-auto">
+          <!-- Form heading -->
+          <div class="text-center lg:text-left mb-8">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">Sign In</h1>
+            <p class="text-slate-500">
+              Don't have an account? <a href="/signup" class="text-primary-600 hover:text-primary-700 font-medium">Create account</a>
+            </p>
+          </div>
+          
+          <!-- Error message display -->
+          <div id="errorField" class="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm hidden">
+            <div class="flex items-center">
+              <i class="fas fa-exclamation-circle mr-2"></i>
+              <span id="errorMessage"></span>
+            </div>
+          </div>
+          
+          <!-- Form -->
+          <form id="loginForm" class="space-y-5">
+            <!-- Email input -->
+            <div>
+              <label for="emailInput" class="block text-sm font-medium text-slate-700 mb-1.5">Email address</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <i class="fas fa-envelope text-slate-400"></i>
+                </div>
+                <input 
+                  type="email" 
+                  id="emailInput" 
+                  class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:border-primary-500 focus:ring-0 input-shadow transition-all" 
+                  placeholder="name@example.com"
+                >
+              </div>
+            </div>
+            
+            <!-- Password input -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="passwordInput" class="block text-sm font-medium text-slate-700">Password</label>
+                <a href="/forgotpassword" class="text-sm text-primary-600 hover:text-primary-700">Forgot password?</a>
+              </div>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                  <i class="fas fa-lock text-slate-400"></i>
+                </div>
+                <input 
+                  type="password" 
+                  id="passwordInput" 
+                  class="w-full pl-10 pr-10 py-3 border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:border-primary-500 focus:ring-0 input-shadow transition-all" 
+                  placeholder="••••••••"
+                >
+                <button 
+                  type="button" 
+                  id="togglePassword" 
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Remember me checkbox -->
+            <div class="flex items-center">
+              <input 
+                type="checkbox" 
+                id="remember" 
+                class="w-4 h-4 text-primary-600 bg-white border-slate-300 rounded focus:ring-primary-500"
+              >
+              <label for="remember" class="ml-2 text-sm text-slate-600">
+                Remember me for 30 days
+              </label>
+            </div>
+            
+            <!-- Login button -->
+            <button 
+              type="submit" 
+              id="loginBtn" 
+              class="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-4 rounded-lg transition-all duration-200 font-medium flex items-center justify-center btn-shadow"
+            >
+              <span>Sign in to account</span>
+              <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+          </form>
+          
+          <!-- Or login with -->
+          <div class="mt-8 mb-6 flex items-center">
+            <div class="flex-grow h-px bg-slate-200"></div>
+            <span class="mx-4 text-sm text-slate-500">Or continue with</span>
+            <div class="flex-grow h-px bg-slate-200"></div>
+          </div>
+          
+          <!-- Social login -->
+          <div class="flex justify-center">
+            <!-- Google -->
+            <a 
+              href="/auth/google/callback" 
+              class="flex items-center justify-center gap-2 py-2.5 px-6 border border-slate-300 rounded-lg hover:bg-slate-50 transition-all duration-200 w-full social-btn-shadow"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" fill="#EA4335"/>
+              </svg>
+              <span class="text-slate-700 font-medium">Google</span>
+            </a>
+          </div>
+          
+          <!-- Security note -->
+          <p class="text-xs text-slate-500 text-center mt-8">
+            <i class="fas fa-shield-alt mr-1"></i> 
+            Your data is protected with industry-standard encryption
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Listen for the click on the login button
-    document.getElementById('loginBtn').addEventListener('click', async function() {
-      const errorField = document.getElementById('errorField');
-      errorField.innerText = ''; // Clear any previous errors
+    // Password toggle functionality
+    document.getElementById('togglePassword').addEventListener('click', function() {
+      const passwordInput = document.getElementById('passwordInput');
+      const toggleIcon = this.querySelector('i');
       
-      // Retrieve values from the inputs
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    });
+    
+    // Slider animation for dots
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.gap-2 > div');
+    let currentSlide = 0;
+    
+    setInterval(() => {
+      // Update dot indicators
+      dots.forEach(dot => {
+        dot.classList.remove('active-dot');
+        dot.classList.add('rounded-full');
+        dot.classList.remove('rounded-md');
+        dot.classList.add('bg-primary-300');
+        dot.classList.remove('bg-primary-500');
+        dot.style.width = '8px';
+      });
+      
+      // Move to next slide
+      currentSlide = (currentSlide + 1) % 3;
+      
+      // Update active dot
+      dots[currentSlide].classList.add('active-dot');
+      dots[currentSlide].classList.remove('rounded-full');
+      dots[currentSlide].classList.add('rounded-md');
+      dots[currentSlide].classList.remove('bg-primary-300');
+      dots[currentSlide].classList.add('bg-primary-500');
+      dots[currentSlide].style.width = '24px';
+    }, 5000);
+    
+    // Login form submission
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const errorField = document.getElementById('errorField');
+      const errorMessage = document.getElementById('errorMessage');
+      errorField.classList.add('hidden');
+      
+      // Show loading state on button
+      const loginBtn = document.getElementById('loginBtn');
+      const originalBtnText = loginBtn.innerHTML;
+      loginBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Signing in...';
+      loginBtn.disabled = true;
+      
       const email = document.getElementById('emailInput').value.trim();
       const password = document.getElementById('passwordInput').value;
+      const remember = document.getElementById('remember').checked;
       
-      // Prepare the data object
-      const data = { email, password };
+      const data = { email, password, remember };
       
       try {
-        const response = await fetch('/', { // Assuming your login endpoint is "/"
+        const response = await fetch('/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
@@ -92,16 +412,39 @@
         const result = await response.json();
         
         if (!response.ok) {
-          // Display the error message returned by the server in the error field
-          errorField.innerText = result.error;
+          errorMessage.textContent = result.error;
+          errorField.classList.remove('hidden');
+          
+          // Reset button state
+          loginBtn.innerHTML = originalBtnText;
+          loginBtn.disabled = false;
         } else {
-          // On success, redirect to the home page or any desired route
+          // Successful login - redirect
           window.location.href = '/home';
         }
       } catch (error) {
         console.error('Error during login:', error);
-        errorField.innerText = 'An unexpected error occurred.';
+        errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+        errorField.classList.remove('hidden');
+        
+        // Reset button state
+        loginBtn.innerHTML = originalBtnText;
+        loginBtn.disabled = false;
       }
+    });
+
+    // Preload images to prevent flashing
+    window.addEventListener('load', function() {
+      const images = [
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cat_Road_CY24.jpg-AmQUZkNFWkn96QuJDYW6sYp6FvZPEb.jpeg',
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cat_Mountain_CY24.jpg-aalImhQdSd5296JrBiN8CYOgQ493j1.jpeg',
+        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/cat_Gravel_CY25.jpg-gCUqzrdh1ycyr9q1r6m8Gjr2TbyWMU.jpeg'
+      ];
+      
+      images.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
     });
   </script>
 </body>
