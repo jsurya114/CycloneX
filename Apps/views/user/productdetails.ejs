@@ -333,14 +333,18 @@
 <div id="reviews" class="tab-content hidden">
     <div class="flex items-center mb-4">
         <div class="flex items-center mr-4">
+            <% review.forEach(reviewItem => { %>
             <span class="text-3xl font-bold text-gray-900 mr-2">4.5</span>
             <div class="flex text-yellow-400">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star-half-alt"></i>
+                <% for(let i = 1; i <= 5; i++) { %>
+                    <% if(i <= reviewItem.rating) { %>
+                        <i class="fas fa-star"></i>
+                    <% } else { %>
+                        <i class="far fa-star"></i>
+                    <% } %>
+                <% } %>
             </div>
+            <% }); %>
         </div>
         <span class="text-sm text-gray-500">Based on <%= review.length %> reviews</span>
     </div>

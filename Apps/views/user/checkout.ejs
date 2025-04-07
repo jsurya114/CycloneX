@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CycloneX  Checkout</title>
+    <title>CycloneX Checkout</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Add Toastify CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -41,6 +43,10 @@
         }
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
         }
         ::-webkit-scrollbar-thumb {
             background: #0ea5e9;
@@ -54,8 +60,17 @@
         .checkout-item {
             transition: all 0.3s ease;
         }
+        
+        /* Fix for hover effect in dark mode */
+        .dark .checkout-item:hover {
+            transform: translateY(-2px);
+            background-color: #1e293b !important; /* Darker background in dark mode */
+        }
+        
+        /* Light mode hover effect */
         .checkout-item:hover {
             transform: translateY(-2px);
+            background-color: #f8fafc;
         }
         
         /* Custom radio buttons */
@@ -83,6 +98,11 @@
             background: #fff;
         }
         
+        .dark .custom-radio .radio-label:before {
+            border-color: #4b5563;
+            background: #1f2937;
+        }
+        
         .custom-radio input[type="radio"]:checked + .radio-label:after {
             content: "";
             position: absolute;
@@ -106,6 +126,9 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
+        .dark .address-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
         
         /* Payment method card hover effect */
         .payment-card {
@@ -114,6 +137,9 @@
         .payment-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .dark .payment-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
         
         /* Progress bar animation */
@@ -129,6 +155,46 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
+        .dark .coupon-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.25rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(30deg);
+        }
+        
+        /* Transition for dark mode */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
     </style>
 </head>
 <body class="font-body bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -136,15 +202,15 @@
 
     <main class="min-h-screen">
         <!-- Checkout Progress Bar -->
-        <div class="max-w-4xl mx-auto my-8 bg-white rounded-xl shadow-lg p-4 md:p-6">
+        <div class="max-w-4xl mx-auto my-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 md:p-6">
             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-lg font-semibold text-gray-700">Checkout Progress</h2>
-                <span class="text-sm font-medium text-primary-600">Step 2 of 3</span>
+                <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Checkout Progress</h2>
+                <span class="text-sm font-medium text-primary-600 dark:text-primary-400">Step 2 of 3</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
                 <div class="bg-gradient-to-r from-primary-500 to-accent-500 h-2.5 rounded-full progress-bar-animation" style="width: 66%"></div>
             </div>
-            <div class="flex justify-between mt-2 text-sm text-gray-600">
+            <div class="flex justify-between mt-2 text-sm text-gray-600 dark:text-gray-400">
                 <div class="flex flex-col items-center">
                     <div class="w-8 h-8 rounded-full bg-primary-500 text-white flex items-center justify-center mb-1">
                         <i class="fas fa-check"></i>
@@ -158,7 +224,7 @@
                     <span>Checkout</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center mb-1">
+                    <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400 flex items-center justify-center mb-1">
                         <span>3</span>
                     </div>
                     <span>Confirmation</span>
@@ -508,43 +574,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Credit Card Form -->
-                            <!-- <div id="cardForm" class="mt-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div>
-                                        <label for="cardName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name on Card</label>
-                                        <input type="text" id="cardName" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" placeholder="John Doe">
-                                    </div>
-                                    <div>
-                                        <label for="cardNumber" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Card Number</label>
-                                        <div class="relative">
-                                            <input type="text" id="cardNumber" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" placeholder="1234 5678 9012 3456">
-                                            <div class="absolute right-3 top-2.5 flex space-x-1">
-                                                <i class="fab fa-cc-visa text-blue-600 text-lg"></i>
-                                                <i class="fab fa-cc-mastercard text-red-500 text-lg"></i>
-                                                <i class="fab fa-cc-amex text-blue-500 text-lg"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label for="expiry" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Expiry Date</label>
-                                        <input type="text" id="expiry" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" placeholder="MM/YY">
-                                    </div>
-                                    <div>
-                                        <label for="cvv" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">CVV</label>
-                                        <input type="text" id="cvv" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" placeholder="123">
-                                    </div>
-                                </div>
-                               
-                                <div class="mt-4 flex items-center">
-                                    <input type="checkbox" id="saveCard" class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                                    <label for="saveCard" class="ml-2 text-sm text-gray-700 dark:text-gray-300">Save card for future payments</label>
-                                </div>
-                            </div> -->
-                            
-                         
                             <div class="mt-6 flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                                 <div class="flex items-center text-gray-600 dark:text-gray-400">
                                     <i class="fas fa-lock text-green-500 mr-2"></i>
@@ -585,7 +614,7 @@
     <input type="hidden" id="userProfile" data-id="<%=user._id%>">
     <% if (cart && cart.items && cart.items.length > 0) { %>
         <% cart.items.forEach(item => { %>
-            <div class="flex items-start p-3 border border-gray-100 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors checkout-item">
+            <div class="flex items-start p-3 border border-gray-100 dark:border-gray-700 rounded-lg transition-colors checkout-item">
                 <div class="w-16 h-16 rounded-md bg-gray-100 dark:bg-gray-700 overflow-hidden flex-shrink-0">
                     <img src="<%= item.product.mainImage %>" alt="<%= item.product.productName %>" 
                          class="product-image h-full w-full object-cover object-center">
@@ -720,10 +749,10 @@
                             
                             <!-- Payment Methods -->
                             <div class="mt-6 flex items-center justify-center space-x-4">
-                                <i class="fab fa-cc-visa text-2xl text-blue-600"></i>
-                                <i class="fab fa-cc-mastercard text-2xl text-red-500"></i>
-                                <i class="fab fa-cc-amex text-2xl text-blue-500"></i>
-                                <i class="fab fa-cc-paypal text-2xl text-blue-800"></i>
+                                <i class="fab fa-cc-visa text-2xl text-blue-600 dark:text-blue-400"></i>
+                                <i class="fab fa-cc-mastercard text-2xl text-red-600 dark:text-red-400"></i>
+                                <i class="fab fa-cc-amex text-2xl text-blue-500 dark:text-blue-300"></i>
+                                <i class="fab fa-cc-paypal text-2xl text-blue-800 dark:text-blue-300"></i>
                             </div>
                             
                             <!-- Secure Checkout -->
@@ -766,578 +795,472 @@
         </section>
     </main>
     
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:block"></i>
+    </button>
+    
     <%- include('partials/footer') %>
 
     <%-include('partials/loader') %>
-    <!-- Toast container -->
-    <div id="toast-container" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50"></div>
-
+    
+    <!-- Add Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+    <script>
+       // Toast notification function
+       function showToast(message, isSuccess = true) {
+           Toastify({
+               text: message,
+               duration: 3000,
+               gravity: "bottom",
+               position: "center",
+               backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
+               stopOnFocus: true,
+               className: "rounded-lg",
+               style: {
+                   boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
+               }
+           }).showToast();
+       }
 
-    <!-- <script>
+       // Dark mode toggle functionality
        document.addEventListener('DOMContentLoaded', function() {
-    const shippingOptions = document.querySelectorAll('.shipping-option input[type="radio"]');
-    
-    shippingOptions.forEach(option => {
-        option.addEventListener('change', function() {
-            const selectedValue = this.value;
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('shipping', selectedValue);
-            window.location.href = currentUrl.toString();
-        });
-    });
-});
-
-        </script> -->
-
-
-    <script>
-        // Function to create a Toastify notification
-   // Toast notification function
-function showToast(message, type = 'info') {
-    let toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) {
-        toastContainer = document.createElement('div');
-        toastContainer.id = 'toast-container';
-        toastContainer.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center';
-        document.body.appendChild(toastContainer);
-    }
-    const toast = document.createElement('div');
-    toast.className = `
-        mb-3 px-6 py-4 rounded-lg shadow-lg text-white flex items-center
-        ${type === 'error' ? 'bg-red-500' : 'bg-primary-600'}
-        transform transition-all duration-300 ease-in-out
-        opacity-0 translate-y-8
-        max-w-md
-    `;
-    const icon = document.createElement('i');
-    icon.className = `mr-3 ${type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle'}`;
-    toast.appendChild(icon);
-    const messageEl = document.createElement('span');
-    messageEl.textContent = message;
-    toast.appendChild(messageEl);
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'ml-auto text-white hover:text-gray-200 focus:outline-none';
-    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-    closeBtn.onclick = () => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(8rem)';
-        setTimeout(() => {
-            toastContainer.removeChild(toast);
-        }, 300);
-    };
-    toast.appendChild(closeBtn);
-    toastContainer.appendChild(toast);
-    requestAnimationFrame(() => {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
-    });
-    setTimeout(() => {
-        if (toast.parentNode === toastContainer) {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(8rem)';
-            setTimeout(() => {
-                if (toast.parentNode === toastContainer) {
-                    toastContainer.removeChild(toast);
-                }
-            }, 300);
-        }
-    }, 5000);
-}
-
-// Payment method selection (no default selection)
-document.addEventListener('DOMContentLoaded', function() {
-    const paymentCards = document.querySelectorAll('.payment-card');
-    // Ensure no payment is selected on load
-    paymentCards.forEach(card => {
-        const radio = card.querySelector('input[name="payment"]');
-        if (radio) radio.checked = false;
-        card.addEventListener('click', function() {
-            // Remove selected styling from all cards
-            paymentCards.forEach(c => {
-                c.classList.remove('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
-                c.classList.add('border-gray-200', 'dark:border-gray-700');
-                const icon = c.querySelector('i');
-                icon.classList.remove('text-primary-500');
-                icon.classList.add('text-gray-600', 'dark:text-gray-400');
-                // Uncheck each radio button
-                const r = c.querySelector('input[name="payment"]');
-                if (r) r.checked = false;
-            });
-            // Apply selected styling to clicked card
-            this.classList.remove('border-gray-200', 'dark:border-gray-700');
-            this.classList.add('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
-            const icon = this.querySelector('i');
-            icon.classList.remove('text-gray-600', 'dark:text-gray-400');
-            icon.classList.add('text-primary-500');
-            // Check its radio button
-            const selectedRadio = this.querySelector('input[name="payment"]');
-            if (selectedRadio) selectedRadio.checked = true;
-        });
-    });
-
-    // Coupon code functionality
-    const showAvailableCouponsBtn = document.getElementById('show-available-coupons');
-    const availableCouponsContainer = document.getElementById('available-coupons-container');
-    const applyCouponBtn = document.getElementById('apply-coupon-btn');
-    const couponInput = document.getElementById('coupon-code');
- 
-    const couponInputContainer = document.getElementById('coupon-input-container');
-    const removeCouponContainer = document.getElementById('remove-coupon-container');
-    const removeCouponBtn = document.getElementById('remove-coupon-btn');
-    const activeCouponText = document.getElementById('active-coupon-text');
-    const couponBadge = document.getElementById('coupon-badge');
-    
-    // Add New Address Form Toggle
-    const showAddAddressFormBtn = document.getElementById('showAddAddressForm');
-    const addAddressForm = document.getElementById('addAddressForm');
-    const cancelAddAddressBtn = document.getElementById('cancelAddAddress');
-    
-    // Toggle address form visibility
-    showAddAddressFormBtn.addEventListener('click', function() {
-        addAddressForm.classList.toggle('hidden');
-        // Scroll to the form
-        addAddressForm.scrollIntoView({ behavior: 'smooth' });
-    });
-    
-    // Cancel button for address form
-    cancelAddAddressBtn.addEventListener('click', function() {
-        addAddressForm.classList.add('hidden');
-        document.getElementById('newAddressForm').reset();
-    });
-    
-    // Handle address form submission
-    const newAddressForm = document.getElementById('newAddressForm');
-    newAddressForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        try {
-            
-            // Collect form data
-            const formData = {
-                fullName: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                mobile: document.getElementById('mobile').value,
-                country: document.getElementById('country').value,
-                state: document.getElementById('state').value,
-                address: document.getElementById('address').value,
-                pincode: document.getElementById('pincode').value,
-                landmark: document.getElementById('landmark').value,
-                addressType: document.getElementById('addressType').value,
-              
-            };
+           const darkModeToggle = document.getElementById('darkModeToggle');
+           const html = document.documentElement;
            
-           
-            const userId = document.getElementById('userProfile').dataset.id;  
-            console.log('jdjd',userId)
-            const response = await fetch(`/addaddress/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            
-            const result = await response.json();
-            if(result.success){
-                showToast('Address added successfully!', 'info');
-            }
-
-
-            // Here you would normally send this data to your server
-            // For demo purposes, we'll just show a success message
-           
-            
-            // Reset form and hide it
-            newAddressForm.reset();
-            addAddressForm.classList.add('hidden');
-            
-            // In a real application, you would reload the addresses or add the new one to the DOM
-            setTimeout(() => {
-                window.location.reload(); // Reload to show the new address
-            }, 1500);
-        } catch (error) {
-            console.error('Error:', error);
-            showToast('Failed to add address', 'error');
-        }
-    });
-
-    // Toggle available coupons
-    showAvailableCouponsBtn.addEventListener('click', function() {
-        availableCouponsContainer.classList.toggle('hidden');
-    });
-
-    // Apply coupon button
-    applyCouponBtn.addEventListener('click', function() {
-        const couponCode = couponInput.value.trim();
-        
-        
-        if (couponCode) {
-            applyCoupon(couponCode);
-        } else {
-            showToast('Please enter a coupon code', 'error');
-        }
-    });
-
-    // Remove coupon button
-    removeCouponBtn.addEventListener('click', function() {
-        removeCoupon();
-    });
-    window.applyCoupon = async function(couponCode) {
-        document.getElementById('coupon-code').value=couponCode
-        const totalElement = document.getElementById("totalAmount");
-const totalText = totalElement.textContent; // e.g., "₹75340.00"
-const totalAmount = parseFloat(totalText.replace(/[^\d.]/g, ""));
-console.log(totalAmount); // 75340.00
-console.log('ddss',couponCode,totalAmount)
-const shippingElement = document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600");
-const shippingCharge = shippingElement ? parseFloat(shippingElement.textContent.replace(/[^\d.]/g, "")) || 0 : 0;
-    try {
-        const response = await fetch('/applycoupon', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ couponCode,totalAmount,shippingCharge})
-        });
-
-        const data = await response.json();
-console.log('ddd',data)
-
-        if (data.success) {
-            document.getElementById('coupon-badge').textContent = couponCode;
-            document.getElementById('remove-coupon-container').classList.remove('hidden');
-            document.getElementById('coupon-input-container').classList.add('hidden');
-            document.getElementById('active-coupon-text').textContent = `Coupon "${couponCode}" applied`;
-
-            document.getElementById('coupon-code').disabled = true;
-            document.getElementById('apply-coupon-btn').disabled = true;
-            document.getElementById('apply-coupon-btn').classList.add('opacity-50', 'cursor-not-allowed');
-
-
-
-            // Update Discount and Total
-            document.getElementById('discountAmount').textContent = `-₹${data.discount.toFixed(2)}`;
-document.getElementById('totalAmount').textContent = `₹${data.total.toFixed(2)}`;
-
-            document.querySelector('dd.text-base.font-bold').textContent = `₹${data.total.toFixed(2)}`;
-
-            showToast(`Coupon "${couponCode}" applied successfully!`, 'info');
-        } else {
-            showToast(data.message, 'error');
-        }
-    } catch (error) {
-        console.error("Error applying coupon:", error);
-        showToast("Failed to apply coupon", "error");
-    }
-};
-
-
-function removeCoupon() {
-    // Show the input field again
-    couponInputContainer.classList.remove('hidden');
-    removeCouponContainer.classList.add('hidden');
-    
-    // Reset displayed coupon code
-    couponInput.value = '';
-    couponBadge.textContent = '';
-
-    // Reset discount to ₹0.00
-    document.getElementById('discountAmount').textContent = '-₹0.00';
-
-    // Recalculate total without the discount
-    const subtotal = parseFloat(document.querySelector('dd.text-sm.font-medium.text-gray-900').textContent.replace(/[^\d.]/g, ""));
-    const tax = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900:last-of-type").textContent.replace(/[^\d.]/g, ""));
-    const shippingCharge = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600").textContent.replace(/[^\d.]/g, "")) || 0;
-    
-    const newTotal = subtotal + tax + shippingCharge;
-    document.getElementById('totalAmount').textContent = `₹${newTotal.toFixed(2)}`;
-
-    showToast('Coupon removed successfully!', 'info');
-    location.reload()
-}
-
-
-
-    // Place Order button handler
-    document.getElementById('placeOrderBtn').addEventListener('click', async function() {
-        
-
-
-
-    const addressElement = document.querySelector('input[name="address"]:checked');
-    const paymentMethodElement = document.querySelector('input[name="payment"]:checked');
-    
-    if (!addressElement) {
-        showToast("Please select a delivery address", "error");
-        return;
-    }
-    if (!paymentMethodElement) {
-        showToast("Please select a payment method", "error");
-        return;
-    }
-
-
-
-    const addressId = addressElement.value;
-    const paymentMethod = paymentMethodElement.value;  // ✅ Fixed payment method selection
-
-    console.log('kjdkdj',paymentMethod)
-
-    const items = Array.from(document.querySelectorAll('.checkout-item')).map(item => {
-        const productId = item.querySelector('input[id^="quantity-"]').id.replace('quantity-', '');
-        const quantity = parseInt(item.querySelector('input[id^="quantity-"]').value);
-        const priceText = item.querySelector('.text-sm.font-medium.text-gray-900').textContent;
-        const price = parseFloat(priceText.replace('₹', ''));
-        
-        return { product: productId, quantity, subTotal: quantity * price };
-    });
-
-    const totalText = document.querySelector('dd.text-base.font-bold').textContent;
-    const totalAmount = parseFloat(totalText.replace('₹', ''));
-    const  couponCode = document.getElementById('coupon-code').value||""
-
-    const orderData = {
-        items,
-        totalAmount,
-        paymentMethod,
-        paymentStatus: 'pending',
-        address: addressId,
-        couponCode
-    };
-
-    console.log("🚀 Payment Method Selected:", paymentMethod);
-
-    if (paymentMethod === 'razorpay') {
-        initiateRazorpay(orderData); // ✅ Now Razorpay will be triggered
-    } else {
-        processCODOrder(orderData);
-    }
-});
-
-});
-
-// Function to initiate Razorpay payment
-async function initiateRazorpay(orderData) {
-   
-    try {
-        console.log("ghjkl",orderData)
-        const response = await fetch('/razorPay/createOrder',{
-            method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-        })
-
-        const data = await response.json()
-        console.log('ordercreated:',orderData)
-
-if(!data.success||!data.order.id){
-    showToast('failed to create razorpay order')
-    return
-}
-
-const options = {
-                    key: "<%=process.env.RAZORPAY_KEY_ID%>", // Replace with your actual Razorpay Key
-                    amount: orderData.totalAmount * 100,
-                    currency: 'INR',
-                    name: 'CycloneX',
-                    description: 'Order Payment',
-                    order_id: data.order.id, 
-                    handler: function(response) {
-                        console.log("🟢 Razorpay Payment Success:", response);
-                        verifyRazorpayPayment(response, data.order.id);
-                    },
-                    prefill: {
-                        name: 'User Name',
-                        email: 'user@example.com',
-                        contact: '9999999999'
-                    },
-                    theme: {
-                        color: '#0ea5e9'
-                    },
-                    modal: {
-        ondismiss: function() {
-            // When user closes the modal, redirect to the failure page.
-            window.location.href = `/paymentfailure?orderId=${data.order.id}&error=Modal closed by user`;
-        }
-    }
-                }
-const rzp = new Razorpay(options)
-rzp.on('payment.failed', function(response) {
-                    console.error("❌ Payment Failed!", response);
-                    showToast("Payment failed: " + response.error.description);
-                    setTimeout(() => {
-        window.location.href = `/paymentfailure?orderId=${data.order.id}&error=${response.error.description}`;
-    }, 100);
-                })
-                rzp.open()
-    } catch (error) {
-        console.error("Razorpay initiation failed:", error);
-                showToast("Error initiating Razorpay payment.")
-    }
-}
-
-
-// ✅ Function to verify Razorpay Payment
-async function verifyRazorpayPayment(response, orderId) {
-    console.log('payment verifying:',response)
-    if (!response.razorpay_order_id || !response.razorpay_payment_id || !response.razorpay_signature) {
-                console.error("❌ Missing Razorpay response values!", response);
-                return;
-            }
-try {
-    const verifyResponse = await fetch('/razorPay/verifyPayment',{
-        method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_signature: response.razorpay_signature,
-                        orderId: orderId 
-                    })
-    })
-
-    const data = await verifyResponse.json()
-    console.log("this si data : ",data)
-    if(data.success){
-        showToast("Payment successful!...")
-        setTimeout(() => { window.location.href = "/confirmation"; }, 2000)
-    }else{
-        showToast("Payment verification faliled!...")
-    }
-} catch (error) {
-    console.error("Payment verification failed:", error);
-    showToast("Error verifying payment.");
-}
-
-
-
-}
-
-
-// Function to process Cash on Delivery or post-Razorpay order
-async function processCODOrder(orderData) {
-    try {
-        if(orderData.paymentMethod==="on"){
-        orderData.paymentMethod="COD"
-    }
-        const response = await fetch('/orders/cod', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        });
-        const data = await response.json();
-        if (data.success) {
-            showToast('Order placed successfully', 'info');
-            setTimeout(() => { window.location.href = '/confirmation'; }, 2000);
-        } else {
-            showToast(data.message, 'error');
-        }
-    } catch (error) {
-        showToast('Failed to place order', 'error');
-    }
-}
-
-     
-    </script>
-    <script src="/path/to/script.js?v=<%= Date.now() %>"></script>
-
-    <script>
-    async function removeFromCart(productId) {
-               try {
-                   const response = await fetch(`/addtocart/${productId}`, {
-                       method: 'DELETE',
-                   });
-                   if (response.ok) {
-                       showToast('Item removed from cart', 'info');
-                       setTimeout(() => {
-                           window.location.reload(); // Reload the page to reflect the changes
-                       }, 1000);
-                   } else {
-                       showToast('Failed to remove item from cart', 'error');
-                   }
-               } catch (error) {
-                   console.error('Error:', error);
-                   showToast('An error occurred', 'error');
-               }
+           // Check for saved theme preference or use system preference
+           if (localStorage.getItem('darkMode') === 'true' || 
+               (!localStorage.getItem('darkMode') && 
+               window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+               html.classList.add('dark');
            }
-   
-   
-           async function updateQuantity(productId, action) {
-    const quantityInput = document.getElementById(`quantity-${productId}`);
-    let newQuantity = parseInt(quantityInput.value);
-
-    if (action === 'increment') newQuantity++;
-    if (action === 'decrement' && newQuantity > 1) newQuantity--;
-
-    try {
-        const response = await fetch(`/checkout/${productId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ quantity: newQuantity })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            quantityInput.value = newQuantity;
-
-            location.reload();
-
-          
-        } else {
-            alert(data.message || "Failed to update quantity");
-        }
-    } catch (error) {
-        console.error("Error updating quantity:", error);
-        alert("Failed to update quantity");
-    }
-}
-   
-           document.addEventListener('DOMContentLoaded', function() {
-       // Check if free shipping is applied
-       const freeShipping = "<%= freeShipping %>";
-       
-       // Handle shipping option selection
-       const shippingOptions = document.querySelectorAll('.shipping-option');
-       
-       if (freeShipping) {
-           // If free shipping is applied, disable all shipping options
-           shippingOptions.forEach(option => {
-               option.classList.add('opacity-50', 'cursor-not-allowed');
-               option.classList.remove('cursor-pointer', 'hover:border-primary-500');
-               
-               // Disable the radio inputs
-               const radioInput = option.querySelector('input[type="radio"]');
-               if (radioInput) {
-                   radioInput.disabled = true;
-                   radioInput.onchange = null; // Remove event handler
-               }
-               
-               // Remove the clickable label
-               const label = option.querySelector('label');
-               if (label) {
-                   label.classList.remove('cursor-pointer');
-               }
+           
+           // Toggle dark mode
+           darkModeToggle.addEventListener('click', function() {
+               html.classList.toggle('dark');
+               localStorage.setItem('darkMode', html.classList.contains('dark'));
            });
-           
-           // Make sure standard shipping is selected for free shipping
-           const standardRadio = document.getElementById('standard');
-           if (standardRadio) {
-               standardRadio.checked = true;
-           }
-       } else {
-           // Only add event listeners if shipping is not free
-           shippingOptions.forEach(option => {
-               option.addEventListener('click', function() {
-                   const radioInput = this.querySelector('input[type="radio"]');
-                   if (radioInput) {
-                       radioInput.checked = true;
-                       window.location.href = '?shipping=' + radioInput.id;
-                   }
+       });
+
+       // Payment method selection (no default selection)
+       document.addEventListener('DOMContentLoaded', function() {
+           const paymentCards = document.querySelectorAll('.payment-card');
+           // Ensure no payment is selected on load
+           paymentCards.forEach(card => {
+               const radio = card.querySelector('input[name="payment"]');
+               if (radio) radio.checked = false;
+               card.addEventListener('click', function() {
+                   // Remove selected styling from all cards
+                   paymentCards.forEach(c => {
+                       c.classList.remove('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
+                       c.classList.add('border-gray-200', 'dark:border-gray-700');
+                       const icon = c.querySelector('i');
+                       icon.classList.remove('text-primary-500');
+                       icon.classList.add('text-gray-600', 'dark:text-gray-400');
+                       // Uncheck each radio button
+                       const r = c.querySelector('input[name="payment"]');
+                       if (r) r.checked = false;
+                   });
+                   // Apply selected styling to clicked card
+                   this.classList.remove('border-gray-200', 'dark:border-gray-700');
+                   this.classList.add('border-primary-500', 'bg-primary-50', 'dark:bg-primary-900/20');
+                   const icon = this.querySelector('i');
+                   icon.classList.remove('text-gray-600', 'dark:text-gray-400');
+                   icon.classList.add('text-primary-500');
+                   // Check its radio button
+                   const selectedRadio = this.querySelector('input[name="payment"]');
+                   if (selectedRadio) selectedRadio.checked = true;
                });
            });
+
+           // Coupon code functionality
+           const showAvailableCouponsBtn = document.getElementById('show-available-coupons');
+           const availableCouponsContainer = document.getElementById('available-coupons-container');
+           const applyCouponBtn = document.getElementById('apply-coupon-btn');
+           const couponInput = document.getElementById('coupon-code');
+        
+           const couponInputContainer = document.getElementById('coupon-input-container');
+           const removeCouponContainer = document.getElementById('remove-coupon-container');
+           const removeCouponBtn = document.getElementById('remove-coupon-btn');
+           const activeCouponText = document.getElementById('active-coupon-text');
+           const couponBadge = document.getElementById('coupon-badge');
+           
+           // Add New Address Form Toggle
+           const showAddAddressFormBtn = document.getElementById('showAddAddressForm');
+           const addAddressForm = document.getElementById('addAddressForm');
+           const cancelAddAddressBtn = document.getElementById('cancelAddAddress');
+           
+           // Toggle address form visibility
+           showAddAddressFormBtn.addEventListener('click', function() {
+               addAddressForm.classList.toggle('hidden');
+               // Scroll to the form
+               addAddressForm.scrollIntoView({ behavior: 'smooth' });
+           });
+           
+           // Cancel button for address form
+           cancelAddAddressBtn.addEventListener('click', function() {
+               addAddressForm.classList.add('hidden');
+               document.getElementById('newAddressForm').reset();
+           });
+           
+           // Handle address form submission
+           const newAddressForm = document.getElementById('newAddressForm');
+           newAddressForm.addEventListener('submit', async function(e) {
+               e.preventDefault();
+               
+               try {
+                   
+                   // Collect form data
+                   const formData = {
+                       fullName: document.getElementById('fullName').value,
+                       email: document.getElementById('email').value,
+                       mobile: document.getElementById('mobile').value,
+                       country: document.getElementById('country').value,
+                       state: document.getElementById('state').value,
+                       address: document.getElementById('address').value,
+                       pincode: document.getElementById('pincode').value,
+                       landmark: document.getElementById('landmark').value,
+                       addressType: document.getElementById('addressType').value,
+                     
+                   };
+                  
+                  
+                   const userId = document.getElementById('userProfile').dataset.id;  
+                   console.log('jdjd',userId)
+                   const response = await fetch(`/addaddress/${userId}`, {
+                       method: 'POST',
+                       headers: {
+                           'Content-Type': 'application/json'
+                       },
+                       body: JSON.stringify(formData)
+                   });
+                   
+                   const result = await response.json();
+                   if(result.success){
+                       showToast('Address added successfully!');
+                   }
+
+                   // Reset form and hide it
+                   newAddressForm.reset();
+                   addAddressForm.classList.add('hidden');
+                   
+                   // In a real application, you would reload the addresses or add the new one to the DOM
+                   setTimeout(() => {
+                       window.location.reload(); // Reload to show the new address
+                   }, 1500);
+               } catch (error) {
+                   console.error('Error:', error);
+                   showToast('Failed to add address', false);
+               }
+           });
+
+           // Toggle available coupons
+           showAvailableCouponsBtn.addEventListener('click', function() {
+               availableCouponsContainer.classList.toggle('hidden');
+           });
+
+           // Apply coupon button
+           applyCouponBtn.addEventListener('click', function() {
+               const couponCode = couponInput.value.trim();
+               
+               
+               if (couponCode) {
+                   applyCoupon(couponCode);
+               } else {
+                   showToast('Please enter a coupon code', false);
+               }
+           });
+
+           // Remove coupon button
+           removeCouponBtn.addEventListener('click', function() {
+               removeCoupon();
+           });
+       });
+
+       window.applyCoupon = async function(couponCode) {
+           document.getElementById('coupon-code').value=couponCode
+           const totalElement = document.getElementById("totalAmount");
+           const totalText = totalElement.textContent; // e.g., "₹75340.00"
+           const totalAmount = parseFloat(totalText.replace(/[^\d.]/g, ""));
+           console.log(totalAmount); // 75340.00
+           console.log('ddss',couponCode,totalAmount)
+           const shippingElement = document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600");
+           const shippingCharge = shippingElement ? parseFloat(shippingElement.textContent.replace(/[^\d.]/g, "")) || 0 : 0;
+           try {
+               const response = await fetch('/applycoupon', {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ couponCode,totalAmount,shippingCharge})
+               });
+
+               const data = await response.json();
+               console.log('ddd',data)
+
+               if (data.success) {
+                   document.getElementById('coupon-badge').textContent = couponCode;
+                   document.getElementById('remove-coupon-container').classList.remove('hidden');
+                   document.getElementById('coupon-input-container').classList.add('hidden');
+                   document.getElementById('active-coupon-text').textContent = `Coupon "${couponCode}" applied`;
+
+                   document.getElementById('coupon-code').disabled = true;
+                   document.getElementById('apply-coupon-btn').disabled = true;
+                   document.getElementById('apply-coupon-btn').classList.add('opacity-50', 'cursor-not-allowed');
+
+                   // Update Discount and Total
+                   document.getElementById('discountAmount').textContent = `-₹${data.discount.toFixed(2)}`;
+                   document.getElementById('totalAmount').textContent = `₹${data.total.toFixed(2)}`;
+
+                   document.querySelector('dd.text-base.font-bold').textContent = `₹${data.total.toFixed(2)}`;
+
+                   showToast(`Coupon "${couponCode}" applied successfully!`);
+               } else {
+                   showToast(data.message, false);
+               }
+           } catch (error) {
+               console.error("Error applying coupon:", error);
+               showToast("Failed to apply coupon", false);
+           }
+       };
+
+       function removeCoupon() {
+           // Show the input field again
+           couponInputContainer.classList.remove('hidden');
+           removeCouponContainer.classList.add('hidden');
+           
+           // Reset displayed coupon code
+           couponInput.value = '';
+           couponBadge.textContent = '';
+
+           // Reset discount to ₹0.00
+           document.getElementById('discountAmount').textContent = '-₹0.00';
+
+           // Recalculate total without the discount
+           const subtotal = parseFloat(document.querySelector('dd.text-sm.font-medium.text-gray-900').textContent.replace(/[^\d.]/g, ""));
+           const tax = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900:last-of-type").textContent.replace(/[^\d.]/g, ""));
+           const shippingCharge = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600").textContent.replace(/[^\d.]/g, "")) || 0;
+           
+           const newTotal = subtotal + tax + shippingCharge;
+           document.getElementById('totalAmount').textContent = `₹${newTotal.toFixed(2)}`;
+
+           showToast('Coupon removed successfully!');
+           location.reload()
        }
-   });
-   </script>
+
+       // Place Order button handler
+       document.getElementById('placeOrderBtn').addEventListener('click', async function() {
+           const addressElement = document.querySelector('input[name="address"]:checked');
+           const paymentMethodElement = document.querySelector('input[name="payment"]:checked');
+           
+           if (!addressElement) {
+               showToast("Please select a delivery address", false);
+               return;
+           }
+           if (!paymentMethodElement) {
+               showToast("Please select a payment method", false);
+               return;
+           }
+
+           const addressId = addressElement.value;
+           const paymentMethod = paymentMethodElement.value;
+
+           console.log('kjdkdj',paymentMethod)
+
+           const items = Array.from(document.querySelectorAll('.checkout-item')).map(item => {
+               const productId = item.querySelector('input[id^="quantity-"]').id.replace('quantity-', '');
+               const quantity = parseInt(item.querySelector('input[id^="quantity-"]').value);
+               const priceText = item.querySelector('.text-sm.font-medium.text-gray-900').textContent;
+               const price = parseFloat(priceText.replace('₹', ''));
+               
+               return { product: productId, quantity, subTotal: quantity * price };
+           });
+
+           const totalText = document.querySelector('dd.text-base.font-bold').textContent;
+           const totalAmount = parseFloat(totalText.replace('₹', ''));
+           const couponCode = document.getElementById('coupon-code').value||""
+
+           const orderData = {
+               items,
+               totalAmount,
+               paymentMethod,
+               paymentStatus: 'pending',
+               address: addressId,
+               couponCode
+           };
+
+           console.log("🚀 Payment Method Selected:", paymentMethod);
+
+           if (paymentMethod === 'razorpay') {
+               initiateRazorpay(orderData);
+           } else {
+               processCODOrder(orderData);
+           }
+       });
+
+       // Function to initiate Razorpay payment
+       async function initiateRazorpay(orderData) {
+          
+           try {
+               console.log("ghjkl",orderData)
+               const response = await fetch('/razorPay/createOrder',{
+                   method: 'POST',
+                           headers: { 'Content-Type': 'application/json' },
+                           body: JSON.stringify(orderData)
+               })
+
+               const data = await response.json()
+               console.log('ordercreated:',orderData)
+
+               if(!data.success||!data.order.id){
+                   showToast('failed to create razorpay order', false)
+                   return
+               }
+
+               const options = {
+                           key: "<%=process.env.RAZORPAY_KEY_ID%>", // Replace with your actual Razorpay Key
+                           amount: orderData.totalAmount * 100,
+                           currency: 'INR',
+                           name: 'CycloneX',
+                           description: 'Order Payment',
+                           order_id: data.order.id, 
+                           handler: function(response) {
+                               console.log("🟢 Razorpay Payment Success:", response);
+                               verifyRazorpayPayment(response, data.order.id);
+                           },
+                           prefill: {
+                               name: 'User Name',
+                               email: 'user@example.com',
+                               contact: '9999999999'
+                           },
+                           theme: {
+                               color: '#0ea5e9'
+                           },
+                           modal: {
+                               ondismiss: function() {
+                                   // When user closes the modal, redirect to the failure page.
+                                   window.location.href = `/paymentfailure?orderId=${data.order.id}&error=Modal closed by user`;
+                               }
+                           }
+                       }
+               const rzp = new Razorpay(options)
+               rzp.on('payment.failed', function(response) {
+                           console.error("❌ Payment Failed!", response);
+                           showToast("Payment failed: " + response.error.description, false);
+                           setTimeout(() => {
+                               window.location.href = `/paymentfailure?orderId=${data.order.id}&error=${response.error.description}`;
+                           }, 100);
+                       })
+                       rzp.open()
+           } catch (error) {
+               console.error("Razorpay initiation failed:", error);
+                       showToast("Error initiating Razorpay payment.", false)
+           }
+       }
+
+       // Function to verify Razorpay Payment
+       async function verifyRazorpayPayment(response, orderId) {
+           console.log('payment verifying:',response)
+           if (!response.razorpay_order_id || !response.razorpay_payment_id || !response.razorpay_signature) {
+                       console.error("❌ Missing Razorpay response values!", response);
+                       return;
+                   }
+           try {
+               const verifyResponse = await fetch('/razorPay/verifyPayment',{
+                   method: 'POST',
+                           headers: { 'Content-Type': 'application/json' },
+                           body: JSON.stringify({
+                               razorpay_order_id: response.razorpay_order_id,
+                               razorpay_payment_id: response.razorpay_payment_id,
+                               razorpay_signature: response.razorpay_signature,
+                               orderId: orderId 
+                           })
+               })
+
+               const data = await verifyResponse.json()
+               console.log("this si data : ",data)
+               if(data.success){
+                   showToast("Payment successful!...")
+                   setTimeout(() => { window.location.href = "/confirmation"; })
+               }else{
+                   showToast("Payment verification faliled!...", false)
+               }
+           } catch (error) {
+               console.error("Payment verification failed:", error);
+               showToast("Error verifying payment.", false);
+           }
+       }
+
+       // Function to process Cash on Delivery or post-Razorpay order
+       async function processCODOrder(orderData) {
+           try {
+               if(orderData.paymentMethod==="on"){
+                   orderData.paymentMethod="COD"
+               }
+               const response = await fetch('/orders/cod', {
+                   method: 'POST',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify(orderData)
+               });
+               const data = await response.json();
+               if (data.success) {
+                   // showToast('Order placed successfully', 'info');
+                   setTimeout(() => { window.location.href = '/confirmation'; });
+               } else {
+                   showToast(data.message, false);
+               }
+           } catch (error) {
+               showToast('Failed to place order', false);
+           }
+       }
+
+       async function removeFromCart(productId) {
+           try {
+               const response = await fetch(`/checkout/${productId}`, {
+                   method: 'DELETE',
+               });
+               if (response.ok) {
+                   showToast('Item removed from cart');
+                   setTimeout(() => {
+                       window.location.reload(); // Reload the page to reflect the changes
+                   }, 1000);
+               } else {
+                   showToast('Failed to remove item from cart', false);
+               }
+           } catch (error) {
+               console.error('Error:', error);
+               showToast('An error occurred', false);
+           }
+       }
+
+       async function updateQuantity(productId, action) {
+           const quantityInput = document.getElementById(`quantity-${productId}`);
+           let newQuantity = parseInt(quantityInput.value);
+
+           if (action === 'increment') newQuantity++;
+           if (action === 'decrement' && newQuantity > 1) newQuantity--;
+
+           try {
+               const response = await fetch(`/checkout/${productId}`, {
+                   method: 'PUT',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ quantity: newQuantity })
+               });
+
+               const data = await response.json();
+
+               if (data.success) {
+                   quantityInput.value = newQuantity;
+                   location.reload();
+               } else {
+                   showToast(data.message || "Failed to update quantity", false);
+               }
+           } catch (error) {
+               console.error("Error updating quantity:", error);
+               showToast("Failed to update quantity", false);
+           }
+       }
+    </script>
 </body>
 </html>

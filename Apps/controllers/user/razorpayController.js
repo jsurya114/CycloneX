@@ -1,5 +1,6 @@
 const Razorpay = require('razorpay');
 require('dotenv').config();
+const Admin = require('../../models/adminModel')
 const Order = require('../../models/orderModel');
 const Wallet = require('../../models/walletModel');
 const User = require('../../models/userModel');
@@ -8,6 +9,8 @@ const jwt = require('jsonwebtoken'); // ✅ Import JWT
 const crypto = require('crypto');
 const { order } = require('./orderController');
 const Address =require('../../models/addressModel')
+const AdminWallet = require('../../models/adminWalletModel')
+const generateTransactionId=require('../../services/transactionids')
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET
@@ -117,6 +120,36 @@ console.log('orderIII',updatedOrder)
             return res.status(404).json({ success: false, message: "Order not found" });
         }
             console.log('✅ Payment verified:', updatedOrder);
+
+
+            let admin = await Admin.findOne(); // Assuming only one admin exists
+            console.log('admin',admin);
+            
+            let adminWallet = await AdminWallet.findOne();
+            console.log('admin',adminWallet);
+            
+            if (!adminWallet) {
+                adminWallet = new AdminWallet({
+                    admin: admin._id,
+                    balance: 0,
+                    transaction: [],
+                });
+                await adminWallet.save();
+            }
+            const transactionId=generateTransactionId.generateTransactionId()
+            // Use updatedOrder.totalAmount instead of order.totalAmount
+            adminWallet.transaction.push({
+                transactionType: 'credit',
+                amount: updatedOrder.totalAmount,
+                reason: `credit for Order #${orderId}`,
+                transactionId,
+                user:userId
+            });
+            adminWallet.balance += updatedOrder.totalAmount; 
+            
+            await adminWallet.save();
+            console.log('completed transac',adminWallet)
+
             await Cart.findOneAndUpdate({user:userId},{$set:{items:[]}})
         return res.json({ success: true, message: "Payment verified successfully" });
 

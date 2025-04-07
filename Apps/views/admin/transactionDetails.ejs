@@ -1,0 +1,529 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycloneX Dashboard - Transaction Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+      tailwind.config = {
+          darkMode: 'class',
+          theme: {
+              extend: {
+                  colors: {
+                      primary: {
+                          50: '#f0f9ff',
+                          100: '#e0f2fe',
+                          200: '#bae6fd',
+                          300: '#7dd3fc',
+                          400: '#38bdf8',
+                          500: '#0ea5e9',
+                          600: '#0284c7',
+                          700: '#0369a1',
+                          800: '#075985',
+                          900: '#0c4a6e',
+                          950: '#082f49',
+                      },
+                      secondary: {
+                          50: '#f5f3ff',
+                          100: '#ede9fe',
+                          200: '#ddd6fe',
+                          300: '#c4b5fd',
+                          400: '#a78bfa',
+                          500: '#8b5cf6',
+                          600: '#7c3aed',
+                          700: '#6d28d9',
+                          800: '#5b21b6',
+                          900: '#4c1d95',
+                          950: '#2e1065',
+                      },
+                  },
+              },
+          },
+      }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+      body {
+          font-family: 'Inter', sans-serif;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      
+      /* Animation for sections */
+      @keyframes fadeInUp {
+          from {
+              opacity: 0;
+              transform: translateY(20px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+      
+      .animate-fadeInUp {
+          animation: fadeInUp 0.5s ease-out forwards;
+      }
+      
+      .delay-100 { animation-delay: 0.1s; }
+      .delay-200 { animation-delay: 0.2s; }
+      .delay-300 { animation-delay: 0.3s; }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Main Container -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+            </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
+          </a>
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
+            </a>
+            
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Brands</span>
+            </a>
+          </div>
+          
+          <a href="/admin/salesreport" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+            <i class="fas fa-chart-line w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+            <span>salesreport</span>
+          </a>
+          
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Users</span>
+            </a>
+            
+            <a href="/admin/adminwallet" class="flex items-center px-3 py-2.5 text-sm font-medium bg-primary-50 text-primary-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-wallet w-5 h-5 mr-2 text-primary-700"></i>
+              <span>Wallet</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2"></i>
+              <span>Orders</span>
+            </a>
+            
+            <a href="/admin/Logout" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-sign-out-alt w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- Left: Hamburger Menu -->
+          <div class="flex items-center">
+            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div class="hidden md:flex items-center ml-4">
+              <h1 class="text-xl font-semibold text-gray-800">Transaction Details</h1>
+              <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content - Scrollable area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Back Button -->
+        <div class="mb-6 opacity-0 animate-fadeInUp">
+          <a href="/admin/adminwallet" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Wallet
+          </a>
+        </div>
+        
+        <!-- Transaction Header Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6 opacity-0 animate-fadeInUp">
+          <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-6 text-white">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 class="text-2xl font-bold">Transaction Details</h2>
+                <div class="mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20">
+                  ID: <%= transaction.transactionId %>
+                </div>
+              </div>
+              <div class="mt-4 md:mt-0">
+                <div class="flex items-center space-x-4">
+                  <div class="text-right">
+                    <p class="text-sm text-white/80">Transaction Date</p>
+                    <p class="text-lg font-semibold">
+                      <%= new Date(transaction.date).toLocaleString('en-IN', { 
+                          day: '2-digit', 
+                          month: '2-digit', 
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                      }) %>
+                    </p>
+                  </div>
+                  <div class="flex-shrink-0 p-3 rounded-full bg-white/10">
+                    <i class="fas fa-calendar-alt text-xl"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Transaction Summary -->
+          <div class="p-6 border-b border-gray-200">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div class="flex items-center mb-4 md:mb-0">
+                <div class="flex-shrink-0 p-3 rounded-full <%= transaction.transactionType === 'credit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' %>">
+                  <i class="fas <%= transaction.transactionType === 'credit' ? 'fa-arrow-down' : 'fa-arrow-up' %> text-xl"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-500">TRANSACTION TYPE</p>
+                  <div class="flex items-center">
+                    <span class="text-lg font-bold <%= transaction.transactionType === 'credit' ? 'text-green-600' : 'text-red-600' %>">
+                      <%= transaction.transactionType.toUpperCase() %>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex items-center">
+                <div class="flex-shrink-0 p-3 rounded-full <%= transaction.transactionType === 'credit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' %>">
+                  <i class="fas fa-rupee-sign text-xl"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-500">AMOUNT</p>
+                  <div class="flex items-center">
+                    <span class="text-2xl font-bold <%= transaction.transactionType === 'credit' ? 'text-green-600' : 'text-red-600' %>">
+                      ₹<%= transaction.amount.toFixed(2) %>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Transaction Details -->
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Transaction Information</h3>
+                <div class="space-y-4">
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Transaction ID</p>
+                    <p class="mt-1 text-sm font-semibold text-gray-900"><%= transaction.transactionId %></p>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Reason/Description</p>
+                    <p class="mt-1 text-sm text-gray-900"><%= transaction.reason || 'No description provided' %></p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Additional Details</h3>
+                <div class="space-y-4">
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Processing Time</p>
+                    <p class="mt-1 text-sm text-gray-900">Immediate</p>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Transaction Status</p>
+                    <p class="mt-1">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <i class="fas fa-check-circle mr-1"></i> Completed
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Order Information Card (if available) -->
+        <% if (transaction.orderId) { %>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6 opacity-0 animate-fadeInUp delay-100">
+          <div class="px-6 py-4 border-b border-gray-200 bg-indigo-50">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 p-2 rounded-full bg-indigo-100 text-indigo-600">
+                <i class="fas fa-shopping-cart"></i>
+              </div>
+              <h3 class="ml-3 text-lg font-semibold text-gray-900">Order Information</h3>
+            </div>
+          </div>
+          
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="space-y-4">
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Order ID</p>
+                    <p class="mt-1 text-sm font-semibold text-gray-900"><%= transaction.orderId.orderId %></p>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Order Date</p>
+                    <p class="mt-1 text-sm text-gray-900">
+                      <%= new Date(transaction.orderId.timestamp).toLocaleString('en-IN', { 
+                          day: '2-digit', 
+                          month: '2-digit', 
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                      }) %>
+                    </p>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Payment Method</p>
+                    <p class="mt-1 text-sm text-gray-900"><%= transaction.orderId.paymentMethod %></p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="space-y-4">
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Order Status</p>
+                    <p class="mt-1">
+                      <% if (transaction.orderId.orderStatus === 'delivered') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <i class="fas fa-check-circle mr-1"></i> DELIVERED
+                        </span>
+                      <% } else if (transaction.orderId.orderStatus === 'cancelled') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          <i class="fas fa-times-circle mr-1"></i> CANCELLED
+                        </span>
+                      <% } else if (transaction.orderId.orderStatus === 'returned') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          <i class="fas fa-undo mr-1"></i> RETURNED
+                        </span>
+                      <% } else if (transaction.orderId.orderStatus === 'pending') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          <i class="fas fa-clock mr-1"></i> PENDING
+                        </span>
+                      <% } else if (transaction.orderId.orderStatus === 'shipped') { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <i class="fas fa-shipping-fast mr-1"></i> SHIPPED
+                        </span>
+                      <% } else { %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          <%= transaction.orderId.orderStatus.toUpperCase() %>
+                        </span>
+                      <% } %>
+                    </p>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Payment Status</p>
+                    <p class="mt-1">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= transaction.orderId.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>">
+                        <i class="fas <%= transaction.orderId.paymentStatus === 'paid' ? 'fa-check-circle' : 'fa-clock' %> mr-1"></i>
+                        <%= transaction.orderId.paymentStatus.toUpperCase() %>
+                      </span>
+                    </p>
+                  </div>
+                  
+                  <% if (transaction.orderId.cancelReason) { %>
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Cancellation Reason</p>
+                    <p class="mt-1 text-sm text-gray-900"><%= transaction.orderId.cancelReason %></p>
+                  </div>
+                  <% } %>
+                  
+                  <% if (transaction.orderId.returnReason) { %>
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Return Reason</p>
+                    <p class="mt-1 text-sm text-gray-900"><%= transaction.orderId.returnReason %></p>
+                  </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+        
+        <!-- User Details Card (if available) -->
+        <% if (Object.keys(userDetails).length > 0) { %>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6 opacity-0 animate-fadeInUp delay-200">
+          <div class="px-6 py-4 border-b border-gray-200 bg-blue-50">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 p-2 rounded-full bg-blue-100 text-blue-600">
+                <i class="fas fa-user"></i>
+              </div>
+              <h3 class="ml-3 text-lg font-semibold text-gray-900">User Details</h3>
+            </div>
+          </div>
+          
+          <div class="p-6">
+            <div class="flex items-center mb-6">
+              <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-xl font-semibold">
+                <%= userDetails.fullName ? userDetails.fullName.charAt(0).toUpperCase() : 'U' %>
+              </div>
+              <div class="ml-4">
+                <h4 class="text-lg font-semibold text-gray-900"><%= userDetails.fullName %></h4>
+                <p class="text-sm text-gray-500"><%= userDetails.email %></p>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <% if (userDetails.mobile) { %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Mobile</p>
+                <p class="mt-1 text-sm text-gray-900"><%= userDetails.mobile %></p>
+              </div>
+              <% } %>
+              
+              <% if (userDetails.status) { %>
+              <div>
+                <p class="text-sm font-medium text-gray-500">Status</p>
+                <p class="mt-1">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= userDetails.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                    <i class="fas <%= userDetails.status === 'active' ? 'fa-check-circle' : 'fa-ban' %> mr-1"></i>
+                    <%= userDetails.status.toUpperCase() %>
+                  </span>
+                </p>
+              </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <% } %>
+        
+        <!-- Action Buttons -->
+        <!-- <div class="flex flex-wrap gap-4 opacity-0 animate-fadeInUp delay-300">
+          <a href="/admin/adminwallet" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Wallet
+          </a>
+          
+          <a href="/admin/transaction/print/<%= transaction.transactionId %>" target="_blank" class="inline-flex items-center px-4 py-2 bg-primary-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+            <i class="fas fa-print mr-2"></i> Print Transaction
+          </a>
+        </div> -->
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-500">© 2023 CycloneX. All rights reserved.</p>
+          <div class="flex space-x-4 mt-2 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', openSidebar);
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+      }
+      
+      // Close sidebar on window resize if screen becomes large
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
+
+      // Trigger animations for sections
+      const animatedElements = document.querySelectorAll('.animate-fadeInUp');
+      animatedElements.forEach(element => {
+        element.classList.add('opacity-100');
+      });
+    });
+  </script>
+</body>
+</html>

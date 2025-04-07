@@ -16,50 +16,251 @@
             80% { transform: translate(2px, -2px) }
             100% { transform: translate(0) }
         }
+
+        @keyframes scanline {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: rgba(57, 255, 20, 0.1);
+            opacity: 0.75;
+            animation: scanline 4s linear infinite;
+        }
+
+        .terminal-text {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #4ade80;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #4ade80 }
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .hexagon {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+
+        .login-form {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .login-form.active {
+            max-height: 500px;
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
-<body class="bg-black text-green-500 min-h-screen flex items-center justify-center">
+<body class="bg-black text-green-500 min-h-screen flex items-center justify-center overflow-hidden">
     <%- include('partials/cyclist') %>
-    <div class="bg-gray-900 rounded-lg shadow-lg w-full max-w-md p-8 border border-green-500">
-        <div class="text-center mb-8">
+    
+    <!-- Matrix-like background -->
+    <canvas id="matrixCanvas" class="matrix-bg"></canvas>
 
-            
-            <img src="<%= logoPath %>" alt="Login" class="mx-auto h-20 w-auto filter invert hue-rotate-180">
-            <h2 class="mt-6 text-3xl font-bold text-green-400 animate-pulse">Admin Access Portal</h2>
+    <div class="relative z-10 w-full max-w-md">
+        <!-- Admin Access Button -->
+        <div id="adminAccessButton" class="mb-8 cursor-pointer transform transition-all duration-300 hover:scale-105">
+            <div class="relative bg-gray-900 border-2 border-green-500 rounded-lg p-6 shadow-lg shadow-green-500/20 overflow-hidden">
+                <div class="scanline"></div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="hexagon bg-green-500 h-12 w-12 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-400">ADMIN TERMINAL</h3>
+                            <p class="text-xs text-green-300 opacity-75">SECURE ACCESS REQUIRED</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-1">
+                        <div class="h-3 w-3 rounded-full bg-red-500 animate-pulse"></div>
+                        <div class="h-3 w-3 rounded-full bg-yellow-500 animate-pulse delay-100"></div>
+                        <div class="h-3 w-3 rounded-full bg-green-500 animate-pulse delay-200"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 terminal-text text-sm font-mono">
+                    > CLICK TO INITIATE AUTHENTICATION PROTOCOL
+                </div>
+                
+                <div class="mt-4 flex justify-between items-center">
+                    <div class="text-xs text-green-400 font-mono">STATUS: STANDBY</div>
+                    <div class="text-xs text-green-400 font-mono">CLEARANCE: LEVEL 5</div>
+                </div>
+            </div>
         </div>
-        
-        <form action="/admin/login" method="POST" class="space-y-6">
-            <div>
-                <label for="email" class="block text-sm font-medium text-green-400">Email</label>
-                <input id="email" name="email" type="email"  
-                    class="mt-1 block w-full px-3 py-2 bg-gray-800 border border-green-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white">
-            </div>
-            
-            <div>
-                <label for="password" class="block text-sm font-medium text-green-400">Password</label>
-                <input id="password" name="password" type="password"  
-                    class="mt-1 block w-full px-3 py-2 bg-gray-800 border border-green-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white">
-            </div>
-            
-            <div>
-                <button type="submit" 
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out transform hover:scale-105">
-                    AUTHENTICATE
-                </button>
-            </div>
-        </form>
 
-        <div class="mt-6 text-center">
-            <p class="text-xs text-green-400 animate-pulse">[System: Secure Connection Established]</p>
+        <!-- Login Form (Initially Hidden) -->
+        <div id="loginFormContainer" class="login-form">
+            <div class="bg-gray-900 rounded-lg shadow-lg w-full p-8 border border-green-500 relative overflow-hidden">
+                <div class="scanline"></div>
+                
+                <div class="text-center mb-8">
+                    <img src="<%= logoPath %>" alt="Login" class="mx-auto h-20 w-auto filter invert hue-rotate-180">
+                    <h2 class="mt-6 text-3xl font-bold text-green-400 animate-pulse">Admin Access Portal</h2>
+                </div>
+                
+                <form action="/admin/login" method="POST" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-green-400">Email</label>
+                        <div class="relative">
+                            <input id="email" name="email" type="email"  
+                                class="mt-1 block w-full px-3 py-2 bg-gray-800 border border-green-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white">
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 opacity-75">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-green-400">Password</label>
+                        <div class="relative">
+                            <input id="password" name="password" type="password"  
+                                class="mt-1 block w-full px-3 py-2 bg-gray-800 border border-green-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white">
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 opacity-75">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <button type="submit" 
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out transform hover:scale-105">
+                            AUTHENTICATE
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-xs text-green-400 animate-pulse">[System: Secure Connection Established]</p>
+                </div>
+                
+                <div class="absolute bottom-2 right-2">
+                    <button id="closeLoginForm" class="text-green-500 hover:text-green-400 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-    
 
     <div class="fixed bottom-4 right-4 text-green-500 text-xs font-mono animate-pulse">
         Connection: Encrypted | Protocol: SSH | Status: Active
     </div>
 
     <script>
+        // Matrix background effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const characters = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const columns = Math.floor(canvas.width / 20);
+        const drops = [];
+        
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#0f0';
+            ctx.font = '15px monospace';
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * 20, drops[i] * 20);
+                
+                if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        // Login form toggle
+        const adminAccessButton = document.getElementById('adminAccessButton');
+        const loginFormContainer = document.getElementById('loginFormContainer');
+        const closeLoginForm = document.getElementById('closeLoginForm');
+        
+        adminAccessButton.addEventListener('click', () => {
+            loginFormContainer.classList.add('active');
+            adminAccessButton.style.opacity = '0';
+            adminAccessButton.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                adminAccessButton.style.display = 'none';
+            }, 500);
+            
+            // Simulate typing effect for form appearance
+            const typingSound = new Audio();
+            typingSound.volume = 0.2;
+            
+            // Focus on email input after animation
+            setTimeout(() => {
+                document.getElementById('email').focus();
+            }, 800);
+        });
+        
+        closeLoginForm.addEventListener('click', () => {
+            loginFormContainer.classList.remove('active');
+            setTimeout(() => {
+                adminAccessButton.style.display = 'block';
+                setTimeout(() => {
+                    adminAccessButton.style.opacity = '1';
+                    adminAccessButton.style.transform = 'scale(1)';
+                }, 50);
+            }, 500);
+        });
+
+        // Glitch effect on input focus
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('focus', () => {
                 input.style.animation = 'glitch 0.3s infinite';
@@ -69,8 +270,7 @@
             });
         });
 
-
-       
+        // Loader for navigation
         document.addEventListener("DOMContentLoaded", function() {
           const links = document.querySelectorAll("a");
           links.forEach(link => {
@@ -79,7 +279,22 @@
             });
           });
         });
-      
+        
+        // Add typing sound effect
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keydown', () => {
+                if (Math.random() > 0.7) {
+                    const keySound = new Audio();
+                    keySound.volume = 0.05;
+                }
+            });
+        });
+        
+        // Window resize handler for canvas
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>

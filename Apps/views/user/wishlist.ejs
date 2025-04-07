@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,10 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Toastify CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,6 +21,7 @@
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -44,13 +49,25 @@
             background: #f1f1f1;
         }
         
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
         ::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 4px;
         }
         
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+        
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
         }
 
         /* Animation for heart icon */
@@ -75,9 +92,41 @@
             transform: translateY(-8px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
+        
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.25rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(30deg);
+        }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-50 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-100">
     <!-- Header -->
     <%-include('partials/header') %>
 
@@ -110,10 +159,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <% if (wishlist && wishlist.product && wishlist.product.length > 0) { %>
             <!-- Wishlist Controls -->
-            <div class="bg-white rounded-lg shadow-sm p-4 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-8">
                 <div class="flex flex-wrap items-center justify-between gap-4">
-                    <p class="text-gray-600">
-                        <span class="font-medium text-gray-900"><%= wishlist.product.length %></span> items in your wishlist
+                    <p class="text-gray-600 dark:text-gray-400">
+                        <span class="font-medium text-gray-900 dark:text-gray-200"><%= wishlist.product.length %></span> items in your wishlist
                     </p>
                    
                 </div>
@@ -122,13 +171,13 @@
             <!-- Products Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                 <% wishlist.product.forEach(product => { %>
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 product-card flex flex-col h-full">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 product-card flex flex-col h-full">
                         <div class="relative w-full pt-[100%]">
                             <a href="/productdetails/<%= product._id %>" class="block absolute inset-0">
                                 <img 
                                     src="/<%= product.mainImage %>" 
                                     alt="<%= product.name %>" 
-                                    class="w-full h-full object-contain bg-gray-50 hover:scale-105 transition-transform duration-500 ease-in-out"
+                                    class="w-full h-full object-contain bg-gray-50 dark:bg-gray-700 hover:scale-105 transition-transform duration-500 ease-in-out"
                                 >
                             </a>
                             <!-- Brand Badge - Fixed positioning and display -->
@@ -146,7 +195,7 @@
                             <!-- Remove from Wishlist Button -->
                             <button 
                                 onclick="removeFromWishlist('<%= product._id %>')" 
-                                class="absolute top-3 right-3 z-10 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200 transform hover:scale-110"
+                                class="absolute top-3 right-3 z-10 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 transform hover:scale-110"
                                 aria-label="Remove from wishlist"
                             >
                                 <svg 
@@ -170,7 +219,7 @@
                                     <span class="text-white font-bold text-lg drop-shadow-sm">₹<%= product.price %></span>
                                     <button 
                                         onclick="addToCart('<%= product._id %>')" 
-                                        class="bg-white text-primary p-2 rounded-full hover:bg-primary hover:text-white transition-all duration-200 transform hover:scale-110"
+                                        class="bg-white dark:bg-gray-700 text-primary p-2 rounded-full hover:bg-primary hover:text-white dark:hover:bg-primary transition-all duration-200 transform hover:scale-110"
                                         aria-label="Add to cart"
                                     >
                                         <i class="fas fa-shopping-cart"></i>
@@ -181,14 +230,14 @@
                         <!-- Product Info Section - Fixed display -->
                         <div class="p-4 flex flex-col flex-grow">
                             <a href="/productdetails/<%= product._id %>" class="block mb-2">
-                                <h3 class="text-lg font-semibold hover:text-primary transition-colors duration-200">
+                                <h3 class="text-lg font-semibold hover:text-primary transition-colors duration-200 dark:text-white">
                                     <%= product.name %>
                                 </h3>
                             </a>
                             <% if (product.brands && product.brands.name) { %>
-                                <p class="text-gray-600 text-sm mb-2">Brand: <%= product.brands.name %></p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Brand: <%= product.brands.name %></p>
                             <% } else if (product.brand) { %>
-                                <p class="text-gray-600 text-sm mb-2">Brand: <%= product.brand %></p>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Brand: <%= product.brand %></p>
                             <% } %>
                             <div class="flex items-center my-2">
                                 <div class="flex text-yellow-400">
@@ -198,7 +247,7 @@
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star-half-alt"></i>
                                 </div>
-                                <span class="text-gray-500 text-sm ml-2">(4.5)</span>
+                                <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
                             </div>
                             <div class="flex flex-col sm:flex-row gap-2 mt-2">
                                 <button 
@@ -222,44 +271,44 @@
             </div> 
                 <% } else { %>
             <!-- Empty Wishlist State -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center max-w-3xl mx-auto">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 text-center max-w-3xl mx-auto">
                 <div class="mb-6">
-                    <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div class="w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Your wishlist is empty</h2>
-                    <p class="text-gray-600 mb-6">Save your favorite items to your wishlist and come back to them anytime.</p>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Your wishlist is empty</h2>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Save your favorite items to your wishlist and come back to them anytime.</p>
                     <a href="/shoplist" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90 transition-colors duration-200">
                         <i class="fas fa-shopping-bag"></i>
                         <span>Start Shopping</span>
                     </a>
                 </div>
                 
-                <div class="mt-12 border-t border-gray-100 pt-8">
-                    <h3 class="text-lg font-semibold mb-4">How to use your wishlist</h3>
+                <div class="mt-12 border-t border-gray-100 dark:border-gray-700 pt-8">
+                    <h3 class="text-lg font-semibold mb-4 dark:text-white">How to use your wishlist</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
                         <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-3">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-3">
                                 <i class="fas fa-heart text-primary"></i>
                             </div>
-                            <h4 class="font-medium mb-1">Save Items</h4>
-                            <p class="text-sm text-gray-500">Click the heart icon on any product to save it to your wishlist</p>
+                            <h4 class="font-medium mb-1 dark:text-gray-200">Save Items</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Click the heart icon on any product to save it to your wishlist</p>
                         </div>
                         <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-3">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-3">
                                 <i class="fas fa-sync-alt text-primary"></i>
                             </div>
-                            <h4 class="font-medium mb-1">Sync Across Devices</h4>
-                            <p class="text-sm text-gray-500">Your wishlist stays with your account on any device</p>
+                            <h4 class="font-medium mb-1 dark:text-gray-200">Sync Across Devices</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Your wishlist stays with your account on any device</p>
                         </div>
                         <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-3">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
                             </div>
-                            <h4 class="font-medium mb-1">Easy Purchase</h4>
-                            <p class="text-sm text-gray-500">Quickly add items from your wishlist to your cart</p>
+                            <h4 class="font-medium mb-1 dark:text-gray-200">Easy Purchase</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Quickly add items from your wishlist to your cart</p>
                         </div>
                     </div>
                 </div>
@@ -269,10 +318,10 @@
         <% if (wishlist && wishlist.product && wishlist.product.length > 0) { %>
             <!-- Recommended Products -->
             <div class="mt-16">
-                <h2 class="text-2xl font-bold mb-6">You might also like</h2>
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">You might also like</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- This would be populated with recommended products -->
-                    <div class="bg-white rounded-lg shadow-sm overflow-hidden product-card">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden product-card">
                         <div class="relative">
                             <img 
                                 src="/placeholder.svg?height=300&width=300" 
@@ -280,7 +329,7 @@
                                 class="w-full h-64 object-cover object-center"
                             >
                             <button 
-                                class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
+                                class="absolute top-4 right-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
                                 aria-label="Add to wishlist"
                             >
                                 <svg 
@@ -293,14 +342,14 @@
                                     stroke-width="2" 
                                     stroke-linecap="round" 
                                     stroke-linejoin="round" 
-                                    class="text-gray-500 hover:text-red-500 transition-colors duration-200"
+                                    class="text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors duration-200"
                                 >
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                 </svg>
                             </button>
                         </div>
                         <div class="p-4">
-                            <h3 class="text-lg font-semibold mb-2">Recommended Product</h3>
+                            <h3 class="text-lg font-semibold mb-2 dark:text-white">Recommended Product</h3>
                             <div class="flex items-center mb-3">
                                 <div class="flex text-yellow-400">
                                     <i class="fas fa-star"></i>
@@ -309,7 +358,7 @@
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star-half-alt"></i>
                                 </div>
-                                <span class="text-gray-500 text-sm ml-2">(4.5)</span>
+                                <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-xl font-bold text-primary">₹12,999</span>
@@ -325,34 +374,31 @@
         <% } %>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50">
-        <span id="toast-message"></span>
-    </div>
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:block"></i>
+    </button>
 
     <!-- Footer -->
     <%-include('partials/footer') %>
 
     <!-- JavaScript -->
+    <script src="/dark-mode-toggle.js"></script>
     <script>
-        function showToast(message, isError = false) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-
-            toastMessage.textContent = message;
-            toast.classList.remove('hidden');
-
-            if (isError) {
-                toast.classList.add('bg-red-500');
-                toast.classList.remove('bg-gray-800');
-            } else {
-                toast.classList.remove('bg-red-500');
-                toast.classList.add('bg-gray-800');
-            }
-
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000); // Hide after 3 seconds
+        function showToast(message, isSuccess = true) {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "bottom",
+                position: "center",
+                backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
+                stopOnFocus: true,
+                className: "rounded-lg",
+                style: {
+                    boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
+                }
+            }).showToast();
         }
 
         function addToCart(productId) {
@@ -371,12 +417,12 @@
                 if (data.success) {
                     showToast('Product added to cart!');
                 } else {
-                    showToast(data.message, true);
+                    showToast(data.message, false);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showToast('An error occurred.', true);
+                showToast('An error occurred.', false);
             });
         }
 
@@ -386,16 +432,16 @@
                     method: 'DELETE',
                 });
                 if (response.ok) {
-                    showToast('Item removed from Wishlist', 'info');
+                    showToast('Item removed from Wishlist');
                     setTimeout(() => {
                         window.location.reload(); // Reload the page to reflect the changes
                     }, 1000);
                 } else {
-                    showToast('Failed to remove item from Wishlist', 'error');
+                    showToast('Failed to remove item from Wishlist', false);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showToast('An error occurred', 'error');
+                showToast('An error occurred', false);
             }
         }
 
@@ -450,16 +496,65 @@
                             window.location.reload();
                         }, 1000);
                     } else {
-                        showToast(data.message, true);
+                        showToast(data.message, false);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showToast('An error occurred.', true);
+                    showToast('An error occurred.', false);
                 });
             }
         });
+
+
+        // Dark mode toggle functionality
+function initDarkMode() {
+  const html = document.documentElement;
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  
+  // Check for saved theme preference or use system preference
+  if (localStorage.getItem('darkMode') === 'true' || 
+      (!localStorage.getItem('darkMode') && 
+       window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    html.classList.add('dark');
+  }
+  
+  // Toggle dark mode
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', function() {
+      html.classList.toggle('dark');
+      localStorage.setItem('darkMode', html.classList.contains('dark'));
+    });
+  }
+}
+
+// Toast notification system
+function showToast(message, isSuccess = true) {
+  // Check if Toastify is defined, if not, try to load it dynamically
+  if (typeof Toastify === 'undefined') {
+    console.error('Toastify is not defined. Ensure it is properly imported or included.');
+    return; // Exit the function if Toastify is not available
+  }
+
+  Toastify({
+    text: message,
+    duration: 3000,
+    gravity: "bottom",
+    position: "center",
+    backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
+    stopOnFocus: true,
+    className: "rounded-lg",
+    style: {
+      boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
+    }
+  }).showToast();
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initDarkMode();
+});
+
     </script>
 </body>
 </html>
-

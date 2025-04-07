@@ -186,7 +186,7 @@ console.log('newUser',newUser)
 if(refferer){
 const newUserrefferal = new Coupon({
   user:newUser._id,
-  couponCode:`WELCOME${newUser._id.toString().slice(-4)}`,
+  couponCode:`WELCOME${newUser._id.toString().slice(-6)}`,
   offerPrice:250,
   minAmount:5000,
   startDate:new Date(),
@@ -202,7 +202,7 @@ console.log('newUserrefferal',newUserrefferal)
 
 const existUserCoupon=new Coupon({
   user:refferer._id,
-  couponCode:`REFERRAL${refferer._id.toString().slice(-4)}`,
+  couponCode:`REFERRAL${refferer._id.toString().slice(-6)}`,
   offerPrice:350,
   minAmount:5000,
   startDate:new Date(),
@@ -311,7 +311,27 @@ res.status(200).json({message:'OTP verified successfully'})
             next(error)
         }
     },
+    logout:(req, res,next)=>{
+      res.clearCookie('token')
+      res.status(200).redirect('/')
+  },
+    aboutAs:async (req,res,next) => {
+     try {
 
+          const token = req.cookies.token
+          const decoded =jwt.verify(token, process.env.JWT_SECRET)
+          const userId = decoded.id
+      
+          if(!userId){
+              return res.status(400).json({success:false,message:'Unauthorized'})
+          }
+          const user = await User.findById(userId)
+            let cartCount =await Cart.countDocuments({user:userId})
+      return res.status(200).render('about',{user,cartCount})
+     } catch (error) {
+      next(error)
+     }
+    }
 
 };
 

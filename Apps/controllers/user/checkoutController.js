@@ -53,7 +53,7 @@ const coupons = await Coupon.find({
         { user: userId }, // ✅ Coupons assigned to this user
         { user: { $size: 0 } } // ✅ General coupons with an empty userId array
     ],
-    usedBy: { $nin: [userId] } }).lean();
+ }).lean();
 
 
 

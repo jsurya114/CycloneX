@@ -7,12 +7,13 @@ const verifyUser = async (req, res, next) => {
     try {
       // Check for JWT token
       const token = req.cookies.token;
+      console.log('token',token);
+      
      if(!token){
     
       return res.status(401).redirect('/')
      }
-     const decodedToken=jwt.verify(token,process.env.jwt_SECRET)
-console.log(decodedToken.id+" this we ");
+     const decodedToken=jwt.verify(token,process.env.JWT_SECRET)
 
 if(!decodedToken){
   

@@ -1,20 +1,22 @@
 const Address = require('../../models/addressModel')
 const Product = require('../../models/productModel')
 const Order = require('../../models/orderModel')
-
+const AdminWallet = require('../../models/adminWalletModel')
 const User = require('../../models/userModel')
 const Wallet = require('../../models/walletModel')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
+const Admin = require('../../models/adminModel')
 
+const generateTransactionId=require('../../services/transactionids')
 const orderController ={
  getorderlist:async (req,res,next) => {
 try{
 
-console.log('reacjed')
 
 
-const { search, status, sort, page = 1, limit = 2 } = req.query;
+
+const { search, status, sort, page = 1, limit = 4 } = req.query;
  const filter = {};
 
  if (search) {
@@ -39,14 +41,13 @@ const sortOptions = {
 };
 
 const pageNum = parseInt(page) || 1;
-const limitNum = parseInt(limit) || 2
+const limitNum = parseInt(limit) || 4
 
   const order= await Order.find(filter).populate('address').populate('user').sort(sortOptions[sort] || { timestamp: -1 })
   .skip((pageNum - 1) * limitNum)
   .limit(limitNum)
   .limit(parseInt(limit))
-  console.log('orderss',order)
-console.log('reached3tyui')
+ 
 const totalOrders = await Order.countDocuments(filter)
 
   const orderData = order.map(order => ({
@@ -98,18 +99,18 @@ const orderData = {
 updateOrderStatus:async (req,res,next) => {
   try {
 
-
+ const token = req.cookies.token;
+               const decoded = jwt.verify(token, process.env.JWT_SECRET);
+               
+              const adminId =decoded.id
     
-    console.log('asdffs',req.body)
+ 
     const orderStatus =req.body.orderStatus
     const orderId = req.params.id
-    console.log('this is orderid',orderId)
-    
-    console.log('fasdsd',orderStatus)
+
     const order = await Order.findOne({orderId})
     const user=order.user.toString()
-    console.log('theis is user',user)
-    console.log('this is order',order)
+  
     if(!order){
       return res.status(404).send('order not found')
     }
@@ -119,8 +120,31 @@ updateOrderStatus:async (req,res,next) => {
     
     order.orderStatus=orderStatus
 
+
     if(order.orderStatus==='delivered'&&order.paymentMethod==='cod'){
     order.paymentStatus='paid'
+let adminWallet= await AdminWallet.findOne({})
+
+if(!adminWallet){
+  adminWallet= new AdminWallet({
+    admin:adminId,
+    balance:0,
+    transaction:[]
+  })
+  await adminWallet.save()
+
+}
+
+let transactionId=generateTransactionId.generateTransactionId()
+adminWallet.transaction.push({
+  transactionType:'credit',
+  amount:order.totalAmount,
+  reason:`credit for Order #${orderId}`,
+  transactionId:transactionId
+
+})
+adminWallet.balance+=order.totalAmount
+await adminWallet.save()
     }
 
     if(order.orderStatus==='returned'){
@@ -128,6 +152,26 @@ updateOrderStatus:async (req,res,next) => {
 for(const item of order.items){
   await Product.updateOne({_id:item.product},{$inc:{stock:item.quantity}})
 }
+
+let adminWallet = await AdminWallet.findOne({})
+if(!adminWallet){
+  adminWallet = new AdminWallet({
+    admin:adminId,
+    balance:0,
+    transaction:[]
+  })
+  await adminWallet.save()
+}
+const transactionId=generateTransactionId.generateTransactionId()
+adminWallet.transaction.push({  transactionType:'debit',
+  amount:order.totalAmount,
+  reason:`debit for Order #${orderId}`,
+  transactionId:transactionId})
+  adminWallet.balance-=order.totalAmount
+  await adminWallet.save()
+      
+
+
 let wallet = await Wallet.findOne({user})
 console.log('wall',wallet)
 if(!wallet){

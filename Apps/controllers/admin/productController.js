@@ -187,6 +187,8 @@ let sortOptions = { createdAt: -1 };
 
       let totalPages = Math.ceil(totalProducts/itemsPerPage)
       res.render('brands', { brands ,
+        search,
+        statusFilter,
         currentPage,
         totalPages,
         hasNextPage: currentPage < totalPages,
@@ -284,12 +286,14 @@ let sortOptions = { createdAt: -1 };
       if (!brand) {
         return res.render('404',{message:"Brand  not found"})
       }
+const existingBrand= await Brand.findOne({name:{ $regex: new RegExp(`^${name}$`, 'i') }})
+if(existingBrand){
+  return res.status(400).json({success:false,message:'brand already exist'})
+}
 
-      // Update name and description only (removed image update)
-      brand.name = name;
-      brand.description = description;
 
-      await brand.save();
+
+      await Brand.findByIdAndUpdate(brandId,{name,description})
       res.status(200).json({
         success: true,
         message: 'Brand updated successfully'

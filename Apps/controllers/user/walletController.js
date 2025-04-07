@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const User=require('../../models/userModel')
 const Order = require('../../models/orderModel')
 const Cart = require('../../models/cartModel')
+const { timeStamp } = require('console')
 const walletController={
 getWallet:async (req,res,next) => {
     try {
@@ -19,7 +20,7 @@ getWallet:async (req,res,next) => {
        }
        let cartCount =await Cart.countDocuments({user:userId})
     
-       let wallet = await Wallet.findOne({user:userId}).populate('transaction.orderId')
+       let wallet = await Wallet.findOne({user:userId}).populate('transaction.orderId').sort({timestamp:-1})
        if(!wallet){
         wallet = new Wallet({
             user:userId,

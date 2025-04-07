@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About CycloneX - Premium Cycling Experience</title>
+   
+    <!-- Use the latest Tailwind CDN with direct import -->
+    <script src="https://cdn.tailwindcss.com"></script>
+   
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+   
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {"50":"#f0f9ff","100":"#e0f2fe","200":"#bae6fd","300":"#7dd3fc","400":"#38bdf8","500":"#0ea5e9","600":"#0284c7","700":"#0369a1","800":"#075985","900":"#0c4a6e","950":"#082f49"},
+                        secondary: '#f97316',
+                        dark: '#0f172a'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        /* Base styles in case Tailwind fails */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .dark body {
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        
+        /* Timeline styles */
+        .timeline-container {
+            position: relative;
+        }
+        
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #3b82f6;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 999px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 10px 40px;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -12px;
+            background-color: white;
+            border: 4px solid #3b82f6;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .timeline-left {
+            left: 0;
+        }
+        
+        .timeline-right {
+            left: 50%;
+        }
+        
+        .timeline-left::after {
+            right: -12px;
+        }
+        
+        .timeline-right::after {
+            left: -12px;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .timeline-container::after {
+                left: 31px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .timeline-left::after, .timeline-right::after {
+                left: 19px;
+            }
+            
+            .timeline-right {
+                left: 0;
+            }
+        }
+        
+        /* Team member card hover effects */
+        .team-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .team-card .social-icons {
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        
+        .team-card:hover .social-icons {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .team-card img {
+            transition: all 0.5s ease;
+        }
+        
+        .team-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Value cards hover effects */
+        .value-card {
+            transition: all 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .value-card .icon-container {
+            transition: all 0.5s ease;
+        }
+        
+        .value-card:hover .icon-container {
+            transform: rotateY(180deg);
+        }
+        
+        /* Animated background */
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .animated-bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            top: 50%;
+            right: -100px;
+            animation-delay: 2s;
+        }
+        
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            bottom: -75px;
+            left: 30%;
+            animation-delay: 4s;
+        }
+        
+        /* Dark mode styles */
+        .dark .bg-white {
+            background-color: #1e293b;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #0f172a;
+        }
+        
+        .dark .text-gray-800 {
+            color: #f8fafc;
+        }
+        
+        .dark .text-gray-600 {
+            color: #cbd5e1;
+        }
+        
+        .dark .text-gray-500 {
+            color: #94a3b8;
+        }
+        
+        .dark .border-gray-100 {
+            border-color: #334155;
+        }
+        
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #3B82F6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.25rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(30deg);
+        }
+        
+        /* Stats counter animation */
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stat-counter {
+            animation: countUp 1s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .stat-counter:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        
+        .stat-counter:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        
+        .stat-counter:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        
+        .stat-counter:nth-child(4) {
+            animation-delay: 0.8s;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gray-50 dark:bg-gray-900">
+    <%-include('partials/header')  %>
+
+    <!-- Hero Section with Parallax Effect -->
+    <section class="relative py-20 md:py-32 bg-gradient-to-r from-blue-900 to-indigo-900 dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+        <!-- Animated Background Shapes -->
+        <div class="animated-bg">
+            <div class="animated-bg-shape shape-1"></div>
+            <div class="animated-bg-shape shape-2"></div>
+            <div class="animated-bg-shape shape-3"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                    Our <span class="text-rose-400">Journey</span> to Redefine Cycling
+                </h1>
+                <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+                    At CycloneX, we're passionate about creating exceptional cycling experiences through innovation, quality, and community.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#our-story" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2">
+                        Our Story
+                        <i class="fas fa-arrow-down"></i>
+                    </a>
+                    <a href="#contact-us" class="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-rose-500/30">
+                        Contact Us
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Wave Separator -->
+        <div class="absolute bottom-0 left-0 w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full h-auto">
+                <path fill="#f8fafc" fill-opacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" class="dark:fill-gray-900"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Our Story Section with Timeline -->
+    <section id="our-story" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-primary rounded-full text-sm font-medium mb-3">OUR JOURNEY</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">The <span class="text-primary">CycloneX</span> Story</h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">From a small workshop to becoming a leading cycling brand, our journey has been driven by passion and innovation</p>
+            </div>
+            
+            <div class="timeline-container max-w-4xl mx-auto">
+                <!-- Timeline Item 1 -->
+                <div class="timeline-item timeline-left">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg">
+                        <span class="text-primary font-bold">2010</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-3 dark:text-white">The Beginning</h3>
+                        <p class="text-gray-600 dark:text-gray-300">CycloneX was founded by two cycling enthusiasts with a vision to create high-quality bikes that combine performance, comfort, and style.</p>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 2 -->
+                <div class="timeline-item timeline-right">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg">
+                        <span class="text-primary font-bold">2013</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-3 dark:text-white">First Flagship Store</h3>
+                        <p class="text-gray-600 dark:text-gray-300">We opened our first flagship store in Mumbai, offering personalized service and expert advice to cycling enthusiasts.</p>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 3 -->
+                <div class="timeline-item timeline-left">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg">
+                        <span class="text-primary font-bold">2016</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-3 dark:text-white">National Expansion</h3>
+                        <p class="text-gray-600 dark:text-gray-300">CycloneX expanded nationwide with stores in Delhi, Bangalore, and Chennai, bringing our premium cycling experience to more customers.</p>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 4 -->
+                <div class="timeline-item timeline-right">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg">
+                        <span class="text-primary font-bold">2019</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-3 dark:text-white">E-Commerce Launch</h3>
+                        <p class="text-gray-600 dark:text-gray-300">We launched our e-commerce platform, making our premium bikes and accessories available to customers across India.</p>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 5 -->
+                <div class="timeline-item timeline-left">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg">
+                        <span class="text-primary font-bold">2021</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-3 dark:text-white">Sustainable Initiative</h3>
+                        <p class="text-gray-600 dark:text-gray-300">We introduced our eco-friendly line of bikes made from sustainable materials, reinforcing our commitment to the environment.</p>
+                    </div>
+                </div>
+                
+                <!-- Timeline Item 6 -->
+                <div class="timeline-item timeline-right">
+                    <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg">
+                        <span class="text-primary font-bold">Today</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-3 dark:text-white">Leading the Industry</h3>
+                        <p class="text-gray-600 dark:text-gray-300">CycloneX continues to innovate and lead the cycling industry with cutting-edge technology and exceptional customer service.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Mission & Vision Section -->
+    <section class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Left Column: Image with Decorative Elements -->
+                <div class="relative">
+                    <div class="relative rounded-3xl overflow-hidden shadow-2xl transform perspective-1000 group">
+                        <!-- Main Image -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80" 
+                            alt="Cycling in mountains" 
+                            class="w-full h-auto rounded-3xl transform group-hover:scale-105 transition-transform duration-700"
+                        >
+                        
+                        <!-- Decorative Elements -->
+                        <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-primary rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
+                        <div class="absolute -top-4 -left-4 w-40 h-40 bg-rose-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
+                        
+                        <!-- Overlay with Gradient -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent opacity-60"></div>
+                        
+                        <!-- Quote Overlay -->
+                        <div class="absolute bottom-0 left-0 right-0 p-8">
+                            <blockquote class="text-white text-xl italic font-light">
+                                "Cycling is not just a sport, it's a lifestyle that promotes health, happiness, and harmony with nature."
+                            </blockquote>
+                            <p class="text-white/80 mt-2">- Rajiv Mehta, Founder</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Decorative Badge -->
+                    <div class="absolute -top-6 -right-6 bg-white dark:bg-gray-800 rounded-full shadow-xl p-4 z-10">
+                        <div class="bg-primary rounded-full w-16 h-16 flex items-center justify-center">
+                            <i class="fas fa-bicycle text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column: Mission & Vision Content -->
+                <div>
+                    <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-primary rounded-full text-sm font-medium mb-3">OUR PURPOSE</span>
+                    
+                    <!-- Mission Section -->
+                    <div class="mb-10">
+                        <h2 class="text-3xl font-bold mb-4 dark:text-white">Our Mission</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                            To provide exceptional cycling products that inspire people to embrace an active lifestyle, while promoting sustainability and environmental consciousness in everything we do.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span class="text-gray-600 dark:text-gray-400">Create innovative, high-quality bikes for all types of riders</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span class="text-gray-600 dark:text-gray-400">Foster a community of cycling enthusiasts through events and education</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span class="text-gray-600 dark:text-gray-400">Minimize our environmental footprint through sustainable practices</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Vision Section -->
+                    <div>
+                        <h2 class="text-3xl font-bold mb-4 dark:text-white">Our Vision</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                            To be the leading cycling brand in India, recognized for our commitment to quality, innovation, and customer satisfaction, while contributing to a healthier and more sustainable world.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-blue-100 dark:bg-blue-900/30 text-primary px-4 py-2 rounded-full text-sm font-medium">Innovation</span>
+                            <span class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-4 py-2 rounded-full text-sm font-medium">Sustainability</span>
+                            <span class="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-4 py-2 rounded-full text-sm font-medium">Community</span>
+                            <span class="bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 px-4 py-2 rounded-full text-sm font-medium">Excellence</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values Section -->
+    <section class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-primary rounded-full text-sm font-medium mb-3">WHAT DRIVES US</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Our Core <span class="text-primary">Values</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">The principles that guide our decisions and shape our company culture</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Value Card 1 -->
+                <div class="value-card bg-white dark:bg-gray-700 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+                    <div class="icon-container w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-primary text-3xl mx-auto mb-6">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 dark:text-white">Excellence</h3>
+                    <p class="text-gray-600 dark:text-gray-300">We strive for excellence in every product we create and service we provide, never compromising on quality.</p>
+                </div>
+                
+                <!-- Value Card 2 -->
+                <div class="value-card bg-white dark:bg-gray-700 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+                    <div class="icon-container w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-green-500 text-3xl mx-auto mb-6">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 dark:text-white">Sustainability</h3>
+                    <p class="text-gray-600 dark:text-gray-300">We're committed to environmentally responsible practices throughout our business operations.</p>
+                </div>
+                
+                <!-- Value Card 3 -->
+                <div class="value-card bg-white dark:bg-gray-700 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+                    <div class="icon-container w-20 h-20 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center text-amber-500 text-3xl mx-auto mb-6">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 dark:text-white">Innovation</h3>
+                    <p class="text-gray-600 dark:text-gray-300">We continuously explore new technologies and designs to enhance the cycling experience.</p>
+                </div>
+                
+                <!-- Value Card 4 -->
+                <div class="value-card bg-white dark:bg-gray-700 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+                    <div class="icon-container w-20 h-20 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center text-rose-500 text-3xl mx-auto mb-6">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 dark:text-white">Community</h3>
+                    <p class="text-gray-600 dark:text-gray-300">We foster a strong cycling community through events, education, and shared experiences.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Stat Counter 1 -->
+                <div class="stat-counter text-center">
+                    <div class="text-5xl font-bold mb-2" data-count="15000">15,000+</div>
+                    <p class="text-blue-100 text-lg">Happy Customers</p>
+                </div>
+                
+                <!-- Stat Counter 2 -->
+                <div class="stat-counter text-center">
+                    <div class="text-5xl font-bold mb-2" data-count="50">50+</div>
+                    <p class="text-blue-100 text-lg">Bicycle Models</p>
+                </div>
+                
+                <!-- Stat Counter 3 -->
+                <div class="stat-counter text-center">
+                    <div class="text-5xl font-bold mb-2" data-count="25">25</div>
+                    <p class="text-blue-100 text-lg">Retail Locations</p>
+                </div>
+                
+                <!-- Stat Counter 4 -->
+                <div class="stat-counter text-center">
+                    <div class="text-5xl font-bold mb-2" data-count="12">12</div>
+                    <p class="text-blue-100 text-lg">Years of Excellence</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet Our Team Section -->
+    <section class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-primary rounded-full text-sm font-medium mb-3">OUR EXPERTS</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Meet Our <span class="text-primary">Team</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">The passionate individuals behind CycloneX who make it all possible</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Team Member 1 -->
+                <div class="team-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-64 overflow-hidden">
+                        <img 
+                            src="/frontend/imgs/editors/img6.jpg" 
+                            alt="Rajiv Mehta - Founder & CEO" 
+                            class="w-full h-full object-cover"
+                        >
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold mb-1 dark:text-white">Jayasurya S</h3>
+                        <p class="text-primary mb-4">Founder & CEO</p>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Former professional cyclist with a passion for innovation and sustainable transportation.</p>
+                        <div class="social-icons flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Team Member 2 -->
+                <div class="team-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-64 overflow-hidden">
+                        <img 
+                        src="/frontend/imgs/editors/img3.jpg" 
+                                alt="Priya Sharma - Head of Design" 
+                            class="w-full h-full object-cover"
+                        >
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold mb-1 dark:text-white">Anns J Antony</h3>
+                        <p class="text-primary mb-4">Head of Design</p>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Award-winning designer with expertise in creating ergonomic and aesthetically pleasing bikes.</p>
+                        <div class="social-icons flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Team Member 3 -->
+                <div class="team-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-64 overflow-hidden">
+                        <img 
+                        src="/frontend/imgs/editors/img2.jpg" 
+                            alt="Arjun Patel - Technical Director" 
+                            class="w-full h-full object-cover"
+                        >
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold mb-1 dark:text-white">Abhiram M R</h3>
+                        <p class="text-primary mb-4">Technical Director</p>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Engineering genius with 15+ years of experience in bicycle manufacturing and innovation.</p>
+                        <div class="social-icons flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Team Member 4 -->
+                <div class="team-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-64 overflow-hidden">
+                        <img 
+                        src="/frontend/imgs/editors/img4.jpg" 
+                            alt="Meera Kapoor - Marketing Director" 
+                            class="w-full h-full object-cover"
+                        >
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold mb-1 dark:text-white">Akash C A</h3>
+                        <p class="text-primary mb-4">Marketing Director</p>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Digital marketing expert who has helped grow the CycloneX brand across India.</p>
+                        <div class="social-icons flex justify-center space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-primary transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-primary rounded-full text-sm font-medium mb-3">WHAT PEOPLE SAY</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Customer <span class="text-primary">Testimonials</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Hear from our satisfied customers about their CycloneX experience</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-8 shadow-lg relative">
+                    <!-- Quote Icon -->
+                    <div class="absolute -top-5 -left-5 bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="flex text-amber-400 mb-2">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 italic">
+                            "My CycloneX mountain bike has completely transformed my weekend adventures. The quality and performance are unmatched, and the customer service was exceptional."
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <img 
+                        src="/frontend/imgs/editors/img5.jpg"  
+                            alt="Vikram Singh" 
+                            class="w-12 h-12 rounded-full mr-4"
+                        >
+                        <div>
+                            <h4 class="font-semibold dark:text-white">Kasthoori V D</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Mountain Biking Enthusiast</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-8 shadow-lg relative">
+                    <!-- Quote Icon -->
+                    <div class="absolute -top-5 -left-5 bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="flex text-amber-400 mb-2">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 italic">
+                            "As a daily commuter, my CycloneX urban bike has been reliable, comfortable, and stylish. I've received countless compliments and couldn't be happier with my purchase."
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <img 
+                        src="/frontend/imgs/editors/img8.jpg"  
+                            alt="Ananya Desai" 
+                            class="w-12 h-12 rounded-full mr-4"
+                        >
+                        <div>
+                            <h4 class="font-semibold dark:text-white">SaiPrasad V</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Urban Commuter</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-8 shadow-lg relative">
+                    <!-- Quote Icon -->
+                    <div class="absolute -top-5 -left-5 bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="flex text-amber-400 mb-2">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 italic">
+                            "The CycloneX road bike has taken my training to the next level. The lightweight frame and responsive handling make every ride a joy. Worth every rupee!"
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <img 
+                            src="https://randomuser.me/api/portraits/men/62.jpg" 
+                            alt="Rahul Sharma" 
+                            class="w-12 h-12 rounded-full mr-4"
+                        >
+                        <div>
+                            <h4 class="font-semibold dark:text-white">Rahul Sharma</h4>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Professional Cyclist</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact-us" class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-primary rounded-full text-sm font-medium mb-3">GET IN TOUCH</span>
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Contact <span class="text-primary">Us</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Have questions or feedback? We'd love to hear from you!</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-6 dark:text-white">Send Us a Message</h3>
+                    
+                    <form>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label for="name" class="block text-gray-700 dark:text-gray-300 mb-2">Your Name</label>
+                                <input 
+                                    type="text" 
+                                    id="name" 
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white"
+                                    placeholder="John Doe"
+                                >
+                            </div>
+                            <div>
+                                <label for="email" class="block text-gray-700 dark:text-gray-300 mb-2">Your Email</label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white"
+                                    placeholder="john@example.com"
+                                >
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="subject" class="block text-gray-700 dark:text-gray-300 mb-2">Subject</label>
+                            <input 
+                                type="text" 
+                                id="subject" 
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white"
+                                placeholder="How can we help you?"
+                            >
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 dark:text-gray-300 mb-2">Message</label>
+                            <textarea 
+                                id="message" 
+                                rows="5" 
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-white"
+                                placeholder="Your message here..."
+                            ></textarea>
+                        </div>
+                        
+                        <button type="submit" class="bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 shadow-lg shadow-blue-500/20 flex items-center gap-2 group">
+                            Send Message
+                            <i class="fas fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Contact Information -->
+                <div>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg mb-8">
+                        <h3 class="text-2xl font-semibold mb-6 dark:text-white">Contact Information</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 dark:bg-blue-900/30 rounded-full p-3 mr-4">
+                                    <i class="fas fa-map-marker-alt text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold dark:text-white">Headquarters</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Hamsburg,324Avenue,Germany and India</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 dark:bg-blue-900/30 rounded-full p-3 mr-4">
+                                    <i class="fas fa-phone text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold dark:text-white">Phone</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">+91 98765 43210</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 dark:bg-blue-900/30 rounded-full p-3 mr-4">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold dark:text-white">Email</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">cyclonex.gethelp@gmail.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-blue-100 dark:bg-blue-900/30 rounded-full p-3 mr-4">
+                                    <i class="fas fa-clock text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold dark:text-white">Business Hours</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Monday - Saturday: 10:00 AM - 8:00 PM</p>
+                                    <p class="text-gray-600 dark:text-gray-400">Sunday: 11:00 AM - 6:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg">
+                        <h3 class="text-2xl font-semibold mb-6 dark:text-white">Connect With Us</h3>
+                        
+                        <div class="flex space-x-4">
+                            <a href="#" class="bg-blue-100 dark:bg-blue-900/30 text-primary hover:bg-primary hover:text-white rounded-full p-3 transition-colors">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="bg-blue-100 dark:bg-blue-900/30 text-primary hover:bg-primary hover:text-white rounded-full p-3 transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="bg-blue-100 dark:bg-blue-900/30 text-primary hover:bg-primary hover:text-white rounded-full p-3 transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="bg-blue-100 dark:bg-blue-900/30 text-primary hover:bg-primary hover:text-white rounded-full p-3 transition-colors">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="bg-blue-100 dark:bg-blue-900/30 text-primary hover:bg-primary hover:text-white rounded-full p-3 transition-colors">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (Placeholder - Include your actual footer here) -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">CycloneX</h3>
+                    <p class="text-gray-400 mb-4">Redefining cycling experiences through innovation, quality, and community.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
+                        <li><a href="/about" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="/shoplist" class="text-gray-400 hover:text-white transition-colors">Shop</a></li>
+                        <li><a href="/contact" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Mountain Bikes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Road Bikes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Urban Bikes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Accessories</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                            <span>123 Cycling Avenue, Mumbai, Maharashtra 400001, India</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone mt-1 mr-2"></i>
+                            <span>+91 98765 43210</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope mt-1 mr-2"></i>
+                            <span>info@cyclonex.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2023 CycloneX. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Shipping Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+  <!-- Dark Mode Toggle Button -->
+  <button id="darkModeToggle" class="dark-mode-toggle">
+    <i class="fas fa-moon dark:hidden"></i>
+    <i class="fas fa-sun hidden dark:block"></i>
+</button>
+
+    <!-- JavaScript -->
+    <script>
+        // Dark mode toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && 
+                window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+            }
+            
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                localStorage.setItem('darkMode', html.classList.contains('dark'));
+            });
+        });
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Animation for stats counters
+            const statCounters = document.querySelectorAll('.stat-counter [data-count]');
+            
+            function animateCounter(counter, target) {
+                let count = 0;
+                const duration = 2000; // 2 seconds
+                const interval = duration / target;
+                
+                const timer = setInterval(() => {
+                    count++;
+                    counter.textContent = count.toLocaleString() + (target >= 1000 ? '+' : '');
+                    
+                    if (count >= target) {
+                        clearInterval(timer);
+                        counter.textContent = target.toLocaleString() + (target >= 1000 ? '+' : '');
+                    }
+                }, interval);
+            }
+            
+            // Intersection Observer for counter animation
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = parseInt(counter.getAttribute('data-count'));
+                        animateCounter(counter, target);
+                        observer.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            statCounters.forEach(counter => {
+                observer.observe(counter);
+            });
+        });
+    </script>
+</body>
+</html>

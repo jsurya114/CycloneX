@@ -134,7 +134,9 @@ if(referenceProduct){
             }
 
 
+
            // console.log(cart,userId,productId,quantity)
+    //removing the wislist when its in the cart
     
 const wishlist = await Wishlist.findOne({user:userId})
 if (wishlist && wishlist.product.includes(productId)) {
@@ -208,7 +210,7 @@ res.status(200).json({success: true, message: 'Product removed from cart'})
       
             const item = cart.items.find(item => item.product.toString() === productId);
             if (!item) return res.status(404).json({ success: false, message: "Product not in cart" });
-      ``
+      
             item.quantity = parseInt(quantity)
 cart.items = cart.items.map(item=>{
     const productOffer = item.product.offer||0
@@ -242,7 +244,7 @@ const updatedCart = await Cart.findOne({ user: userId }).populate('items.product
                 message: "Product quantity updated",
                 subtotal: cart.totalSubtotal,
                 tax: taxAmount,
-                total: finalTotal
+                total: finalTotal,updatedCart
             });
         } catch (error) {
             next(error);

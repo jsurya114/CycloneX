@@ -216,13 +216,11 @@ let filter ={}
 
 
     },
-    logout:(req, res,next)=>{
-        res.clearCookie('token')
-        res.status(200).redirect('/')
-    },
+ 
     showUserProfile:async (req,res,next) => {
 try
 {
+console.log('invoked profile');
 
  
     const userId= req.params.userId

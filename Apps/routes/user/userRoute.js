@@ -25,7 +25,7 @@ const RazorpayController = require('../../controllers/user/razorpayController');
 
 
 
-router.use(userEnsure);
+router.use(userEnsure,nocache);
 router.get('/landing',authController.landing)
 router.get('/', userEnsure, nocache, authController.logins);
 router.post('/', authController.loginspost);
@@ -59,9 +59,10 @@ router.get('/shoplist',verifyUser,shopController.shopList)
 router.post('/shoplist',shopController.shopList)
 router.get('/productdetails/:id',verifyUser,userController.productDetails)
 router.get('/product/:id',verifyUser,productController.quickView)
-router.get('/logout', verifyUser, userController.logout);
+router.get('/about',verifyUser,authController.aboutAs)
+router.get('/logout', verifyUser, authController.logout);
 
-router.get('/userprofile/:userId',verifyUser,userController.showUserProfile)
+router.get('/userprofile/:userId',verifyUser,userEnsure,userController.showUserProfile)
 router.post('/userprofile/:userId',userController.userAddress)
 
 router.get('/addaddress/:userId',verifyUser,addressController.getUserAddress)
@@ -109,6 +110,7 @@ router.get('/order',verifyUser,orderController.getorder)
 router.get('/orderdetails/:orderId',orderController.order)
 
 router.post('/orders/cod',orderController.placeOrder)
+
 router.get('/confirmation',verifyUser,orderController.confirmation)
 router.put('/order/cancel/:orderId',orderController.cancelOrder)
 router.put('/order/return/:orderId',orderController.returnOrder)

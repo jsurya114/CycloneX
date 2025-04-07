@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -45,13 +46,25 @@
             border-radius: 8px;
         }
         
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
         ::-webkit-scrollbar-thumb {
             background: #94a3b8;
             border-radius: 8px;
         }
         
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
         ::-webkit-scrollbar-thumb:hover {
             background: #64748b;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
         }
 
         /* Card hover effects */
@@ -115,6 +128,10 @@
         .transaction-item:hover {
             background-color: #f8fafc;
         }
+        
+        .dark .transaction-item:hover {
+            background-color: #1e293b;
+        }
 
         /* Animated gradient button */
         .btn-gradient-animated {
@@ -126,103 +143,137 @@
         .btn-gradient-animated:hover {
             background-position: right center;
         }
+
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.25rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(30deg);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .credit-card {
+                padding: 16px;
+            }
+            
+            .transaction-item {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="bg-slate-50 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-100">
     <%-include('partials/header') %>
-    <div class="container mx-auto p-4 max-w-7xl">
+    <div class="container mx-auto px-4 sm:px-6 py-6 max-w-7xl">
         <!-- Page header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-display font-bold text-slate-800">My Wallet</h1>
-            <p class="text-slate-500">Manage your funds, transactions, and payment methods</p>
+        <div class="mb-6 sm:mb-8">
+            <h1 class="text-2xl sm:text-3xl font-display font-bold text-slate-800 dark:text-white">My Wallet</h1>
+            <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400">Manage your funds, transactions, and payment methods</p>
         </div>
         
-        <!-- Main content grid -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <!-- Left sidebar -->
-            <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm">
+        <!-- Main content grid - Responsive layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
+            <!-- Left sidebar - Collapses to full width on mobile -->
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4 sm:p-6 rounded-2xl shadow-sm">
                 <!-- User profile -->
-                <div class="flex items-center justify-between mb-8">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                <div class="flex items-center justify-between mb-6 sm:mb-8">
+                    <div class="flex items-center space-x-3 sm:space-x-4">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-xl sm:text-2xl shadow-md">
                             <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
                         </div>
                         <div>
-                            <p class="font-semibold text-lg text-gray-800"><%= user.fullName || 'Guest User' %></p>
-                            <p class="text-sm text-gray-500"><%= user.email || 'No email' %></p>
+                            <p class="font-semibold text-base sm:text-lg text-gray-800 dark:text-gray-200"><%= user.fullName || 'Guest User' %></p>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate max-w-[150px] sm:max-w-full"><%= user.email || 'No email' %></p>
                         </div>
                     </div>
-                    <button class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <button class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
                 </div>
                 
-                <!-- Navigation tabs -->
-                <div class="flex justify-between mb-8">
+                <!-- Navigation tabs - Responsive grid -->
+                <div class="flex justify-between mb-6 sm:mb-8">
                     <a href="/userprofile/<%= user._id %>" class="group cursor-pointer">
-                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                            <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-user text-blue-500 text-lg sm:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                         </div>
-                        <span class="text-xs font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">
+                        <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-blue-500 transition-colors duration-300">
                             Profile
                         </span>
                     </a>
                     
                     <div class="group cursor-pointer">
-                        <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                            <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-gift text-purple-500 text-lg sm:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                         </div>
-                        <span class="text-xs font-medium text-gray-600 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
+                        <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
                     </div>
                     <div class="group cursor-pointer">
-                        <div class="w-14 h-14 bg-primary-500 rounded-xl flex items-center justify-center mb-2 shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                            <i class="fas fa-wallet text-white text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-primary-500 rounded-xl flex items-center justify-center mb-2 shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-wallet text-white text-lg sm:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                         </div>
                         <span class="text-xs font-medium text-primary-500 group-hover:text-primary-600 transition-colors duration-300">Wallet</span>
                     </div>
                 </div>
                 
                 <!-- Menu items -->
-                <div class="space-y-2">
-                   
-                    <a href="#recentTransaction" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
-                        <i class="fas fa-exchange-alt mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                        <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Transactions</span>
+                <div class="space-y-1 sm:space-y-2">
+                    <a href="#recentTransaction" class="flex items-center p-2 sm:p-3 rounded-lg hover:bg-white dark:hover:bg-gray-700 transition-colors duration-300 group">
+                        <i class="fas fa-exchange-alt mr-2 sm:mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                        <span class="font-medium text-sm sm:text-base text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors duration-300">Transactions</span>
                     </a>
                 
-                
-                    <!-- <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group mt-4">
-                        <i class="fas fa-cog mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                        <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">Settings</span>
-                    </a> -->
-                    <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 transition-colors duration-300 group">
-                        <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
-                        <span class="font-medium text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
+                    <a href="/logout" class="flex items-center p-2 sm:p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-300 group">
+                        <i class="fas fa-sign-out-alt mr-2 sm:mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
+                        <span class="font-medium text-sm sm:text-base text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
                     </a>
                 </div>
             </div>
             
             <!-- Main wallet content -->
-            <div class="md:col-span-3 space-y-6">
-                <!-- Balance cards -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="lg:col-span-3 space-y-4 sm:space-y-6">
+                <!-- Balance cards - Responsive grid -->
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
                     <!-- Main balance card -->
-                    <div class="lg:col-span-2">
+                    <div class="xl:col-span-2">
                         <div class="credit-card h-full">
                             <div class="relative z-10">
-                                <div class="flex justify-between items-start mb-6">
+                                <div class="flex justify-between items-start mb-4 sm:mb-6">
                                     <div>
-                                        <p class="text-gray-300 text-sm mb-1">Available Balance</p>
-                                        <h2 class="text-4xl font-bold text-white">₹<%= wallet && wallet.balance !== undefined ? wallet.balance.toFixed(2) : '0.00' %></h2>
+                                        <p class="text-gray-300 text-xs sm:text-sm mb-1">Available Balance</p>
+                                        <h2 class="text-2xl sm:text-4xl font-bold text-white">₹<%= wallet && wallet.balance !== undefined ? wallet.balance.toFixed(2) : '0.00' %></h2>
                                     </div>
-                                    
                                 </div>
                                 
-                              
-                                
-                                <div class="mt-6 pt-6 border-t border-white/10">
-                                    <div class="flex justify-between text-gray-300">
-                                        <span>Wallet ID: <%= wallet ? wallet._id : 'Not available' %></span>
+                                <div class="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-white/10">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between text-gray-300 text-xs sm:text-sm">
+                                        <span class="mb-1 sm:mb-0 truncate">Wallet ID: <%= wallet ? wallet._id : 'Not available' %></span>
                                         <span>Virtual Wallet</span>
                                     </div>
                                 </div>
@@ -233,96 +284,97 @@
                     <!-- Quick stats -->
                     <div class="space-y-4">
                         <!-- Deposits -->
-                        <div class="bg-white p-4 rounded-xl shadow-sm hover-card">
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm hover-card">
                             <div class="flex items-center justify-between mb-2">
-                                <p class="text-gray-500 text-sm">Total refunds</p>
-                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm">Total refunds</p>
+                                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                                     <i class="fas fa-arrow-up text-green-500 text-xs"></i>
                                 </div>
                             </div>
-                            <h3 class="text-2xl font-bold text-gray-800">₹<%= wallet && wallet.deposit ? wallet.deposit.toFixed(2) : '0.00' %></h3>
-                            <div class="flex items-center text-green-500 text-sm mt-1">
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">₹<%= wallet && wallet.deposit ? wallet.deposit.toFixed(2) : '0.00' %></h3>
+                            <div class="flex items-center text-green-500 text-xs sm:text-sm mt-1">
                                 <i class="fas fa-arrow-up mr-1"></i>
                                 <span>+5.3% from last month</span>
                             </div>
                         </div>
-                     
                     </div>
                 </div>
                 
-               
-            <!-- Recent Transactions -->
-        <div id="recentTransaction" class="bg-white rounded-xl shadow-sm p-6 mt-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold text-gray-800">Recent Transactions</h2>
-                <button id="viewAllBtn" class="text-primary-500 hover:text-primary-600 transition-colors text-sm flex items-center">
-                    <span>View All</span>
-                    <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                </button>
-            </div>
-
-            <div id="transactionList" class="space-y-4">
-                <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
-                    <% wallet.transaction.slice(0, 3).forEach(function(trans) { %> <!-- Show only 3 initially -->
-                        <div class="transaction-item flex items-center justify-between p-3 rounded-lg bg-gray-50">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full <%= trans.transactionType === 'credit' ? 'bg-green-100' : 'bg-red-100' %> flex items-center justify-center mr-4">
-                                    <i class="fas <%= trans.transactionType === 'credit' ? 'fa-arrow-up text-green-500' : 'fa-arrow-up text-red-500' %>"></i>
-                                </div>
-                                <div>
-                                    <p class="font-medium text-gray-800"><%= trans.reason || (trans.transactionType === 'credit' ? 'Deposit' : 'Withdrawal') %></p>
-                                    <p class="text-sm text-gray-500"><%= new Date(trans.date).toLocaleDateString() %> • <%= new Date(trans.date).toLocaleTimeString() %></p>
-                                </div>
-                            </div>
-                            <p class="font-medium <%= trans.transactionType === 'credit' ? 'text-green-500' : 'text-red-500' %>">
-                                <%= trans.transactionType === 'credit' ? '+' : '-' %>₹<%= trans.amount ? trans.amount.toFixed(2) : '0.00' %>
-                            </p>
-                        </div>
-                    <% }); %>
-                <% } else { %>
-                    <div class="text-center py-8">
-                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-receipt text-gray-400 text-xl"></i>
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-700 mb-2">No transactions yet</h3>
-                        <p class="text-gray-500 mb-4">Your transaction history will appear here</p>
+                <!-- Recent Transactions - Responsive design -->
+                <div id="recentTransaction" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6">
+                    <div class="flex justify-between items-center mb-4 sm:mb-6">
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 dark:text-white">Recent Transactions</h2>
+                        <button id="viewAllBtn" class="text-primary-500 hover:text-primary-600 transition-colors text-xs sm:text-sm flex items-center">
+                            <span>View All</span>
+                            <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                        </button>
                     </div>
-                <% } %>
-            </div>
 
-            <!-- Hidden full transaction list -->
-            <div id="fullTransactionList" class="hidden space-y-4 mt-4">
-                <% if (wallet && wallet.transaction && wallet.transaction.length > 3) { %>
-                    <% wallet.transaction.slice(3).forEach(function(trans) { %>
-                        <div class="transaction-item flex items-center justify-between p-3 rounded-lg bg-gray-50">
-                            <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-full <%= trans.transactionType === 'credit' ? 'bg-green-100' : 'bg-red-100' %> flex items-center justify-center mr-4">
-                                    <i class="fas <%= trans.transactionType === 'credit' ? 'fa-arrow-down text-green-500' : 'fa-arrow-up text-red-500' %>"></i>
+                    <div id="transactionList" class="space-y-3 sm:space-y-4">
+                        <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
+                            <% wallet.transaction.slice(0, 3).forEach(function(trans) { %> <!-- Show only 3 initially -->
+                                <div class="transaction-item flex items-center justify-between p-2 sm:p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full <%= trans.transactionType === 'credit' ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30' %> flex items-center justify-center mr-3 sm:mr-4">
+                                            <i class="fas <%= trans.transactionType === 'credit' ? 'fa-arrow-up text-green-500' : 'fa-arrow-up text-red-500' %> text-xs sm:text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base truncate max-w-[120px] sm:max-w-full"><%= trans.reason || (trans.transactionType === 'credit' ? 'Deposit' : 'Withdrawal') %></p>
+                                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400"><%= new Date(trans.date).toLocaleDateString() %> • <%= new Date(trans.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></p>
+                                        </div>
+                                    </div>
+                                    <p class="font-medium <%= trans.transactionType === 'credit' ? 'text-green-500' : 'text-red-500' %> text-sm sm:text-base">
+                                        <%= trans.transactionType === 'credit' ? '+' : '-' %>₹<%= trans.amount ? trans.amount.toFixed(2) : '0.00' %>
+                                    </p>
                                 </div>
-                                <div>
-                                    <p class="font-medium text-gray-800"><%= trans.reason || (trans.transactionType === 'credit' ? 'Deposit' : 'Withdrawal') %></p>
-                                    <p class="text-sm text-gray-500"><%= new Date(trans.date).toLocaleDateString() %> • <%= new Date(trans.date).toLocaleTimeString() %></p>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="text-center py-6 sm:py-8">
+                                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                    <i class="fas fa-receipt text-gray-400 dark:text-gray-500 text-lg sm:text-xl"></i>
                                 </div>
+                                <h3 class="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">No transactions yet</h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-4">Your transaction history will appear here</p>
                             </div>
-                            <p class="font-medium <%= trans.transactionType === 'credit' ? 'text-green-500' : 'text-red-500' %>">
-                                <%= trans.transactionType === 'credit' ? '+' : '-' %>₹<%= trans.amount ? trans.amount.toFixed(2) : '0.00' %>
-                            </p>
-                        </div>
-                    <% }); %>
-                <% } %>
+                        <% } %>
+                    </div>
+
+                    <!-- Hidden full transaction list -->
+                    <div id="fullTransactionList" class="hidden space-y-3 sm:space-y-4 mt-3 sm:mt-4">
+                        <% if (wallet && wallet.transaction && wallet.transaction.length > 3) { %>
+                            <% wallet.transaction.slice(3).forEach(function(trans) { %>
+                                <div class="transaction-item flex items-center justify-between p-2 sm:p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full <%= trans.transactionType === 'credit' ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30' %> flex items-center justify-center mr-3 sm:mr-4">
+                                            <i class="fas <%= trans.transactionType === 'credit' ? 'fa-arrow-down text-green-500' : 'fa-arrow-up text-red-500' %> text-xs sm:text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base truncate max-w-[120px] sm:max-w-full"><%= trans.reason || (trans.transactionType === 'credit' ? 'Deposit' : 'Withdrawal') %></p>
+                                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400"><%= new Date(trans.date).toLocaleDateString() %> • <%= new Date(trans.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></p>
+                                        </div>
+                                    </div>
+                                    <p class="font-medium <%= trans.transactionType === 'credit' ? 'text-green-500' : 'text-red-500' %> text-sm sm:text-base">
+                                        <%= trans.transactionType === 'credit' ? '+' : '-' %>₹<%= trans.amount ? trans.amount.toFixed(2) : '0.00' %>
+                                    </p>
+                                </div>
+                            <% }); %>
+                        <% } %>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-                
-             
-            </div>
-        </div>
-    </div>
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:block"></i>
+    </button>
 
     <%-include('partials/footer') %>
     <%-include('partials/loader') %>
 
+    <script src="/dark-mode-toggle.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const viewAllBtn = document.getElementById("viewAllBtn");
@@ -339,215 +391,73 @@
                     }
                 });
             }
+            
+            // Add smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
         });
 
-        
-        </script>
-        
+        // Dark mode toggle functionality
+function initDarkMode() {
+  const html = document.documentElement;
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  
+  // Check for saved theme preference or use system preference
+  if (localStorage.getItem('darkMode') === 'true' || 
+      (!localStorage.getItem('darkMode') && 
+       window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    html.classList.add('dark');
+  }
+  
+  // Toggle dark mode
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', function() {
+      html.classList.toggle('dark');
+      localStorage.setItem('darkMode', html.classList.contains('dark'));
+    });
+  }
+}
 
+// Toast notification system
+function showToast(message, isSuccess = true) {
+  // Check if Toastify is defined, if not, try to load it dynamically
+  if (typeof Toastify === 'undefined') {
+    console.error('Toastify is not defined. Ensure it is properly imported or included.');
+    return; // Exit the function if Toastify is not available
+  }
 
+  Toastify({
+    text: message,
+    duration: 3000,
+    gravity: "bottom",
+    position: "center",
+    backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
+    stopOnFocus: true,
+    className: "rounded-lg",
+    style: {
+      boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
+    }
+  }).showToast();
+}
 
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  initDarkMode();
+});
 
-    <script>
-        // Initialize spending chart
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('spendingChart').getContext('2d');
-            
-            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, 'rgba(14, 165, 233, 0.5)');
-            gradient.addColorStop(1, 'rgba(14, 165, 233, 0)');
-            
-            const spendingChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Transactions',
-                        data: [120, 190, 85, 205, 165, 250, 140],
-                        borderColor: '#0ea5e9',
-                        backgroundColor: gradient,
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#0ea5e9',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 5,
-                        pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: '#1e293b',
-                            titleColor: '#fff',
-                            bodyColor: '#e0f2fe',
-                            padding: 12,
-                            displayColors: false,
-                            callbacks: {
-                                label: function(context) {
-                                    return `₹₹{context.raw}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(226, 232, 240, 0.5)',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                callback: function(value) {
-                                    return '₹' + value;
-                                },
-                                font: {
-                                    size: 12
-                                },
-                                color: '#64748b'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false,
-                                drawBorder: false
-                            },
-                            ticks: {
-                                font: {
-                                    size: 12
-                                },
-                                color: '#64748b'
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Quick amount buttons
-            const quickAmountButtons = document.querySelectorAll('.quick-amount');
-            quickAmountButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const amount = this.getAttribute('data-amount');
-                    document.getElementById('amount').value = amount;
-                });
-            });
-            
-            // Add event listeners for quick action buttons
-            const quickActionButtons = document.querySelectorAll('.grid.grid-cols-2.sm\\:grid-cols-4 button');
-            quickActionButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    Toastify({
-                        text: `₹{this.querySelector('span').textContent} feature coming soon!`,
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "center",
-                        backgroundColor: "#0ea5e9",
-                    }).showToast();
-                });
-            });
-            
-            // Add event listener for Add Funds form
-            const addFundsForm = document.getElementById('addFundsForm');
-            if (addFundsForm) {
-                addFundsForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const amount = document.getElementById('amount').value;
-                    const paymentMethod = document.getElementById('payment_method').value;
-                    
-                    if (!amount || amount <= 0) {
-                        Toastify({
-                            text: "Please enter a valid amount",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "center",
-                            backgroundColor: "#ef4444",
-                        }).showToast();
-                        return;
-                    }
-                    
-                    if (!paymentMethod) {
-                        Toastify({
-                            text: "Please select a payment method",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "center",
-                            backgroundColor: "#ef4444",
-                        }).showToast();
-                        return;
-                    }
-                    
-                    // In a real application, you would submit the form to the server
-                    // For demo purposes, we'll just show a success message
-                    Toastify({
-                        text: `₹₹{amount} successfully added to your wallet!`,
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "center",
-                        backgroundColor: "#10b981",
-                    }).showToast();
-                    
-                    // Reset form
-                    this.reset();
-                });
-            }
-            
-            // Add event listener for Withdraw form
-            const withdrawForm = document.getElementById('withdrawForm');
-            if (withdrawForm) {
-                withdrawForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const amount = document.getElementById('withdraw_amount').value;
-                    const withdrawMethod = document.getElementById('withdraw_method').value;
-                    
-                    if (!amount || amount <= 0) {
-                        Toastify({
-                            text: "Please enter a valid amount",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "center",
-                            backgroundColor: "#ef4444",
-                        }).showToast();
-                        return;
-                    }
-                    
-                    if (!withdrawMethod) {
-                        Toastify({
-                            text: "Please select a withdrawal method",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "center",
-                            backgroundColor: "#ef4444",
-                        }).showToast();
-                        return;
-                    }
-                    
-                    // In a real application, you would submit the form to the server
-                    // For demo purposes, we'll just show a success message
-                    Toastify({
-                        text: `Withdrawal request for ₹₹{amount} has been submitted!`,
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: "center",
-                        backgroundColor: "#10b981",
-                    }).showToast();
-                    
-                    // Reset form
-                    this.reset();
-                });
-            }
-        });
     </script>
 </body>
 </html>

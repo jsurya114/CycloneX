@@ -1,276 +1,461 @@
 <!DOCTYPE HTML>
 <html lang="en">
-  <%- include('partials/head') %>
-<body>
-  <div class="screen-overlay"></div>
-  <aside class="navbar-aside" id="offcanvas_aside">
-    <div class="aside-top">
-      <a href="" class="brand-wrap">
-        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-      </a>
-      <div>
-        <button class="btn btn-icon btn-aside-minimize">
-          <i class="text-muted material-icons md-menu_open"></i>
-        </button>
-      </div>
-    </div>
-    <nav>
-      <ul class="menu-aside">
-        <li class="menu-item ">
-          <a class="menu-link" href="/admin/dashboard">
-            <i class="icon material-icons md-home"></i>
-            <span class="text">Dashboard</span>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a class="menu-link" href="/admin/product-list2">
-            <i class="icon material-icons md-shopping_bag"></i>
-            <span class="text">Products</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/category">
-            <i class="icon material-icons md-category"></i>
-            <span class="text">Category</span>
-          </a>
-        </li>
-        <li class="menu-item active">
-          <a class="menu-link" href="/admin/brands">
-            <i class="icon material-icons md-stars"></i>
-            <span class="text">Brands</span>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/coupons">
-            <i class="icon material-icons md-card_giftcard"></i>
-            <span class="text">Coupons</span>
-          </a>
-        </li>
-        <li class="menu-item  ">
-          <a class="menu-link" href="/admin/userlist">
-            <i class="icon material-icons md-store"></i>
-            <span class="text">Users</span>
-            <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-          </a>
-         
-        </li>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycloneX Dashboard - Brands</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+      tailwind.config = {
+          darkMode: 'class',
+          theme: {
+              extend: {
+                  colors: {
+                      primary: {
+                          50: '#f0f9ff',
+                          100: '#e0f2fe',
+                          200: '#bae6fd',
+                          300: '#7dd3fc',
+                          400: '#38bdf8',
+                          500: '#0ea5e9',
+                          600: '#0284c7',
+                          700: '#0369a1',
+                          800: '#075985',
+                          900: '#0c4a6e',
+                          950: '#082f49',
+                      },
+                      secondary: {
+                          50: '#f5f3ff',
+                          100: '#ede9fe',
+                          200: '#ddd6fe',
+                          300: '#c4b5fd',
+                          400: '#a78bfa',
+                          500: '#8b5cf6',
+                          600: '#7c3aed',
+                          700: '#6d28d9',
+                          800: '#5b21b6',
+                          900: '#4c1d95',
+                          950: '#2e1065',
+                      },
+                  },
+              },
+          },
+      }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+      body {
+          font-family: 'Inter', sans-serif;
+      }
       
-        <li class="menu-item ">
-          <a class="menu-link" href="/admin/orderlist">
-            <i class="icon material-icons md-shopping_bag"></i>
-            <span class="text">Orders</span>
-            <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-          </a>
-          <!-- <ul class="submenu">
-            <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li>
-            <li><a href="/admin/orderlist" class="submenu-link">Add Product</a></li>
-          </ul> -->
-        </li>
-      </ul>
-     
-      </ul>
-      <br><br>
-    </nav>
-  </aside>
-  <main class="main-wrap">
-    <%- include('partials/header') %>
-    <section class="content-main">
-      <div class="content-header">
-        <div>
-          <h2 class="content-title card-title text-4xl">Brands</h2>
-        </div>
-        <div class="flex flex-col sm:flex-row items-center sm:space-x-4 mb-4">
-          <!-- Search Input -->
-          <input 
-              type="text" 
-              id="searchInput" 
-              placeholder="Search Brands" 
-              class="bg-white px-3 py-2 border rounded-md w-full sm:max-w-xs"
-          />
-          <!-- Search Button -->
-          <button 
-            id="searchBtn" 
-            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Search
-          </button>
-          <!-- Clear Button -->
-          <button 
-            id="clearBtn" 
-            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          >
-            Clear
-          </button>
-        
-     
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
       
-
-          <!-- Status Filter Dropdown -->
-          <select id="statusFilter" class="bg-white px-3 py-2 border rounded-md">
-              <option value="">All</option>
-              <option value="active">Active</option>
-              <option value="deactive">Deactivated</option>
-          </select>
-        </div>
-      </div>
-      <!-- Card Container with max width adjusted -->
-      <div class="bg-white shadow-sm rounded-lg overflow-hidden max-w-6xl mx-auto">
-        <div class="p-6">
-          <!-- Grid layout: Form on left, Brands Table on right -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <!-- Add Brand Form -->
-            <div class="col-span-1">
-              <form id="addBrandForm" enctype="multipart/form-data" class="space-y-4">
-                <div>
-                  <label for="brand_name" class="block text-sm font-medium text-gray-700">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Type here"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="brand_name"
-                  />
-                  <!-- Inline error for name -->
-                  <p id="brand_name_error" class="text-red-500 text-sm hidden"></p>
-                </div>
-                <div>
-                  <label for="brand_description" class="block text-sm font-medium text-gray-700">Description</label>
-                  <textarea
-                    name="description"
-                    placeholder="Type here"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    id="brand_description"
-                  ></textarea>
-                  <!-- Inline error for description -->
-                  <p id="brand_description_error" class="text-red-500 text-sm hidden"></p>
-                </div>
-                <!-- Removed the Image input field -->
-                <div>
-                  <button
-                    type="submit"
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    Create Brand
-                  </button>
-                </div>
-              </form>
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      
+      /* Toggle switch styling */
+      .toggle-checkbox:checked {
+          right: 0;
+          background-color: #0284c7;
+          border-color: #0284c7;
+      }
+      
+      .toggle-label {
+          display: block;
+          overflow: hidden;
+          cursor: pointer;
+          border-radius: 9999px;
+          height: 1.5rem;
+          background-color: #d1d5db;
+      }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Main Container -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
             </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
+          </a>
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
+            </a>
+       
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium bg-primary-50 text-primary-700 rounded-lg group">
+              <i class="fas fa-star w-5 h-5 mr-2"></i>
+              <span>Brands</span>
+            </a>
+          </div>
 
-            <!-- Brands Table -->
-            <div class="col-span-3">
-              <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Description</th>
-                      <th class="p-3 text-right text-sm font-semibold text-gray-700">Action</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Status</th>
-                      <th class="p-3 text-left text-sm font-semibold text-gray-700">Listing</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% if(brands && brands.length > 0){ %>
-                    <% brands.forEach(brand => { %>
-                      <tr class="border-b border-gray-200 hover:bg-gray-50">
-                        <td class="p-3 text-sm text-gray-700"><b><%= brand.name %></b></td>
-                        <td class="p-3 text-sm text-gray-700"><%= brand.description %></td>
-                        <td class="p-3 text-right">
-                          <a
-                            href="/admin/editbrand/<%= brand._id %>"
-                            class="text-blue-500 hover:text-blue-700"
-                            data-id="<%= brand._id %>"
-                            data-name="<%= brand.name %>"
-                            data-description="<%= brand.description %>"
-                          >
-                            <i class="fas fa-pencil-alt" style="font-size: 1.2rem;"></i>
-                          </a>
-                        </td>
-                        <td class="p-3">
-                          <% if (brand.isBlocked) { %>
-                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">
-                              Deactivated
-                            </span>
-                          <% } else { %>
-                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                              Active
-                            </span>
-                          <% } %>
-                        </td>
-                        <td class="p-3">
-                          <!-- Tailwind Toggle Switch -->
-                          <label class="relative inline-flex items-center cursor-pointer">
-                            <input 
-                              type="checkbox" 
-                              data-id="<%= brand._id %>" 
-                              class="sr-only peer toggle-checkbox" 
-                              <%= brand.isBlocked ? '' : 'checked' %>
-                            />
-                            <div class="w-11 h-6 rounded-full bg-red-200 
-                                        peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 
-                                        dark:peer-focus:ring-red-800
-                                        peer-checked:bg-green-600 relative
-                                        after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                                        after:border-gray-300 after:border after:rounded-full 
-                                        after:h-5 after:w-5 after:transition-all 
-                                        peer-checked:after:translate-x-full peer-checked:after:border-white">
-                            </div>
-                          </label>
-                        </td>
-                      </tr>
-                    <% }) %>
-                    <% } else { %>
-                      <tr>
-                        <td colspan="6" class="text-center p-3">No brands found</td>
-                      </tr>
-                  <% } %>
-                  </tbody>
-                </table>
-                <div class="pagination-area mt-15 mb-50">
-                  <nav aria-label="Page navigation">
-                      <ul class="pagination flex flex-wrap items-center justify-center gap-2">
-                          <!-- Previous Button -->
-                          <% if (currentPage > 1) { %>
-                              <li class="page-item">
-                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm" href="?page=<%= prevPage %>&limit=4">
-                                      &laquo;
-                                  </a>
-                              </li>
-                          <% } %>
-              
-                          <!-- Page Numbers -->
-                          <% for (let i = 1; i <= totalPages; i++) { %>
-                              <li class="page-item">
-                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm <%= i === currentPage ? 'bg-blue-500 border-blue-500 text-white hover:bg-blue-600 hover:border-blue-600' : '' %>" href="?page=<%= i %>&limit=3">
-                                      <%= i %>
-                                  </a>
-                              </li>
-                          <% } %>
-              
-                          <!-- Next Button -->
-                          <% if (currentPage < totalPages) { %>
-                              <li class="page-item">
-                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-blue-50 hover:border-blue-500 hover:text-blue-600 transition-all duration-300 shadow-sm" href="?page=<%= nextPage %>&limit=3">
-                                      &raquo;
-                                  </a>
-                              </li>
-                          <% } %>
-                      </ul>
-                  </nav>
+
+
+          <a href="/admin/salesreport" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+            <i class="fas fa-chart-line w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+            <span>salesreport</span>
+          </a>
+          
+          
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Users</span>
+            </a>
+
+            <a href="/admin/adminwallet" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">              <i class="fas fa-wallet w-5 h-5 mr-2 text-primary-700"></i>
+
+              <span>Wallet</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Orders</span>
+            </a>
+
+            <a href="/admin/Logout" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-sign-out-alt w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- Left: Hamburger Menu -->
+          <div class="flex items-center">
+            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div class="hidden md:flex items-center ml-4">
+              <h1 class="text-xl font-semibold text-gray-800">Brand Management</h1>
+              <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content - Scrollable area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div class="mb-4 md:mb-0">
+            <h2 class="text-2xl font-bold text-gray-900 content-title card-title">Brands</h2>
+            <p class="text-sm text-gray-600">Manage product brands and their listings</p>
+          </div>
+        </div>
+        
+        <!-- Filters Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <!-- Search & Filters -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-wrap flex-1">
+              <!-- Search Input -->
+              <div class="relative w-full sm:max-w-xs">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Search Brands"
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5"
+                />
               </div>
+              
+              <!-- Status Filter Dropdown -->
+              <select id="statusFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 p-2.5">
+                <option value="">All</option>
+                <option value="active">Active</option>
+                <option value="deactive">Deactivated</option>
+              </select>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Action Buttons -->
+              <div class="flex space-x-2">
+                <button
+                  id="searchBtn"
+                  class="bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  <i class="fas fa-search mr-2"></i> Search
+                </button>
+                
+                <button
+                  id="clearBtn"
+                  class="bg-gray-200 text-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                >
+                  <i class="fas fa-times mr-2"></i> Clear
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </div><!-- End card -->
-    </section> <!-- content-main end// -->
-    <%- include('partials/footer') %>
-  </main>
+        
+        <!-- Main Content Grid -->
+        <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+          <div class="p-6">
+            <!-- Grid layout: Form on left, Brands Table on right -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <!-- Add Brand Form -->
+              <div class="col-span-1">
+                <form id="addBrandForm" enctype="multipart/form-data" class="space-y-4">
+                  <div>
+                    <label for="brand_name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Type here"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      id="brand_name"
+                    />
+                    <!-- Inline error for name -->
+                    <p id="brand_name_error" class="text-red-500 text-sm mt-1 hidden"></p>
+                  </div>
+                  <div>
+                    <label for="brand_description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea
+                      name="description"
+                      placeholder="Type here"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      id="brand_description"
+                    ></textarea>
+                    <!-- Inline error for description -->
+                    <p id="brand_description_error" class="text-red-500 text-sm mt-1 hidden"></p>
+                  </div>
+                  <div>
+                    <button
+                      type="submit"
+                      class="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+                    >
+                      Create Brand
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Brands Table -->
+              <div class="col-span-3">
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-white border border-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="p-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                        <th class="p-3 text-left text-sm font-semibold text-gray-700">Description</th>
+                        <th class="p-3 text-right text-sm font-semibold text-gray-700">Action</th>
+                        <th class="p-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                        <th class="p-3 text-left text-sm font-semibold text-gray-700">Listing</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if(brands && brands.length > 0){ %>
+                      <% brands.forEach(brand => { %>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                          <td class="p-3 text-sm text-gray-700"><b><%= brand.name %></b></td>
+                          <td class="p-3 text-sm text-gray-700"><%= brand.description %></td>
+                          <td class="p-3 text-right">
+                            <a
+                              href="/admin/editbrand/<%= brand._id %>"
+                              class="text-primary-600 hover:text-primary-800"
+                              data-id="<%= brand._id %>"
+                              data-name="<%= brand.name %>"
+                              data-description="<%= brand.description %>"
+                            >
+                              <i class="fas fa-pencil-alt" style="font-size: 1.2rem;"></i>
+                            </a>
+                          </td>
+                          <td class="p-3">
+                            <% if (brand.isBlocked) { %>
+                              <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800 ring-1 ring-inset ring-red-600/20">
+                                Deactivated
+                              </span>
+                            <% } else { %>
+                              <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800 ring-1 ring-inset ring-green-600/20">
+                                Active
+                              </span>
+                            <% } %>
+                          </td>
+                          <td class="p-3">
+                            <!-- Tailwind Toggle Switch -->
+                            <div class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+                              <input 
+                                type="checkbox" 
+                                data-id="<%= brand._id %>" 
+                                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-2 border-gray-300 appearance-none cursor-pointer"
+                                <%= brand.isBlocked ? '' : 'checked' %>
+                              />
+                              <label
+                                for="toggle"
+                                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+                              ></label>
+                            </div>
+                          </td>
+                        </tr>
+                      <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="5" class="text-center p-3">No brands found</td>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                  </table>
+                  <div class="pagination-area mt-4 mb-4">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination flex flex-wrap items-center justify-center gap-2">
+                            <!-- Previous Button -->
+                            <% if (currentPage > 1) { %>
+                              <li class="page-item">
+                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-primary-50 hover:border-primary-500 hover:text-primary-600 transition-all duration-300 shadow-sm" 
+                                     href="?page=<%= prevPage %>&limit=3<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %>">
+                                      &laquo;
+                                  </a>
+                              </li>
+                          <% } %>
+                
+                            <!-- Page Numbers -->
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                              <li class="page-item">
+                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-primary-50 hover:border-primary-500 hover:text-primary-600 transition-all duration-300 shadow-sm <%= i === currentPage ? 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600 hover:border-primary-600' : '' %>" 
+                                     href="?page=<%= i %>&limit=3<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %>">
+                                      <%= i %>
+                                  </a>
+                              </li>
+                          <% } %>
+                
+                            <!-- Next Button -->
+                            <% if (currentPage < totalPages) { %>
+                              <li class="page-item">
+                                  <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-primary-50 hover:border-primary-500 hover:text-primary-600 transition-all duration-300 shadow-sm" 
+                                     href="?page=<%= nextPage %>&limit=3<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %>">
+                                      &raquo;
+                                  </a>
+                              </li>
+                          <% } %>
+                        </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- End card -->
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-500">© 2023 CycloneX. All rights reserved.</p>
+          <div class="flex space-x-4 mt-2 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
 
   <!-- Include SweetAlert2 script from CDN -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <%- include('partials/scripts') %>
+  
+  <!-- Scripts -->
   <script>
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', openSidebar);
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+      }
+      
+      // Close sidebar on window resize if screen becomes large
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
+    });
+    
     // Create a SweetAlert mixin configured as a toast at the top right corner
     const Toast = Swal.mixin({
       toast: true,
@@ -366,121 +551,115 @@
       }
     });
   
-    // (Toggle and search code remains unchanged below)
     // Toggle Brand Status
-  // Toggle Brand Status
-document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
-  switchElement.addEventListener('change', async function(e) {
-    // Prevent the default toggle action initially
-    e.preventDefault();
-    
-    const brandId = this.getAttribute('data-id');
-    const newStatus = !this.checked; // Inverse because we prevented default
-    
-    if (!brandId) {
-      console.error('Brand ID not found');
-      return;
-    }
-
-    // Show confirmation dialog
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Do you want to ${newStatus ? 'activate' : 'deactivate'} this brand?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, update it!'
-    });
-
-    // If user confirms
-    if (result.isConfirmed) {
-      try {
-        const response = await fetch(`/admin/brand/listing/${brandId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: newStatus })
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to update status');
+    document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
+      switchElement.addEventListener('change', async function(e) {
+        // Prevent the default toggle action initially
+        e.preventDefault();
+        
+        const brandId = this.getAttribute('data-id');
+        const newStatus = !this.checked; // Inverse because we prevented default
+        
+        if (!brandId) {
+          console.error('Brand ID not found');
+          return;
         }
 
-        // Show success toast
-        Toast.fire({
-          icon: 'success',
-          title: 'Brand status has been updated.',
-          timer: 2000
+        // Show confirmation dialog
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: `Do you want to ${newStatus ? 'activate' : 'deactivate'} this brand?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, update it!'
         });
 
-        // Update the toggle and reload after toast
-        this.checked = newStatus;
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        // If user confirms
+        if (result.isConfirmed) {
+          try {
+            const response = await fetch(`/admin/brand/listing/${brandId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: newStatus })
+            });
 
-      } catch (error) {
-        // Show error toast
-        Toast.fire({
-          icon: 'error',
-          title: 'Failed to update brand status.'
-        });
-        this.checked = !newStatus; // Revert toggle if failed
-      }
-    } else {
-      // If user cancels, revert the checkbox
-      this.checked = !newStatus;
-    }
-  });
-});
+            if (!response.ok) {
+              throw new Error('Failed to update status');
+            }
+
+            // Show success toast
+            Toast.fire({
+              icon: 'success',
+              title: 'Brand status has been updated.',
+              timer: 2000
+            });
+
+            // Update the toggle and reload after toast
+            this.checked = newStatus;
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+
+          } catch (error) {
+            // Show error toast
+            Toast.fire({
+              icon: 'error',
+              title: 'Failed to update brand status.'
+            });
+            this.checked = !newStatus; // Revert toggle if failed
+          }
+        } else {
+          // If user cancels, revert the checkbox
+          this.checked = !newStatus;
+        }
+      });
+    });
     
     // Search functionality for Brands with cancel button
     document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('searchInput');
-  const searchBtn = document.getElementById("searchBtn");
-  const clearBtn = document.getElementById("clearBtn");
-  const statusFilter = document.getElementById("statusFilter");
+      const searchInput = document.getElementById('searchInput');
+      const searchBtn = document.getElementById("searchBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const statusFilter = document.getElementById("statusFilter");
 
-  searchBtn.addEventListener("click", applyFilters);
-  clearBtn.addEventListener("click", clearFilters);
-  statusFilter.addEventListener('change', applyFilters);
+      searchBtn.addEventListener("click", applyFilters);
+      clearBtn.addEventListener("click", clearFilters);
+      statusFilter.addEventListener('change', applyFilters);
 
-  searchInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      applyFilters();
-    }
-  });
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          applyFilters();
+        }
+      });
 
-  function applyFilters() {
-    const queryParams = new URLSearchParams();
+      function applyFilters() {
+        const queryParams = new URLSearchParams();
 
-    const search = searchInput.value.trim();
-    const status = statusFilter.value;
+        const search = searchInput.value.trim();
+        const status = statusFilter.value;
 
-    if (search) queryParams.append("search", search);
-    if (status) queryParams.append("statusFilter", status);
+        if (search) queryParams.append("search", search);
+        if (status) queryParams.append("statusFilter", status);
 
-    // Corrected typo: using 'window' instead of 'indow'
-    window.location.href = `/admin/brands?${queryParams.toString()}`;
-  }
+        window.location.href = `/admin/brands?${queryParams.toString()}`;
+      }
 
-  function clearFilters() {
-    searchInput.value = "";
-    statusFilter.value = "";
-    applyFilters();
-  }
+      function clearFilters() {
+        searchInput.value = "";
+        statusFilter.value = "";
+        applyFilters();
+      }
 
-  function restoreFiltersFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    searchInput.value = params.get("search") || "";
-    statusFilter.value = params.get("statusFilter") || "";
-  }
+      function restoreFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        searchInput.value = params.get("search") || "";
+        statusFilter.value = params.get("statusFilter") || "";
+      }
 
-  restoreFiltersFromURL();
-});
-
+      restoreFiltersFromURL();
+    });
   </script>
-  
-  
 </body>
 </html>

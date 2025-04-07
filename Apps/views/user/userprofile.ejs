@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -47,13 +48,25 @@
         border-radius: 8px;
     }
     
+    .dark ::-webkit-scrollbar-track {
+        background: #1e293b;
+    }
+    
     ::-webkit-scrollbar-thumb {
         background: #94a3b8;
         border-radius: 8px;
     }
     
+    .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+    }
+    
     ::-webkit-scrollbar-thumb:hover {
         background: #64748b;
+    }
+    
+    .dark ::-webkit-scrollbar-thumb:hover {
+        background: #334155;
     }
 
     /* Price range slider styling */
@@ -64,6 +77,10 @@
         background: #e2e8f0;
         border-radius: 8px;
         outline: none;
+    }
+    
+    .dark input[type="range"] {
+        background: #334155;
     }
 
     input[type="range"]::-webkit-slider-thumb {
@@ -77,6 +94,10 @@
         border: 2px solid white;
         box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
+    
+    .dark input[type="range"]::-webkit-slider-thumb {
+        border-color: #1e293b;
+    }
 
     input[type="range"]::-moz-range-thumb {
         width: 18px;
@@ -86,6 +107,10 @@
         cursor: pointer;
         border: 2px solid white;
         box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    
+    .dark input[type="range"]::-moz-range-thumb {
+        border-color: #1e293b;
     }
 
     /* Checkbox styling */
@@ -101,6 +126,10 @@
         background-color: #f8fafc;
         border-radius: 0.375rem;
     }
+    
+    .dark .custom-checkbox:hover {
+        background-color: #1e293b;
+    }
 
     .custom-checkbox input[type="checkbox"] {
         width: 1rem;
@@ -109,6 +138,10 @@
         border-radius: 0.25rem;
         border: 1.5px solid #cbd5e1;
         transition: all 0.2s;
+    }
+    
+    .dark .custom-checkbox input[type="checkbox"] {
+        border-color: #475569;
     }
 
     .custom-checkbox input[type="checkbox"]:checked {
@@ -122,6 +155,11 @@
         border-color: #0ea5e9;
         box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
     }
+    
+    .dark input:focus, .dark select:focus, .dark textarea:focus {
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25);
+    }
 
     /* Card hover effects */
     .hover-card {
@@ -132,6 +170,10 @@
         transform: translateY(-4px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
+    
+    .dark .hover-card:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    }
 
     /* Gradient backgrounds */
     .bg-gradient-primary {
@@ -141,279 +183,516 @@
     .bg-gradient-secondary {
         background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
     }
+
+    /* Credit card flip effect */
+    .credit-card-container {
+        perspective: 1000px;
+        height: 220px;
+        width: 100%;
+        max-width: 350px;
+    }
+
+    .credit-card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    .credit-card.flipped {
+        transform: rotateY(180deg);
+    }
+
+    .credit-card-front, .credit-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .credit-card-back {
+        transform: rotateY(180deg);
+    }
+
+    .magnetic-strip {
+        height: 40px;
+        background-color: #2d3748;
+        margin: 20px 0;
+    }
+    
+    .dark .magnetic-strip {
+        background-color: #1e293b;
+    }
+
+    .cvv-container {
+        background-color: #f7fafc;
+        padding: 10px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    
+    .dark .cvv-container {
+        background-color: #334155;
+        color: #f7fafc;
+    }
+
+    .card-chip {
+        height: 40px;
+        width: 50px;
+        background: linear-gradient(135deg, #cba135 0%, #ffdc73 50%, #cba135 100%);
+        border-radius: 6px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-chip::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .card-chip::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0;
+        height: 100%;
+        width: 1px;
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Dark mode toggle button */
+    .dark-mode-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #0ea5e9;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 40;
+        transition: all 0.3s ease;
+    }
+    
+    .dark-mode-toggle:hover {
+        transform: scale(1.1);
+    }
+    
+    .dark-mode-toggle i {
+        font-size: 1.25rem;
+        transition: transform 0.5s ease;
+    }
+    
+    .dark-mode-toggle:hover i {
+        transform: rotate(30deg);
+    }
+    
+    /* Transition for dark mode */
+    body {
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    /* Responsive table */
+    .responsive-table {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    @media (max-width: 640px) {
+        .responsive-table table {
+            min-width: 500px;
+        }
+    }
+    
+    /* Animation for cards */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    .animate-delay-100 {
+        animation-delay: 0.1s;
+    }
+    
+    .animate-delay-200 {
+        animation-delay: 0.2s;
+    }
+    
+    .animate-delay-300 {
+        animation-delay: 0.3s;
+    }
+    
+    .animate-delay-400 {
+        animation-delay: 0.4s;
+    }
 </style>
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="bg-slate-50 dark:bg-gray-900 font-sans text-slate-800 dark:text-slate-200">
     <%-include('partials/header') %>
-    <div class="container mx-auto p-4 max-w-7xl">
+    <div class="p-4 max-w-7xl mx-auto">
         <!-- Page header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-display font-bold text-slate-800">My Profile</h1>
-            <p class="text-slate-500">Manage your account settings and preferences</p>
+        <div class="mb-6 md:mb-8">
+            <h1 class="text-2xl md:text-3xl font-display font-bold text-slate-800 dark:text-slate-100">My Profile</h1>
+            <p class="text-slate-500 dark:text-slate-400">Manage your account settings and preferences</p>
         </div>
         
         <!-- Main content grid -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-            <!-- Left sidebar - kept at the same height -->
-            <div class="md:col-span-3">
-                <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm h-half">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+            <!-- Left sidebar -->
+            <div class="md:col-span-3 space-y-4 md:space-y-6">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-750 p-4 md:p-6 rounded-2xl shadow-sm">
                     <!-- User profile -->
-                    <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center justify-between mb-6 md:mb-8">
                         <div class="flex items-center space-x-2">
-                            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                            <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-xl md:text-2xl shadow-md">
                                 <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
                             </div>
                             <div>
-                                <p class="font-semibold text-lg text-gray-800"><%= user.fullName || 'Guest User' %></p>
-                                <p class="text-sm text-gray-500"><%= user.email || 'No email' %></p>
+                                <p class="font-semibold text-base md:text-lg text-gray-800 dark:text-gray-100"><%= user.fullName || 'Guest User' %></p>
+                                <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400"><%= user.email || 'No email' %></p>
                             </div>
                         </div>
-                       
                     </div>
                     
                     <!-- Navigation tabs -->
-                    <div class="flex justify-between mb-8">
+                    <div class="flex justify-between mb-6 md:mb-8">
                         <div class="group cursor-pointer">
                             <a href="/settings/<%=user._id  %>">
-                            <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                                <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                <i class="fas fa-user text-blue-500 text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                             </div>
-                            <span class="text-xs font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">Profile</span>
+                            <span class="text-xs font-medium text-gray-600 dark:text-gray-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300">Profile</span>
                             </a>
                         </div>
                         <div class="group cursor-pointer">
-                            <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                                <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                <i class="fas fa-gift text-purple-500 text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                             </div>
-                            <span class="text-xs font-medium text-gray-600 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
+                            <span class="text-xs font-medium text-gray-600 dark:text-gray-300 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors duration-300">Gifts</span>
                         </div>
                         <div class="group cursor-pointer">
                             <a href="/wallet" class="flex flex-col items-center">  
-                                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                                    <i class="fas fa-wallet text-green-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                    <i class="fas fa-wallet text-green-500 text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                                 </div>
-                                <span class="text-xs font-medium text-gray-600 group-hover:text-green-500 transition-colors duration-300">Wallet</span>
+                                <span class="text-xs font-medium text-gray-600 dark:text-gray-300 group-hover:text-green-500 dark:group-hover:text-green-400 transition-colors duration-300">Wallet</span>
                             </a>
                         </div>
                     </div>
                     
                     <!-- Menu items -->
                     <div class="space-y-2">
-                        <a href="/order" class="flex items-center p-3 rounded-lg hover:bg-white transition-colors duration-300 group">
-                            <i class="fas fa-shopping-bag mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                            <span class="font-medium text-gray-700 group-hover:text-blue-500 transition-colors duration-300">My orders</span>
+                        <a href="/order" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-gray-700 transition-colors duration-300 group">
+                            <i class="fas fa-shopping-bag mr-3 text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300"></i>
+                            <span class="font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300">My orders</span>
                         </a>
-                    
-                      
                         
-                        <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 transition-colors duration-300 group">
-                            <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
-                            <span class="font-medium text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
+                        <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-300 group">
+                            <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors duration-300"></i>
+                            <span class="font-medium text-red-400 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors duration-300">Log out</span>
                         </a>
                     </div>
                 </div>
 
-                    <!-- Referral Code Section -->
-                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-2xl shadow-sm mt-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-display font-bold text-lg text-slate-800">Referral Program</h3>
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-indigo-500 flex items-center justify-center text-white shadow-md">
-                                <i class="fas fa-gift text-sm"></i>
-                            </div>
+                <!-- Referral Code Section -->
+                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-4 md:p-6 rounded-2xl shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-display font-bold text-base md:text-lg text-slate-800 dark:text-slate-100">Referral Program</h3>
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-purple-400 to-indigo-500 flex items-center justify-center text-white shadow-md">
+                            <i class="fas fa-gift text-xs md:text-sm"></i>
                         </div>
-                        
-                        <p class="text-sm text-slate-600 mb-4">Share with friends and earn rewards!</p>
-                        
-                        <!-- Referral code display -->
-                        <div class="bg-white p-4 rounded-xl border border-purple-100 mb-4 relative overflow-hidden">
-                            <div class="absolute -right-6 -top-6 w-16 h-16 bg-purple-100 rounded-full opacity-50"></div>
-                            <div class="absolute -left-4 -bottom-4 w-12 h-12 bg-indigo-100 rounded-full opacity-50"></div>
-                            
-                            <p class="text-xs text-slate-500 mb-1">Your Referral Code</p>
-                            <div class="flex items-center justify-between">
-                                <p class="font-mono font-bold text-lg text-indigo-700 tracking-wider"><%= refferalCode ||'NA' %></p>
-                                <button class="text-indigo-600 hover:text-indigo-800 transition-colors" onclick="copyReferralCode()">
-                                    <i class="fas fa-copy"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Referral stats -->
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div class="bg-white p-3 rounded-lg border border-purple-100">
-                                <p class="text-xs text-slate-500 mb-1">Referrals</p>
-                                <p class="font-bold text-lg text-slate-800"><%=couponCount %>Coupons Available</p>
-                            </div>
-                            <div class="bg-white p-3 rounded-lg border border-purple-100">
-                                <p class="text-xs text-slate-500 mb-1">Rewards</p>
-                                <p class="font-bold text-lg text-slate-800">           <%= newUserrefferal ? newUserrefferal.couponCode : 'No Rewards Yet' %></p>
-                            </div>
-                        </div>
-                        
-                        
-                    
                     </div>
+                    
+                    <p class="text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-4">Share with friends and earn rewards!</p>
+                    
+                    <!-- Referral code display -->
+                    <div class="bg-white dark:bg-gray-800 p-3 md:p-4 rounded-xl border border-purple-100 dark:border-purple-900/30 mb-4 relative overflow-hidden">
+                        <div class="absolute -right-6 -top-6 w-16 h-16 bg-purple-100 dark:bg-purple-900/20 rounded-full opacity-50"></div>
+                        <div class="absolute -left-4 -bottom-4 w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-full opacity-50"></div>
+                        
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Your Referral Code</p>
+                        <div class="flex items-center justify-between">
+                            <p class="font-mono font-bold text-base md:text-lg text-indigo-700 dark:text-indigo-400 tracking-wider"><%= refferalCode ||'NA' %></p>
+                            <button class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors" onclick="copyReferralCode()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Referral stats -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg border border-purple-100 dark:border-purple-900/30">
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Coupons</p>
+                            <p class="font-bold text-base md:text-lg text-slate-800 dark:text-slate-100"><%=couponCount %> Available</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg border border-purple-100 dark:border-purple-900/30">
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Rewards</p>
+                            <p class="font-bold text-base md:text-lg text-slate-800 dark:text-slate-100 truncate"><%= newUserrefferal ? newUserrefferal.couponCode : 'No Rewards Yet' %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Credit Card Section -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card p-4 md:p-6">
+                    <h3 class="font-display font-bold text-base md:text-lg text-slate-800 dark:text-slate-100 mb-4">My Payment Card</h3>
+                    
+                    <!-- Credit Card Container with Flip Effect -->
+                    <div class="credit-card-container mx-auto mb-4">
+                        <div class="credit-card" id="creditCard">
+                            <!-- Front of the card -->
+                            <div class="credit-card-front bg-gradient-to-r from-blue-600 to-blue-800 p-4 md:p-5 rounded-xl text-white flex flex-col justify-between h-full shadow-lg">
+                                <div class="flex justify-between items-start">
+                                    <div class="card-chip mb-4"></div>
+                                    <div class="flex items-center">
+                                        <i class="fab fa-cc-visa text-xl md:text-2xl mr-1"></i>
+                                        <span class="font-semibold">VISA</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="my-4">
+                                    <div class="text-xs opacity-80 mb-1">Card Number</div>
+                                    <div id="cardNumberDisplay" class="font-mono text-base md:text-lg tracking-wider">•••• •••• •••• 7658</div>
+                                </div>
+                                
+                                <div class="flex justify-between items-end">
+                                    <div>
+                                        <div class="text-xs opacity-80 mb-1">Card Holder</div>
+                                        <div class="font-medium text-sm md:text-base"><%= user.fullName || 'John Doe' %></div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs opacity-80 mb-1">Expires</div>
+                                        <div class="font-medium text-sm md:text-base">10/2024</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Back of the card -->
+                            <div class="credit-card-back bg-gradient-to-r from-blue-800 to-blue-900 rounded-xl text-white flex flex-col h-full shadow-lg">
+                                <div class="h-12 bg-slate-800 mt-6"></div>
+                                <div class="magnetic-strip"></div>
+                                <div class="px-5">
+                                    <div class="cvv-container mb-4">
+                                        <div class="text-slate-800 dark:text-slate-200 font-mono mr-2">CVV:</div>
+                                        <div class="text-slate-800 dark:text-slate-200 font-mono font-bold">123</div>
+                                    </div>
+                                    <div class="text-xs opacity-80 mb-1">Card Number</div>
+                                    <div id="fullCardNumber" class="font-mono text-base md:text-lg tracking-wider">4532 8721 5463 7658</div>
+                                    <div class="mt-4 text-xs opacity-80">
+                                        This card is property of CycloneX Bank. Authorized use only.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Controls -->
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium px-2.5 py-1 rounded-full">Default payment</span>
+                        </div>
+                        <button id="toggleCardView" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full flex items-center justify-center transition-colors">
+                            <i class="fas fa-eye" id="viewIcon"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Card Details Text -->
+                    <div class="mt-4 text-sm text-slate-600 dark:text-slate-400">
+                        <p class="flex items-center mb-1">
+                            <i class="fas fa-credit-card text-blue-500 dark:text-blue-400 mr-2"></i>
+                            <span>Visa ending in 7658</span>
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fas fa-calendar-alt text-blue-500 dark:text-blue-400 mr-2"></i>
+                            <span>Expiry 10/2024</span>
+                        </p>
+                    </div>
+                </div>
             </div>
             
             <!-- Right content area -->
             <div class="md:col-span-9">
-                <!-- Stats cards - now full width in the right column -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer">
+                <!-- Stats cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 animate-fade-in">
+                    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer animate-delay-100">
                         <a href="/wishlist/<%= product._id%>" class="block"> 
                             <div class="flex items-center justify-between">
-                                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                    <i class="fas fa-heart text-red-500 text-xl"></i>
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fas fa-heart text-red-500 dark:text-red-400 text-lg md:text-xl"></i>
                                 </div>
-                                <p class="text-3xl font-bold text-gray-800 group-hover:text-red-500 transition-colors duration-300"><%=wishlistCount %></p>
+                                <p class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors duration-300"><%=wishlistCount %></p>
                             </div>
-                            <p class="text-sm text-gray-500 mt-4 group-hover:text-red-400 transition-colors duration-300">Favorite products</p>
+                            <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-4 group-hover:text-red-400 dark:group-hover:text-red-300 transition-colors duration-300">Favorite products</p>
                         </a>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer">
+                    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer animate-delay-200">
                         <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-shopping-cart text-blue-500 text-xl"></i>
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-shopping-cart text-blue-500 dark:text-blue-400 text-lg md:text-xl"></i>
                             </div>
-                            <p class="text-3xl font-bold text-gray-800 group-hover:text-blue-500 transition-colors duration-300"><%=orderCount %></p>
+                            <p class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-300"><%=orderCount %></p>
                         </div>
-                        <p class="text-sm text-gray-500 mt-4 group-hover:text-blue-400 transition-colors duration-300">Total Orders</p>
+                        <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-4 group-hover:text-blue-400 dark:group-hover:text-blue-300 transition-colors duration-300">Total Orders</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer">
+                    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer animate-delay-300">
                         <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-star text-yellow-500 text-xl"></i>
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-star text-yellow-500 dark:text-yellow-400 text-lg md:text-xl"></i>
                             </div>
-                            <p class="text-3xl font-bold text-gray-800 group-hover:text-yellow-500 transition-colors duration-300"><%=reviewCount %></p>
+                            <p class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-yellow-500 dark:group-hover:text-yellow-400 transition-colors duration-300"><%=reviewCount %></p>
                         </div>
-                        <p class="text-sm text-gray-500 mt-4 group-hover:text-yellow-400 transition-colors duration-300">Reviews added</p>
+                        <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-4 group-hover:text-yellow-400 dark:group-hover:text-yellow-300 transition-colors duration-300">Reviews added</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer">
+                    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 group cursor-pointer animate-delay-400">
                         <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                <i class="fas fa-undo text-purple-500 text-xl"></i>
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-undo text-purple-500 dark:text-purple-400 text-lg md:text-xl"></i>
                             </div>
-                            <p class="text-3xl font-bold text-gray-800 group-hover:text-purple-500 transition-colors duration-300"><%=returnOrderCount %></p>
+                            <p class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors duration-300"><%=returnOrderCount %></p>
                         </div>
-                        <p class="text-sm text-gray-500 mt-4 group-hover:text-purple-400 transition-colors duration-300">Product returns</p>
+                        <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-4 group-hover:text-purple-400 dark:group-hover:text-purple-300 transition-colors duration-300">Product returns</p>
                     </div>
                 </div>
                 
-                <!-- Account Information - now below the stats cards -->
-                <div class="bg-white rounded-xl shadow-card p-8 mb-6">
-                    <h2 class="text-2xl font-display font-bold text-slate-800 mb-6">Account Information</h2>
+                <!-- Account Information -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card p-6 md:p-8 mb-6">
+                    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 dark:text-slate-100 mb-6">Account Information</h2>
                     
                     <form class="grid grid-cols-1 gap-6" id="formData">
                         <!-- User info -->
                         <div class="space-y-6">
-                            <div class="flex items-center mb-6 pb-4 border-b border-slate-100">
-                                <div class="w-14 h-14 rounded-full bg-gradient-primary flex items-center justify-center mr-4 text-white font-bold text-xl shadow-md">
+                            <div class="flex flex-col sm:flex-row sm:items-center mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
+                                <div class="w-14 h-14 rounded-full bg-gradient-primary flex items-center justify-center mb-4 sm:mb-0 sm:mr-4 text-white font-bold text-xl shadow-md">
                                     <span><%= user.fullName ? user.fullName.charAt(0) : 'U' %></span>
                                 </div>
                                 <div>
-                                    <p class="text-xl font-semibold text-slate-800">Personal Details</p>
-                                    <p class="text-slate-500">Update your personal information</p>
+                                    <p class="text-xl font-semibold text-slate-800 dark:text-slate-100">Personal Details</p>
+                                    <p class="text-slate-500 dark:text-slate-400">Update your personal information</p>
                                 </div>
                             </div>
                     
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                 <input type="hidden" id="userProfile" data-id="<%=user._id%>">
                                 <!-- Full Name -->
                                 <div>
-                                    <label for="fullName" class="text-slate-700 font-medium mb-2 block">Full Name</label>
+                                    <label for="fullName" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Full Name</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i class="fas fa-user text-slate-400"></i>
+                                            <i class="fas fa-user text-slate-400 dark:text-slate-500"></i>
                                         </div>
-                                        <input type="text" id="fullName" name="fullName" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your full name">
+                                        <input type="text" id="fullName" name="fullName" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your full name">
                                     </div>
                                 </div>
                     
                                 <!-- Email Address -->
                                 <div>
-                                    <label for="email" class="text-slate-700 font-medium mb-2 block">Email Address</label>
+                                    <label for="email" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Email Address</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i class="fas fa-envelope text-slate-400"></i>
+                                            <i class="fas fa-envelope text-slate-400 dark:text-slate-500"></i>
                                         </div>
-                                        <input type="email" id="email" name="email" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your email">
+                                        <input type="email" id="email" name="email" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your email">
                                     </div>
                                 </div>
                     
                                 <!-- Mobile Number -->
                                 <div>
-                                    <label for="mobile" class="text-slate-700 font-medium mb-2 block">Mobile Number</label>
+                                    <label for="mobile" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Mobile Number</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i class="fas fa-phone text-slate-400"></i>
+                                            <i class="fas fa-phone text-slate-400 dark:text-slate-500"></i>
                                         </div>
-                                        <input type="tel" id="mobile" name="mobile" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your mobile number">
+                                        <input type="tel" id="mobile" name="mobile" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your mobile number">
                                     </div>
                                 </div>
                     
                                 <!-- Country -->
                                 <div>
-                                    <label for="country" class="text-slate-700 font-medium mb-2 block">Country</label>
+                                    <label for="country" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Country</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i class="fas fa-globe text-slate-400"></i>
+                                            <i class="fas fa-globe text-slate-400 dark:text-slate-500"></i>
                                         </div>
-                                        <input type="text" id="country" name="country" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your country">
+                                        <input type="text" id="country" name="country" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your country">
                                     </div>
                                 </div>
                     
                                 <!-- State -->
                                 <div>
-                                    <label for="state" class="text-slate-700 font-medium mb-2 block">State</label>
+                                    <label for="state" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">State</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i class="fas fa-map text-slate-400"></i>
+                                            <i class="fas fa-map text-slate-400 dark:text-slate-500"></i>
                                         </div>
-                                        <input type="text" id="state" name="state" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your state">
+                                        <input type="text" id="state" name="state" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your state">
                                     </div>
                                 </div>
                     
                                 <!-- Address -->
                                 <div>
-                                    <label for="address" class="text-slate-700 font-medium mb-2 block">Address</label>
+                                    <label for="address" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Address</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i class="fas fa-home text-slate-400"></i>
+                                            <i class="fas fa-home text-slate-400 dark:text-slate-500"></i>
                                         </div>
-                                        <input type="text" id="address" name="address" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your address">
+                                        <input type="text" id="address" name="address" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your address">
                                     </div>
                                 </div>
                     
                                 <!-- Pincode -->
                                 <div>
-                                    <label for="pincode" class="text-slate-700 font-medium mb-2 block">Pincode</label>
+                                    <label for="pincode" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Pincode</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i class="fas fa-map-pin text-slate-400"></i>
+                                            <i class="fas fa-map-pin text-slate-400 dark:text-slate-500"></i>
                                         </div>
-                                        <input type="text" id="pincode" name="pincode" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your pincode">
+                                        <input type="text" id="pincode" name="pincode" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your pincode">
                                     </div>
                                 </div>
                     
                                 <!-- Landmark -->
                                 <div>
-                                    <label for="landmark" class="text-slate-700 font-medium mb-2 block">Landmark</label>
+                                    <label for="landmark" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Landmark</label>
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <i class="fas fa-landmark text-slate-400"></i>
+                                            <i class="fas fa-landmark text-slate-400 dark:text-slate-500"></i>
                                         </div>
-                                        <input type="text" id="landmark" name="landmark" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter nearby landmark">
+                                        <input type="text" id="landmark" name="landmark" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter nearby landmark">
                                     </div>
                                 </div>
                             </div>
-                    
+                        
                             <div class="flex flex-wrap gap-4">
-                                <button type="button" id="getLocation" class="bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg flex items-center transition-colors shadow-md">
+                                <button type="button" id="getLocation" class="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center transition-colors shadow-md">
                                     <i class="fas fa-map-marker-alt mr-2"></i> Use Current Location
                                 </button>
-    
+        
                                 <!-- Submit Button -->
-                                <button type="submit" class="bg-gradient-primary text-white py-3 px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
+                                <button type="submit" class="bg-gradient-primary text-white py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
                                     <i class="fas fa-save mr-2"></i>
                                     Save Changes
                                 </button>
@@ -424,23 +703,23 @@
 
                 <!-- Add New Address Button -->
                 <div class="flex justify-end mb-6">
-                    <button type="button" class="bg-gradient-primary text-white py-3 px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
+                    <button type="button" class="bg-gradient-primary text-white py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
                         <i class="fas fa-plus mr-2"></i> Add New Address
                     </button>
                 </div>
                    
                 <!-- Active Orders -->
-                <div class="bg-white rounded-xl shadow-card p-8 mb-6">
-                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
-                        <h2 class="text-2xl font-display font-bold text-slate-800">Active Orders</h2>
-                        <span class="ml-2 bg-primary-100 text-primary-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card p-6 md:p-8 mb-6">
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
+                        <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 dark:text-slate-100">Active Orders</h2>
+                        <span class="ml-2 bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 text-xs font-medium px-2.5 py-0.5 rounded-full">
                             <%= orders.length %> Orders
                         </span>
                     </div>
                 
-                    <div class="overflow-x-auto">
+                    <div class="responsive-table">
                         <table class="w-full text-sm text-left">
-                            <thead class="text-slate-500 border-b">
+                            <thead class="text-slate-500 dark:text-slate-400 border-b dark:border-slate-700">
                                 <tr>
                                     <th class="py-4 px-4 font-semibold">Order ID</th>
                                     <th class="py-4 px-4 font-semibold">Date</th>
@@ -452,49 +731,49 @@
                             <tbody>
                                 <% if (orders.length > 0) { %>
                                     <% orders.forEach(order => { %>
-                                        <tr class="border-b hover:bg-slate-50 transition-colors">
-                                            <td class="py-4 px-4 font-medium text-slate-800">
-                                                <a href="/orderdetails/<%= order.orderId %>" class="text-blue-500 hover:underline">
+                                        <tr class="border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">
+                                            <td class="py-4 px-4 font-medium text-slate-800 dark:text-slate-200">
+                                                <a href="/orderdetails/<%= order.orderId %>" class="text-blue-500 dark:text-blue-400 hover:underline">
                                                     #<%= order.orderId %>
                                                 </a>
                                             </td>
-                                            <td class="py-4 px-4 text-slate-600">
+                                            <td class="py-4 px-4 text-slate-600 dark:text-slate-400">
                                                 <%= new Date(order.timestamp).toLocaleDateString() %>
                                             </td>
-                                            <td class="py-4 px-4 font-medium text-slate-800">₹<%= order.totalAmount.toFixed(2) %></td>
+                                            <td class="py-4 px-4 font-medium text-slate-800 dark:text-slate-200">₹<%= order.totalAmount.toFixed(2) %></td>
                                             <td class="py-4 px-4">
                                                 <% if (order.orderStatus === "pending") { %>
-                                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                                    <span class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
                                                         <i class="fas fa-clock text-[10px] mr-1.5"></i> Pending
                                                     </span>
                                                 <% } else if(order.orderStatus==='processing'){%>
-                                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
-                                                        <i class="fas fa-cog  text-[10px] mr-1.5"></i> processing
+                                                    <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                                        <i class="fas fa-cog text-[10px] mr-1.5"></i> Processing
                                                     </span>
                                                 <%}else if (order.orderStatus === "confirmed") { %>
-                                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                                    <span class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
                                                         <i class="fas fa-check-circle text-[10px] mr-1.5"></i> Confirmed
                                                     </span>
                                                 <% } else if (order.orderStatus === "shipped") { %>
-                                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                                    <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
                                                         <i class="fas fa-truck text-[10px] mr-1.5"></i> Shipped
                                                     </span>
                                                 <% } else if (order.orderStatus === "delivered") { %>
-                                                    <span class="bg-green-200 text-green-900 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                                    <span class="bg-green-200 dark:bg-green-900/50 text-green-900 dark:text-green-200 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
                                                         <i class="fas fa-box-open text-[10px] mr-1.5"></i> Delivered
                                                     </span>
                                                 <% } else if (order.orderStatus === "returned") { %>
-                                                    <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                                    <span class="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
                                                         <i class="fas fa-undo text-[10px] mr-1.5"></i> Returned
                                                     </span>
                                                 <% } else if (order.orderStatus === "cancelled") { %>
-                                                    <span class="bg-gray-200 text-gray-900 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
+                                                    <span class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full flex items-center w-fit">
                                                         <i class="fas fa-times-circle text-[10px] mr-1.5"></i> Cancelled
                                                     </span>
                                                 <% } %>
                                             </td>
                                             <td class="py-4 px-4 text-right">
-                                                <a href="/orderdetails/<%= order.orderId %>" class="text-blue-500 hover:underline">
+                                                <a href="/orderdetails/<%= order.orderId %>" class="text-blue-500 dark:text-blue-400 hover:underline">
                                                     View Details
                                                 </a>
                                             </td>
@@ -502,467 +781,274 @@
                                     <% }); %>
                                 <% } else { %>
                                     <tr>
-                                        <td colspan="5" class="py-6 text-center text-gray-500">No active orders found.</td>
+                                        <td colspan="5" class="py-6 text-center text-gray-500 dark:text-gray-400">No active orders found.</td>
                                     </tr>
                                 <% } %>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                
-                <!-- Cards and Feedback -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <!-- My cards -->
-                    <div class="bg-white rounded-xl shadow-card p-8">
-                        <h2 class="text-2xl font-display font-bold text-slate-800 mb-6 pb-4 border-b border-slate-100">Payment Methods</h2>
-                        
-                        <div class="mb-6">
-                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">Default payment</span>
-                        </div>
-                        
-                        <div class="flex items-start mb-6 p-4 border border-slate-200 rounded-xl hover:border-primary-300 transition-colors">
-                            <div class="bg-gradient-to-r from-blue-500 to-blue-700 p-3 rounded-lg mr-4 text-white">
-                                <i class="fab fa-cc-visa text-2xl"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-slate-800">Visa ending in 7658</p>
-                                <p class="text-sm text-slate-500">Expiry 10/2024</p>
-                                <div class="mt-3 flex space-x-3">
-                                    <button class="text-sm text-slate-500 hover:text-red-500 transition-colors">
-                                        <i class="fas fa-trash-alt mr-1"></i> Delete
-                                    </button>
-                                    <button class="text-sm text-slate-500 hover:text-primary-500 transition-colors">
-                                        <i class="fas fa-edit mr-1"></i> Edit
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button class="bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg flex items-center transition-colors shadow-md">
-                            <i class="fas fa-credit-card mr-2"></i>
-                            Manage payment methods
-                        </button>
-                    </div>
-                    
-                    <!-- Help us improve -->
-                    <div class="bg-white rounded-xl shadow-card p-8 flex flex-col items-center text-center">
-                        <div class="w-24 h-24 mb-6 relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full"></div>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <i class="fas fa-user-astronaut text-primary-500 text-4xl"></i>
-                            </div>
-                        </div>
-                        <h2 class="text-2xl font-display font-bold text-slate-800 mb-3">Help Us Improve!</h2>
-                        <p class="text-slate-500 mb-6 max-w-md">Periodically, we will ask for your opinion on studies that help us improve your customer experience</p>
-                        <button class="bg-gradient-primary hover:shadow-lg text-white py-3 px-6 rounded-lg transition-all shadow-md">
-                            Participate Now
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-<%-include('partials/footer')  %>
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:block"></i>
+    </button>
 
-<%-include('partials/loader') %>
-<%-include('partials/userscript')  %>
+    <%-include('partials/footer')  %>
 
-<script>
-    // Address Management functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // Get DOM elements
-    const addAddressBtn = document.querySelector('button[type="button"].bg-gradient-primary');
-    const mainForm = document.getElementById('formData');
-    const accountDataSection = document.querySelector('.bg-white.rounded-xl.shadow-card.p-8.mb-6');
-    
-    // Create address form container
-    let addressFormVisible = false;
-    const addressFormContainer = document.createElement('div');
-    addressFormContainer.id = 'addressFormContainer';
-    addressFormContainer.className = 'hidden mt-8 p-6 border border-slate-200 rounded-xl bg-slate-50';
-    
-    // Add form HTML
-    addressFormContainer.innerHTML = `
-        <h3 class="text-xl font-display font-semibold text-slate-800 mb-6">Add New Address</h3>
-        <form id="addressForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <input type="hidden" id="addressId" name="addressId" value="">
+    <%-include('partials/loader') %>
+    <%-include('partials/userscript')  %>
+
+    <script>
+        // Dark mode toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const html = document.documentElement;
             
-            <!-- Full Name -->
-            <div>
-                <label for="addr_fullName" class="text-slate-700 font-medium mb-2 block">Full Name</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-user text-slate-400"></i>
-                    </div>
-                    <input type="text" id="addr_fullName" name="fullName" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your full name">
-                </div>
-            </div>
-            
-            <!-- Email Address -->
-            <div>
-                <label for="addr_email" class="text-slate-700 font-medium mb-2 block">Email Address</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-envelope text-slate-400"></i>
-                    </div>
-                    <input type="email" id="addr_email" name="email" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your email">
-                </div>
-            </div>
-            
-            <!-- Mobile Number -->
-            <div>
-                <label for="addr_mobile" class="text-slate-700 font-medium mb-2 block">Mobile Number</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-phone text-slate-400"></i>
-                    </div>
-                    <input type="tel" id="addr_mobile" name="mobile" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your mobile number">
-                </div>
-            </div>
-            
-            <!-- Country -->
-            <div>
-                <label for="addr_country" class="text-slate-700 font-medium mb-2 block">Country</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-globe text-slate-400"></i>
-                    </div>
-                    <input type="text" id="addr_country" name="country" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your country">
-                </div>
-            </div>
-            
-            <!-- State -->
-            <div>
-                <label for="addr_state" class="text-slate-700 font-medium mb-2 block">State</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-map text-slate-400"></i>
-                    </div>
-                    <input type="text" id="addr_state" name="state" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your state">
-                </div>
-            </div>
-            
-            <!-- Address -->
-            <div>
-                <label for="addr_address" class="text-slate-700 font-medium mb-2 block">Address</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-home text-slate-400"></i>
-                    </div>
-                    <input type="text" id="addr_address" name="address" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your address">
-                </div>
-            </div>
-            
-            <!-- Pincode -->
-            <div>
-                <label for="addr_pincode" class="text-slate-700 font-medium mb-2 block">Pincode</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-map-pin text-slate-400"></i>
-                    </div>
-                    <input type="text" id="addr_pincode" name="pincode" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter your pincode">
-                </div>
-            </div>
-            
-            <!-- Landmark -->
-            <div>
-                <label for="addr_landmark" class="text-slate-700 font-medium mb-2 block">Landmark</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-landmark text-slate-400"></i>
-                    </div>
-                    <input type="text" id="addr_landmark" name="landmark" class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200" placeholder="Enter nearby landmark">
-                </div>
-            </div>
-            
-            <!-- Submit and Cancel buttons -->
-            <div class="md:col-span-2 flex gap-4">
-                <button type="submit" class="bg-gradient-primary text-white py-3 px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
-                    <i class="fas fa-save mr-2"></i>
-                    Save Address
-                </button>
-                <button type="button" id="cancelAddressBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-700 py-3 px-6 rounded-lg flex items-center transition-colors">
-                    <i class="fas fa-times mr-2"></i>
-                    Cancel
-                </button>
-            </div>
-        </form>
-    `;
-    
-    // Insert the address form after the main form
-    accountDataSection.appendChild(addressFormContainer);
-    
-    // Add click event for Add New Address button
-    addAddressBtn.addEventListener('click', function() {
-        toggleAddressForm();
-    });
-    
-    // Cancel button event listener
-    const cancelAddressBtn = document.getElementById('cancelAddressBtn');
-    cancelAddressBtn.addEventListener('click', function() {
-        toggleAddressForm();
-        resetAddressForm();
-    });
-    
-    // Toggle address form visibility
-    function toggleAddressForm() {
-        addressFormVisible = !addressFormVisible;
-        addressFormContainer.classList.toggle('hidden', !addressFormVisible);
-    }
-    
-    // Reset address form
-    function resetAddressForm() {
-        document.getElementById('addressForm').reset();
-        document.getElementById('addressId').value = '';
-    }
-    
-    // Handle address form submission
-    const addressForm = document.getElementById('addressForm');
-    addressForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        try {
-            const userId = document.getElementById('userProfile').dataset.id;
-            
-            // Collect form data
-            const formData = {
-                fullName: document.getElementById('addr_fullName').value,
-                email: document.getElementById('addr_email').value,
-                mobile: document.getElementById('addr_mobile').value,
-                country: document.getElementById('addr_country').value,
-                state: document.getElementById('addr_state').value,
-                address: document.getElementById('addr_address').value,
-                pincode: document.getElementById('addr_pincode').value,
-                landmark: document.getElementById('addr_landmark').value,
-                addressId: document.getElementById('addressId').value || null
-            };
-            
-            // Send API request
-            const response = await fetch(`/addaddress/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                // Show success message
-                Toastify({
-                    text: result.message,
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "center",
-                    backgroundColor: "#10b981",
-                }).showToast();
-                
-                // Reset form and hide it
-                resetAddressForm();
-                toggleAddressForm();
-                
-                // Reload addresses
-                loadUserAddresses();
-            } else {
-                // Show error message
-                Toastify({
-                    text: result.message || "Something went wrong",
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: "center",
-                    backgroundColor: "#ef4444",
-                }).showToast();
-                
-                // Display validation errors if any
-                if (result.errors) {
-                    Object.keys(result.errors).forEach(key => {
-                        const inputField = document.getElementById(`addr_${key}`);
-                        if (inputField) {
-                            inputField.classList.add('border-red-500');
-                            const errorMsg = document.createElement('p');
-                            errorMsg.className = 'text-red-500 text-xs mt-1';
-                            errorMsg.textContent = result.errors[key];
-                            inputField.parentNode.appendChild(errorMsg);
-                        }
-                    });
-                }
+            // Check for saved theme preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && 
+                window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
             }
-        } catch (error) {
-            console.error('Error:', error);
-            Toastify({
-                text: "An error occurred while saving the address",
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: "center",
-                backgroundColor: "#ef4444",
-            }).showToast();
-        }
-    });
-    
-    // Create addresses display section
-    const addressesSection = document.createElement('div');
-    addressesSection.className = 'bg-white rounded-xl shadow-card p-8 mb-6';
-    addressesSection.innerHTML = `
-        <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
-            <h2 class="text-2xl font-display font-bold text-slate-800">My Addresses</h2>
-            <span class="text-sm text-slate-500">Manage your delivery locations</span>
-        </div>
-        <div id="addressesList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Addresses will be loaded here -->
-            <div class="flex items-center justify-center h-40 border border-slate-200 rounded-xl bg-slate-50">
-                <div class="text-center">
-                    <i class="fas fa-spinner fa-spin text-primary-500 text-2xl mb-2"></i>
-                    <p class="text-slate-500">Loading addresses...</p>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // Insert the addresses section after account data section
-    accountDataSection.insertAdjacentElement('afterend', addressesSection);
-    
-    // Function to load user addresses
-    async function loadUserAddresses() {
-        try {
-            const userId = document.getElementById('userProfile').dataset.id;
-            const response = await fetch(`/addaddress/${userId}`);
-            const result = await response.json();
             
-            const addressesList = document.getElementById('addressesList');
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                localStorage.setItem('darkMode', html.classList.contains('dark'));
+            });
+        });
+        
+        // Address Management functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const addAddressBtn = document.querySelector('button[type="button"].bg-gradient-primary');
+            const mainForm = document.getElementById('formData');
+            const accountDataSection = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-xl.shadow-card.p-6.md\\:p-8.mb-6');
             
-            if (result.success && result.allAddress && result.allAddress.length > 0) {
-                // Clear existing content
-                addressesList.innerHTML = '';
-                
-                // Add each address
-                result.allAddress.forEach(address => {
-                    const addressCard = document.createElement('div');
-                    addressCard.className = 'p-6 border border-slate-200 rounded-xl hover:border-primary-300 transition-colors hover-card';
-                    addressCard.innerHTML = `
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="font-semibold text-slate-800">${address.fullname}</h3>
-                            <div class="flex space-x-2">
-                                <button class="edit-address-btn text-primary-600 hover:text-primary-800 transition-colors p-1.5 hover:bg-primary-50 rounded-full" data-id="${address._id}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="delete-address-btn text-red-500 hover:text-red-700 transition-colors p-1.5 hover:bg-red-50 rounded-full" data-id="${address._id}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="space-y-2 text-slate-600">
-                            <p class="flex items-start">
-                                <i class="fas fa-home text-slate-400 mr-2 mt-1"></i>
-                                <span>${address.address}</span>
-                            </p>
-                            <p class="flex items-start">
-                                <i class="fas fa-map-marker-alt text-slate-400 mr-2 mt-1"></i>
-                                <span>${address.state}, ${address.country} - ${address.pincode}</span>
-                            </p>
-                            <p class="flex items-start">
-                                <i class="fas fa-landmark text-slate-400 mr-2 mt-1"></i>
-                                <span>Landmark: ${address.landmark || 'N/A'}</span>
-                            </p>
-                            <p class="flex items-start">
-                                <i class="fas fa-phone text-slate-400 mr-2 mt-1"></i>
-                                <span>${address.mobileNum}</span>
-                            </p>
-                            <p class="flex items-start">
-                                <i class="fas fa-envelope text-slate-400 mr-2 mt-1"></i>
-                                <span>${address.email}</span>
-                            </p>
-                        </div>
-                    `;
+            // Create address form container
+            let addressFormVisible = false;
+            const addressFormContainer = document.createElement('div');
+            addressFormContainer.id = 'addressFormContainer';
+            addressFormContainer.className = 'hidden mt-8 p-6 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800';
+            
+            // Add form HTML
+            addressFormContainer.innerHTML = `
+                <h3 class="text-xl font-display font-semibold text-slate-800 dark:text-slate-100 mb-6">Add New Address</h3>
+                <form id="addressForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input type="hidden" id="addressId" name="addressId" value="">
                     
-                    addressesList.appendChild(addressCard);
-                });
-                
-                // Add event listeners for edit and delete buttons
-                addAddressButtonListeners();
-            } else {
-                // No addresses found
-                addressesList.innerHTML = `
-                    <div class="md:col-span-2 flex flex-col items-center justify-center p-8 border border-slate-200 rounded-xl bg-slate-50">
-                        <div class="w-20 h-20 rounded-full bg-primary-50 flex items-center justify-center mb-4">
-                            <i class="fas fa-map-marker-alt text-primary-400 text-3xl"></i>
+                    <!-- Full Name -->
+                    <div>
+                        <label for="addr_fullName" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Full Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <input type="text" id="addr_fullName" name="fullName" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your full name">
                         </div>
-                        <p class="text-lg font-medium text-slate-700 mb-2">No addresses found</p>
-                        <p class="text-slate-500 text-center mb-6">Add a new address to manage your deliveries</p>
-                        <button class="bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-lg flex items-center transition-colors" id="noAddressBtn">
-                            <i class="fas fa-plus mr-2"></i> Add New Address
+                    </div>
+                    
+                    <!-- Email Address -->
+                    <div>
+                        <label for="addr_email" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Email Address</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <input type="email" id="addr_email" name="email" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your email">
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Number -->
+                    <div>
+                        <label for="addr_mobile" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Mobile Number</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-phone text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <input type="tel" id="addr_mobile" name="mobile" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your mobile number">
+                        </div>
+                    </div>
+                    
+                    <!-- Country -->
+                    <div>
+                        <label for="addr_country" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Country</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-globe text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <input type="text" id="addr_country" name="country" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your country">
+                        </div>
+                    </div>
+                    
+                    <!-- State -->
+                    <div>
+                        <label for="addr_state" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">State</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-map text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <input type="text" id="addr_state" name="state" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your state">
+                        </div>
+                    </div>
+                    
+                    <!-- Address -->
+                    <div>
+                        <label for="addr_address" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Address</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-home text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <input type="text" id="addr_address" name="address" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your address">
+                        </div>
+                    </div>
+                    
+                    <!-- Pincode -->
+                    <div>
+                        <label for="addr_pincode" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Pincode</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-map-pin text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <input type="text" id="addr_pincode" name="pincode" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter your pincode">
+                        </div>
+                    </div>
+                    
+                    <!-- Landmark -->
+                    <div>
+                        <label for="addr_landmark" class="text-slate-700 dark:text-slate-300 font-medium mb-2 block">Landmark</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-landmark text-slate-400 dark:text-slate-500"></i>
+                            </div>
+                            <input type="text" id="addr_landmark" name="landmark" class="w-full pl-10 pr-4 py-3 border border-slate-200 dark:border-slate-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800" placeholder="Enter nearby landmark">
+                        </div>
+                    </div>
+                    
+                    <!-- Submit and Cancel buttons -->
+                    <div class="md:col-span-2 flex flex-wrap gap-4">
+                        <button type="submit" class="bg-gradient-primary text-white py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center transition-all shadow-md hover:shadow-lg">
+                            <i class="fas fa-save mr-2"></i>
+                            Save Address
+                        </button>
+                        <button type="button" id="cancelAddressBtn" class="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-2 px-4 md:py-3 md:px-6 rounded-lg flex items-center transition-colors">
+                            <i class="fas fa-times mr-2"></i>
+                            Cancel
                         </button>
                     </div>
-                `;
-                
-                // Add event listener for the "Add New Address" button in the empty state
-                document.getElementById('noAddressBtn').addEventListener('click', function() {
-                    toggleAddressForm();
-                });
-            }
-        } catch (error) {
-            console.error('Error loading addresses:', error);
-            document.getElementById('addressesList').innerHTML = `
-                <div class="md:col-span-2 p-6 border border-red-100 rounded-xl bg-red-50">
-                    <div class="flex items-center text-red-600">
-                        <i class="fas fa-exclamation-circle mr-2 text-xl"></i>
-                        <p>Failed to load addresses. Please try again.</p>
-                    </div>
-                </div>
+                </form>
             `;
-        }
-    }
-    
-    // Add event listeners to edit and delete buttons
-    function addAddressButtonListeners() {
-        // Edit button listeners
-        document.querySelectorAll('.edit-address-btn').forEach(button => {
-            button.addEventListener('click', async function() {
-                const addressId = this.dataset.id;
-                const userId = document.getElementById('userProfile').dataset.id;
+            
+            // Insert the address form after the main form
+            accountDataSection.appendChild(addressFormContainer);
+            
+            // Add click event for Add New Address button
+            addAddressBtn.addEventListener('click', function() {
+                toggleAddressForm();
+            });
+            
+            // Cancel button event listener
+            const cancelAddressBtn = document.getElementById('cancelAddressBtn');
+            cancelAddressBtn.addEventListener('click', function() {
+                toggleAddressForm();
+                resetAddressForm();
+            });
+            
+            // Toggle address form visibility
+            function toggleAddressForm() {
+                addressFormVisible = !addressFormVisible;
+                addressFormContainer.classList.toggle('hidden', !addressFormVisible);
+            }
+            
+            // Reset address form
+            function resetAddressForm() {
+                document.getElementById('addressForm').reset();
+                document.getElementById('addressId').value = '';
+            }
+            
+            // Handle address form submission
+            const addressForm = document.getElementById('addressForm');
+            addressForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
                 
                 try {
-                    const response = await fetch(`/addaddress/${userId}/${addressId}`);
+                    const userId = document.getElementById('userProfile').dataset.id;
+                    
+                    // Collect form data
+                    const formData = {
+                        fullName: document.getElementById('addr_fullName').value,
+                        email: document.getElementById('addr_email').value,
+                        mobile: document.getElementById('addr_mobile').value,
+                        country: document.getElementById('addr_country').value,
+                        state: document.getElementById('addr_state').value,
+                        address: document.getElementById('addr_address').value,
+                        pincode: document.getElementById('addr_pincode').value,
+                        landmark: document.getElementById('addr_landmark').value,
+                        addressId: document.getElementById('addressId').value || null
+                    };
+                    
+                    // Send API request
+                    const response = await fetch(`/addaddress/${userId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
                     const result = await response.json();
                     
-                    if (result.success && result.address) {
-                        // Fill the form with address data
-                        const address = result.address;
-                        document.getElementById('addressId').value = address._id;
-                        document.getElementById('addr_fullName').value = address.fullname;
-                        document.getElementById('addr_email').value = address.email;
-                        document.getElementById('addr_mobile').value = address.mobileNum;
-                        document.getElementById('addr_country').value = address.country;
-                        document.getElementById('addr_state').value = address.state;
-                        document.getElementById('addr_address').value = address.address;
-                        document.getElementById('addr_pincode').value = address.pincode;
-                        document.getElementById('addr_landmark').value = address.landmark || '';
-                        
-                        // Show the form
-                        if (!addressFormVisible) {
-                            toggleAddressForm();
-                        }
-                        
-                        // Scroll to the form
-                        addressFormContainer.scrollIntoView({ behavior: 'smooth' });
-                    } else {
+                    if (result.success) {
+                        // Show success message
                         Toastify({
-                            text: "Failed to load address details",
+                            text: result.message,
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#10b981",
+                        }).showToast();
+                        
+                        // Reset form and hide it
+                        resetAddressForm();
+                        toggleAddressForm();
+                        
+                        // Reload addresses
+                        loadUserAddresses();
+                    } else {
+                        // Show error message
+                        Toastify({
+                            text: result.message || "Something went wrong",
                             duration: 3000,
                             close: true,
                             gravity: "top",
                             position: "center",
                             backgroundColor: "#ef4444",
                         }).showToast();
+                        
+                        // Display validation errors if any
+                        if (result.errors) {
+                            Object.keys(result.errors).forEach(key => {
+                                const inputField = document.getElementById(`addr_${key}`);
+                                if (inputField) {
+                                    inputField.classList.add('border-red-500');
+                                    const errorMsg = document.createElement('p');
+                                    errorMsg.className = 'text-red-500 dark:text-red-400 text-xs mt-1';
+                                    errorMsg.textContent = result.errors[key];
+                                    inputField.parentNode.appendChild(errorMsg);
+                                }
+                            });
+                        }
                     }
                 } catch (error) {
-                    console.error('Error fetching address:', error);
+                    console.error('Error:', error);
                     Toastify({
-                        text: "An error occurred while loading address details",
+                        text: "An error occurred while saving the address",
                         duration: 3000,
                         close: true,
                         gravity: "top",
@@ -971,37 +1057,166 @@ document.addEventListener('DOMContentLoaded', function() {
                     }).showToast();
                 }
             });
-        });
-        
-        // Delete button listeners
-        document.querySelectorAll('.delete-address-btn').forEach(button => {
-            button.addEventListener('click', async function() {
-                if (confirm('Are you sure you want to delete this address?')) {
-                    const addressId = this.dataset.id;
+            
+            // Create addresses display section
+            const addressesSection = document.createElement('div');
+            addressesSection.className = 'bg-white dark:bg-gray-800 rounded-xl shadow-card p-6 md:p-8 mb-6';
+            addressesSection.innerHTML = `
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
+                    <h2 class="text-xl md:text-2xl font-display font-bold text-slate-800 dark:text-slate-100">My Addresses</h2>
+                    <span class="text-sm text-slate-500 dark:text-slate-400">Manage your delivery locations</span>
+                </div>
+                <div id="addressesList" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <!-- Addresses will be loaded here -->
+                    <div class="flex items-center justify-center h-40 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800">
+                        <div class="text-center">
+                            <i class="fas fa-spinner fa-spin text-primary-500 dark:text-primary-400 text-2xl mb-2"></i>
+                            <p class="text-slate-500 dark:text-slate-400">Loading addresses...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Insert the addresses section after account data section
+            accountDataSection.insertAdjacentElement('afterend', addressesSection);
+            
+            // Function to load user addresses
+            async function loadUserAddresses() {
+                try {
                     const userId = document.getElementById('userProfile').dataset.id;
+                    const response = await fetch(`/addaddress/${userId}`);
+                    const result = await response.json();
                     
-                    try {
-                        const response = await fetch(`/addaddress/${userId}/${addressId}`, {
-                            method: 'DELETE'
+                    const addressesList = document.getElementById('addressesList');
+                    
+                    if (result.success && result.allAddress && result.allAddress.length > 0) {
+                        // Clear existing content
+                        addressesList.innerHTML = '';
+                        
+                        // Add each address
+                        result.allAddress.forEach(address => {
+                            const addressCard = document.createElement('div');
+                            addressCard.className = 'p-4 md:p-6 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-700 transition-colors hover-card';
+                            addressCard.innerHTML = `
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="font-semibold text-slate-800 dark:text-slate-100">${address.fullname}</h3>
+                                    <div class="flex space-x-2">
+                                        <button class="edit-address-btn text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 transition-colors p-1.5 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-full" data-id="${address._id}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="delete-address-btn text-red-500 hover:text-red-700 dark:hover:text-red-400 transition-colors p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full" data-id="${address._id}">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="space-y-2 text-slate-600 dark:text-slate-400">
+                                    <p class="flex items-start">
+                                        <i class="fas fa-home text-slate-400 dark:text-slate-500 mr-2 mt-1"></i>
+                                        <span>${address.address}</span>
+                                    </p>
+                                    <p class="flex items-start">
+                                        <i class="fas fa-map-marker-alt text-slate-400 dark:text-slate-500 mr-2 mt-1"></i>
+                                        <span>${address.state}, ${address.country} - ${address.pincode}</span>
+                                    </p>
+                                    <p class="flex items-start">
+                                        <i class="fas fa-landmark text-slate-400 dark:text-slate-500 mr-2 mt-1"></i>
+                                        <span>Landmark: ${address.landmark || 'N/A'}</span>
+                                    </p>
+                                    <p class="flex items-start">
+                                        <i class="fas fa-phone text-slate-400 dark:text-slate-500 mr-2 mt-1"></i>
+                                        <span>${address.mobileNum}</span>
+                                    </p>
+                                    <p class="flex items-start">
+                                        <i class="fas fa-envelope text-slate-400 dark:text-slate-500 mr-2 mt-1"></i>
+                                        <span>${address.email}</span>
+                                    </p>
+                                </div>
+                            `;
+                            
+                            addressesList.appendChild(addressCard);
                         });
                         
-                        const result = await response.json();
+                        // Add event listeners for edit and delete buttons
+                        addAddressButtonListeners();
+                    } else {
+                        // No addresses found
+                        addressesList.innerHTML = `
+                            <div class="md:col-span-2 flex flex-col items-center justify-center p-8 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800">
+                                <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center mb-4">
+                                    <i class="fas fa-map-marker-alt text-primary-400 dark:text-primary-500 text-2xl md:text-3xl"></i>
+                                </div>
+                                <p class="text-lg font-medium text-slate-700 dark:text-slate-200 mb-2">No addresses found</p>
+                                <p class="text-slate-500 dark:text-slate-400 text-center mb-6">Add a new address to manage your deliveries</p>
+                                <button class="bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-600 text-white py-2 px-4 rounded-lg flex items-center transition-colors" id="noAddressBtn">
+                                    <i class="fas fa-plus mr-2"></i> Add New Address
+                                </button>
+                            </div>
+                        `;
                         
-                        if (result.success) {
-                            Toastify({
-                                text: result.message || "Address deleted successfully",
-                                duration: 3000,
-                                close: true,
-                                gravity: "top",
-                                position: "center",
-                                backgroundColor: "#10b981",
-                            }).showToast();
+                        // Add event listener for the "Add New Address" button in the empty state
+                        document.getElementById('noAddressBtn').addEventListener('click', function() {
+                            toggleAddressForm();
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading addresses:', error);
+                    document.getElementById('addressesList').innerHTML = `
+                        <div class="md:col-span-2 p-6 border border-red-100 dark:border-red-900/30 rounded-xl bg-red-50 dark:bg-red-900/10">
+                            <div class="flex items-center text-red-600 dark:text-red-400">
+                                <i class="fas fa-exclamation-circle mr-2 text-xl"></i>
+                                <p>Failed to load addresses. Please try again.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Add event listeners to edit and delete buttons
+            function addAddressButtonListeners() {
+                // Edit button listeners
+                document.querySelectorAll('.edit-address-btn').forEach(button => {
+                    button.addEventListener('click', async function() {
+                        const addressId = this.dataset.id;
+                        const userId = document.getElementById('userProfile').dataset.id;
+                        
+                        try {
+                            const response = await fetch(`/addaddress/${userId}/${addressId}`);
+                            const result = await response.json();
                             
-                            // Reload addresses
-                            loadUserAddresses();
-                        } else {
+                            if (result.success && result.address) {
+                                // Fill the form with address data
+                                const address = result.address;
+                                document.getElementById('addressId').value = address._id;
+                                document.getElementById('addr_fullName').value = address.fullname;
+                                document.getElementById('addr_email').value = address.email;
+                                document.getElementById('addr_mobile').value = address.mobileNum;
+                                document.getElementById('addr_country').value = address.country;
+                                document.getElementById('addr_state').value = address.state;
+                                document.getElementById('addr_address').value = address.address;
+                                document.getElementById('addr_pincode').value = address.pincode;
+                                document.getElementById('addr_landmark').value = address.landmark || '';
+                                
+                                // Show the form
+                                if (!addressFormVisible) {
+                                    toggleAddressForm();
+                                }
+                                
+                                // Scroll to the form
+                                addressFormContainer.scrollIntoView({ behavior: 'smooth' });
+                            } else {
+                                Toastify({
+                                    text: "Failed to load address details",
+                                    duration: 3000,
+                                    close: true,
+                                    gravity: "top",
+                                    position: "center",
+                                    backgroundColor: "#ef4444",
+                                }).showToast();
+                            }
+                        } catch (error) {
+                            console.error('Error fetching address:', error);
                             Toastify({
-                                text: result.message || "Failed to delete address",
+                                text: "An error occurred while loading address details",
                                 duration: 3000,
                                 close: true,
                                 gravity: "top",
@@ -1009,77 +1224,235 @@ document.addEventListener('DOMContentLoaded', function() {
                                 backgroundColor: "#ef4444",
                             }).showToast();
                         }
-                    } catch (error) {
-                        console.error('Error deleting address:', error);
-                        Toastify({
-                            text: "An error occurred while deleting the address",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "center",
-                            backgroundColor: "#ef4444",
-                        }).showToast();
+                    });
+                });
+                
+                // Delete button listeners
+                document.querySelectorAll('.delete-address-btn').forEach(button => {
+                    button.addEventListener('click', async function() {
+                        if (confirm('Are you sure you want to delete this address?')) {
+                            const addressId = this.dataset.id;
+                            const userId = document.getElementById('userProfile').dataset.id;
+                            
+                            try {
+                                const response = await fetch(`/addaddress/${userId}/${addressId}`, {
+                                    method: 'DELETE'
+                                });
+                                
+                                const result = await response.json();
+                                
+                                if (result.success) {
+                                    Toastify({
+                                        text: result.message || "Address deleted successfully",
+                                        duration: 3000,
+                                        close: true,
+                                        gravity: "top",
+                                        position: "center",
+                                        backgroundColor: "#10b981",
+                                    }).showToast();
+                                    
+                                    // Reload addresses
+                                    loadUserAddresses();
+                                } else {
+                                    Toastify({
+                                        text: result.message || "Failed to delete address",
+                                        duration: 3000,
+                                        close: true,
+                                        gravity: "top",
+                                        position: "center",
+                                        backgroundColor: "#ef4444",
+                                    }).showToast();
+                                }
+                            } catch (error) {
+                                console.error('Error deleting address:', error);
+                                Toastify({
+                                    text: "An error occurred while deleting the address",
+                                    duration: 3000,
+                                    close: true,
+                                    gravity: "top",
+                                    position: "center",
+                                    backgroundColor: "#ef4444",
+                                }).showToast();
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // Initialize by loading user addresses
+            loadUserAddresses();
+        });
+
+        // Credit Card Flip Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const creditCard = document.getElementById('creditCard');
+            const toggleCardView = document.getElementById('toggleCardView');
+            const viewIcon = document.getElementById('viewIcon');
+            
+            let isFlipped = false;
+            
+            // Toggle card flip
+            toggleCardView.addEventListener('click', function() {
+                isFlipped = !isFlipped;
+                creditCard.classList.toggle('flipped', isFlipped);
+                
+                // Change icon based on card state
+                if (isFlipped) {
+                    viewIcon.classList.remove('fa-eye');
+                    viewIcon.classList.add('fa-eye-slash');
+                    
+                    // Auto-hide after 10 seconds for security
+                    setTimeout(() => {
+                        if (isFlipped) {
+                            isFlipped = false;
+                            creditCard.classList.remove('flipped');
+                            viewIcon.classList.remove('fa-eye-slash');
+                            viewIcon.classList.add('fa-eye');
+                        }
+                    }, 10000);
+                } else {
+                    viewIcon.classList.remove('fa-eye-slash');
+                    viewIcon.classList.add('fa-eye');
+                }
+            });
+            
+            // Click on card number to toggle visibility (front side)
+            const cardNumberDisplay = document.getElementById('cardNumberDisplay');
+            cardNumberDisplay.addEventListener('click', function() {
+                if (!isFlipped) {
+                    const currentText = cardNumberDisplay.textContent;
+                    if (currentText.includes('•')) {
+                        cardNumberDisplay.textContent = '4532 8721 5463 7658';
+                        
+                        // Auto-hide after 3 seconds
+                        setTimeout(() => {
+                            cardNumberDisplay.textContent = '•••• •••• •••• 7658';
+                        }, 3000);
+                    } else {
+                        cardNumberDisplay.textContent = '•••• •••• •••• 7658';
                     }
                 }
             });
         });
-    }
-    
-    // Initialize by loading user addresses
-    loadUserAddresses();
-});
 
-// Referral code copy functionality
-function copyReferralCode() {
-    const code = "CYCX2024";
-    navigator.clipboard.writeText(code).then(() => {
-        Toastify({
-            text: "Referral code copied to clipboard!",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "#8b5cf6",
-        }).showToast();
-    }).catch(err => {
-        console.error('Failed to copy: ', err);
-        Toastify({
-            text: "Failed to copy referral code",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "#ef4444",
-        }).showToast();
-    });
-}
-
-
-
-function copyReferralCode() {
-    const referralCode = document.querySelector('.font-mono.font-bold').textContent;
-    navigator.clipboard.writeText(referralCode).then(() => {
-        Toastify({
-            text: "Referral code copied to clipboard!",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "#8b5cf6",
-        }).showToast();
-    }).catch(err => {
-        console.error('Failed to copy: ', err);
-        Toastify({
-            text: "Failed to copy referral code",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "#ef4444",
-        }).showToast();
-    })
-}
-</script>
-
+        // Referral code copy functionality
+        function copyReferralCode() {
+            const referralCode = document.querySelector('.font-mono.font-bold').textContent;
+            navigator.clipboard.writeText(referralCode).then(() => {
+                Toastify({
+                    text: "Referral code copied to clipboard!",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#8b5cf6",
+                }).showToast();
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                Toastify({
+                    text: "Failed to copy referral code",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#ef4444",
+                }).showToast();
+            });
+        }
+        
+        // Get current location functionality
+        document.getElementById('getLocation').addEventListener('click', function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        // Show loading toast
+                        Toastify({
+                            text: "Fetching your location...",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#3B82F6",
+                        }).showToast();
+                        
+                        // Use reverse geocoding to get address details
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        // Example using a free geocoding API
+                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data && data.address) {
+                                    // Fill form fields with location data
+                                    document.getElementById('country').value = data.address.country || '';
+                                    document.getElementById('state').value = data.address.state || data.address.county || '';
+                                    document.getElementById('address').value = [
+                                        data.address.road || '',
+                                        data.address.suburb || '',
+                                        data.address.city || data.address.town || ''
+                                    ].filter(Boolean).join(', ');
+                                    document.getElementById('pincode').value = data.address.postcode || '';
+                                    
+                                    Toastify({
+                                        text: "Location fetched successfully!",
+                                        duration: 3000,
+                                        close: true,
+                                        gravity: "top",
+                                        position: "center",
+                                        backgroundColor: "#10B981",
+                                    }).showToast();
+                                } else {
+                                    throw new Error('Could not get address details');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching location details:', error);
+                                Toastify({
+                                    text: "Could not fetch address details. Please enter manually.",
+                                    duration: 3000,
+                                    close: true,
+                                    gravity: "top",
+                                    position: "center",
+                                    backgroundColor: "#EF4444",
+                                }).showToast();
+                            });
+                    },
+                    function(error) {
+                        let errorMessage = "Could not get your location.";
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = "Location access denied. Please enable location permissions.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = "Location information is unavailable.";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = "Location request timed out.";
+                                break;
+                        }
+                        
+                        Toastify({
+                            text: errorMessage,
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "center",
+                            backgroundColor: "#EF4444",
+                        }).showToast();
+                    }
+                );
+            } else {
+                Toastify({
+                    text: "Geolocation is not supported by this browser.",
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor: "#EF4444",
+                }).showToast();
+            }
+        });
+    </script>
 </body>
 </html>

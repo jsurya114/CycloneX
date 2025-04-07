@@ -42,6 +42,7 @@ if(categoryFilter){
 
 
 }
+
 if(brandsFilter){
 const brandobj = await Brand.findOne({name:brandsFilter})
 if(brandobj){
@@ -176,6 +177,9 @@ let totalUsers = await User.countDocuments(filter)
 
             let totalPages = Math.ceil(totalUsers/itemsPerPage)
             res.render('userlist',{user,message:null,
+                search,
+                statusFilter,
+                sortBy,
                 currentPage,
                 totalPages,
                 hasNextPage: currentPage < totalPages,

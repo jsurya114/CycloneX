@@ -2,6 +2,7 @@ const Order = require('../../models/orderModel');
 
 const PDFDocument = require("pdfkit"); // For PDF generation
 const ExcelJS = require("exceljs");
+const { timeStamp } = require('console');
 
 const salesController = {
   getSaleReport: async (req, res, next) => {
@@ -76,9 +77,10 @@ const salesController = {
       
       // Fetch orders
       const allOrders = await Order.find(query)
+      .sort({timestamp:-1})
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum)
-        .limit(parseInt(limit))
+      
         .populate('user', 'fullName email')
         .populate({
           path: 'items.product',
@@ -94,12 +96,14 @@ const salesController = {
         email: order.user?.email || "N/A",
         timestamp: order.timestamp,
         totalAmount: order.totalAmount,
-        paymentStatus: order.orderStatus === 'delivered' ? 'Paid' : 'Pending',
+        paymentStatus: order.paymentMethod === 'Razorpay' ? 'Paid' : 
+        order.orderStatus === 'cancelled' || order.orderStatus === 'refunded' ? 'Refunded' :
+        order.orderStatus === 'delivered' ? 'Paid' : 'Pending',
         paymentMethod: order.paymentMethod
       }));
       console.log("recent ", recentOrders);
       const totalOrders = await Order.countDocuments(query)
-      res.status(200).render("dashboard", {
+      res.status(200).render("salesreport", {
         success: true,
         totalRevenue,
         totalCouponPrice,

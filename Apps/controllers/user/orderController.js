@@ -9,7 +9,9 @@ const Address = require('../../models/addressModel')
 const Wallet = require('../../models/walletModel')
 const { v4: uuidv4 } = require('uuid')
 const { timeStamp } = require('console')
-
+const Admin = require('../../models/adminModel')
+const AdminWallet = require('../../models/adminWalletModel')
+const generateTransactionId=require('../../services/transactionids')
 
 const orderController={
     placeOrder:async (req,res,next) => {
@@ -45,10 +47,13 @@ const cart = await Cart.findOne({user:userId})
 console.log('here' ,cart)
 if(!cart||!cart.items||cart.items.length===0){
     return res.status(404).json({success:false,message:'Cart is empty.Please add items to your cart before placing an order.'})
-
-
+    
+    
 }
 console.log('cart',cart)
+if(totalAmount>18000){
+    return res.status(302).json({success:false,message:'please use online payment orders above 12000'})
+}
 
 const coupon = await Coupon.findOne({couponCode:couponCode})
 console.log('coupon',coupon)
@@ -282,6 +287,26 @@ console.log('para',req.params)
 
           if(order.paymentMethod==='Razorpay'){
 
+
+            let admin = await Admin.findOne()
+            console.log('adim',admin);
+            
+let adminWallet = await AdminWallet.findOne()
+
+console.log('adminWallet',adminWallet)
+if(!adminWallet){
+    adminWallet= new AdminWallet({
+        admin:admin._id,
+        balance:0,
+        transaction:[]
+
+    })
+}
+let transactionId=generateTransactionId.generateTransactionId()
+adminWallet.transaction.push({transactionType:'debit',amount:order.totalAmount,reason:`debit of Order ${orderId}`, transactionId:transactionId})
+adminWallet.balance-=order.totalAmount
+await adminWallet.save()
+console.log('adminWallet',adminWallet)
       
             let wallet = await Wallet.findOne({user:userId})
             if(!wallet){
@@ -308,8 +333,11 @@ console.log('para',req.params)
                 success: true,
               });
   
+
+
+
             
-                            }
+                }
             
 
                             for(let item of order.items){
@@ -330,6 +358,7 @@ console.log('para',req.params)
       },
       returnOrder:async (req,res,next) => {
 
+      try { 
         const token =req.cookies.token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
           const userId = decoded.id;
@@ -355,48 +384,20 @@ console.log('para',req.params)
                 if(!order){
                   return res.status(404).json({success:false,message:'Order not found'})
                 }
-
-                if(order.paymentMethod==='cod'){
-                    for(let item of order.items){
-                        await Product.updateOne({_id:item.product},{$inc:{'quantity':item.quantity}})
-                    }
-                    let wallet = await  Wallet.findOne({user:userId})
-                    if(!wallet){
-                        wallet = await Wallet.create({user:userId,balance:0,transaction:[]})
-                    }
-
-                    wallet.transaction.push({transactionType:'credit',amount:order.totalAmount,reason:`Refund for Order ${orderId}`})
-                    wallet.balance+=order.totalAmount
-                    await wallet.save()
-
-for(let item of order.items){
-    await Product.updateOne({_id:item.product._id},{$inc:{stock:item.quantity}})
-}
-
-
-                    order.returnReason=returnReason
-                    order.orderStatus='return request'
-                    await order.save()
-
-                    return res.status(200).json({
-                        message: "Order return returned ! Your money will be credited to your wallet.",
-                        success: true,
-                      });
-                }
-
-
-
-                for(let item of order.items){
-                    await Product.updateOne({_id:item.product._id},{$inc:{stock:item.quantity}})
-                }
-
+                
+                              
+                
+                                
+                                order.returnReason=returnReason
+                                order.orderStatus="return request"
+                                await order.save()
 
                 
-                order.returnReason=returnReason
-                order.orderStatus="return request"
-                await order.save()
 
-                return res.status(200).json({success:true,message:'Order returned successfully'})
+                return res.status(200).json({success:true,message:'Order return request successfully'})
+            }catch(error){
+                next(error)
+            }
 
 
       }

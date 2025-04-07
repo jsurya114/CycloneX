@@ -13,9 +13,17 @@ const nocache =require('../../middlewares/nocache')
 const ensureAuth = require('../../middlewares/ensureAuth');
 const couponController = require('../../controllers/admin/couponController');
 const salesController = require('../../controllers/admin/salesController')
+const dashboardController=require('../../controllers/admin/dashboardController');
+const walletController=require('../../controllers/admin/wallet');
+const adminWalletModel = require('../../models/adminWalletModel');
+
+
+router.use(nocache);
 router.get('/login',ensureAuth,nocache, adminAuth.login);
 router.post('/login', adminAuth.loginPost); // Handle login form submission
-router.get('/dashboard',verifyAdmin , salesController.getSaleReport);
+router.get('/dashboard',verifyAdmin,dashboardController.getdashboard)
+router.get('/dashboard/download-pdf', dashboardController.downloadPdf);
+router.get('/salesreport',verifyAdmin , salesController.getSaleReport);
 router.post('/sales/downloadPdf', salesController.downloadPDF);
 router.post('/sales/downloadExcel', salesController.downloadEXCEL);
 router.get('/logout',adminAuth.logout)
@@ -45,7 +53,7 @@ router.put(
 router.delete('/delete-product-image/:id', productloader.deleteProductImage);
 router.put('/toggle-product/:id', productloader.productsoftdelete);
 
-router.get('/brands', productController.showAddBrandPage);
+router.get('/brands', verifyAdmin,productController.showAddBrandPage);
 
 router.post('/addbrand',upload.single('brandLogo') ,productController.addBrand);
 router.get('/editbrand/:id',verifyAdmin,productController.showEditBrandPage)
@@ -58,9 +66,12 @@ router.put('/category/update/:id',upload.single('image'),categoryController.edit
 router.put('/category/listing/:id', categoryController.listing)
 
 router.get('/userlist',verifyAdmin,adminController.userlist)
-router.get('/userdetails/:id', adminController.showUserdetails);
+router.get('/userdetails/:id',verifyAdmin, adminController.showUserdetails);
 router.put('/toggle-user/:id',adminController.listinguser)
-router.get('/api/users',adminController.filtering)
+router.get('/api/users',verifyAdmin,adminController.filtering)
+router.get('/adminwallet',verifyAdmin,walletController.getAdminWallet)
+router.get('/transaction/:transactionId', verifyAdmin, walletController.getTransactionDetails)
+
 router.get('/orderlist',verifyAdmin,orderController.getorderlist)
 
 router.get('/orderdetailss/:id',verifyAdmin,orderController.showOrderDetails)
@@ -68,6 +79,6 @@ router.post('/updateorderstatus/:id',orderController.updateOrderStatus)
 router.get('/coupons',verifyAdmin,couponController.getCoupon)
 router.post('/addcoupon',couponController.addCoupon)
 router.put('/listcoupon/:couponId',couponController.couponBlocking)
-router.get('/editcoupon/:couponId',couponController.showEditCoupon)
+router.get('/editcoupon/:couponId',verifyAdmin,couponController.showEditCoupon)
 router.put('/editcoupon/:couponId',couponController.editCoupon)
 module.exports = router;

@@ -1,63 +1,45 @@
-const { default: products } = require("razorpay/dist/types/products")
-const brandModel = require("../../models/brandModel")
-const { category } = require("../../controllers/admin/categoryController")
+  returnOrder:async (req,res,next) => {
 
-let {search}=req.query
-
-let filter={}
-
-if(search){
-    filter.$or=[{products.ProductName:{$regex:search.trim(),$options:'i'}}]
-}
-
-
-
-__________________________________________________________________________________________________
-
-
-
-let {categoryFilter,priceFilter} =req.query
-if(categoryFilter){
-    let cat = await categoryFilter.findOne({categoryFilter})
-    if(cat){
-        filter.category=cat._id
+      try { 
+        const token =req.cookies.token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          const userId = decoded.id;
+          console.log('here2',userId)
+    const user = await User.findById(userId)
+    console.log('rewq',req.body)
+    if(!user){
+        return res.status(400).json({success:false,message:'Unauthorized'})
+    
     }
-}
 
 
-____________________________________________________________________________________________________
-let {sortBy}=req.query
-let sortOptions={createdAt:-1}
-if(sortBy){
-    switch(sortBy){
-        case 'phtol':
-            sortOptions:{price}
-    }
-}
+        console.log('rew',req.params)
+        const orderId = req.params.orderId
+        const {returnReason}=req.body
+        if(!orderId){
+            return res.status(400).json({success:false,message:'invalid input'})
+                }
+      
+            
+                const order = await Order.findOne({orderId}).populate('items.product')
+      
+                if(!order){
+                  return res.status(404).json({success:false,message:'Order not found'})
+                }
+             
+                              
+                
+                                
+                                order.returnReason=returnReason
+                                order.orderStatus="return request"
+                                await order.save()
 
-let {page=1,limit=3}=req.query
-let currentPage=page
-let itemsPerPage=limit
-let skip = (currentPage-1)*itemsPerPage
+                
 
-const product = await Product.find(filter).sort(sortOptions).limit(limit).skip(skip)
-
-const totalProducts = await Product.countDocuments(filter)
-
-const totalPages = Math.ceil(totalProducts/itemsPerPage)
+                return res.status(200).json({success:true,message:'Order return request successfully'})
+            }catch(error){
+                next(error)
+            }
 
 
-__________________________________________________________________________________________________
-
-
-
-
-const token = req.cookies.token
-const decoded = jwt.verify(token,process.env.JWT_SECRET)
-const userId = decoded._id
-
-const user = await User.findById(userId)
-const product = await Product.find().populate('category').populate('brands')
-const brands = await brandModel.find()
-const category = await category.find()
-const wishlist = await wishlist.findOne({userId})
+      }

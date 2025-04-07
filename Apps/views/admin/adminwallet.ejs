@@ -1,0 +1,509 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycloneX Dashboard - Admin Wallet</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+      tailwind.config = {
+          darkMode: 'class',
+          theme: {
+              extend: {
+                  colors: {
+                      primary: {
+                          50: '#f0f9ff',
+                          100: '#e0f2fe',
+                          200: '#bae6fd',
+                          300: '#7dd3fc',
+                          400: '#38bdf8',
+                          500: '#0ea5e9',
+                          600: '#0284c7',
+                          700: '#0369a1',
+                          800: '#075985',
+                          900: '#0c4a6e',
+                          950: '#082f49',
+                      },
+                      secondary: {
+                          50: '#f5f3ff',
+                          100: '#ede9fe',
+                          200: '#ddd6fe',
+                          300: '#c4b5fd',
+                          400: '#a78bfa',
+                          500: '#8b5cf6',
+                          600: '#7c3aed',
+                          700: '#6d28d9',
+                          800: '#5b21b6',
+                          900: '#4c1d95',
+                          950: '#2e1065',
+                      },
+                  },
+              },
+          },
+      }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+      body {
+          font-family: 'Inter', sans-serif;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      
+      /* Toggle switch styling */
+      .toggle-checkbox:checked {
+          right: 0;
+          background-color: #0284c7;
+          border-color: #0284c7;
+      }
+      
+      .toggle-label {
+          display: block;
+          overflow: hidden;
+          cursor: pointer;
+          border-radius: 9999px;
+          height: 1.5rem;
+          background-color: #d1d5db;
+      }
+
+      /* Animation for cards */
+      @keyframes fadeInUp {
+          from {
+              opacity: 0;
+              transform: translateY(20px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+      
+      .animate-fadeInUp {
+          animation: fadeInUp 0.5s ease-out forwards;
+      }
+      
+      .delay-100 { animation-delay: 0.1s; }
+      .delay-200 { animation-delay: 0.2s; }
+      .delay-300 { animation-delay: 0.3s; }
+      .delay-400 { animation-delay: 0.4s; }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Main Container -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+            </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
+          </a>
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
+            </a>
+            
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Brands</span>
+            </a>
+          </div>
+          
+          <a href="/admin/salesreport" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+            <i class="fas fa-chart-line w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+            <span>salesreport</span>
+          </a>
+          
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Users</span>
+            </a>
+            
+            <a href="/admin/adminwallet" class="flex items-center px-3 py-2.5 text-sm font-medium bg-primary-50 text-primary-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-wallet w-5 h-5 mr-2 text-primary-700"></i>
+              <span>Wallet</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2"></i>
+              <span>Orders</span>
+            </a>
+            
+            <a href="/admin/Logout" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-sign-out-alt w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- Left: Hamburger Menu -->
+          <div class="flex items-center">
+            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div class="hidden md:flex items-center ml-4">
+              <h1 class="text-xl font-semibold text-gray-800">Admin Wallet</h1>
+              <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content - Scrollable area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div class="mb-4 md:mb-0">
+            <h2 class="text-2xl font-bold text-gray-900">Wallet Dashboard</h2>
+            <p class="text-sm text-gray-600">Manage your transactions and wallet balance</p>
+          </div>
+          
+          <!-- Date Range Filter (Optional) -->
+          <!-- <div class="flex items-center space-x-2">
+            <div class="relative">
+              <input type="date" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="From">
+            </div>
+            <span class="text-gray-500">to</span>
+            <div class="relative">
+              <input type="date" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="To">
+            </div>
+            <button class="bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+              Filter
+            </button>
+          </div> -->
+        </div>
+        
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <!-- Wallet Balance Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 opacity-0 animate-fadeInUp">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 p-3 rounded-full bg-blue-50 text-blue-600">
+                <i class="fas fa-wallet text-2xl"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">WALLET BALANCE</p>
+                <h3 class="text-2xl font-bold text-gray-900">₹<%= adminWallet.balance.toFixed(2) %></h3>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <div class="flex items-center text-sm text-gray-500">
+                <i class="fas fa-info-circle mr-2"></i>
+                <span>Current available balance</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Total Transactions Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 opacity-0 animate-fadeInUp delay-100">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 p-3 rounded-full bg-indigo-50 text-indigo-600">
+                <i class="fas fa-exchange-alt text-2xl"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">TOTAL TRANSACTIONS</p>
+                <h3 class="text-2xl font-bold text-gray-900"><%= totalTransactions %></h3>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <div class="flex items-center text-sm text-gray-500">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                <span>All time transactions</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Total Credits Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 opacity-0 animate-fadeInUp delay-200">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 p-3 rounded-full bg-green-50 text-green-600">
+                <i class="fas fa-arrow-down text-2xl"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">TOTAL CREDITS</p>
+                <h3 class="text-2xl font-bold text-green-600">₹<%= totalCredits.toFixed(2) %></h3>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <div class="flex items-center text-sm text-gray-500">
+                <i class="fas fa-plus-circle mr-2"></i>
+                <span>Money received</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Total Debits Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 opacity-0 animate-fadeInUp delay-300">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 p-3 rounded-full bg-red-50 text-red-600">
+                <i class="fas fa-arrow-up text-2xl"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">TOTAL DEBITS</p>
+                <h3 class="text-2xl font-bold text-red-600">₹<%= totalDebits.toFixed(2) %></h3>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <div class="flex items-center text-sm text-gray-500">
+                <i class="fas fa-minus-circle mr-2"></i>
+                <span>Money spent</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Transaction Table -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden opacity-0 animate-fadeInUp delay-400">
+          <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-primary-600 to-primary-700">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-white">Transaction History</h3>
+              <div class="flex items-center space-x-2">
+                <div class="relative">
+                  <input type="text" placeholder="Search transactions..." class="bg-white/10 border border-white/20 text-white placeholder-white/70 text-sm rounded-lg focus:ring-white/30 focus:border-white/30 block w-full p-2">
+                </div>
+                <button class="bg-white text-primary-700 px-3 py-2 rounded-lg hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-primary-700">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Status</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <% if (adminWallet.transaction && adminWallet.transaction.length > 0) { %>
+                  <% adminWallet.transaction.forEach(transaction => { %>
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <%= transaction.transactionId || 'N/A' %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <%= new Date(transaction.date).toLocaleString('en-IN', { 
+                          day: '2-digit', 
+                          month: '2-digit', 
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        }) %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <% if (transaction.transactionType === 'credit') { %>
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <i class="fas fa-arrow-down mr-1"></i> CREDIT
+                          </span>
+                        <% } else { %>
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <i class="fas fa-arrow-up mr-1"></i> DEBIT
+                          </span>
+                        <% } %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium <%= transaction.transactionType === 'credit' ? 'text-green-600' : 'text-red-600' %>">
+                        ₹<%= transaction.amount.toFixed(2) %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <% if (transaction.orderId) { %>
+                          <% if (transaction.orderId.orderStatus === 'delivered') { %>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <i class="fas fa-check-circle mr-1"></i> DELIVERED
+                            </span>
+                          <% } else if (transaction.orderId.orderStatus === 'cancelled') { %>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                              <i class="fas fa-times-circle mr-1"></i> CANCELLED
+                            </span>
+                          <% } else if (transaction.orderId.orderStatus === 'returned') { %>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                              <i class="fas fa-undo mr-1"></i> RETURNED
+                            </span>
+                          <% } else if (transaction.orderId.orderStatus === 'pending') { %>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                              <i class="fas fa-clock mr-1"></i> PENDING
+                            </span>
+                          <% } else if (transaction.orderId.orderStatus === 'shipped') { %>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              <i class="fas fa-shipping-fast mr-1"></i> SHIPPED
+                            </span>
+                          <% } else { %>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                              <%= transaction.orderId.orderStatus.toUpperCase() %>
+                            </span>
+                          <% } %>
+                        <% } else { %>
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            N/A
+                          </span>
+                        <% } %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <a href="/admin/transaction/<%= transaction.transactionId %>" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                          <i class="fas fa-eye mr-1.5"></i> View Details
+                        </a>
+                      </td>
+                    </tr>
+                  <% }); %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="6" class="px-6 py-10 text-center text-sm text-gray-500">
+                      <div class="flex flex-col items-center justify-center">
+                        <i class="fas fa-inbox text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-500 font-medium">No transactions found</p>
+                        <p class="text-gray-400 text-xs mt-1">Transactions will appear here once they are processed</p>
+                      </div>
+                    </td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination (Optional) -->
+          <div class="px-6 py-3 border-t border-gray-200 bg-gray-50">
+            <div class="flex items-center justify-between">
+              <div class="text-sm text-gray-500">
+                Showing <span class="font-medium">1</span> to <span class="font-medium"><%= adminWallet.transaction ? adminWallet.transaction.length : 0 %></span> of <span class="font-medium"><%= totalTransactions %></span> transactions
+              </div>
+              <div class="flex space-x-2">
+                <button class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                  <i class="fas fa-chevron-left mr-1.5"></i> Previous
+                </button>
+                <button class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                  Next <i class="fas fa-chevron-right ml-1.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-500">© 2023 CycloneX. All rights reserved.</p>
+          <div class="flex space-x-4 mt-2 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', openSidebar);
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+      }
+      
+      // Close sidebar on window resize if screen becomes large
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
+
+      // Trigger animations for cards
+      const animatedElements = document.querySelectorAll('.animate-fadeInUp');
+      animatedElements.forEach(element => {
+        element.classList.add('opacity-100');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -131,6 +131,35 @@
     .otp-input:focus {
       box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
     }
+    
+    /* Toast notification styles */
+    @keyframes toast-in {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes toast-out {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(20px); opacity: 0; }
+    }
+    
+    @keyframes sonar-pulse {
+      0% { transform: scale(0.8); opacity: 1; }
+      70% { transform: scale(2); opacity: 0; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    
+    .toast-enter {
+      animation: toast-in 0.3s ease forwards;
+    }
+    
+    .toast-exit {
+      animation: toast-out 0.3s ease forwards;
+    }
+    
+    .sonar-pulse {
+      animation: sonar-pulse 2s infinite;
+    }
   </style>
 </head>
 <body class="min-h-screen w-full bg-slate-50 flex items-center justify-center p-4 md:p-6">
@@ -448,7 +477,9 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-3 items-end"></div>
+
   <script>
     // Preload images to prevent flashing
     window.addEventListener('load', function() {
@@ -463,6 +494,111 @@
         img.src = src;
       });
     });
+
+    // Toast notification function
+    function showToast(message, type = 'success') {
+      const toastContainer = document.getElementById('toastContainer');
+      
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = 'toast-enter flex items-center gap-3 p-4 rounded-lg shadow-lg max-w-xs';
+      
+      // Set background color based on type
+      if (type === 'success') {
+        toast.classList.add('bg-green-50', 'border-l-4', 'border-green-500');
+      } else if (type === 'error') {
+        toast.classList.add('bg-red-50', 'border-l-4', 'border-red-500');
+      } else if (type === 'warning') {
+        toast.classList.add('bg-yellow-50', 'border-l-4', 'border-yellow-500');
+      }
+      
+      // Create sonar pulse effect for icon container
+      const iconContainer = document.createElement('div');
+      iconContainer.className = 'relative flex items-center justify-center';
+      
+      // Create the sonar pulse effect
+      const sonarRing = document.createElement('span');
+      sonarRing.className = 'absolute w-full h-full rounded-full sonar-pulse';
+      
+      // Create icon based on type
+      const icon = document.createElement('i');
+      if (type === 'success') {
+        icon.className = 'fas fa-check text-green-500 z-10 text-sm';
+        sonarRing.classList.add('bg-green-500/30');
+      } else if (type === 'error') {
+        icon.className = 'fas fa-times text-red-500 z-10 text-sm';
+        sonarRing.classList.add('bg-red-500/30');
+      } else if (type === 'warning') {
+        icon.className = 'fas fa-exclamation text-yellow-500 z-10 text-sm';
+        sonarRing.classList.add('bg-yellow-500/30');
+      }
+      
+      // Create icon background
+      const iconBg = document.createElement('div');
+      iconBg.className = 'w-8 h-8 rounded-full flex items-center justify-center z-10';
+      if (type === 'success') {
+        iconBg.classList.add('bg-green-100');
+      } else if (type === 'error') {
+        iconBg.classList.add('bg-red-100');
+      } else if (type === 'warning') {
+        iconBg.classList.add('bg-yellow-100');
+      }
+      
+      // Assemble icon components
+      iconBg.appendChild(icon);
+      iconContainer.appendChild(sonarRing);
+      iconContainer.appendChild(iconBg);
+      
+      // Create message element
+      const messageElement = document.createElement('div');
+      messageElement.className = 'text-sm font-medium';
+      if (type === 'success') {
+        messageElement.classList.add('text-green-800');
+      } else if (type === 'error') {
+        messageElement.classList.add('text-red-800');
+      } else if (type === 'warning') {
+        messageElement.classList.add('text-yellow-800');
+      }
+      messageElement.textContent = message;
+      
+      // Assemble toast
+      toast.appendChild(iconContainer);
+      toast.appendChild(messageElement);
+      
+      // Add close button
+      const closeButton = document.createElement('button');
+      closeButton.className = 'ml-auto text-slate-400 hover:text-slate-600';
+      closeButton.innerHTML = '<i class="fas fa-times"></i>';
+      closeButton.onclick = () => {
+        toast.classList.remove('toast-enter');
+        toast.classList.add('toast-exit');
+        setTimeout(() => {
+          if (toast.parentNode === toastContainer) {
+            toastContainer.removeChild(toast);
+          }
+        }, 300);
+      };
+      toast.appendChild(closeButton);
+      
+      // Add toast to container
+      toastContainer.appendChild(toast);
+      
+      // Auto remove after 3 seconds
+      setTimeout(() => {
+        if (toast.parentNode === toastContainer) {
+          toast.classList.remove('toast-enter');
+          toast.classList.add('toast-exit');
+          setTimeout(() => {
+            if (toast.parentNode === toastContainer) {
+              toastContainer.removeChild(toast);
+            }
+          }, 300);
+        }
+      }, 3000);
+      
+      // Return the toast element in case it's needed
+      return toast;
+    }
 
     // Slider animation for dots
     const slides = document.querySelectorAll('.slide');
@@ -588,14 +724,7 @@
         
         // Check terms checkbox
         if (!document.getElementById('terms').checked) {
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Please agree to the Terms of Service and Privacy Policy',
-            showConfirmButton: false,
-            timer: 2000,
-            width: '350px'
-          });
+          showToast("Please agree to the Terms of Service and Privacy Policy", "warning");
           return;
         }
         
@@ -674,25 +803,12 @@
           
           if (response.ok) {
             otpModal.classList.add('hidden');
-            Swal.fire({
-              position: 'top-end',
-              icon: 'success',
-              title: result.message,
-              showConfirmButton: false,
-              timer: 1500,
-              width: '300px'
-            }).then(() => {
+            showToast(result.message, "success");
+            setTimeout(() => {
               window.location.href = '/';
-            });
+            }, 2000);
           } else {
-            Swal.fire({
-              position: 'top-end',
-              icon: 'error',
-              title: result.message,
-              showConfirmButton: false,
-              timer: 1500,
-              width: '300px'
-            });
+            showToast(result.message, "error");
           }
         } catch (error) {
           console.error('OTP Verification Error:', error);
@@ -701,14 +817,7 @@
           verifyOtpButton.innerHTML = originalBtnText;
           verifyOtpButton.disabled = false;
           
-          Swal.fire({
-            position: 'top-end',
-            icon: 'error',
-            title: 'Error verifying OTP.',
-            showConfirmButton: false,
-            timer: 1500,
-            width: '300px'
-          });
+          showToast("Error verifying OTP.", "error");
         }
       });
       
@@ -731,25 +840,11 @@
           resendOtpButton.disabled = true; // Keep disabled until timer completes
           
           if (response.ok) {
-            Swal.fire({
-              position: 'top-end',
-              icon: 'success',
-              title: result.message,
-              showConfirmButton: false,
-              timer: 1500,
-              width: '300px'
-            });
+            showToast(result.message, "success");
             otpInputs.forEach(input => input.value = '');
             startOtpTimer(); 
           } else {
-            Swal.fire({
-              position: 'top-end',
-              icon: 'error',
-              title: result.message,
-              showConfirmButton: false,
-              timer: 1500,
-              width: '300px'
-            });
+            showToast(result.message, "error");
             resendOtpButton.disabled = false;
           }
         } catch (error) {
@@ -759,14 +854,7 @@
           resendOtpButton.innerHTML = originalBtnText;
           resendOtpButton.disabled = false;
           
-          Swal.fire({
-            position: 'top-end',
-            icon: 'error',
-            title: 'Error resending OTP. Please try again.',
-            showConfirmButton: false,
-            timer: 1500,
-            width: '300px'
-          });
+          showToast("Error resending OTP. Please try again.", "error");
         }
       });
       

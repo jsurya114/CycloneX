@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Add Toastify CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -51,6 +53,9 @@
             background: #f1f1f1;
             border-radius: 10px;
         }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
         ::-webkit-scrollbar-thumb {
             background: #0ea5e9;
             border-radius: 10px;
@@ -63,8 +68,17 @@
         .cart-item {
             transition: all 0.3s ease;
         }
+        
+        /* Fix for hover effect in dark mode */
+        .dark .cart-item:hover {
+            transform: translateY(-2px);
+            background-color: #1e293b !important; /* Darker background in dark mode */
+        }
+        
+        /* Light mode hover effect */
         .cart-item:hover {
             transform: translateY(-2px);
+            background-color: #f8fafc;
         }
         
         /* Custom quantity input */
@@ -90,6 +104,9 @@
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .dark .product-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
         /* Progress bar animation */
@@ -117,6 +134,10 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .dark .glass-container {
+            background: rgba(15, 23, 42, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         /* Ensure consistent height for product cards */
@@ -160,6 +181,43 @@
         .shipping-radio:checked + label .shipping-check {
             opacity: 1;
         }
+        
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.25rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(30deg);
+        }
+        
+        /* Transition for dark mode */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
     </style>
 </head>
 <body class="font-body bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -167,45 +225,45 @@
 
     <main class="min-h-screen">
         <!-- Checkout Progress Bar -->
-        <div class="max-w-4xl mx-auto mb-10 bg-white rounded-xl shadow-card p-6 mt-8">
+        <div class="max-w-4xl mx-auto mb-6 md:mb-10 bg-white dark:bg-gray-800 rounded-xl shadow-card p-4 md:p-6 mt-4 md:mt-8">
             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-lg font-semibold text-gray-700">Checkout Progress</h2>
-                <span class="text-sm font-medium text-primary-600">Step 1 of 3</span>
+                <h2 class="text-base md:text-lg font-semibold text-gray-700 dark:text-gray-200">Checkout Progress</h2>
+                <span class="text-xs md:text-sm font-medium text-primary-600 dark:text-primary-400">Step 1 of 3</span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                 <div class="bg-gradient-to-r from-primary-500 to-accent-500 h-2.5 rounded-full progress-bar-animation" style="width: 33%"></div>
             </div>
-            <div class="flex justify-between mt-4 text-sm text-gray-600">
+            <div class="flex justify-between mt-4 text-xs md:text-sm text-gray-600 dark:text-gray-400">
                 <div class="flex flex-col items-center">
-                    <div class="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center mb-1 shadow-md">
-                        <i class="fas fa-shopping-cart text-sm"></i>
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary-500 text-white flex items-center justify-center mb-1 shadow-md">
+                        <i class="fas fa-shopping-cart text-xs md:text-sm"></i>
                     </div>
                     <span class="font-medium">Cart</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="w-10 h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center mb-1 shadow-sm">
-                        <i class="fas fa-credit-card text-sm"></i>
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400 flex items-center justify-center mb-1 shadow-sm">
+                        <i class="fas fa-credit-card text-xs md:text-sm"></i>
                     </div>
                     <span>Checkout</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="w-10 h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center mb-1 shadow-sm">
-                        <i class="fas fa-check text-sm"></i>
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400 flex items-center justify-center mb-1 shadow-sm">
+                        <i class="fas fa-check text-xs md:text-sm"></i>
                     </div>
                     <span>Confirmation</span>
                 </div>
             </div>
         </div>
 
-        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-24">
+        <div class="px-4 sm:px-6 lg:px-8 pb-24">
             <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
                 <!-- Cart items section -->
                 <section aria-labelledby="cart-heading" class="lg:col-span-7">
                     <h2 id="cart-heading" class="sr-only">Items in your shopping cart</h2>
                     
                     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-card overflow-hidden mb-8">
-                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                            <h3 class="text-xl font-semibold flex items-center">
+                        <div class="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg md:text-xl font-semibold flex items-center">
                                 <i class="fas fa-shopping-bag text-primary-500 mr-2"></i>
                                 Cart Items
                                 <span class="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -214,13 +272,13 @@
                             </h3>
                         </div>
                         
-                        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700 max-h-[600px] overflow-y-auto">
+                        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700 max-h-[400px] md:max-h-[600px] overflow-y-auto">
                             <% if (cart && cart.items && cart.items.length > 0) { %>
                                 <% cart.items.forEach(item => { %>
-                                    <li class="cart-item p-6 hover:bg-gray-50 dark:hover:bg-gray-750 transition-all duration-300">
+                                    <li class="cart-item p-4 md:p-6 transition-all duration-300">
                                         <div class="flex flex-col sm:flex-row sm:items-center">
                                             <!-- Enhanced product image container -->
-                                            <div class="flex-shrink-0 relative overflow-hidden rounded-xl bg-white  w-full sm:w-36 h-36 mb-4 sm:mb-0 mx-auto sm:mx-0 border border-gray-100 dark:border-gray-600 shadow-md group">
+                                            <div class="flex-shrink-0 relative overflow-hidden rounded-xl bg-white dark:bg-gray-700 w-full sm:w-36 h-36 mb-4 sm:mb-0 mx-auto sm:mx-0 border border-gray-100 dark:border-gray-600 shadow-md group">
                                                 <div class="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 opacity-50"></div>
                                                 <img 
                                                     src="<%= item.product.mainImage %>" 
@@ -230,7 +288,7 @@
                                                 <!-- Hover overlay with quick actions -->
                                                 <div class="absolute inset-0 bg-gradient-to-t from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-3">
                                                     <div class="flex space-x-2">
-                                                        <a href="/productdetails/<%= item.product._id %>" class="bg-white text-primary-600 p-2 rounded-full shadow-md hover:bg-primary-50 transition-colors">
+                                                        <a href="/productdetails/<%= item.product._id %>" class="bg-white dark:bg-gray-800 text-primary-600 dark:text-primary-400 p-2 rounded-full shadow-md hover:bg-primary-50 dark:hover:bg-gray-700 transition-colors">
                                                             <i class="fas fa-eye text-xs"></i>
                                                         </a>
                                                     </div>
@@ -240,7 +298,7 @@
                                             <div class="sm:ml-6 flex-1 flex flex-col">
                                                 <div class="flex flex-col sm:flex-row sm:justify-between">
                                                     <div>
-                                                        <h4 class="text-lg font-medium text-gray-900 dark:text-white hover:text-primary-500 transition-colors">
+                                                        <h4 class="text-base md:text-lg font-medium text-gray-900 dark:text-white hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
                                                             <a href="/productdetails/<%= item.product._id %>"><%= item.product.productName %></a>
                                                         </h4>
                                                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -248,7 +306,7 @@
                                                                 <%= item.product.brands ? item.product.brands.name : 'No Brand' %>
                                                             </span>
                                                         </p>
-                                                        <p class="mt-2 text-lg font-semibold text-primary-600 dark:text-primary-400">
+                                                        <p class="mt-2 text-base md:text-lg font-semibold text-primary-600 dark:text-primary-400">
                                                             ₹<%= item.salePrice.toFixed(2) %>
                                                         </p>
                                                     </div>
@@ -258,14 +316,14 @@
                                                             <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">Qty:</span>
                                                             <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden shadow-sm">
                                                                 <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'decrement')" 
-                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300 transition-colors">
+                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                                                                     <i class="fas fa-minus text-xs"></i>
                                                                 </button>
                                                                 <input id="quantity-<%= item.product._id %>" type="number" 
                                                                     class="w-10 h-8 border-0 bg-white dark:bg-gray-800 text-center text-gray-900 dark:text-white" 
                                                                     value="<%= item.quantity %>">
                                                                 <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'increment')" 
-                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300 transition-colors">
+                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                                                                     <i class="fas fa-plus text-xs"></i>
                                                                 </button>
                                                             </div>
@@ -300,14 +358,14 @@
                                     </li>
                                 <% }) %>
                             <% } else { %>
-                                <li class="py-16 px-6 text-center">
+                                <li class="py-12 md:py-16 px-4 md:px-6 text-center">
                                     <div class="flex flex-col items-center">
-                                        <div class="w-24 h-24 bg-primary-50 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-4 animate-float">
-                                            <i class="fas fa-shopping-cart text-4xl text-primary-400 dark:text-primary-300"></i>
+                                        <div class="w-20 h-20 md:w-24 md:h-24 bg-primary-50 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-4 animate-float">
+                                            <i class="fas fa-shopping-cart text-3xl md:text-4xl text-primary-400 dark:text-primary-300"></i>
                                         </div>
-                                        <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">Your cart is empty</h3>
+                                        <h3 class="text-lg md:text-xl font-medium text-gray-900 dark:text-white mb-2">Your cart is empty</h3>
                                         <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-md">Looks like you haven't added anything to your cart yet. Explore our products and find something you'll love!</p>
-                                        <a href="/shoplist" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                        <a href="/shoplist" class="inline-flex items-center px-4 md:px-6 py-2 md:py-3 border border-transparent text-sm md:text-base font-medium rounded-md shadow-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
                                             <i class="fas fa-arrow-left mr-2"></i>
                                             Continue Shopping
                                         </a>
@@ -317,7 +375,7 @@
                         </ul>
                         
                         <% if (cart && cart.items && cart.items.length > 0) { %>
-                            <div class="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
+                            <div class="p-4 md:p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
                                 <a href="/" class="inline-flex items-center text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium transition-colors">
                                     <i class="fas fa-arrow-left mr-2"></i>
                                     Continue Shopping
@@ -325,33 +383,27 @@
                             </div>
                         <% } %>
                     </div>
-                    
-                    <!-- Shipping Method Selection - Only show when cart has items -->
-                   
                 </section>
 
                 <!-- Order summary -->
                 <section aria-labelledby="summary-heading" class="mt-8 lg:mt-0 lg:col-span-5">
                     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-card overflow-hidden sticky top-8">
-                        <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20">
-                            <h3 class="text-xl font-semibold flex items-center">
+                        <div class="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20">
+                            <h3 class="text-lg md:text-xl font-semibold flex items-center">
                                 <i class="fas fa-receipt text-primary-500 mr-2"></i>
                                 Order Summary
                             </h3>
                         </div>
                         
-                        <div class="p-6">
+                        <div class="p-4 md:p-6">
                             <dl class="space-y-4">
                                 <div class="flex items-center justify-between">
                                     <dt class="text-sm text-gray-600 dark:text-gray-400">Subtotal</dt>
                                     <dd class="text-sm font-medium text-gray-900 dark:text-white">
                                         ₹<%= cart && cart.totalSubtotal ? cart.totalSubtotal.toFixed(2) : 0 %>
-                                    </dd>                                </div>
+                                    </dd>
+                                </div>
                                 
-                                
-                                
-                               
-
                                 <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                                     <dt class="flex text-sm text-gray-600 dark:text-gray-400">
                                         <span>Tax</span>
@@ -359,28 +411,28 @@
 
                                     <dd class="text-sm font-medium text-gray-900 dark:text-white">
                                         ₹<%= cart && cart.totalSubtotal ? taxAmount.toFixed(2) : 0 %>
-                                    </dd>                                </div>
+                                    </dd>
+                                </div>
                                 
                                 <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                                     <dt class="text-base font-medium text-gray-900 dark:text-white">Order total</dt>
                                     <dd class="text-base font-bold text-primary-600 dark:text-primary-400">
                                         ₹<%= cart && cart.totalSubtotal ? finalTotal.toFixed(2) : 0 %>
-                                    </dd>                                </div>
+                                    </dd>
+                                </div>
                             </dl>
-                            
-                            <!-- Promo code section -->
                             
                             <!-- Checkout button -->
                             <div class="mt-6">
                                 <% if (cart && cart.items && cart.items.length > 0) { %>
                                     <a href="/checkout">
-                                        <button type="submit" class="w-full flex items-center justify-center px-6 py-4 border border-transparent text-base font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300">
+                                        <button type="submit" class="w-full flex items-center justify-center px-4 md:px-6 py-3 md:py-4 border border-transparent text-sm md:text-base font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300">
                                             <i class="fas fa-lock mr-2"></i>
                                             Proceed to Checkout
                                         </button>
                                     </a>
                                 <% } else { %>
-                                    <button type="button" onclick="showEmptyCartMessage()" class="w-full flex items-center justify-center px-6 py-4 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-gray-400 cursor-not-allowed">
+                                    <button type="button" onclick="showEmptyCartMessage()" class="w-full flex items-center justify-center px-4 md:px-6 py-3 md:py-4 border border-transparent text-sm md:text-base font-medium rounded-lg shadow-sm text-white bg-gray-400 dark:bg-gray-600 cursor-not-allowed">
                                         <i class="fas fa-lock mr-2"></i>
                                         Proceed to Checkout
                                     </button>
@@ -389,10 +441,10 @@
                             
                             <!-- Payment methods -->
                             <div class="mt-6 flex items-center justify-center space-x-4">
-                                <i class="fab fa-cc-visa text-2xl text-blue-600 dark:text-blue-400"></i>
-                                <i class="fab fa-cc-mastercard text-2xl text-red-600 dark:text-red-400"></i>
-                                <i class="fab fa-cc-amex text-2xl text-indigo-600 dark:text-indigo-400"></i>
-                                <i class="fab fa-cc-paypal text-2xl text-blue-800 dark:text-blue-300"></i>
+                                <i class="fab fa-cc-visa text-xl md:text-2xl text-blue-600 dark:text-blue-400"></i>
+                                <i class="fab fa-cc-mastercard text-xl md:text-2xl text-red-600 dark:text-red-400"></i>
+                                <i class="fab fa-cc-amex text-xl md:text-2xl text-indigo-600 dark:text-indigo-400"></i>
+                                <i class="fab fa-cc-paypal text-xl md:text-2xl text-blue-800 dark:text-blue-300"></i>
                             </div>
                             
                             <!-- Secure checkout message -->
@@ -406,10 +458,10 @@
             </div>
 
             <!-- Related Products Section -->
-            <section class="mt-16">
+            <section class="mt-12 md:mt-16">
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-card overflow-hidden">
-                    <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20">
-                        <h3 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                    <div class="p-4 md:p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20">
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white flex items-center">
                             <i class="fas fa-tag text-primary-500 mr-3"></i>
                             Related Products
                         </h3>
@@ -419,8 +471,8 @@
                         </a>
                     </div>
                     
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div class="p-4 md:p-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                             <% relatedProducts.forEach(product => { %>
                                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg overflow-hidden group transition-all duration-300 border border-gray-100 dark:border-gray-700 h-full flex flex-col transform hover:-translate-y-1">
                                     <div class="relative pt-[100%] overflow-hidden bg-white dark:bg-gray-700">
@@ -432,7 +484,7 @@
                                             >
                                         </a>
                                         <div class="absolute top-3 left-3 z-10">
-                                            <span class="bg-primary-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm">
+                                            <span class="bg-primary-500 text-white px-2 py-1 rounded-full text-xs font-semibold shadow-sm">
                                                 <%= product.brands ? product.brands.name : 'No Brand' %>
                                             </span>
                                         </div>
@@ -467,7 +519,7 @@
                                     </div>
                                     <div class="p-4 flex-grow flex flex-col">
                                         <a href="/productdetails/<%= product._id %>" class="text-base font-medium text-gray-800 dark:text-white hover:text-primary-500 dark:hover:text-primary-400 transition-colors"> 
-                                            <h3 class="text-lg font-semibold mb-2 line-clamp-2 h-14"><%= product.productName %></h3>
+                                            <h3 class="text-base md:text-lg font-semibold mb-2 line-clamp-2 h-12 md:h-14"><%= product.productName %></h3>
                                         </a>
                                        
                                         <div class="flex items-center mb-3">
@@ -482,12 +534,12 @@
                                         </div>
                                         <div class="mt-auto">
                                             <div class="flex items-center justify-between">
-                                                <span class="text-xl font-bold text-primary-600 dark:text-primary-400">₹<%= product.price %></span>
+                                                <span class="text-lg md:text-xl font-bold text-primary-600 dark:text-primary-400">₹<%= product.price %></span>
                                                 <button 
                                                     onclick="addToCart('<%= product._id %>')" 
-                                                    class="bg-primary-500 hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 flex items-center"
+                                                    class="bg-primary-500 hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-700 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-colors duration-200 flex items-center"
                                                 >
-                                                    <i class="fas fa-shopping-cart mr-2 text-xs"></i>
+                                                    <i class="fas fa-shopping-cart mr-1 md:mr-2 text-xs"></i>
                                                     Add
                                                 </button>
                                             </div>
@@ -497,15 +549,15 @@
                             <% }) %>
                             <% if (relatedProducts.length === 0) { %>
                                 <div class="col-span-full">
-                                    <div class="p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-2xl"></i>
+                                    <div class="p-8 md:p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                        <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-xl md:text-2xl"></i>
                                         </div>
-                                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">No Related Products</h3>
-                                        <p class="text-gray-500 dark:text-gray-400 text-base mb-6">We couldn't find any related products at the moment.</p>
+                                        <h3 class="text-lg md:text-xl font-semibold text-gray-800 dark:text-white mb-2">No Related Products</h3>
+                                        <p class="text-gray-500 dark:text-gray-400 text-sm md:text-base mb-6">We couldn't find any related products at the moment.</p>
                                         <button 
                                             onclick="window.location.href='/shoplist'" 
-                                            class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                                            class="inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 border border-transparent text-sm md:text-base font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                                         >
                                             <i class="fas fa-arrow-left mr-2"></i>
                                             Browse All Products
@@ -518,8 +570,8 @@
                     
                     <!-- View all products button -->
                     <% if (relatedProducts && relatedProducts.length > 0) { %>
-                        <div class="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750 text-center">
-                            <a href="/shoplist" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                        <div class="p-4 md:p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750 text-center">
+                            <a href="/shoplist" class="inline-flex items-center justify-center px-4 py-2 md:px-6 md:py-3 border border-gray-300 dark:border-gray-600 text-sm md:text-base font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
                                 View All Products
                                 <i class="fas fa-arrow-right ml-2"></i>
                             </a>
@@ -529,13 +581,39 @@
             </section>
         </div>
     </main>
+
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:block"></i>
+    </button>
+
     <%-include('partials/loader') %>
     <%- include('partials/footer') %>
 
-    <!-- Toast container -->
-    <div id="toast-container" class="fixed bottom-4 right-4 z-50"></div>
+    <!-- Add Toastify JS -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
+        // Dark mode toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && 
+                window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+            }
+            
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                localStorage.setItem('darkMode', html.classList.contains('dark'));
+            });
+        });
+
         function showEmptyCartMessage() {
             showToast('Your cart is empty. Please add items before checkout.', 'error');
         }
@@ -553,7 +631,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data.message)
                 if (data.success) {
                     showToast('Product added to cart!');
                 } else {
@@ -567,74 +644,19 @@
         }
 
         // Function to create a Toastify notification
-        function showToast(message, type = 'info') {
-            // Create toast container if it doesn't exist
-            let toastContainer = document.getElementById('toast-container');
-            if (!toastContainer) {
-                toastContainer = document.createElement('div');
-                toastContainer.id = 'toast-container';
-                toastContainer.className = 'fixed bottom-4 right-4 z-50 flex flex-col items-end';
-                document.body.appendChild(toastContainer);
-            }
-
-            // Create toast element
-            const toast = document.createElement('div');
-            toast.className = `
-                mb-3 px-6 py-4 rounded-lg shadow-lg text-white flex items-center
-                ${type === 'error' ? 'bg-red-500' : 'bg-primary-600'}
-                transform transition-all duration-300 ease-in-out
-                opacity-0 translate-y-8
-                max-w-md
-            `;
-
-            // Add icon based on type
-            const icon = document.createElement('i');
-            icon.className = `mr-3 ${type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle'}`;
-            toast.appendChild(icon);
-
-            // Add message
-            const messageEl = document.createElement('span');
-            messageEl.textContent = message;
-            toast.appendChild(messageEl);
-
-            // Add close button
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'ml-auto text-white hover:text-gray-200 focus:outline-none';
-            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-            closeBtn.onclick = () => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(8rem)';
-                setTimeout(() => {
-                    toastContainer.removeChild(toast);
-                }, 300);
-            };
-            toast.appendChild(closeBtn);
-
-            // Add toast to container
-            toastContainer.appendChild(toast);
-
-            // Trigger animation
-            requestAnimationFrame(() => {
-                toast.style.opacity = '1';
-                toast.style.transform = 'translateY(0)';
-            });
-
-            // Remove toast after 5 seconds
-            setTimeout(() => {
-                if (toast.parentNode === toastContainer) {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(8rem)';
-                    setTimeout(() => {
-                        if (toast.parentNode === toastContainer) {
-                            toastContainer.removeChild(toast);
-                            // Remove container if no toasts left
-                            if (toastContainer.children.length === 0) {
-                                document.body.removeChild(toastContainer);
-                            }
-                        }
-                    }, 300);
+        function showToast(message, isSuccess = true) {
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "bottom",
+                position: "center",
+                backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
+                stopOnFocus: true,
+                className: "rounded-lg",
+                style: {
+                    boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
                 }
-            }, 5000);
+            }).showToast();
         }
 
         // Function to update quantity
@@ -660,19 +682,19 @@
                 
                 if (data.success) {
                     // Show success toast before reloading
-                    showToast('Cart updated successfully', 'info');
+                    showToast('Cart updated successfully');
                     setTimeout(() => {
                         window.location.reload(); // Reload the page to reflect the changes
                     }, 1000);
                 } else {
                     // Show toast only for stock unavailability
                     if (data.message.includes('stock') || data.message.includes('available')) {
-                        showToast(data.message, 'error');
+                        showToast(data.message, false);
                     }
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showToast('An error occurred', 'error');
+                showToast('An error occurred', false);
             }
         }
 
@@ -683,16 +705,16 @@
                     method: 'DELETE',
                 });
                 if (response.ok) {
-                    showToast('Item removed from cart', 'info');
+                    showToast('Item removed from cart');
                     setTimeout(() => {
                         window.location.reload(); // Reload the page to reflect the changes
                     }, 1000);
                 } else {
-                    showToast('Failed to remove item from cart', 'error');
+                    showToast('Failed to remove item from cart', false);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showToast('An error occurred', 'error');
+                showToast('An error occurred', false);
             }
         }
 
@@ -710,19 +732,16 @@
             const addToCartButtons = document.querySelectorAll('.product-card button');
             addToCartButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    showToast('Product added to cart', 'info');
-                });
-            });
-
-            // Update shipping cost when shipping method changes
-            const shippingRadios = document.querySelectorAll('.shipping-radio');
-            shippingRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    // In a real implementation, this would update the shipping cost and total
-                    showToast(`Shipping method changed to ${this.value}`, 'info');
+                    showToast('Product added to cart');
                 });
             });
         });
+
+        // Function to toggle wishlist
+        function toggleWishlist(productId) {
+            // Implementation would go here
+            showToast('Wishlist feature coming soon!');
+        }
     </script>
 </body>
 </html>

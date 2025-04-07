@@ -89,6 +89,6 @@ loginPost: async (req, res) => {
 logout:(req,res)=>{
     res.clearCookie('token')
     res.status(200).redirect('/admin/login')
-}
+},
 }
 module.exports = adminAuth
