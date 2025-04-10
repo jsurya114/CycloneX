@@ -7,19 +7,29 @@ const User = require('../../models/userModel')
 const shopController = {
     shopList: async (req, res, next) => {
         try {
-            const token = req.cookies.token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            
-            const userId = decoded.id;
-            const user = await User.findById(userId);
-            let cartfind = await Cart.findOne({user: userId})
-            const cartCount = cartfind.items.length
-            const { search, categoryFilter, brandsFilter, sortBy, page, limit, maxPrice, minPrice} = req.query;
-            
+            const token = req.cookies.token;
+            let userId = null;
+            let user = null;
+            let cartCount = 0;
+            let cart = null;
+    
+            if (token) {
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                userId = decoded.id;
+                user = await User.findById(userId);
+    
+                let cartfind = await Cart.findOne({ user: userId });
+                cartCount = cartfind ? cartfind.items.length : 0;
+    
+                cart = await Cart.findOne({ user: userId }).populate('items.product');
+            }
+    
+            const { search, categoryFilter, brandsFilter, sortBy, page, limit, maxPrice, minPrice } = req.query;
+    
             let filter = { isDeleted: false };
     
-            const categories = await Category.find({isBlocked: false});
-            const brands = await Brand.find({isBlocked: false});
+            const categories = await Category.find({ isBlocked: false });
+            const brands = await Brand.find({ isBlocked: false });
     
             // Search filter
             if (search) {
@@ -29,7 +39,6 @@ const shopController = {
                     { 'category.name': { $regex: search.trim(), $options: "i" } },
                 ];
             }
-          
     
             // Category filter
             if (categoryFilter) {
@@ -47,21 +56,19 @@ const shopController = {
                 }
             }
     
-            // Pagination logic
+            // Pagination setup
             let currentPage = parseInt(page) || 1;
             let itemsPerPage = parseInt(limit) || 12;
             let skip = (currentPage - 1) * itemsPerPage;
     
-            // Set initial sort option for database query
-            // For most sort options, we'll sort at the database level
-            let sortOptions = { createdAt: -1 }; // Default: newest first
+            // Sorting logic
+            let sortOptions = { createdAt: -1 };
             let needCustomSort = false;
-            
+    
             if (sortBy) {
                 switch (sortBy) {
                     case 'priceLowHigh':
                     case 'priceHighLow':
-                        // For price sorting, we'll need to sort after calculating sale price
                         needCustomSort = true;
                         break;
                     case 'aToZ':
@@ -76,21 +83,19 @@ const shopController = {
                 }
             }
     
-        
-            // Fetch all products that match filter
+            // Fetch products
             const allProducts = await Product.find(filter)
-                .sort(needCustomSort ? {} : sortOptions) // Only apply sort at database level if we're not doing custom sorting
+                .sort(needCustomSort ? {} : sortOptions)
                 .populate('brands')
                 .populate('category');
-        
-          
-            // Calculate offer and sale price for each product
+    
+            // Calculate offers and sale prices
             const productsWithOffers = allProducts.map(p => {
                 const productOffer = p.offer || 0;
                 const categoryOffer = (p.category && p.category.offer) ? p.category.offer : 0;
                 const maxOffer = Math.max(productOffer, categoryOffer);
                 const salePrice = maxOffer > 0 ? p.price * (1 - maxOffer / 100) : p.price;
-                
+    
                 return {
                     ...p.toObject(),
                     maxOffer,
@@ -98,10 +103,9 @@ const shopController = {
                 };
             });
     
-    
-            // Apply price filter based on sale price
+            // Apply price filter
             let filteredProducts = productsWithOffers;
-        
+    
             if (minPrice || maxPrice) {
                 filteredProducts = productsWithOffers.filter(product => {
                     if (minPrice && maxPrice) {
@@ -114,11 +118,8 @@ const shopController = {
                     return true;
                 });
             }
-   
-
-
     
-            // Apply custom sorting if needed (for sale price)
+            // Custom sort (after calculating salePrice)
             if (needCustomSort) {
                 if (sortBy === 'priceLowHigh') {
                     filteredProducts.sort((a, b) => a.salePrice - b.salePrice);
@@ -126,21 +127,13 @@ const shopController = {
                     filteredProducts.sort((a, b) => b.salePrice - a.salePrice);
                 }
             }
-       
     
-            // Count total products after filtering by sale price
+            // Pagination
             const totalProducts = filteredProducts.length;
- 
-            // Apply pagination
             const productWithoffer = filteredProducts.slice(skip, skip + itemsPerPage);
-
-            // Fetch cart
-            let cart = await Cart.findOne({ user: user._id }).populate('items.product');
+            const totalPages = Math.ceil(totalProducts / itemsPerPage);
     
-            // Calculate total pages
-            let totalPages = Math.ceil(totalProducts / itemsPerPage);
-    
-            // Build breadcrumbs
+            // Breadcrumbs
             let breadcrumbs = [
                 { name: 'Home', url: '/' },
                 { name: 'Shop', url: '/shoplist' }
@@ -182,6 +175,7 @@ const shopController = {
             next(error);
         }
     },
+    
   
    
 };

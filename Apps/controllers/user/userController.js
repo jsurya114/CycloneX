@@ -188,7 +188,7 @@ if (token) {
         const salePrice = product.price * (1 - maxOffer / 100); // Apply discount correctly
         
         let cartfind = await Cart.findOne({user: userId})
-                //  const cartCount = cartfind.items.length
+               
                  const breadcrumbs = [
                     { name: 'Home', url: '/' },
                     product.category ? { name: product.category.name, url: `/home?categoryFilter=${encodeURIComponent(product.category.name)}` } : { name: 'Category', url: '#' },
