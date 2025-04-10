@@ -10,18 +10,13 @@ const reviewController ={
              const token =req.cookies.token
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
                   const userId = decoded.id;
-                  console.log('here2',userId)
             const user = await User.findById(userId)
-            console.log('rewq',req.body)
             if(!user){
                 return res.status(400).json({success:false,message:'Unauthorized'})
             
             }
-console.log('fkdjk',req.params)
 const {orderId,id}=req.params
-console.log('orderidd',orderId)
 const order= await Order.findOne({orderId}).populate('items.product')
-console.log('orderse',order)
 if(!order){
     return res.status(404).json({success:false,message:'Order not found'})
 
@@ -42,15 +37,12 @@ const reviews = await Review.find({product:id}).populate('user','name').sort({cr
     },
 submitReview:async (req,res,next) => {
     try {
-        console.log('sss',req.params)
         const {id,orderId}=req.params
-        console.log('sssss',req.body)
         const {user,rating,description}=req.body
         
         if ( !rating || !description) {
             return res.status(400).json({ success: false, message: "All fields are required." });
         } 
-        console.log('productId is ',id)   
 if(!id){
     return res.status(400).json({success:false,message:'productId is missing'})
 }

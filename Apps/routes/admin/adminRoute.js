@@ -15,7 +15,6 @@ const couponController = require('../../controllers/admin/couponController');
 const salesController = require('../../controllers/admin/salesController')
 const dashboardController=require('../../controllers/admin/dashboardController');
 const walletController=require('../../controllers/admin/wallet');
-const adminWalletModel = require('../../models/adminWalletModel');
 
 
 router.use(nocache);

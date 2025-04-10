@@ -12,7 +12,8 @@ const shopController = {
             
             const userId = decoded.id;
             const user = await User.findById(userId);
-            let cartCount = await Cart.countDocuments({user: userId})
+            let cartfind = await Cart.findOne({user: userId})
+            const cartCount = cartfind.items.length
             const { search, categoryFilter, brandsFilter, sortBy, page, limit, maxPrice, minPrice} = req.query;
             
             let filter = { isDeleted: false };

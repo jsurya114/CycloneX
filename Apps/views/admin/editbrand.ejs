@@ -1,160 +1,293 @@
 <!DOCTYPE HTML>
 <html lang="en">
-<head>
-  <%- include('partials/head') %>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#3b82f6',
-          },
-          boxShadow: {
-            'custom': '0 0 50px -12px rgb(0 0 0 / 0.25)',
-          }
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX Dashboard - Edit Brand</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#2e1065',
+                        },
+                    },
+                },
+            },
         }
-      }
-    }
-  </script>
-</head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100">
-  <aside class="navbar-aside" id="offcanvas_aside">
-    <div class="aside-top">
-      <a href="" class="brand-wrap">
-        <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-      </a>
-      <div>
-        <button class="btn btn-icon btn-aside-minimize">
-          <i class="text-muted material-icons md-menu_open"></i>
-        </button>
-      </div>
-    </div>
-    <nav>
-      <ul class="menu-aside">
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/dashboard">
-            <i class="icon material-icons md-home"></i>
-            <span class="text">Dashboard</span>
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Toggle switch styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            background-color: #0284c7;
+            border-color: #0284c7;
+        }
+        
+        .toggle-label {
+            display: block;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 9999px;
+            height: 1.5rem;
+            background-color: #d1d5db;
+        }
+
+        /* Custom shadow */
+        .shadow-custom {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Glass effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* Custom animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Input focus effect */
+        .input-focus-effect:focus {
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+            border-color: #0284c7;
+        }
+        
+        /* Background pattern */
+        .bg-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+  </head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 bg-pattern">
+  <div class="flex min-h-screen">
+    <!-- Sidebar (unchanged) -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+            </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
           </a>
-        </li>
-        <li class="menu-item has-submenu active">
-            <a class="menu-link" href="#">
-              <i class="icon material-icons md-shopping_bag"></i>
-              <span class="text">Products</span>
-              <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
             </a>
-            <ul class="submenu">
-              <!-- <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li> -->
-              <li><a href="/admin/addproduct" class="submenu-link">Add Product</a></li>
-            </ul>
-          </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/category">
-            <i class="icon material-icons md-category"></i>
-            <span class="text">Category</span>
+            
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium bg-primary-50 text-primary-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-star w-5 h-5 mr-2 text-primary-700"></i>
+              <span>Brands</span>
+            </a>
+          </div>
+          
+          <a href="/admin/salesreport" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+            <i class="fas fa-chart-line w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+            <span>salesreport</span>
           </a>
-        </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/brands">
-            <i class="icon material-icons md-stars"></i>
-            <span class="text">Brands</span>
-          </a>
-        </li>
-      </ul>
-      <li class="menu-item  active">
-        <a class="menu-link" href="#">
-          <i class="icon material-icons md-store"></i>
-          <span class="text">Users</span>
-          <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-        </a>
-     
-      </li>
-    </nav>
-  </aside>
-  <main class="min-h-screen p-4">
-   <!-- Improved Header Section -->
-   <header class="bg-white shadow-md py-4 mb-6">
-    <div class="container mx-auto flex justify-between items-center px-4">
-      <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
-      <nav>
-        <ul class="flex space-x-6">
-          <li><a href="/admin/dashboard" class="text-gray-600 hover:text-blue-600">Dashboard</a></li>
-          <li><a href="/admin/brands" class="text-gray-600 hover:text-blue-600">Brands</a></li>
-          <li><a href="/admin/logout" class="text-gray-600 hover:text-blue-600">Logout</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-    <div class="max-w-2xl mx-auto">
-      <!-- Back Button and Header -->
-      <div class="flex items-center mb-4 space-x-3">
-        <a href="/admin/brands" 
-           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white shadow-md hover:bg-gray-50 hover:shadow-lg transition-all duration-300 text-gray-700"
-        >
-          <i data-lucide="arrow-left" class="w-5 h-5"></i>
-        </a>
-        <h2 class="text-xl font-bold text-gray-900 drop-shadow-sm">Edit Brand</h2>
+          
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Users</span>
+            </a>
+            
+            <a href="/admin/adminwallet" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-wallet w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Wallet</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Orders</span>
+            </a>
+            <a href="/admin/Logout" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-sign-out-alt w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
       </div>
+    </aside>
 
-      <!-- Main Card -->
-      <div class="bg-white rounded-lg shadow-custom hover:shadow-lg transition-shadow duration-300 p-4">
-        <% if (message) { %>
-          <div class="mb-4 p-3 rounded-md shadow-sm <%= message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700' %>">
-            <%= message.text %>
-          </div>
-        <% } %>
+    <!-- Content Area -->
+    <div class="flex-1 lg:ml-64">
+ 
 
-        <!-- Edit Brand Form -->
-        <form id="editBrandForm" enctype="multipart/form-data" class="space-y-4">
-          <!-- Name Field -->
-          <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input 
-              type="text" 
-              name="name" 
-              id="name"
-              value="<%= brand.name %>" 
-              class="w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
-            >
-          </div>
-
-          <!-- Description Field -->
-          <div>
-            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea 
-              name="description" 
-              id="description"
-              rows="2"
-              class="w-full px-3 py-1.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow text-sm"
-            ><%= brand.description %></textarea>
-          </div>
-
+      <!-- Main Content -->
+      <main class="p-4 md:p-6 lg:p-8">
+        <div class="max-w-5xl mx-auto">
+         
+           
         
 
-          <!-- Action Buttons -->
-          <div class="flex gap-3 pt-3">
-            <button 
-              type="button" 
-              id="updateBrandBtn"
-              class="px-4 py-1.5 bg-blue-600 text-white text-sm rounded-md shadow-md hover:shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300"
-            >
-              Update Brand
-            </button>
-            <!-- <button 
-              type="button" 
-              onclick="window.location.href='/admin/brands'"
-              class="px-4 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-md shadow-md hover:shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-300"
-            >
-              Cancel
-            </button> -->
+          <!-- Main Content Cards -->
+          <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            
+            
+            <!-- Edit Form Card -->
+            <div class="lg:col-span-3 bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              <div class="bg-gradient-to-r from-secondary-600 to-secondary-700 p-4">
+                <h3 class="text-white text-lg font-semibold flex items-center">
+                  <i class="fas fa-edit mr-2"></i>
+                  Edit Brand Details
+                </h3>
+                <p class="text-purple-100 text-sm mt-1">Update information and save changes</p>
+              </div>
+              
+              <div class="p-5">
+                <!-- Edit Brand Form -->
+                <form id="editBrandForm" enctype="multipart/form-data" class="space-y-5">
+                  <!-- Name Field -->
+                  <div class="relative">
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                      Brand Name
+                      <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative rounded-md shadow-sm">
+                      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-tag text-gray-400"></i>
+                      </div>
+                      <input 
+                        type="text" 
+                        name="name" 
+                        id="name"
+                        value="<%= brand.name %>" 
+                        class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                        required
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Description Field -->
+                  <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <div class="relative rounded-md shadow-sm">
+                      <div class="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
+                        <i class="fas fa-align-left text-gray-400"></i>
+                      </div>
+                      <textarea 
+                        name="description" 
+                        id="description"
+                        rows="5"
+                        class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                      ><%= brand.description %></textarea>
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Provide a detailed description of the brand (optional)</p>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="flex flex-wrap gap-3 pt-6">
+                    <button 
+                      type="button" 
+                      id="updateBrandBtn"
+                      class="flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm rounded-lg shadow-md hover:shadow-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300"
+                    >
+                      <i class="fas fa-save mr-2"></i>
+                      Update Brand
+                    </button>
+                    <a 
+                      href="/admin/brands"
+                      class="flex items-center px-6 py-3 bg-gray-100 text-gray-700 text-sm rounded-lg shadow-md hover:shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-300"
+                    >
+                      <i class="fas fa-times mr-2"></i>
+                      Cancel
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
-        </form>
-      </div>
+          
+          
+        </div>
+      </main>
     </div>
-  </main>
+  </div>
 
   <%- include('partials/scripts') %>
   <!-- Initialize Lucide Icons -->
@@ -162,6 +295,36 @@
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
+  </script>
+  <!-- Mobile sidebar toggle -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', function() {
+          sidebar.classList.remove('-translate-x-full');
+        });
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', function() {
+          sidebar.classList.add('-translate-x-full');
+        });
+      }
+      
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        const isClickInsideSidebar = sidebar.contains(event.target);
+        const isClickOnOpenBtn = openSidebarBtn && openSidebarBtn.contains(event.target);
+        
+        if (!isClickInsideSidebar && !isClickOnOpenBtn && window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
+          sidebar.classList.add('-translate-x-full');
+        }
+      });
+    });
   </script>
   <script>
     document.getElementById("updateBrandBtn").addEventListener("click", async function () {

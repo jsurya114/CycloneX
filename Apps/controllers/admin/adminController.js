@@ -35,7 +35,7 @@ else if(statusFilter==='deactive'){
 
 
 if(categoryFilter){
-    const categoryobj= await Category.findOne({name:categoryFilter})
+    const categoryobj= await Category.findOne({name:categoryFilter,isBlocked:false})
     if(categoryobj){
         filter.category=categoryobj._id
     }
@@ -188,7 +188,7 @@ let totalUsers = await User.countDocuments(filter)
                 prevPage: currentPage > 1 ? currentPage - 1 : null,
             })
         } catch (error) {
-            console.log(error)
+         
             next(error)
         }
     },

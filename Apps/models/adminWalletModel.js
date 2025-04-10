@@ -15,6 +15,7 @@ const AdminWalletSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     reason: { type: String },
     transactionId:{type:String},
+    
     user:{type: mongoose.Schema.Types.ObjectId,ref:'User'}
   }],
 });

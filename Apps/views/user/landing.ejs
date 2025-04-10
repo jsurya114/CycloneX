@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CycloneX - Premium Cycling Experience</title>
+    <title>CycloneX Home</title>
    
     <!-- Use the latest Tailwind CDN with direct import -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,8 +27,11 @@
                     },
                     colors: {
                         primary: '#3b82f6',
-                        secondary: '#f43f5e',
-                        dark: '#0f172a'
+                        secondary: '#10B981',
+                        accent: '#8B5CF6',
+                        dark: '#0f172a',
+                        sale: '#2e1065', // Added purple color for sale banner
+                          light: '#F9FAFB'
                     },
                     animation: {
                         'spin-slow': 'spin 8s linear infinite',
@@ -39,6 +42,7 @@
                         'float': 'float 6s ease-in-out infinite',
                         'rotate-y': 'rotateY 15s infinite linear'
                     },
+                    
                     keyframes: {
                         fadeIn: {
                             '0%': { opacity: '0' },
@@ -66,12 +70,209 @@
         }
     </script>
    
+   <style>
+    @keyframes calendarFlip {
+      0% {
+        opacity: 0;
+        transform: rotateX(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: rotateX(90deg);
+      }
+      100% {
+        opacity: 0;
+        transform: rotateX(180deg);
+      }
+    }
+    
+    .calendar-flip {
+      animation: calendarFlip 1s linear infinite;
+      transform-origin: center bottom;
+    }
+    
+    /* Add subtle texture to calendar pages */
+    .calendar-page {
+      background-image: linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px);
+      background-size: 100% 8px;
+    }
+    
+    .dark .calendar-page {
+      background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 100% 8px;
+    }
+    
+    /* Calendar page change animation */
+    .calendar-page .seconds {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .calendar-page .seconds::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 0;
+      background-color: rgba(0, 0, 0, 0.05);
+      animation: pageChange 1s linear infinite;
+    }
+    
+    @keyframes pageChange {
+      0% {
+        height: 0;
+      }
+      95% {
+        height: 100%;
+      }
+      100% {
+        height: 0;
+      }
+    }
+  </style>
+   <style>
+    .coupon-container {
+      margin: 20px 0;
+      font-family: Arial, sans-serif;
+    }
+    
+    .coupon-card {
+      border: 2px dashed #3498db;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background-color: #f8f9fa;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .coupon-card.expired {
+      border-color: #ccc;
+      background-color: #f1f1f1;
+      opacity: 0.7;
+    }
+    
+    .coupon-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .coupon-code {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin: 0;
+    }
+    
+    .discount-badge {
+      background-color: #e74c3c;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .expired-badge {
+      background-color: #95a5a6;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .coupon-details {
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+    
+    .coupon-countdown {
+      margin-bottom: 15px;
+    }
+    
+    .coupon-countdown p {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      color: #34495e;
+    }
+    
+    .countdown-timer {
+      display: flex;
+      justify-content: space-between;
+      max-width: 300px;
+    }
+    
+    .countdown-unit {
+      text-align: center;
+      width: 60px;
+    }
+    
+    .countdown-unit span {
+      display: block;
+    }
+    
+    .countdown-unit .days,
+    .countdown-unit .hours,
+    .countdown-unit .minutes,
+    .countdown-unit .seconds {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+      background-color: #ecf0f1;
+      border-radius: 4px;
+      padding: 5px 0;
+      margin-bottom: 3px;
+    }
+    
+    .countdown-unit .label {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    
+    .apply-coupon-btn {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    
+    .apply-coupon-btn:hover {
+      background-color: #27ae60;
+    }
+    
+    .expired-text {
+      color: #e74c3c;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+    }
+    
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+  </style>
+    
     <!-- Custom Styles -->
     <style>
-
-
-
-        
         /* Base styles in case Tailwind fails */
         body {
             font-family: 'Poppins', sans-serif;
@@ -385,487 +586,741 @@
             transition: transform 0.5s ease;
             transform-style: preserve-3d;
         }
+
+        /* Product Grid Slider */
+        .product-grid-slider {
+            position: relative;
+            overflow: hidden;
+            padding: 1rem 0;
+        }
+
+        .product-grid-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .product-grid-item {
+            flex: 0 0 auto;
+            width: 100%;
+            padding: 0 0.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .product-grid-item {
+                width: 50%;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .product-grid-item {
+                width: 33.333333%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .product-grid-item {
+                width: 25%;
+            }
+        }
+
+        .product-grid-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .product-grid-nav:hover {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .product-grid-prev {
+            left: 10px;
+        }
+
+        .product-grid-next {
+            right: 10px;
+        }
+
+        /* Sale Countdown Styles */
+        .countdown-digit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            min-width: 60px;
+        }
+
+        .countdown-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+        }
+
+        .countdown-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .countdown-separator {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0.25rem;
+            opacity: 0.7;
+        }
+        
+        /* Responsive banner image fixes */
+        @media (max-width: 768px) {
+            .slider-item .slide-image {
+                object-fit: cover;
+                height: 100%;
+                width: 100%;
+            }
+            
+            .slider-item .absolute.inset-0 {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .slider-item .container {
+                padding-top: 2rem;
+                padding-bottom: 2rem;
+            }
+        }
+        
+        /* Sale banner toggle */
+        .sale-banner {
+            transition: all 0.5s ease-in-out;
+            max-height: 500px;
+            overflow: hidden;
+        }
+        
+        .sale-banner.hidden {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            opacity: 0;
+        }
+        
+        /* Close button for sale banner */
+        .close-banner {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-banner:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+        
+        /* Category Slider */
+        .category-slider {
+            position: relative;
+            overflow: hidden;
+            padding: 1rem 0;
+        }
+        
+        .category-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        
+        .category-item {
+            flex: 0 0 auto;
+            width: 100%;
+            padding: 0 0.5rem;
+        }
+        
+        @media (min-width: 640px) {
+            .category-item {
+                width: 50%;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .category-item {
+                width: 33.333333%;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .category-item {
+                width: 25%;
+            }
+        }
+        
+        .category-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .category-nav:hover {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .category-prev {
+            left: 10px;
+        }
+        
+        .category-next {
+            right: 10px;
+        }
     </style>
-
-
-
 </head>
 
 <body class="font-sans bg-gray-50 dark:bg-gray-900">
     <!-- Header with reduced opacity background -->
-    <header class="bg-white shadow-md sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex items-center justify-between">
-                <!-- Logo -->
-                <a href="/" class="flex items-center space-x-2">
-                    <img src="/frontend/imgs/logos/cyclonelogo1.png" alt="" class="w-32 h-25">
-    
-                </a>
-                             
-                <!-- Navigation -->
-                <nav class="hidden md:flex space-x-8">
-                    <a href="/" class="text-dark hover:text-primary font-medium relative group">
-                        Home
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <a href="/shoplist" class="text-dark hover:text-primary font-medium relative group">
-                        Shop
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <!-- <a href="/order" class="text-dark hover:text-primary font-medium relative group">
-                        Order
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                    </a> -->
-                    <!-- <a href="/about" class="text-dark hover:text-primary font-medium relative group">
-                        About
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                    </a>
-                    <a href="/contact" class="text-dark hover:text-primary font-medium relative group">
-                        Contact
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                    </a> -->
-                </nav>
-                             
-                <!-- Icons -->
-                <div class="flex items-center space-x-4">
-                  <div class="w-full md:w-1/3">
-                    <div class="relative">
-                        <input type="text" placeholder="Search for cycles..." id="searchInput" class="w-full border border-gray-300 rounded-full py-2 px-4 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                </div>
-          
-               
-                    <button class="text-dark hover:text-primary relative">
-                      <a href="/">-login</a>
-                    </button>
-                  
-                </div>
-               
-        </div>
-                     
-        <!-- Mobile Menu -->
-        <div class="md:hidden hidden mt-4 pb-4" id="mobile-menu">
-            <nav class="flex flex-col space-y-3">
-                <a href="/" class="text-dark hover:text-primary font-medium">Home</a>
-                <a href="/shoplist" class="text-dark hover:text-primary font-medium">Shop</a>
-                <!-- <a href="/orders" class="text-dark hover:text-primary font-medium">Orders</a> -->
-                <!-- <a href="/about" class="text-dark hover:text-primary font-medium">About</a>
-                <a href="/contact" class="text-dark hover:text-primary font-medium">Contact</a> -->
-            </nav>
-        </div>
-    </div>
-    </header>
+    <%-include('partials/header') %>
  
+    
+    <!-- Enhanced Banner Slider Section with Improved Image Cards -->
+    <section class="relative h-[600px] md:h-[700px] overflow-hidden bg-gradient-to-r from-blue-900 to-indigo-900 dark:from-gray-900 dark:to-gray-800">
+        <!-- Decorative Elements -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-blue-500 opacity-10 animate-spin-slow floating-element"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-indigo-500 opacity-10 animate-spin-slow" style="animation-direction: reverse;"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border-2 border-blue-300 rounded-full opacity-5"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border-2 border-indigo-300 rounded-full opacity-5"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border-2 border-purple-300 rounded-full opacity-5"></div>
+        </div>
+       
+        <!-- Improved Slider Container -->
+        <div class="slider-container h-full">
 
-<!-- Enhanced Banner Slider Section with Improved Image Cards -->
-<section class="relative h-[600px] md:h-[700px] overflow-hidden bg-gradient-to-r from-blue-900 to-indigo-900 dark:from-gray-900 dark:to-gray-800">
-    <!-- Decorative Elements -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-blue-500 opacity-10 animate-spin-slow floating-element"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-indigo-500 opacity-10 animate-spin-slow" style="animation-direction: reverse;"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border-2 border-blue-300 rounded-full opacity-5"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border-2 border-indigo-300 rounded-full opacity-5"></div>
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border-2 border-purple-300 rounded-full opacity-5"></div>
-    </div>
-   
-    <!-- Improved Slider Container -->
-    <div class="slider-container h-full">
-        <!-- Slide 1 -->
-        <div class="slider-item active">
-            <div class="slider-gradient-overlay"></div>
-            <div class="absolute inset-0 flex items-center">
-                <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
-                    <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
-                        <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Premium Mountain Bikes</span>
-                        <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
-                            Conquer Every <span class="text-rose-400">Trail</span>
-                        </h1>
-                        <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
-                            Experience unmatched performance with our premium mountain bikes engineered for the ultimate adventure seeker.
-                        </p>
-                        <div class="flex flex-wrap gap-4 slide-buttons">
-                            <a href="#" class="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-rose-500/30 group">
-                                Shop Now
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </a>
-                            <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
-                                Learn More
-                            </a>
+            <!-- Slide 1 -->
+            <div class="slider-item active">
+                <div class="slider-gradient-overlay"></div>
+                <div class="absolute inset-0 flex items-center">
+                    <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
+                            <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Premium Mountain Bikes</span>
+                            <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
+                                Conquer Every <span class="text-rose-400">Trail</span>
+                            </h1>
+                            <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
+                                Experience unmatched performance with our premium mountain bikes engineered for the ultimate adventure seeker.
+                            </p>
+                            <div class="flex flex-wrap gap-4 slide-buttons">
+                                <a href="#" class="bg-rose-500 hover:bg-rose-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-rose-500/30 group">
+                                    Shop Now
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </a>
+                                <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
+                                    Learn More
+                                </a>
+                            </div>
+                        </div>
+                        <div class="md:w-1/2 relative">
+                            <!-- Enhanced Image Card with 3D Effect -->
+                           
                         </div>
                     </div>
-                    <div class="md:w-1/2 relative">
-                        <!-- Enhanced Image Card with 3D Effect -->
-                        <div class="w-full h-[300px] md:h-[400px] relative mx-auto overflow-hidden rounded-3xl shadow-2xl transform perspective-1000 group">
-                            <!-- Glowing background effect -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-rose-500/20 to-blue-500/20 opacity-70 group-hover:opacity-90 transition-opacity duration-700"></div>
-                           
-                            <!-- Main image with enhanced container -->
-                            <div class="absolute inset-0 p-4 transform group-hover:scale-[0.98] transition-transform duration-700">
-                                <div class="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 p-2 backdrop-blur-sm">
-                                    <img
-                                        src="/frontend/imgs/logos/sigbg.jpg"
-                                        alt="Mountain Biking"
-                                        class="w-full h-full object-cover object-center rounded-xl slide-image animate-rotate-y"
-                                    >
-                                </div>
+                </div>
+            </div>
+           
+            <!-- Slide 2 -->
+            <div class="slider-item">
+                <div class="slider-gradient-overlay"></div>
+                <div class="absolute inset-0 flex items-center">
+                    <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
+                            <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Professional Road Bikes</span>
+                            <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
+                                Engineered for <span class="text-amber-400">Speed</span>
+                            </h1>
+                            <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
+                                Professional-grade road bikes with cutting-edge aerodynamics and lightweight frames for peak performance.
+                            </p>
+                            <div class="flex flex-wrap gap-4 slide-buttons">
+                                <a href="#" class="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-amber-500/30 group">
+                                    Shop Now
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </a>
+                                <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
+                                    Learn More
+                                </a>
                             </div>
-                           
-                            <!-- Decorative elements -->
-                            <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-rose-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
-                            <div class="absolute -top-4 -left-4 w-40 h-40 bg-blue-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
-                           
-                            <!-- Floating particles -->
-                            <div class="absolute top-1/4 right-1/4 w-3 h-3 bg-white rounded-full opacity-70 animate-ping"></div>
-                            <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 1s;"></div>
-                            <div class="absolute top-1/2 right-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 2s;"></div>
-                           
-                            <!-- Shine effect overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        </div>
+                        <div class="md:w-1/2 relative">
+                            <!-- Enhanced Image Card with 3D Effect -->
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+            <!-- Slide 3 -->
+            <div class="slider-item">
+                <div class="slider-gradient-overlay"></div>
+                <div class="absolute inset-0 flex items-center">
+                    <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
+                            <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Urban Commuter Bikes</span>
+                            <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
+                                Urban <span class="text-emerald-400">Freedom</span>
+                            </h1>
+                            <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
+                                Stylish city bikes that blend comfort and efficiency, transforming your daily commute into a joyful experience.
+                            </p>
+                            <div class="flex flex-wrap gap-4 slide-buttons">
+                                <a href="/shoplist?categoryFilter=<%= categories.name %>" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-emerald-500/30 group">
+                                    Shop Now
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    </svg>
+                                </a>
+                                <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
+                                    Learn More
+                                </a>
+                            </div>
+                        </div>
+                        <div class="md:w-1/2 relative">
+                            <!-- Enhanced Image Card with 3D Effect -->
+                          
                         </div>
                     </div>
                 </div>
             </div>
         </div>
        
-        <!-- Slide 2 -->
-        <div class="slider-item">
-            <div class="slider-gradient-overlay"></div>
-            <div class="absolute inset-0 flex items-center">
-                <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
-                    <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
-                        <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Professional Road Bikes</span>
-                        <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
-                            Engineered for <span class="text-amber-400">Speed</span>
-                        </h1>
-                        <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
-                            Professional-grade road bikes with cutting-edge aerodynamics and lightweight frames for peak performance.
-                        </p>
-                        <div class="flex flex-wrap gap-4 slide-buttons">
-                            <a href="#" class="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-amber-500/30 group">
-                                Shop Now
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </a>
-                            <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
-                                Learn More
-                            </a>
-                        </div>
-                    </div>
-                    <div class="md:w-1/2 relative">
-                        <!-- Enhanced Image Card with 3D Effect -->
-                        <div class="w-full h-[300px] md:h-[400px] relative mx-auto overflow-hidden rounded-3xl shadow-2xl transform perspective-1000 group">
-                            <!-- Glowing background effect -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/20 to-blue-500/20 opacity-70 group-hover:opacity-90 transition-opacity duration-700"></div>
-                           
-                            <!-- Main image with enhanced container -->
-                            <div class="absolute inset-0 p-4 transform group-hover:scale-[0.98] transition-transform duration-700">
-                                <div class="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 p-2 backdrop-blur-sm">
-                                    <img
-                                        src="/frontend/imgs/logos/sign.jpg"
-                                        alt="Road Cycling"
-                                        class="w-full h-full object-cover object-center rounded-xl slide-image animate-rotate-y"
-                                    >
-                                </div>
-                            </div>
-                           
-                            <!-- Decorative elements -->
-                            <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-amber-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
-                            <div class="absolute -top-4 -left-4 w-40 h-40 bg-blue-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
-                           
-                            <!-- Floating particles -->
-                            <div class="absolute top-1/4 right-1/4 w-3 h-3 bg-white rounded-full opacity-70 animate-ping"></div>
-                            <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 1s;"></div>
-                            <div class="absolute top-1/2 right-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 2s;"></div>
-                           
-                            <!-- Shine effect overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Enhanced Slider Controls -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4 z-20">
+            <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot active transition-all duration-300 border border-white/50" data-index="0"></button>
+            <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot transition-all duration-300 border border-white/50" data-index="1"></button>
+            <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot transition-all duration-300 border border-white/50" data-index="2"></button>
         </div>
        
-        <!-- Slide 3 -->
-        <div class="slider-item">
-            <div class="slider-gradient-overlay"></div>
-            <div class="absolute inset-0 flex items-center">
-                <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center">
-                    <div class="md:w-1/2 text-white z-10 mb-12 md:mb-0">
-                        <span class="inline-block px-4 py-1 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6">Urban Commuter Bikes</span>
-                        <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight slide-title">
-                            Urban <span class="text-emerald-400">Freedom</span>
-                        </h1>
-                        <p class="text-xl mb-8 text-blue-100 max-w-xl slide-description">
-                            Stylish city bikes that blend comfort and efficiency, transforming your daily commute into a joyful experience.
-                        </p>
-                        <div class="flex flex-wrap gap-4 slide-buttons">
-                            <a href="#" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 flex items-center gap-2 shadow-lg shadow-emerald-500/30 group">
-                                Shop Now
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
-                            </a>
-                            <a href="#" class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-8 py-3 rounded-full font-medium transition duration-300">
-                                Learn More
-                            </a>
-                        </div>
-                    </div>
-                    <div class="md:w-1/2 relative">
-                        <!-- Enhanced Image Card with 3D Effect -->
-                        <div class="w-full h-[300px] md:h-[400px] relative mx-auto overflow-hidden rounded-3xl shadow-2xl transform perspective-1000 group">
-                            <!-- Glowing background effect -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-blue-500/20 opacity-70 group-hover:opacity-90 transition-opacity duration-700"></div>
-                           
-                            <!-- Main image with enhanced container -->
-                            <div class="absolute inset-0 p-4 transform group-hover:scale-[0.98] transition-transform duration-700">
-                                <div class="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-gray-900/80 to-gray-800/80 p-2 backdrop-blur-sm">
-                                    <img
-                                        src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80"
-                                        alt="City Cycling"
-                                        class="w-full h-full object-cover object-center rounded-xl slide-image animate-rotate-y"
-                                    >
+        <!-- Improved Slider Navigation Arrows -->
+        <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/40 text-white rounded-full p-3 z-20 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 group" id="prev-slide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/40 text-white rounded-full p-3 z-20 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 group" id="next-slide">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+       
+        <!-- Slider Progress Bar -->
+        <div class="slider-progress active absolute bottom-0 left-0 right-0 z-10">
+            <div class="slider-progress-bar"></div>
+        </div>
+       
+        <!-- Wave Separator -->
+        <div class="absolute bottom-0 left-0 w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full h-auto">
+                <path fill="#f8fafc" fill-opacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" class="dark:fill-gray-900"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Clean Professional Categories Section with Slider - NEW -->
+    <section id="categories" class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Shop By <span class="text-primary">Category</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">Explore our wide range of cycling categories and find the perfect ride for your adventure</p>
+            </div>
+           
+            <!-- Category Slider (New) -->
+            <div class="max-w-7xl mx-auto">
+                <div class="category-slider relative">
+                    <button class="category-nav category-prev" id="category-prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    
+                    <div class="overflow-hidden">
+                        <div class="category-track" id="category-track">
+                            <% if (categories && categories.length > 0) { %>
+                                <% categories.forEach((category, index) => { %>
+                                    <%
+                                    // Find a product from this category to display its image
+                                    let categoryProduct = product.find(p => p.category && p.category._id.toString() === category._id.toString());
+                                    let mainImage = categoryProduct && categoryProduct.mainImage ? `${categoryProduct.mainImage}` : '/images/placeholder.jpg';
+                                    %>
+                            
+                                    <div class="category-item">
+                                        <div class="category-circle flex flex-col items-center">
+                                            <div class="relative mb-6">
+                                                <div class="relative w-48 h-48 rounded-full overflow-hidden shadow-lg bg-white dark:bg-gray-800 flex items-center justify-center p-2">
+                                                    <div class="w-full h-full rounded-full overflow-hidden bg-gray-50 dark:bg-gray-700 flex items-center justify-center">
+                                                        <img src="<%= mainImage %>" alt="<%= category.name %>" class="w-full h-full object-contain p-2" />
+                                                    </div>
+                                                </div>
+                                                <div class="absolute -inset-1 rounded-full bg-gray-900/5 dark:bg-white/5 -z-10 blur-sm"></div>
+                                            </div>
+                            
+                                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2 text-center"><%= category.name %></h3>
+                                            <a href="/shoplist?categoryFilter=<%= category.name %>" class="inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded-full text-sm font-medium shadow-md">
+                                                <span>Shop Now</span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <div class="w-full p-10 text-center bg-white dark:bg-gray-800 rounded-xl shadow-inner">
+                                    <p class="text-gray-500 dark:text-gray-400 text-lg">No categories found.</p>
                                 </div>
-                            </div>
-                           
-                            <!-- Decorative elements -->
-                            <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-emerald-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
-                            <div class="absolute -top-4 -left-4 w-40 h-40 bg-blue-500 rounded-full opacity-20 blur-xl transform group-hover:scale-125 transition-transform duration-700"></div>
-                           
-                            <!-- Floating particles -->
-                            <div class="absolute top-1/4 right-1/4 w-3 h-3 bg-white rounded-full opacity-70 animate-ping"></div>
-                            <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 1s;"></div>
-                            <div class="absolute top-1/2 right-1/3 w-2 h-2 bg-white rounded-full opacity-70 animate-ping" style="animation-delay: 2s;"></div>
-                           
-                            <!-- Shine effect overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                            <% } %>
                         </div>
                     </div>
+                    
+                    <button class="category-nav category-next" id="category-next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
-   
-    <!-- Enhanced Slider Controls -->
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-4 z-20">
-        <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot active transition-all duration-300 border border-white/50" data-index="0"></button>
-        <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot transition-all duration-300 border border-white/50" data-index="1"></button>
-        <button class="w-3 h-3 rounded-full bg-white/30 hover:bg-white/70 slider-dot transition-all duration-300 border border-white/50" data-index="2"></button>
-    </div>
-   
-    <!-- Improved Slider Navigation Arrows -->
-    <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/40 text-white rounded-full p-3 z-20 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 group" id="prev-slide">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-    </button>
-    <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 backdrop-blur-sm hover:bg-white/40 text-white rounded-full p-3 z-20 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 group" id="next-slide">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-    </button>
-   
-    <!-- Slider Progress Bar -->
-    <div class="slider-progress active absolute bottom-0 left-0 right-0 z-10">
-        <div class="slider-progress-bar"></div>
-    </div>
-   
-    <!-- Wave Separator -->
-    <div class="absolute bottom-0 left-0 w-full">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full h-auto">
-            <path fill="#f8fafc" fill-opacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" class="dark:fill-gray-900"></path>
-        </svg>
-    </div>
-</section>
+    </section>
 
-<!-- Clean Professional Categories Section with Circles - Full Image Display -->
-<section id="categories" class="py-20 bg-gray-50 dark:bg-gray-900">
+<!-- Creative Calendar-Style Coupon Countdown Section -->
+<section class="py-10 bg-white dark:bg-gray-900">
     <div class="container mx-auto px-4">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Shop By <span class="text-primary">Category</span></h2>
-            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">Explore our wide range of cycling categories and find the perfect ride for your adventure</p>
-        </div>
-       
-        <div class="flex flex-wrap justify-center gap-8 md:gap-12">
-            <% if (categories && categories.length > 0) { %>
-                <% categories.forEach((category, index) => { %>
-                    <%
-                    // Find a product from this category to display its image
-                    let categoryProduct = product.find(p => p.category && p.category._id.toString() === category._id.toString());
-                    let mainImage = categoryProduct && categoryProduct.mainImage ? `${categoryProduct.mainImage}` : '/images/placeholder.jpg';
-                    %>
-            
-                    <div class="category-circle flex flex-col items-center">
-                        <div class="relative mb-6">
-                            <div class="relative w-48 h-48 rounded-full overflow-hidden shadow-lg bg-white dark:bg-gray-800 flex items-center justify-center p-2">
-                                <div class="w-full h-full rounded-full overflow-hidden bg-gray-50 dark:bg-gray-700 flex items-center justify-center">
-                                    <img src="<%= mainImage %>" alt="<%= category.name %>" class="w-full h-full object-contain p-2" />
-                                </div>
-                            </div>
-                            <div class="absolute -inset-1 rounded-full bg-gray-900/5 dark:bg-white/5 -z-10 blur-sm"></div>
-                        </div>
-            
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2 text-center"><%= category.name %></h3>
-                        <a href="/category/<%= category._id %>" class="inline-flex items-center justify-center px-4 py-2 bg-primary text-white rounded-full text-sm font-medium shadow-md">
-                            <span>Shop Now</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </a>
+      <div class="max-w-3xl mx-auto">
+        <% if (coupon && !coupon.isBlocked && new Date(coupon.expireDate) > new Date()) { %>
+          <!-- Active Coupon Card with Calendar Design -->
+          <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <!-- Top section with coupon details -->
+            <div class="p-6 border-b border-dashed border-gray-200 dark:border-gray-700">
+              <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <!-- Left side with coupon code -->
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Coupon Code</div>
+                  <div class="flex items-center gap-3">
+                    <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2 rounded border border-gray-200 dark:border-gray-600 font-mono font-bold text-gray-800 dark:text-white">
+                      <%= coupon.couponCode %>
                     </div>
-                <% }); %>
-            <% } else { %>
-                <div class="w-full p-10 text-center bg-white dark:bg-gray-800 rounded-xl shadow-inner">
-                    <p class="text-gray-500 dark:text-gray-400 text-lg">No categories found.</p>
+                    <span class="text-rose-500 dark:text-rose-400 font-medium">₹<%= coupon.offerPrice %> OFF</span>
+                  </div>
+                </div>
+                
+                <!-- Right side with minimum order -->
+                <div class="flex flex-col items-start md:items-end">
+                  <div class="text-sm text-gray-500 dark:text-gray-400">Min. Order</div>
+                  <div class="text-lg font-medium text-gray-800 dark:text-white">₹<%= coupon.minAmount %></div>
+                  <% if (coupon.refferedBy) { %>
+                    <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">Referred by: <%= coupon.refferedBy %></div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Calendar-style countdown -->
+            <div class="p-6">
+              <div class="text-center mb-4">
+                <h3 class="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Offer Expires In
+                </h3>
+              </div>
+              
+              <!-- Calendar-style countdown timer -->
+              <div class="countdown-timer flex justify-center gap-4 md:gap-6" data-expire-date="<%= coupon.expireDate %>">
+                <!-- Days Calendar -->
+                <div class="calendar-unit">
+                  <div class="calendar-top bg-rose-500 dark:bg-rose-600 text-white text-xs font-medium py-1 rounded-t text-center">DAYS</div>
+                  <div class="calendar-page relative bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-b shadow-sm">
+                    <!-- Calendar page content -->
+                    <div class="days text-3xl font-bold text-gray-800 dark:text-white w-16 h-20 flex items-center justify-center">00</div>
+                    <!-- Calendar page fold effect -->
+                    <div class="absolute bottom-0 right-0 w-0 h-0 border-l-[8px] border-l-transparent border-b-[8px] border-b-gray-300 dark:border-b-gray-500"></div>
+                  </div>
+                </div>
+                
+                <!-- Hours Calendar -->
+                <div class="calendar-unit">
+                  <div class="calendar-top bg-indigo-500 dark:bg-indigo-600 text-white text-xs font-medium py-1 rounded-t text-center">HOURS</div>
+                  <div class="calendar-page relative bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-b shadow-sm">
+                    <!-- Calendar page content -->
+                    <div class="hours text-3xl font-bold text-gray-800 dark:text-white w-16 h-20 flex items-center justify-center">00</div>
+                    <!-- Calendar page fold effect -->
+                    <div class="absolute bottom-0 right-0 w-0 h-0 border-l-[8px] border-l-transparent border-b-[8px] border-b-gray-300 dark:border-b-gray-500"></div>
+                  </div>
+                </div>
+                
+                <!-- Minutes Calendar -->
+                <div class="calendar-unit">
+                  <div class="calendar-top bg-amber-500 dark:bg-amber-600 text-white text-xs font-medium py-1 rounded-t text-center">MINS</div>
+                  <div class="calendar-page relative bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-b shadow-sm">
+                    <!-- Calendar page content -->
+                    <div class="minutes text-3xl font-bold text-gray-800 dark:text-white w-16 h-20 flex items-center justify-center">00</div>
+                    <!-- Calendar page fold effect -->
+                    <div class="absolute bottom-0 right-0 w-0 h-0 border-l-[8px] border-l-transparent border-b-[8px] border-b-gray-300 dark:border-b-gray-500"></div>
+                  </div>
+                </div>
+                
+                <!-- Seconds Calendar with flip animation -->
+                <div class="calendar-unit">
+                  <div class="calendar-top bg-emerald-500 dark:bg-emerald-600 text-white text-xs font-medium py-1 rounded-t text-center">SECS</div>
+                  <div class="calendar-page relative bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-b shadow-sm overflow-hidden">
+                    <!-- Calendar page content -->
+                    <div class="seconds text-3xl font-bold text-gray-800 dark:text-white w-16 h-20 flex items-center justify-center">00</div>
+                    <!-- Calendar page flip animation -->
+                    <div class="absolute inset-0 bg-white dark:bg-gray-700 origin-bottom calendar-flip opacity-0"></div>
+                    <!-- Calendar page fold effect -->
+                    <div class="absolute bottom-0 right-0 w-0 h-0 border-l-[8px] border-l-transparent border-b-[8px] border-b-gray-300 dark:border-b-gray-500"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Calendar binding holes decoration -->
+              <div class="flex justify-center mt-4 mb-6">
+                <div class="flex gap-4 md:gap-6">
+                  <div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                  <div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                  <div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                  <div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                </div>
+              </div>
+              
+              <!-- Apply button with calendar-inspired design -->
+              <!-- <div class="flex justify-center">
+                <button onclick="applyCoupon()" class="group relative px-6 py-2.5 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-md transition-all duration-200 overflow-hidden shadow-sm hover:shadow">
+                  <span class="relative z-10 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    Apply Coupon
+                  </span>
+                </button>
+              </div> -->
+              
+              <!-- Message container -->
+              <div id="coupon-message-container" class="mt-4 text-sm"></div>
+            </div>
+          </div>
+        <% } else if (coupon) { %>
+          <!-- Expired Coupon - Calendar Style -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden opacity-75">
+            <div class="p-6 border-b border-dashed border-gray-200 dark:border-gray-700">
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Coupon Code</div>
+                  <div class="bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded border border-gray-200 dark:border-gray-600 font-mono font-bold text-gray-400 dark:text-gray-500">
+                    <%= coupon.couponCode %>
+                  </div>
+                </div>
+                <div class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs font-medium text-gray-500 dark:text-gray-400">
+                  EXPIRED
+                </div>
+              </div>
+            </div>
+            
+            <div class="p-6 text-center">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <p class="text-gray-500 dark:text-gray-400 text-sm">This coupon has expired or is no longer valid.</p>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+  
+
+
+    <!-- Enhanced Product Cards Section with Grid Slider (New) -->
+    <section id="featured" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Featured <span class="text-primary">Cycles</span></h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">Discover our handpicked selection of premium cycles designed for performance and comfort</p>
+            </div>
+           
+            <div class="max-w-7xl mx-auto">
+                <!-- Product Grid Slider (New) -->
+                <div class="product-grid-slider relative">
+                    <button class="product-grid-nav product-grid-prev" id="grid-prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    
+                    <div class="overflow-hidden">
+                        <div class="product-grid-track" id="product-track">
+                            <% if (product.length > 0) { %>
+                                <% product.slice(0, 6).forEach(pro => { %>
+                                    <div class="product-grid-item">
+                                        <!-- Enhanced Product Card with Glass Morphism -->
+                                        <div class="product-card tilt-card group relative bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-500">
+                                            <!-- Product Image Container with Enhanced Effects -->
+                                            <div class="relative h-64 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 overflow-hidden perspective-1000">
+                                                <!-- Background Pattern -->
+                                                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+                                               
+                                                <!-- Offer Badge -->
+                                                <% if (typeof pro.maxOffer !== 'undefined' && pro.maxOffer > 0) { %>
+                                                    <div class="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg">
+                                                        <%= pro.maxOffer %>% OFF
+                                                    </div>
+                                                <% } else { %>
+                                                    <div class="absolute top-4 left-4 bg-gradient-to-r from-primary to-blue-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg">
+                                                        NEW
+                                                    </div>
+                                                <% } %>
+                                                
+                                               
+                                                <!-- Product Image with Hover Effects -->
+                                                <a href="/productdetails/<%= pro._id%>" class="block w-full h-full">
+                                                    <div class="absolute inset-0 flex items-center justify-center p-4">
+                                                        <img
+                                                            src="/<%= pro.mainImage %>"
+                                                            alt="<%= pro.productName %>"
+                                                            class="max-h-full max-w-full object-contain transition-all duration-700 filter drop-shadow-md"
+                                                        >
+                                                    </div>
+                                                </a>
+                                               
+                                                <!-- Quick View Button -->
+                                                <div class="absolute bottom-4 left-0 right-0 text-center transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                                                    <button class="w-auto px-4 py-2 rounded-full bg-white dark:bg-gray-700 shadow-lg flex items-center justify-center text-gray-700 dark:text-white hover:bg-primary hover:text-white transition-all duration-300 hover:scale-105 mx-auto" data-product="<%= pro._id %>" aria-label="Quick view">
+                                                        <i class="fas fa-eye mr-2"></i> Quick View
+                                                    </button>
+                                                </div>
+                                            </div>
+                           
+                                            <!-- Enhanced Product Info with Better Typography and Layout -->
+                                            <div class="p-6 relative">
+                                                <!-- Decorative accent line -->
+                                                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-primary/30 via-primary to-primary/30 rounded-full"></div>
+                                               
+                                                <!-- Brand with enhanced styling -->
+                                                <div class="text-sm text-primary font-medium mb-2 flex items-center">
+                                                    <span class="inline-block w-2 h-2 rounded-full bg-primary mr-2"></span>
+                                                    <%= pro.brands ? pro.brands.name : 'No Brand' %>
+                                                </div>
+                                               
+                                                <!-- Product Name with better typography -->
+                                                <h3 class="font-semibold text-lg mb-2 text-gray-800 dark:text-white hover:text-primary transition-colors line-clamp-2 h-14 group-hover:text-primary">
+                                                    <a href="/productdetails/<%= pro._id%>" class="hover:underline decoration-primary decoration-2 underline-offset-2"><%= pro.productName %></a>
+                                                </h3>
+                                               
+                                                <!-- Enhanced Star Ratings -->
+                                                <div class="flex items-center mb-4">
+                                                    <div class="flex text-amber-400">
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star-half-alt"></i>
+                                                    </div>
+                                                    <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
+                                                </div>
+                                               
+                                                <!-- Price Display with Original and Sale Price -->
+                                                <div class="flex flex-col mb-4">
+                                                    <% if (pro.maxOffer > 0) { %>
+                                                        <span class="text-gray-500 dark:text-gray-400 text-sm line-through">₹<%= pro.price %></span>
+                                                        <span class="text-xl font-bold text-primary">₹<%= Math.round(pro.salePrice) %></span>
+                                                    <% } else { %>
+                                                        <span class="text-xl font-bold text-primary">₹<%= pro.price %></span>
+                                                    <% } %>
+                                                    
+                                                </div>
+                                               
+                                                <!-- View Details Button -->
+                                                <div class="flex justify-center">
+                                                    <a href="/productdetails/<%= pro._id%>" class="w-full relative overflow-hidden bg-gray-100 dark:bg-gray-700 hover:bg-primary text-gray-800 dark:text-white hover:text-white px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-center group-hover:shadow-md">
+                                                        <span class="relative z-10">View Details</span>
+                                                        <span class="absolute inset-0 bg-primary scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 -z-0"></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="col-span-3">
+                                    <div class="p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4">
+                                            <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+                                            <path d="M16.5 9.4 7.55 4.24"/>
+                                            <polyline points="3.29 7 12 12 20.71 7"/>
+                                            <line x1="12" y1="22" x2="12" y2="12"/>
+                                            <circle cx="18.5" cy="15.5" r="2.5"/>
+                                            <path d="M20.27 17.27 22 19"/>
+                                        </svg>
+                                        <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">No products found.</p>
+                                        <button onclick="window.location.href='/'" class="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-blue-600 transition duration-300 flex items-center gap-2 mx-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                                                <path d="m15 18-6-6 6-6"/>
+                                            </svg>
+                                            Back to All Products
+                                        </button>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    
+                    <button class="product-grid-nav product-grid-next" id="grid-next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+           
+            <% if (product.length > 0) { %>
+                <div class="mt-8 text-center">
+                    <a href="/shoplist" class="inline-flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 shadow-lg shadow-blue-500/20 group">
+                        View All Products
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
                 </div>
             <% } %>
-            
         </div>
-    </div>
-</section>
-
-
-<!-- Enhanced Product Cards Section -->
-<section id="featured" class="py-20 bg-white dark:bg-gray-800">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Featured <span class="text-primary">Cycles</span></h2>
-            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">Discover our handpicked selection of premium cycles designed for performance and comfort</p>
-        </div>
-       
-        <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <% if (product.length > 0) { %>
-                    <% product.slice(0, 6).forEach(pro => { %>
-                        <!-- Enhanced Product Card with Glass Morphism -->
-                        <div class="product-card tilt-card group relative bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-2xl hover:border-primary/20 dark:hover:border-primary/20 transition-all duration-500">
-                            <!-- Product Image Container with Enhanced Effects -->
-                            <div class="relative h-64 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 overflow-hidden perspective-1000">
-                                <!-- Background Pattern -->
-                                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-                               
-                                <!-- Offer Badge -->
-                                <% if (typeof pro.maxOffer !== 'undefined' && pro.maxOffer > 0) { %>
-                                    <div class="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg">
-                                        <%= pro.maxOffer %>% OFF
-                                    </div>
-                                <% } else { %>
-                                    <div class="absolute top-4 left-4 bg-gradient-to-r from-primary to-blue-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg">
-                                        NEW
-                                    </div>
-                                <% } %>
-                                
-                               
-                                <!-- Product Image with Hover Effects -->
-                                <a href="/productdetails/<%= pro._id%>" class="block w-full h-full">
-                                    <div class="absolute inset-0 flex items-center justify-center p-4">
-                                        <img
-                                            src="/<%= pro.mainImage %>"
-                                            alt="<%= pro.productName %>"
-                                            class="max-h-full max-w-full object-contain transition-all duration-700 filter drop-shadow-md"
-                                        >
-                                    </div>
-                                </a>
-                               
-                                <!-- Quick View Button -->
-                                <div class="absolute bottom-4 left-0 right-0 text-center transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                                    <button class="w-auto px-4 py-2 rounded-full bg-white dark:bg-gray-700 shadow-lg flex items-center justify-center text-gray-700 dark:text-white hover:bg-primary hover:text-white transition-all duration-300 hover:scale-105 mx-auto" data-product="<%= pro._id %>" aria-label="Quick view">
-                                        <i class="fas fa-eye mr-2"></i> Quick View
-                                    </button>
-                                </div>
-                            </div>
-           
-                            <!-- Enhanced Product Info with Better Typography and Layout -->
-                            <div class="p-6 relative">
-                                <!-- Decorative accent line -->
-                                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-primary/30 via-primary to-primary/30 rounded-full"></div>
-                               
-                                <!-- Brand with enhanced styling -->
-                                <div class="text-sm text-primary font-medium mb-2 flex items-center">
-                                    <span class="inline-block w-2 h-2 rounded-full bg-primary mr-2"></span>
-                                    <%= pro.brands ? pro.brands.name : 'No Brand' %>
-                                </div>
-                               
-                                <!-- Product Name with better typography -->
-                                <h3 class="font-semibold text-lg mb-2 text-gray-800 dark:text-white hover:text-primary transition-colors line-clamp-2 h-14 group-hover:text-primary">
-                                    <a href="/productdetails/<%= pro._id%>" class="hover:underline decoration-primary decoration-2 underline-offset-2"><%= pro.productName %></a>
-                                </h3>
-                               
-                                <!-- Enhanced Star Ratings -->
-                                <div class="flex items-center mb-4">
-                                    <div class="flex text-amber-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </div>
-                                    <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
-                                </div>
-                               
-                                <!-- Price Display with Original and Sale Price -->
-                                <div class="flex flex-col mb-4">
-                                    <% if (pro.maxOffer > 0) { %>
-                                        <span class="text-gray-500 dark:text-gray-400 text-sm line-through">₹<%= pro.price %></span>
-                                        <span class="text-xl font-bold text-primary">₹<%= Math.round(pro.salePrice) %></span>
-                                    <% } else { %>
-                                        <span class="text-xl font-bold text-primary">₹<%= pro.price %></span>
-                                    <% } %>
-                                    
-                                </div>
-                               
-                                <!-- View Details Button -->
-                                <div class="flex justify-center">
-                                    <a href="/productdetails/<%= pro._id%>" class="w-full relative overflow-hidden bg-gray-100 dark:bg-gray-700 hover:bg-primary text-gray-800 dark:text-white hover:text-white px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-center group-hover:shadow-md">
-                                        <span class="relative z-10">View Details</span>
-                                        <span class="absolute inset-0 bg-primary scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100 -z-0"></span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    <% }) %>
-                <% } else { %>
-                    <div class="col-span-3">
-                        <div class="p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4">
-                                <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
-                                <path d="M16.5 9.4 7.55 4.24"/>
-                                <polyline points="3.29 7 12 12 20.71 7"/>
-                                <line x1="12" y1="22" x2="12" y2="12"/>
-                                <circle cx="18.5" cy="15.5" r="2.5"/>
-                                <path d="M20.27 17.27 22 19"/>
-                            </svg>
-                            <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">No products found.</p>
-                            <button onclick="window.location.href='/'" class="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-blue-600 transition duration-300 flex items-center gap-2 mx-auto">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
-                                    <path d="m15 18-6-6 6-6"/>
-                                </svg>
-                                Back to All Products
-                            </button>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
-        </div>
-       
-        <% if (product.length > 0) { %>
-        
-           
-            <div class="mt-8 text-center">
-                <a href="/shoplist" class="inline-flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-full font-medium transition duration-300 shadow-lg shadow-blue-500/20 group">
-                    View All Products
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                </a>
-            </div>
-        <% } %>
-
-    </div>
-</section>
+    </section>
 
     <!-- Features Section -->
     <section class="py-20 bg-gray-50 dark:bg-gray-900">
@@ -1099,7 +1554,160 @@
 
 <%-include('partials/loader') %>
 <%-include('partials/script') %>
-   
+
+
+
+    
+ 
+    
+<!-- JavaScript for countdown functionality with calendar animations -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const countdownElements = document.querySelectorAll('.countdown-timer');
+      
+      countdownElements.forEach(function(element) {
+        const expireDate = new Date(element.getAttribute('data-expire-date'));
+        let lastSeconds = -1;
+        
+        function updateCountdown() {
+          const now = new Date();
+          const difference = expireDate - now;
+          
+          if (difference <= 0) {
+            // Coupon has expired - replace with calendar-style expired message
+            element.innerHTML = `
+              <div class="w-full py-3 text-center">
+                <div class="inline-block bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600">
+                  <span class="text-sm font-medium text-gray-400 dark:text-gray-500">EXPIRED</span>
+                </div>
+              </div>
+            `;
+            // Find and update the parent container to show expired state
+            const parentCard = element.closest('.relative');
+            if (parentCard) {
+              parentCard.classList.add('opacity-75');
+            }
+            return;
+          }
+          
+          // Calculate time units
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+          const minutes = Math.floor((difference / 1000 / 60) % 60);
+          const seconds = Math.floor((difference / 1000) % 60);
+          
+          // Update the countdown display
+          element.querySelector('.days').textContent = days.toString().padStart(2, '0');
+          element.querySelector('.hours').textContent = hours.toString().padStart(2, '0');
+          element.querySelector('.minutes').textContent = minutes.toString().padStart(2, '0');
+          
+          // Add page flip animation when seconds change
+          const secondsElement = element.querySelector('.seconds');
+          if (seconds !== lastSeconds) {
+            // Add a quick flip animation class
+            secondsElement.classList.add('animate-flip');
+            setTimeout(() => {
+              secondsElement.classList.remove('animate-flip');
+            }, 300);
+            
+            lastSeconds = seconds;
+          }
+          
+          secondsElement.textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        // Update immediately and then every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+      });
+    });
+    
+    function applyCoupon(couponCode) {
+      // Get total amount from somewhere in your page
+      const totalAmount = parseFloat(document.getElementById('totalAmount')?.textContent) || 0;
+      const shippingCharge = parseFloat(document.getElementById('shippingCharge')?.textContent) || 0;
+      
+      fetch('/apply-coupon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          couponCode: couponCode,
+          totalAmount: totalAmount,
+          shippingCharge: shippingCharge
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const messageContainer = document.getElementById('coupon-message-container');
+        
+        if (data.success) {
+          // Update the UI with the discount
+          if (document.getElementById('discountAmount')) {
+            document.getElementById('discountAmount').textContent = '₹' + data.discount.toFixed(2);
+          }
+          if (document.getElementById('finalTotal')) {
+            document.getElementById('finalTotal').textContent = '₹' + data.total.toFixed(2);
+          }
+          
+          // Show calendar-style success message
+          messageContainer.innerHTML = `
+            <div class="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 rounded-md">
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Coupon applied successfully! You saved ₹${data.discount.toFixed(2)}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          // Show calendar-style error message
+          messageContainer.innerHTML = `
+            <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-md">
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>${data.message}</span>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Hide message after 5 seconds
+        setTimeout(() => {
+          messageContainer.innerHTML = '';
+        }, 5000);
+      })
+      .catch(error => {
+        console.error('Error applying coupon:', error);
+        document.getElementById('coupon-message-container').innerHTML = `
+          <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-md">
+            <div class="flex items-start">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>An error occurred. Please try again.</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+    
+    // Add a subtle animation when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarUnits = document.querySelectorAll('.calendar-unit');
+      
+      calendarUnits.forEach((unit, index) => {
+        setTimeout(() => {
+          unit.classList.add('animate-fade-in');
+        }, index * 100);
+      });
+    });
+  </script>
+
 <script>
       // Enhanced Banner slider functionality with proper working code
       document.addEventListener('DOMContentLoaded', function() {
@@ -1109,6 +1717,8 @@
             const prevBtn = document.getElementById('prev-slide');
             const nextBtn = document.getElementById('next-slide');
             const progressBar = document.querySelector('.slider-progress-bar');
+            const saleBanner = document.getElementById('sale-banner');
+            const closeSaleBanner = document.getElementById('close-sale-banner');
            
             let currentIndex = 0;
             let slideInterval;
@@ -1290,6 +1900,113 @@
             
             // Initialize 3D tilt effect for product cards
             initTiltEffect();
+
+            // Product Grid Slider functionality
+            const track = document.getElementById('product-track');
+            const prevButton = document.getElementById('grid-prev');
+            const nextButton = document.getElementById('grid-next');
+            const items = document.querySelectorAll('.product-grid-item');
+            
+            if (track && items.length > 0) {
+                const itemWidth = items[0].offsetWidth;
+                let position = 0;
+                const maxPosition = -(items.length * itemWidth - track.parentElement.offsetWidth);
+                
+                // Update position on window resize
+                window.addEventListener('resize', () => {
+                    const newItemWidth = items[0].offsetWidth;
+                    const visibleItems = Math.floor(track.parentElement.offsetWidth / newItemWidth);
+                    position = Math.max(position, -(items.length - visibleItems) * newItemWidth);
+                    track.style.transform = `translateX(${position}px)`;
+                });
+                
+                // Previous button
+                prevButton.addEventListener('click', () => {
+                    const visibleItems = Math.floor(track.parentElement.offsetWidth / items[0].offsetWidth);
+                    position = Math.min(position + items[0].offsetWidth * visibleItems, 0);
+                    track.style.transform = `translateX(${position}px)`;
+                });
+                
+                // Next button
+                nextButton.addEventListener('click', () => {
+                    const visibleItems = Math.floor(track.parentElement.offsetWidth / items[0].offsetWidth);
+                    const maxPosition = -(items.length * items[0].offsetWidth - track.parentElement.offsetWidth);
+                    position = Math.max(position - items[0].offsetWidth * visibleItems, maxPosition);
+                    track.style.transform = `translateX(${position}px)`;
+                });
+            }
+            
+            // Category Slider functionality
+            const categoryTrack = document.getElementById('category-track');
+            const categoryPrevButton = document.getElementById('category-prev');
+            const categoryNextButton = document.getElementById('category-next');
+            const categoryItems = document.querySelectorAll('.category-item');
+            
+            if (categoryTrack && categoryItems.length > 0) {
+                const itemWidth = categoryItems[0].offsetWidth;
+                let position = 0;
+                const maxPosition = -(categoryItems.length * itemWidth - categoryTrack.parentElement.offsetWidth);
+                
+                // Update position on window resize
+                window.addEventListener('resize', () => {
+                    const newItemWidth = categoryItems[0].offsetWidth;
+                    const visibleItems = Math.floor(categoryTrack.parentElement.offsetWidth / newItemWidth);
+                    position = Math.max(position, -(categoryItems.length - visibleItems) * newItemWidth);
+                    categoryTrack.style.transform = `translateX(${position}px)`;
+                });
+                
+                // Previous button
+                categoryPrevButton.addEventListener('click', () => {
+                    const visibleItems = Math.floor(categoryTrack.parentElement.offsetWidth / categoryItems[0].offsetWidth);
+                    position = Math.min(position + categoryItems[0].offsetWidth * visibleItems, 0);
+                    categoryTrack.style.transform = `translateX(${position}px)`;
+                });
+                
+                // Next button
+                categoryNextButton.addEventListener('click', () => {
+                    const visibleItems = Math.floor(categoryTrack.parentElement.offsetWidth / categoryItems[0].offsetWidth);
+                    const maxPosition = -(categoryItems.length * categoryItems[0].offsetWidth - categoryTrack.parentElement.offsetWidth);
+                    position = Math.max(position - categoryItems[0].offsetWidth * visibleItems, maxPosition);
+                    categoryTrack.style.transform = `translateX(${position}px)`;
+                });
+            }
+
+            // Sale Countdown Timer
+            function updateCountdown() {
+                const now = new Date();
+                const endDate = new Date(now);
+                endDate.setDate(endDate.getDate() + 3);
+                endDate.setHours(23, 59, 59, 0);
+                
+                const diff = endDate - now;
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days;
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            // Update countdown every second
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Sale Banner Close Button
+            if (closeSaleBanner && saleBanner) {
+                // Check if banner was previously closed
+                if (localStorage.getItem('saleBannerClosed') === 'true') {
+                    saleBanner.classList.add('hidden');
+                }
+                
+                closeSaleBanner.addEventListener('click', function() {
+                    saleBanner.classList.add('hidden');
+                    localStorage.setItem('saleBannerClosed', 'true');
+                });
+            }
         });
         
         // 3D Tilt Effect for Cards

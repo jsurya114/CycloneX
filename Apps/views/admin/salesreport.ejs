@@ -195,21 +195,21 @@
     <!-- Quick Filters -->
    
     <!-- Custom Range Filter -->
-    <form method="GET" action="/admin/dashboard" class="flex flex-wrap gap-2">
+    <form method="GET" action="/admin/salesreport" class="flex flex-wrap gap-2">
         <!-- Time Period Filter -->
-        <select name="timeFilter" id="timeFilterSelect" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+        <select name="timeFilters" id="timeFiltersSelect" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
             <option value="">Select Time Period</option>
-            <option value="today" <%= timeFilter === 'today' ? 'selected' : '' %>>Today</option>
-            <option value="yesterday" <%= timeFilter === 'yesterday' ? 'selected' : '' %>>Yesterday</option>
-            <option value="last7days" <%= timeFilter === 'last7days' ? 'selected' : '' %>>Last 7 Days</option>
-            <option value="last30days" <%= timeFilter === 'last30days' ? 'selected' : '' %>>Last 30 Days</option>
-            <option value="thisMonth" <%= timeFilter === 'thisMonth' ? 'selected' : '' %>>This Month</option>
-            <option value="lastMonth" <%= timeFilter === 'lastMonth' ? 'selected' : '' %>>Last Month</option>
-            <option value="custom" <%= timeFilter === 'custom' ? 'selected' : '' %>>Custom Range</option>
+            <option value="today" <%= timeFilters === 'today' ? 'selected' : '' %>>Today</option>
+            <option value="yesterday" <%= timeFilters === 'yesterday' ? 'selected' : '' %>>Yesterday</option>
+            <option value="last7days" <%= timeFilters === 'last7days' ? 'selected' : '' %>>Last 7 Days</option>
+            <option value="last30days" <%= timeFilters === 'last30days' ? 'selected' : '' %>>Last 30 Days</option>
+            <option value="thisMonth" <%= timeFilters === 'thisMonth' ? 'selected' : '' %>>This Month</option>
+            <option value="lastMonth" <%= timeFilters === 'lastMonth' ? 'selected' : '' %>>Last Month</option>
+            <option value="custom" <%= timeFilters === 'custom' ? 'selected' : '' %>>Custom Range</option>
         </select>
     
         <!-- Custom Date Range (initially hidden unless custom is selected) -->
-        <div id="customDateRange" class="flex gap-2 <%= timeFilter === 'custom' ? '' : 'hidden' %>">
+        <div id="customDateRange" class="flex gap-2 <%= timeFilters === 'custom' ? '' : 'hidden' %>">
             <!-- Start Date -->
             <div>
                 <label for="startDate" class="text-sm text-gray-600">Start Date:</label>

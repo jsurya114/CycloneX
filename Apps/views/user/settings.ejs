@@ -177,13 +177,21 @@
 
     /* OTP input styles */
     .otp-input {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         text-align: center;
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         border-radius: 0.5rem;
         border: 1px solid #e2e8f0;
         background-color: #f8fafc;
+    }
+
+    @media (min-width: 640px) {
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+        }
     }
 
     .otp-input:focus {
@@ -262,53 +270,71 @@
     .input-animated:focus {
         transform: translateY(-2px);
     }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .settings-section {
+            padding: 1rem;
+        }
+        
+        .settings-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 0.875rem;
+        }
+        
+        .edit-button {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+        }
+    }
 </style>
 </head>
 <body class="bg-slate-50 font-sans">
     <%- include('partials/header') %> 
     <div class="container mx-auto p-4 max-w-7xl">
         <!-- Page header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-display font-bold text-slate-800">Settings</h1>
+        <div class="mb-6 md:mb-8">
+            <h1 class="text-2xl md:text-3xl font-display font-bold text-slate-800">Settings</h1>
             <p class="text-slate-500">Manage your account settings and preferences</p>
         </div>
         <!-- Main content grid -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
             <!-- Left sidebar - copied from user profile page -->
             <div class="md:col-span-3">
-                <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-2xl shadow-sm h-half">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6 rounded-2xl shadow-sm h-auto md:h-half">
                     <!-- User profile -->
-                    <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center justify-between mb-6 md:mb-8">
                         <div class="flex items-center space-x-2">
-                            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                            <div class="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-xl md:text-2xl shadow-md">
                                 <%= user.fullName.charAt(0).toUpperCase() %>
                             </div>
                             <div>
-                                 <p class="font-semibold text-lg text-gray-800"><%= user.name %></p>
-                                 <p class="text-sm text-gray-500"><%= user.email %></p>
+                                 <p class="font-semibold text-base md:text-lg text-gray-800"><%= user.name %></p>
+                                 <p class="text-xs md:text-sm text-gray-500"><%= user.email %></p>
                             </div>
                         </div>
                     </div>
                     <!-- Navigation tabs -->
-                    <div class="flex justify-between mb-8">
+                    <div class="flex justify-between mb-6 md:mb-8">
                         <div class="group cursor-pointer">
                             <a href="/settings">
-                                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                                    <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                    <i class="fas fa-user text-blue-500 text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                                 </div>
                                 <span class="text-xs font-medium text-gray-600 group-hover:text-blue-500 transition-colors duration-300">Profile</span>
                             </a>
                         </div>
                         <div class="group cursor-pointer">
-                            <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                                <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                            <div class="w-12 h-12 md:w-14 md:h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                <i class="fas fa-gift text-purple-500 text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                             </div>
                             <span class="text-xs font-medium text-gray-600 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
                         </div>
                         <div class="group cursor-pointer">
                             <a href="/wallet" class="flex flex-col items-center">  
-                                <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                                    <i class="fas fa-wallet text-green-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                                <div class="w-12 h-12 md:w-14 md:h-14 bg-white rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                    <i class="fas fa-wallet text-green-500 text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                                 </div>
                                 <span class="text-xs font-medium text-gray-600 group-hover:text-green-500 transition-colors duration-300">Wallet</span>
                             </a>
@@ -329,8 +355,8 @@
             </div>
             <!-- Right content area -->
             <div class="md:col-span-9">
-                <div class="settings-card p-6">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
+                <div class="settings-card p-4 md:p-6">
+                    <h2 class="text-lg md:text-xl font-semibold text-gray-800 mb-4 md:mb-6 flex items-center">
                         <span class="bg-blue-500 p-2 rounded-lg mr-3 text-white">
                             <i class="fas fa-cog"></i>
                         </span>
@@ -338,37 +364,37 @@
                     </h2>
                     
                     <!-- Email section - Enhanced UI -->
-                    <div class="settings-section p-6 mb-6">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
+                    <div class="settings-section p-4 md:p-6 mb-4 md:mb-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <div class="flex items-center mb-4 sm:mb-0">
                                 <div class="settings-icon mr-4">
                                     <i class="fas fa-envelope"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-medium text-gray-700 text-lg">Email Address</h3>
-                                    <p class="text-gray-500 mt-1" id="currentEmail"><%= user.email %></p>
+                                    <h3 class="font-medium text-gray-700 text-base md:text-lg">Email Address</h3>
+                                    <p class="text-gray-500 mt-1 text-sm md:text-base" id="currentEmail"><%= user.email %></p>
                                 </div>
                             </div>
-                            <button id="editEmailBtn" class="edit-button px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-300 font-medium text-sm flex items-center">
+                            <button id="editEmailBtn" class="edit-button px-3 py-1.5 md:px-4 md:py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-300 font-medium text-xs md:text-sm flex items-center self-start sm:self-center">
                                 <i class="fas fa-pen-to-square mr-2"></i> Edit Email
                             </button>
                         </div>
                         <!-- Email edit form (initially hidden) -->
-                        <div id="emailEditForm" class="mt-6 transition-max-height form-hidden">
-                            <form id="updateEmailForm" class="space-y-4 bg-white p-5 rounded-lg shadow-sm">
+                        <div id="emailEditForm" class="mt-4 md:mt-6 transition-max-height form-hidden">
+                            <form id="updateEmailForm" class="space-y-3 md:space-y-4 bg-white p-4 md:p-5 rounded-lg shadow-sm">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1" for="oldEmail">Current Email</label>
-                                    <input type="email" id="oldEmail" name="oldEmail" class="input-animated w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+                                    <input type="email" id="oldEmail" name="oldEmail" class="input-animated w-full px-3 py-2 md:px-4 md:py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1" for="newEmail">New Email</label>
-                                    <input type="email" id="newEmail" name="newEmail" class="input-animated w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                    <input type="email" id="newEmail" name="newEmail" class="input-animated w-full px-3 py-2 md:px-4 md:py-2 border border-gray-300 rounded-lg" required>
                                 </div>
-                                <div class="flex space-x-3">
-                                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium flex items-center">
+                                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                                    <button type="submit" class="px-3 py-2 md:px-4 md:py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium flex items-center justify-center">
                                         <i class="fas fa-paper-plane mr-2"></i> Update Email
                                     </button>
-                                    <button type="button" id="cancelEmailEdit" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-300 font-medium">
+                                    <button type="button" id="cancelEmailEdit" class="px-3 py-2 md:px-4 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-300 font-medium">
                                         Cancel
                                     </button>
                                 </div>
@@ -377,28 +403,28 @@
                     </div>
 
                     <!-- Password section - Enhanced UI -->
-                    <div class="settings-section p-6">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
+                    <div class="settings-section p-4 md:p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                            <div class="flex items-center mb-4 sm:mb-0">
                                 <div class="settings-icon mr-4">
                                     <i class="fas fa-lock"></i>
                                 </div>
                                 <div>
-                                    <h3 class="font-medium text-gray-700 text-lg">Password</h3>
-                                    <p class="text-gray-500 mt-1">Change your account password</p>
+                                    <h3 class="font-medium text-gray-700 text-base md:text-lg">Password</h3>
+                                    <p class="text-gray-500 mt-1 text-sm md:text-base">Change your account password</p>
                                 </div>
                             </div>
-                            <button id="editPasswordBtn" class="edit-button px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-300 font-medium text-sm flex items-center">
+                            <button id="editPasswordBtn" class="edit-button px-3 py-1.5 md:px-4 md:py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-300 font-medium text-xs md:text-sm flex items-center self-start sm:self-center">
                                 <i class="fas fa-key mr-2"></i> Change Password
                             </button>
                         </div>
                         <!-- Password edit form (initially hidden) -->
-                        <div id="passwordEditForm" class="mt-6 transition-max-height form-hidden">
-                            <form id="updatePasswordForm" class="space-y-4 bg-white p-5 rounded-lg shadow-sm">
+                        <div id="passwordEditForm" class="mt-4 md:mt-6 transition-max-height form-hidden">
+                            <form id="updatePasswordForm" class="space-y-3 md:space-y-4 bg-white p-4 md:p-5 rounded-lg shadow-sm">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1" for="newPassword">New Password</label>
                                     <div class="relative">
-                                        <input type="password" id="newPassword" name="newPassword" class="input-animated w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                        <input type="password" id="newPassword" name="newPassword" class="input-animated w-full px-3 py-2 md:px-4 md:py-2 border border-gray-300 rounded-lg" required>
                                         <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer">
                                             <i class="fas fa-eye"></i>
                                         </span>
@@ -407,17 +433,17 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1" for="confirmNewPassword">Confirm New Password</label>
                                     <div class="relative">
-                                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="input-animated w-full px-4 py-2 border border-gray-300 rounded-lg" required>
+                                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="input-animated w-full px-3 py-2 md:px-4 md:py-2 border border-gray-300 rounded-lg" required>
                                         <span class="absolute right-3 top-2.5 text-gray-400 cursor-pointer">
                                             <i class="fas fa-eye"></i>
                                         </span>
                                     </div>
                                 </div>
-                                <div class="flex space-x-3">
-                                    <button type="submit" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium flex items-center">
+                                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                                    <button type="submit" class="px-3 py-2 md:px-4 md:py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium flex items-center justify-center">
                                         <i class="fas fa-paper-plane mr-2"></i> Send Verification Code
                                     </button>
-                                    <button type="button" id="cancelPasswordEdit" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-300 font-medium">
+                                    <button type="button" id="cancelPasswordEdit" class="px-3 py-2 md:px-4 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-300 font-medium">
                                         Cancel
                                     </button>
                                 </div>
@@ -429,16 +455,16 @@
             
             <!-- OTP Modal for Email -->
             <div id="otpModal" class="modal">
-                <div class="modal-content p-6">
+                <div class="modal-content p-4 md:p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800">Verify Your Email</h3>
+                        <h3 class="text-lg md:text-xl font-semibold text-gray-800">Verify Your Email</h3>
                         <button id="closeOtpModal" class="text-gray-400 hover:text-gray-600">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <p class="text-gray-600 mb-6">We've sent a verification code to your new email address. Please enter the code below to complete the email update.</p>
+                    <p class="text-gray-600 mb-4 md:mb-6 text-sm md:text-base">We've sent a verification code to your new email address. Please enter the code below to complete the email update.</p>
                     <form id="otpVerificationForm">
-                        <div class="flex justify-center space-x-3 mb-6">
+                        <div class="flex justify-center space-x-2 md:space-x-3 mb-4 md:mb-6">
                             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
                             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
                             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
@@ -447,10 +473,10 @@
                             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" required>
                         </div>
                         <div class="text-center mb-4">
-                            <span class="text-sm text-gray-500">Didn't receive code? <button type="button" id="resendOtp" class="text-blue-600 hover:text-blue-800">Resend OTP</button></span>
+                            <span class="text-xs md:text-sm text-gray-500">Didn't receive code? <button type="button" id="resendOtp" class="text-blue-600 hover:text-blue-800">Resend OTP</button></span>
                         </div>
                         <div class="flex justify-center">
-                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium">
+                            <button type="submit" class="px-4 py-2 md:px-6 md:py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium">
                                 Verify & Update
                             </button>
                         </div>
@@ -460,16 +486,16 @@
 
             <!-- Password OTP Modal -->
             <div id="passwordOtpModal" class="modal">
-                <div class="modal-content p-6">
+                <div class="modal-content p-4 md:p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800">Verify Your Identity</h3>
+                        <h3 class="text-lg md:text-xl font-semibold text-gray-800">Verify Your Identity</h3>
                         <button id="closePasswordOtpModal" class="text-gray-400 hover:text-gray-600">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    <p class="text-gray-600 mb-6">We've sent a verification code to your email address. Please enter the code below to proceed with password change.</p>
+                    <p class="text-gray-600 mb-4 md:mb-6 text-sm md:text-base">We've sent a verification code to your email address. Please enter the code below to proceed with password change.</p>
                     <form id="passwordOtpVerificationForm">
-                        <div class="flex justify-center space-x-3 mb-6">
+                        <div class="flex justify-center space-x-2 md:space-x-3 mb-4 md:mb-6">
                             <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
                             <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
                             <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
@@ -478,10 +504,10 @@
                             <input type="text" class="otp-input password-otp" maxlength="1" pattern="[0-9]" required>
                         </div>
                         <div class="text-center mb-4">
-                            <span class="text-sm text-gray-500">Didn't receive code? <button type="button" id="resendPasswordOtp" class="text-blue-600 hover:text-blue-800">Resend OTP</button></span>
+                            <span class="text-xs md:text-sm text-gray-500">Didn't receive code? <button type="button" id="resendPasswordOtp" class="text-blue-600 hover:text-blue-800">Resend OTP</button></span>
                         </div>
                         <div class="flex justify-center">
-                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium">
+                            <button type="submit" class="px-4 py-2 md:px-6 md:py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors duration-300 font-medium">
                                 Verify & Update
                             </button>
                         </div>
@@ -738,7 +764,6 @@
                 body: JSON.stringify({ otp })
               });
               const data = await response.json();
-              console.log('dsdd',data)
               if (data.success) {
                 Toastify({
                   text: "Password updated successfully!",

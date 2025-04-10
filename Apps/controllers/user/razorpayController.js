@@ -24,7 +24,7 @@ const RazorpayController={
     
     createRazorpay: async (req, res, next) => {
         try {
-            console.log("🔥 Creating Razorpay Order",req.body);
+           
     
             const token = req.cookies.token;
             if (!token) {
@@ -48,7 +48,7 @@ const RazorpayController={
             };
     
             const razorpayOrder = await razorpay.orders.create(options);
-            console.log("✅ Razorpay order created:", razorpayOrder);
+         
     
             const newOrder = new Order({
                 orderId: razorpayOrder.id,  // ✅ Now correctly using `order.id`
@@ -61,13 +61,12 @@ const RazorpayController={
                 address
             });
             await newOrder.save()
-            console.log("new order is here : ",newOrder)
-            console.log('razorpayorer',razorpayOrder)
+       
     
             return res.status(200).json({ success: true, order: razorpayOrder });
     
         } catch (error) {
-            console.error("❌ Razorpay order creation failed:", error);
+   
             next(error);
         }
     }
@@ -84,7 +83,6 @@ verifyRazorPayment: async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decoded.id;
         const user=await User.findById(userId)
-        console.log('herer',req.body)
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body;
 
         if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -114,19 +112,15 @@ verifyRazorPayment: async (req, res, next) => {
             { new: true }
         );
 
-console.log('orderIII',updatedOrder)
         
         if (!updatedOrder) {
             return res.status(404).json({ success: false, message: "Order not found" });
         }
-            console.log('✅ Payment verified:', updatedOrder);
 
 
             let admin = await Admin.findOne(); // Assuming only one admin exists
-            console.log('admin',admin);
             
             let adminWallet = await AdminWallet.findOne();
-            console.log('admin',adminWallet);
             
             if (!adminWallet) {
                 adminWallet = new AdminWallet({
@@ -140,6 +134,7 @@ console.log('orderIII',updatedOrder)
             // Use updatedOrder.totalAmount instead of order.totalAmount
             adminWallet.transaction.push({
                 transactionType: 'credit',
+                orderId:updatedOrder._id,
                 amount: updatedOrder.totalAmount,
                 reason: `credit for Order #${orderId}`,
                 transactionId,
@@ -148,14 +143,12 @@ console.log('orderIII',updatedOrder)
             adminWallet.balance += updatedOrder.totalAmount; 
             
             await adminWallet.save();
-            console.log('completed transac',adminWallet)
 
             await Cart.findOneAndUpdate({user:userId},{$set:{items:[]}})
         return res.json({ success: true, message: "Payment verified successfully" });
 
     } catch (error) {
         next(error)
-        console.log( "Payment verification failed")
     }
 },
 

@@ -14,7 +14,6 @@ const passwordController ={
         res.render('forgotpassword')
     },
 forgotpassword: async (req, res,next) => {
-    console.log('invoked forgot pass');
     
     try {
         const { email } = req.body;
@@ -37,7 +36,7 @@ forgotpassword: async (req, res,next) => {
         // Store OTP in the database with expiry time
         await User.findByIdAndUpdate(user._id, { otp, otpExpiry });
 
-        console.log(otp)
+   
         // Send OTP via email
         await sendEmail(email, 'Your OTP for Password Reset', 
             `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in 1 minute.</p>`
@@ -65,7 +64,6 @@ forgotpassword: async (req, res,next) => {
     }
 },
 verifyAndUpdatePassword: async (req, res, next) => {
-  console.log('invkd vrf');
   
   try {
       const token = req.cookies.token;
@@ -127,7 +125,7 @@ resendOTP: async (req, res,next) => {
   resetPassword: async (req, res,next) => {
     try {
       const { password, confirmpassword } = req.body;
-      console.log('Request body:', req.body); // Debug: Check the incoming data
+    
   
       // Validate input
       if (!password || !confirmpassword) {

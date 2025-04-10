@@ -30,11 +30,11 @@ const authController = {
 landing:async (req,res,next) => {
   try {
     
-                           
-                    
+                                const cartCount = await Cart.findOne({user: null})     
+                    const coupon = await Coupon.findOne({isBlocked:false,expireDate:{$gt:new Date}})
                              const categories = await Category.find({});
                              const product = await Product.find({})
-    return res.status(200).render('landing',{categories,product})
+    return res.status(200).render('landing',{categories,product,user:null,cartCount,coupon})
   } catch (error) {
     next(error)
   }
@@ -48,7 +48,6 @@ landing:async (req,res,next) => {
     },
 
     loginspost: async (req, res,next) => {
-        // console.log(req.body);
         const { email, password } = req.body;
 
         try {
@@ -66,7 +65,6 @@ landing:async (req,res,next) => {
             }
 
             const isMatch = await bcrypt.compare(password, user.password);
-            console.log('password matching',isMatch);
             
             if (!isMatch) {
                 return res.status(400).json({ok:true,error:'invalid credentials'})
@@ -102,7 +100,6 @@ landing:async (req,res,next) => {
 
     createUser: async (req, res,next) => {
         try {
-         console.log('req.body',req.body)
           const { fullname, email, phone, password, confirm_password,refferalCode } = req.body;
       
           if (/\d/.test(fullname)) {
@@ -145,21 +142,16 @@ landing:async (req,res,next) => {
      //generate refferal code for new user
           const newRefferalCode = RefferalCode.generateReferralCode()
 
-     console.log('referalcode',refferalCode)
 
           let refferer = null
           if(refferalCode){
-            console.log('reached here');
             
             refferer = await User.findOne({ refferalCode })
-            console.log('reached here2')
             if(!refferer){
               return res.status(400).json({success:false,message:'invalid refferal code'})
             }
           }
-          console.log('refferer',refferer)
-          console.log('newRefferalCode',newRefferalCode)
-
+          
 
       
           const salt = await bcrypt.genSalt(5);
@@ -181,7 +173,7 @@ landing:async (req,res,next) => {
           });
       
           await newUser.save();
-console.log('newUser',newUser)
+
 //if there is a refferer create coupon for both user
 if(refferer){
 const newUserrefferal = new Coupon({
@@ -196,7 +188,7 @@ const newUserrefferal = new Coupon({
 
 })
 await newUserrefferal.save()
-console.log('newUserrefferal',newUserrefferal)
+
 
 
 
@@ -214,13 +206,11 @@ const existUserCoupon=new Coupon({
 
 await existUserCoupon.save()
 
-console.log('existUserCoupon',existUserCoupon)
 
 
 await refferer.save()
 
 
-console.log('refferer',refferer)
 }
 
 
@@ -231,7 +221,6 @@ console.log('refferer',refferer)
             `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in 1 minute.</p>`
           );
         
-console.log('refferalCode:newRefferalCode',newRefferalCode)
       
           res.status(201).json({ success: true, message: 'Signup successful. OTP sent to email.' ,refferalCode:newRefferalCode,});
       
@@ -248,7 +237,6 @@ verifyOTP: async (req, res,next) => {
             
 const {email, otp }=req.body
 const user =await User.findOne({email})
-console.log(email,otp+'this is rq');
 
 if(!user){
     return res.status(400).json({message:"User not found"})
@@ -267,7 +255,6 @@ return res.status(400).json({message:'Invalid otp'})
 }
 
 if(String(user.otp)!==String(otp)){
-    console.log(user.otp,otp)
     return res.status(400).json({message:'invalid opt'})
 }
 if(user.otpExpires&&new Date(user.otpExpires)<new Date()){
@@ -280,7 +267,6 @@ await user.save()
 res.status(200).json({message:'OTP verified successfully'})
 
         } catch (error) {
-            console.log('Error verifying OTP',error)
             next(error)
         }
     },

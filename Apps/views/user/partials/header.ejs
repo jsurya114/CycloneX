@@ -20,18 +20,9 @@
                     About Us
                     <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
-                <!-- <a href="/order" class="text-dark hover:text-primary font-medium relative group">
-                    Order
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </a> -->
-                <!--
-                <a href="/contact" class="text-dark hover:text-primary font-medium relative group">
-                    Contact
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </a> -->
             </nav>
                          
-            <!-- Icons -->
+            <!-- Icons and Auth -->
             <div class="flex items-center space-x-2 md:space-x-4">
               <!-- Search - Hidden on mobile, shown on larger screens -->
               <div class="hidden md:block w-full md:w-auto">
@@ -41,19 +32,47 @@
                 </div>
               </div>
 
+              <!-- Shopping Cart - Always visible -->
+              <a href="/addtocart" class="text-dark hover:text-primary relative">
+                <i class="fas fa-shopping-cart text-xl"></i>
+                <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"><%=cartCount %></span>
+              </a>
+
+              <!-- Authentication Links -->
               <% if(user){ %>
-                <a id="submitFormData" href="/userprofile/<%=user._id  %>" class="text-dark hover:text-primary">
+                <!-- User is logged in -->
+                <div class="relative group">
+                  <button class="flex items-center space-x-1 text-dark hover:text-primary">
                     <i class="fas fa-user text-xl"></i>
-                </a>
-                <a href="/addtocart" class="text-dark hover:text-primary relative">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                    <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"><%=cartCount %></span>
-                </a>
+                    <span class="hidden md:inline text-sm font-medium">Account</span>
+                    <i class="fas fa-chevron-down text-xs ml-1"></i>
+                  </button>
+                  
+                  <!-- Dropdown Menu -->
+                  <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
+                    <a href="/userprofile/<%=user._id %>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      <i class="fas fa-user-circle mr-2"></i>My Profile
+                    </a>
+                    <a href="/orders" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      <i class="fas fa-box mr-2"></i>My Orders
+                    </a>
+                    <div class="border-t border-gray-100 my-1"></div>
+                    <a href="/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                      <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                  </div>
+                </div>
               <% } else { %>
-                <a href="/addtocart" class="text-dark hover:text-primary relative">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                    <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"><%=cartCount %></span>
-                </a>
+                <!-- User is not logged in -->
+                <div class="hidden md:flex items-center space-x-2">
+                  <a href="/login" class="text-dark hover:text-primary font-medium text-sm">
+                    Login
+                  </a>
+                  <span class="text-gray-300">|</span>
+                  <a href="/register" class="bg-primary text-white hover:bg-primary-dark rounded-full px-4 py-1.5 text-sm font-medium transition-colors">
+                    Sign Up
+                  </a>
+                </div>
               <% } %>
               
               <!-- Mobile menu button -->
@@ -76,11 +95,31 @@
             <nav class="flex flex-col space-y-3">
                 <a href="/" class="text-dark hover:text-primary font-medium py-2">Home</a>
                 <a href="/shoplist" class="text-dark hover:text-primary font-medium py-2">Shop</a>
-                <!-- <a href="/orders" class="text-dark hover:text-primary font-medium py-2">Orders</a> -->
-                <!-- <a href="/about" class="text-dark hover:text-primary font-medium py-2">About</a>
-                <a href="/contact" class="text-dark hover:text-primary font-medium py-2">Contact</a> -->
+                <a href="/about" class="text-dark hover:text-primary font-medium py-2">About Us</a>
+                
                 <% if(user){ %>
-                <a href="/userprofile/<%=user._id %>" class="text-dark hover:text-primary font-medium py-2">My Profile</a>
+                  <!-- User is logged in - Mobile -->
+                  <div class="border-t border-gray-200 my-2 pt-2">
+                    <a href="/userprofile/<%=user._id %>" class="flex items-center text-dark hover:text-primary font-medium py-2">
+                      <i class="fas fa-user-circle mr-2"></i>My Profile
+                    </a>
+                    <a href="/orders" class="flex items-center text-dark hover:text-primary font-medium py-2">
+                      <i class="fas fa-box mr-2"></i>My Orders
+                    </a>
+                    <a href="/logout" class="flex items-center text-red-600 hover:text-red-700 font-medium py-2">
+                      <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                  </div>
+                <% } else { %>
+                  <!-- User is not logged in - Mobile -->
+                  <div class="border-t border-gray-200 my-2 pt-2">
+                    <a href="/login" class="flex items-center text-dark hover:text-primary font-medium py-2">
+                      <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </a>
+                    <a href="/signup" class="flex items-center text-primary hover:text-primary-dark font-medium py-2">
+                      <i class="fas fa-user-plus mr-2"></i>Create Account
+                    </a>
+                  </div>
                 <% } %>
             </nav>
         </div>

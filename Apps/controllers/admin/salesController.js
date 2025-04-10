@@ -7,7 +7,7 @@ const { timeStamp } = require('console');
 const salesController = {
   getSaleReport: async (req, res, next) => {
     try {
-      let { startDate, endDate,  timeFilter, page = 1, limit = 2 } = req.query;
+      let { startDate, endDate,  timeFilters, page = 1, limit = 2 } = req.query;
 
       // Base date setup
       let today = new Date();
@@ -19,8 +19,8 @@ const salesController = {
       endDateTime.setHours(23, 59, 59, 999);
 
       // Time filter logic
-      if (timeFilter) {
-        switch (timeFilter) {
+      if (timeFilters) {
+        switch (timeFilters) {
           case 'today':
             startDateTime = today;
             endDateTime = new Date();
@@ -60,10 +60,10 @@ const salesController = {
         startDateTime = new Date(startDate);
         endDateTime = new Date(endDate);
         endDateTime.setHours(23, 59, 59, 999);
-        timeFilter = 'custom';
+        timeFilters = 'custom';
       } else {
         startDateTime.setDate(startDateTime.getDate() - 30);
-        timeFilter = 'last30days';
+        timeFilters = 'last30days';
       }
 
       if (isNaN(startDateTime.getTime()) || isNaN(endDateTime.getTime())) {
@@ -101,7 +101,7 @@ const salesController = {
         order.orderStatus === 'delivered' ? 'Paid' : 'Pending',
         paymentMethod: order.paymentMethod
       }));
-      console.log("recent ", recentOrders);
+    
       const totalOrders = await Order.countDocuments(query)
       res.status(200).render("salesreport", {
         success: true,
@@ -111,7 +111,7 @@ const salesController = {
         orders: recentOrders,
         currentPage: pageNum,
         totalPages: Math.ceil(totalOrders / limitNum),
-        timeFilter,
+        timeFilters,
         startDate: startDateTime.toISOString().split('T')[0],
         endDate: endDateTime.toISOString().split('T')[0]
       });

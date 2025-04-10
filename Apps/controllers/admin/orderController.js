@@ -58,7 +58,7 @@ const totalOrders = await Order.countDocuments(filter)
    status: order.orderStatus,
    timestamp: order.timestamp
  }))
- console.log('orderdata',orderData)
+
 
  
 
@@ -74,9 +74,9 @@ next(error)
 try{
 
   const orderId = req.params.id
-  console.log('order',orderId)
+
 const order = await Order.findById(orderId).populate('address').populate('user').populate('items.product')
-console.log(order.orderId)
+
 const orderData = {
   orderId: order.orderId,
   fullName: order.user ? order.user.fullName : "Guest",
@@ -108,6 +108,8 @@ updateOrderStatus:async (req,res,next) => {
     const orderStatus =req.body.orderStatus
     const orderId = req.params.id
 
+    
+
     const order = await Order.findOne({orderId})
     const user=order.user.toString()
   
@@ -138,6 +140,7 @@ if(!adminWallet){
 let transactionId=generateTransactionId.generateTransactionId()
 adminWallet.transaction.push({
   transactionType:'credit',
+  orderId:order._id,
   amount:order.totalAmount,
   reason:`credit for Order #${orderId}`,
   transactionId:transactionId
@@ -148,7 +151,7 @@ await adminWallet.save()
     }
 
     if(order.orderStatus==='returned'){
-      console.log('order.itme',order.items)
+      
 for(const item of order.items){
   await Product.updateOne({_id:item.product},{$inc:{stock:item.quantity}})
 }
@@ -164,6 +167,7 @@ if(!adminWallet){
 }
 const transactionId=generateTransactionId.generateTransactionId()
 adminWallet.transaction.push({  transactionType:'debit',
+  orderId:order._id,
   amount:order.totalAmount,
   reason:`debit for Order #${orderId}`,
   transactionId:transactionId})
@@ -173,7 +177,7 @@ adminWallet.transaction.push({  transactionType:'debit',
 
 
 let wallet = await Wallet.findOne({user})
-console.log('wall',wallet)
+
 if(!wallet){
  wallet = new Wallet({
             user,

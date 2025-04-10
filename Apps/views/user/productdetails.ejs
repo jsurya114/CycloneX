@@ -1,493 +1,249 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>CycloneX ProductDetails</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            primary: '#2563eb',
-                            secondary: '#f97316',
-                            dark: '#0f172a'
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX ProductDetails</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#60A5FA',
+                        dark: '#1E293B',
+                        light: '#F8FAFC',
+                        card: {
+                            blue: '#DBEAFE',
+                            purple: '#EDE9FE',
+                            green: '#DCFCE7',
+                            pink: '#FCE7F3',
+                            orange: '#FFEDD5'
                         },
-                        fontFamily: {
-                            sans: ['Inter', 'sans-serif']
+                        'card-dark': {
+                            blue: '#1E3A8A',
+                            purple: '#5B21B6',
+                            green: '#166534',
+                            pink: '#831843',
+                            orange: '#7C2D12'
                         }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'heading': ['Plus Jakarta Sans', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'custom': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02)',
+                        'card': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+                        'hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
                     }
                 }
             }
-        </script>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <style type="text/tailwindcss">
-            @layer components {
-                .btn-primary {
-                    @apply bg-primary text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
-                }
-                .btn-secondary {
-                    @apply bg-secondary text-white px-6 py-3 rounded-md hover:bg-orange-600 transition duration-300 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
-                }
-                .product-card {
-                    @apply bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl;
-                }
-                .product-image-container {
-                    @apply relative overflow-hidden;
-                }
-                .product-image {
-                    @apply w-full h-48 object-cover transition-transform duration-500;
-                }
-                .product-card:hover .product-image {
-                    @apply transform scale-110;
-                }
-                .quick-view-btn {
-                    @apply absolute bottom-0 left-0 right-0 bg-primary text-white py-2 text-center opacity-0 transition-opacity duration-300;
-                }
-                .product-card:hover .quick-view-btn {
-                    @apply opacity-100;
-                }
-                .star-rating {
-                    @apply flex text-yellow-400;
-                }
-                .modal {
-                    @apply fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300;
-                }
-                .modal.active {
-                    @apply opacity-100 pointer-events-auto;
-                }
-                .modal-content {
-                    @apply bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-auto transform scale-95 transition-transform duration-300;
-                }
-                .modal.active .modal-content {
-                    @apply scale-100;
-                }
-                .price-slider {
-                    @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
-                }
-                .price-slider::-webkit-slider-thumb {
-                    @apply appearance-none w-6 h-6 rounded-full bg-primary cursor-pointer;
-                }
-                .category-card {
-                    @apply transition-all duration-300 hover:-translate-y-2;
-                }
-                .banner-text {
-                    @apply text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight;
-                }
-                .banner-subtitle {
-                    @apply text-xl md:text-2xl mb-8 max-w-xl font-light;
-                }
-                .thumbnail {
-                    @apply border-2 border-transparent rounded-md overflow-hidden transition-all duration-200;
-                }
-                .thumbnail.active {
-                    @apply border-primary;
-                }
-                .thumbnail:hover {
-                    @apply border-blue-300;
-                }
-                .badge {
-                    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-                }
-                .badge-discount {
-                    @apply bg-red-100 text-red-800;
-                }
-                .badge-instock {
-                    @apply bg-green-100 text-green-800;
-                }
-                .badge-outstock {
-                    @apply bg-red-100 text-red-800;
-                }
-                .tab-button {
-                    @apply px-4 py-2 font-medium text-gray-600 border-b-2 border-transparent hover:text-primary transition-colors duration-200;
-                }
-                .tab-button.active {
-                    @apply text-primary border-primary;
-                }
-            }
-        </style>
-    </head>
-<body class="bg-gray-100">
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            transition: background-color 0.3s ease;
+        }
+
+        .dark body {
+            background-color: #0F172A;
+            color: #F8FAFC;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Custom scrollbar for Webkit browsers */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+            border-radius: 8px;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1E293B;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 8px;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748B;
+        }
+
+        /* Product image zoom effect */
+        .zoom-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .zoom-image {
+            transition: transform 0.5s ease;
+        }
+        
+        .zoom-container:hover .zoom-image {
+            transform: scale(1.1);
+        }
+        
+        /* Wishlist button animation */
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+        
+        .wishlist-animation {
+            animation: heartBeat 1s;
+        }
+        
+        /* Tab styling */
+        .tab-button {
+            @apply px-4 py-3 font-medium text-gray-600 dark:text-gray-300 border-b-2 border-transparent hover:text-primary dark:hover:text-primary transition-colors duration-200;
+        }
+        
+        .tab-button.active {
+            @apply text-primary dark:text-primary border-primary;
+        }
+        
+        /* Toast notification */
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #0F172A;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .dark #toast {
+            background-color: #334155;
+        }
+        
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        #toast.error {
+            background-color: #EF4444;
+        }
+        
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #3B82F6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 40;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 1.25rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .dark-mode-toggle:hover i {
+            transform: rotate(30deg);
+        }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-100">
     <!-- Header -->
     <%- include('partials/header') %>
-    <%- include('partials/breadcrumbs') %>
+    
+    <!-- Breadcrumbs -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 py-6">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-heading font-bold text-gray-900 dark:text-white mb-2 relative">
+                Product Details
+                <span class="absolute -bottom-2 left-0 w-16 h-1 bg-primary rounded-full"></span>
+            </h1>
+            <div class="flex items-center text-gray-500 dark:text-gray-400 mt-4">
+                <%- include('partials/breadcrumbs') %>
+            </div>
+        </div>
+    </div>
+
     <!-- Product Details Section -->
-    <main class="container mx-auto px-6 py-8">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Product Images -->
             <div class="space-y-4">
                 <!-- Main Image and Zoom Container Wrapper -->
                 <div class="relative">
                     <!-- Main Image -->
-                    <div class="bg-white p-4 shadow-lg rounded-lg overflow-hidden group">
-                        <img id="mainImage" src="/<%= product.mainImage %>" alt="Main Product Image" class="w-full h-auto rounded-lg">
-
+                    <div class="bg-white dark:bg-gray-800 p-4 shadow-lg rounded-lg overflow-hidden group zoom-container">
+                        <img id="mainImage" src="/<%= product.mainImage %>" alt="<%= product.productName %>" class="w-full h-auto rounded-lg zoom-image">
                     </div>
+                    
                     <!-- Zoom Container (appears on hover) -->
-                    <div id="zoomWrapper" class="hidden absolute top-0 left-full ml-4 w-96 h-96 border border-gray-300 overflow-hidden" style="backdrop-filter: blur(5px);">
+                    <div id="zoomWrapper" class="hidden absolute top-0 left-full ml-4 w-96 h-96 border border-gray-300 dark:border-gray-700 overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-xl" style="backdrop-filter: blur(5px);">
                         <div id="zoomContainer" class="w-full h-full bg-no-repeat bg-center" style="background-size: 200%;"></div>
                     </div>
 
-                     <!-- Wishlist Button -->
-                     <button 
-                     onclick="addToWishlist('<%= product._id %>', this)" 
-                     class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
-                     aria-label="Add to wishlist"
-                 >
-                     <svg 
-                         xmlns="http://www.w3.org/2000/svg" 
-                         width="20" 
-                         height="20" 
-                         viewBox="0 0 24 24" 
-                         fill="none" 
-                         stroke="currentColor" 
-                         stroke-width="2" 
-                         stroke-linecap="round" 
-                         stroke-linejoin="round" 
-                         class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
-                         data-product-id="<%= product._id %>"
-                     >
-                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                     </svg>
-                 </button>
-                </div>
-                <!-- Sub Images -->
-                <div class="grid grid-cols-4 gap-4">
-                    <% product.images.forEach(image => { %>
-                        <div class="bg-white p-2 shadow-md rounded-lg">
-                            <img src="/<%= image %>" alt="Sub Image" class="w-full h-auto rounded-lg cursor-pointer"
-                                onclick="updateMainImage(this.src)">
-                        </div>
-                    <% }) %>
-                    <div class="bg-white p-2 shadow-md rounded-lg">
-                        <img src="/<%= product.mainImage %>" alt="Sub Image" class="w-full h-auto rounded-lg cursor-pointer"
-                            onclick="updateMainImage(this.src)">
-                    </div>
-                </div>
-            </div>
-            <!-- Product Details -->
-            <!-- Product Details -->
-<div class="bg-white p-6 shadow-lg rounded-lg">
-    <h1 class="text-2xl font-bold text-gray-800"><%= product.productName %></h1>
-    <p class="text-sm text-gray-500 mt-2">Brand: <span class="font-semibold"><%= product.brands.name %></span></p>
-    <div class="mt-4">
-        <span class="text-3xl font-bold text-gray-800">₹<%= salePrice.toFixed(2) %></span>
-        <span class="text-sm text-gray-500 ml-2">(Inclusive of all taxes)</span>
-    </div>
-
-    <!-- Offers & Discounts Section -->
-    <div class="mt-4 space-y-3">
-        <!-- Discount Badge -->
-        <% if(product.discount) { %>
-            <div class="inline-flex items-center bg-red-100 px-3 py-1 rounded-full">
-                <span class="text-red-600 font-semibold"><%= maxOffer %>% Off</span>
-            </div>
-        <% } %>
-
-        <!-- Coupons Section -->
-        <div class="border border-green-200 rounded-lg p-3 bg-green-50">
-            <h3 class="text-sm font-medium text-gray-700 mb-2">Available Offers</h3>
-            <ul class="space-y-2">
-                <% if(product.coupon) { %>
-                    <li class="flex items-center">
-                        <span class="inline-block w-5 h-5 mr-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
-                                <path d="M20 6L9 17l-5-5"></path>
-                            </svg>
-                        </span>
-                        <p class="text-sm">
-                            <span class="font-semibold text-green-700">COUPON: <%= product.coupon %></span> 
-                            - Use code at checkout
-                        </p>
-                    </li>
-                <% } %>
-                <!-- Additional offers can be added here -->
-                <li class="flex items-center">
-                    <span class="inline-block w-5 h-5 mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
-                            <path d="M20 6L9 17l-5-5"></path>
-                        </svg>
-                    </span>
-                    <p class="text-sm">
-                        <span class="font-semibold">Maximum Offer:</span> 
-                        <%=maxOffer %>% for this product
-                    </p>
-                </li>
-                <li class="flex items-center">
-                    <span class="inline-block w-5 h-5 mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600">
-                            <path d="M20 6L9 17l-5-5"></path>
-                        </svg>
-                    </span>
-                    <p class="text-sm">
-                        <span class="font-semibold">Special:</span> 
-                        Free delivery on orders above ₹20000
-                    </p>
-                </li>
-            </ul>
-            <button class="mt-2 text-sm text-green-700 font-medium hover:text-green-800 flex items-center">
-                View more offers
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-            </button>
-        </div>
-    </div>
-
-    <div class="mt-4">
-        <span class="text-sm text-gray-700">Availability:</span>
-        <span class="text-sm font-semibold <%= product.stock > 0 ? 'text-green-600' : 'text-red-600' %>">
-            <%= product.stock %> products <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
-        </span>
-    </div>
-    <div class="mt-6">
-        <h3 class="text-lg font-semibold text-gray-800">Description</h3>
-        <p class="text-sm text-gray-600 mt-2"><%= product.description %></p>
-    </div>
-    <div class="mt-6 flex items-center gap-4"> 
-        <button onclick="addToCart('<%= product._id %>')" 
-            class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>             
-            <span class="font-medium">Add to Cart</span>         
-        </button>         
-    
-       <a href="/checkout"> <button class="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
-            Buy Now
-        </button>   
-    </a>  
-    </div>
-    
-</div>
-        </div>
-
-      <!-- Tabs Section -->
-      <div class="mt-6 bg-white rounded-xl shadow-sm overflow-hidden">
-        <div class="border-b border-gray-100">
-            <div class="flex overflow-x-auto">
-                <button class="tab-button active" onclick="openTab(event, 'details')">Product Details</button>
-                <button class="tab-button" onclick="openTab(event, 'reviews')">Reviews</button>
-                <button class="tab-button" onclick="openTab(event, 'shipping')">Shipping & Returns</button>
-            </div>
-        </div>
-        
-        <!-- Tab Content -->
-        <div class="p-4 md:p-6">
-            <!-- Product Details Tab -->
-            <div id="details" class="tab-content">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="text-lg font-semibold mb-3">Specifications</h3>
-                        <table class="w-full text-sm">
-                            <tbody>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-2 text-gray-500">Brand</td>
-                                    <td class="py-2 font-medium"><%= product.brands.name %></td>
-                                </tr>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-2 text-gray-500">Model</td>
-                                    <td class="py-2 font-medium"><%= product.productName %></td>
-                                </tr>
-                                <tr class="border-b border-gray-100">
-                                    <td class="py-2 text-gray-500">Stock</td>
-                                    <td class="py-2 font-medium"><%= product.stock %> units</td>
-                                </tr>
-                                <!-- Add more specifications as needed -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold mb-3">Features</h3>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-start">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Premium quality materials</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Durable construction</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Ergonomic design for comfort</span>
-                            </li>
-                            <!-- Add more features as needed -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Reviews Tab (hidden by default) -->
-         <!-- Reviews Tab (hidden by default) -->
-<div id="reviews" class="tab-content hidden">
-    <div class="flex items-center mb-4">
-        <div class="flex items-center mr-4">
-            <% review.forEach(reviewItem => { %>
-            <span class="text-3xl font-bold text-gray-900 mr-2">4.5</span>
-            <div class="flex text-yellow-400">
-                <% for(let i = 1; i <= 5; i++) { %>
-                    <% if(i <= reviewItem.rating) { %>
-                        <i class="fas fa-star"></i>
-                    <% } else { %>
-                        <i class="far fa-star"></i>
-                    <% } %>
-                <% } %>
-            </div>
-            <% }); %>
-        </div>
-        <span class="text-sm text-gray-500">Based on <%= review.length %> reviews</span>
-    </div>
-    
-    <% if(review && review.length > 0) { %>
-        <% review.forEach(reviewItem => { %>
-            <!-- Review Item -->
-            <div class="border-t border-gray-100 py-4">
-                <div class="flex items-start">
-                    <div class="flex-shrink-0 mr-4">
-                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
-                            <%= reviewItem.user && reviewItem.user.name ? reviewItem.user.name.charAt(0).toUpperCase() : 'U' %>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center mb-1">
-                            <h4 class="font-medium text-gray-900 mr-2"><%= reviewItem.user ? reviewItem.user.name : 'Anonymous' %></h4>
-                            
-
-                            <span class="text-xs text-gray-500"><%= new Date(reviewItem.createdAt).toLocaleDateString() %></span>
-                        </div>
-                        <div class="flex text-yellow-400 text-sm mb-2">
-                            <% for(let i = 1; i <= 5; i++) { %>
-                                <% if(i <= reviewItem.rating) { %>
-                                    <i class="fas fa-star"></i>
-                                <% } else { %>
-                                    <i class="far fa-star"></i>
-                                <% } %>
-                            <% } %>
-                        </div>
-                        <p class="text-sm text-gray-700"><%= reviewItem.description %></p>
-                    </div>
-                </div>
-            </div>
-        <% }); %>
-    <% } else { %>
-        <div class="text-center py-8">
-            <p class="text-gray-500">No reviews yet. Be the first to review this product!</p>
-        </div>
-    <% } %>
-    
-    <% if(review && review.length > 3) { %>
-        <button class="mt-4 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200">
-            Load more reviews
-        </button>
-    <% } %>
-</div>
-            
-            <!-- Shipping Tab (hidden by default) -->
-            <div id="shipping" class="tab-content hidden">
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="text-lg font-semibold mb-2">Shipping Information</h3>
-                        <p class="text-sm text-gray-600">We offer free shipping on all orders above ₹1000. Standard delivery takes 3-5 business days.</p>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold mb-2">Return Policy</h3>
-                        <p class="text-sm text-gray-600">If you're not satisfied with your purchase, you can return it within 30 days for a full refund or exchange.</p>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold mb-2">Warranty</h3>
-                        <p class="text-sm text-gray-600">This product comes with a 1-year manufacturer warranty covering defects in materials and workmanship.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        <!-- Related Products Section -->
-        <div class="mt-12">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Related Products</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <% relatedProducts.forEach(product => { %>
-                    <div class="bg-white rounded-lg shadow-sm overflow-hidden group">
-                        <div class="relative">
-                            <a href="/productdetails/<%= product._id %>" class="block w-full h-full"> 
-                                <img 
-                                    src="/<%= product.mainImage %>" 
-                                    alt="<%= product.productName %>" 
-                                    class="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-300"
-                                >
-                            </a>
-                            <div class="absolute top-4 left-4">
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
-                                    <%= product.brands ? product.brands.name : 'No Brand' %>
-                                </span>
-                            </div>
-                           <!-- Wishlist Button -->
-            <button 
-            onclick="addToWishlist('<%= product._id %>', this)" 
-            class="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition-colors duration-200"
-            aria-label="Add to wishlist"
-        >
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="20" 
-                height="20" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="2" 
-                stroke-linecap="round" 
-                stroke-linejoin="round" 
-                class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
-                data-product-id="<%= product._id %>"
-            >
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-        </button>
-                      
-                        </div>
-                        <div class="p-4">
-                            <a href="/productdetails/<%= product._id %>" class="text-base font-medium text-gray-800 hover:text-blue-600 transition-colors line-clamp-2"> 
-                                <h3 class="text-lg font-semibold mb-2"><%= product.productName %></h3>
-                            </a>
-                           
-                            <div class="flex items-center mb-2">
-                                <div class="flex text-yellow-400">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </div>
-                                <span class="text-gray-500 text-sm ml-2">(4.5)</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xl font-bold text-primary">₹<%= product.price %></span>
-                                <button onclick="addToCart('<%= product._id %>')" 
-                                    class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>             
-                                    <span class="font-medium">Add to Cart</span>         
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                <% }) %>
-                <% if (relatedProducts.length === 0) { %>
-                    <div class="col-span-full">
-                        <div class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
-                            <svg 
+                    <!-- Wishlist Button -->
+                    <button 
+                        onclick="addToWishlist('<%= product._id %>', this)" 
+                        class="absolute top-4 right-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 wishlist-btn"
+                        aria-label="Add to wishlist"
+                        data-product-id="<%= product._id %>"
+                    >
+                        <svg 
                             xmlns="http://www.w3.org/2000/svg" 
                             width="20" 
                             height="20" 
@@ -497,13 +253,350 @@
                             stroke-width="2" 
                             stroke-linecap="round" 
                             stroke-linejoin="round" 
-                            class="wishlist-icon text-gray-500 hover:text-red-500 transition-colors duration-200"
+                            class="wishlist-icon text-gray-500 dark:text-gray-300 transition-colors duration-200"
                             data-product-id="<%= product._id %>"
                         >
                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                         </svg>
-                            <p class="text-gray-500 text-lg mb-4">No related products found.</p>
-                            <button onclick="window.location.href='/shoplist'" class="btn-primary flex items-center gap-2 mx-auto">
+                    </button>
+                </div>
+                
+                <!-- Sub Images -->
+                <div class="grid grid-cols-4 gap-4">
+                    <% product.images.forEach(image => { %>
+                        <div class="bg-white dark:bg-gray-800 p-2 shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                            <img src="/<%= image %>" alt="Product Image" class="w-full h-auto rounded-lg cursor-pointer"
+                                onclick="updateMainImage(this.src)">
+                        </div>
+                    <% }) %>
+                    <div class="bg-white dark:bg-gray-800 p-2 shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                        <img src="/<%= product.mainImage %>" alt="Product Image" class="w-full h-auto rounded-lg cursor-pointer"
+                            onclick="updateMainImage(this.src)">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product Details -->
+            <div class="bg-white dark:bg-gray-800 p-6 shadow-lg rounded-lg">
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white"><%= product.productName %></h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Brand: <span class="font-semibold"><%= product.brands.name %></span></p>
+                
+                <div class="mt-4">
+                    <span class="text-3xl font-bold text-primary">₹<%= salePrice.toFixed(2) %></span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">(Inclusive of all taxes)</span>
+                </div>
+
+                <!-- Offers & Discounts Section -->
+                <div class="mt-4 space-y-3">
+                    <!-- Discount Badge -->
+                    <% if(product.discount) { %>
+                        <div class="inline-flex items-center bg-red-100 dark:bg-red-900/30 px-3 py-1 rounded-full">
+                            <span class="text-red-600 dark:text-red-400 font-semibold"><%= maxOffer %>% Off</span>
+                        </div>
+                    <% } %>
+
+                    <!-- Coupons Section -->
+                    <div class="border border-green-200 dark:border-green-900/30 rounded-lg p-3 bg-green-50 dark:bg-green-900/10">
+                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Offers</h3>
+                        <ul class="space-y-2">
+                            <% if(product.coupon) { %>
+                                <li class="flex items-center">
+                                    <span class="inline-block w-5 h-5 mr-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 dark:text-green-400">
+                                            <path d="M20 6L9 17l-5-5"></path>
+                                        </svg>
+                                    </span>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">
+                                        <span class="font-semibold text-green-700 dark:text-green-400">COUPON: <%= product.coupon %></span> 
+                                        - Use code at checkout
+                                    </p>
+                                </li>
+                            <% } %>
+                            <!-- Additional offers can be added here -->
+                            <li class="flex items-center">
+                                <span class="inline-block w-5 h-5 mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 dark:text-green-400">
+                                        <path d="M20 6L9 17l-5-5"></path>
+                                    </svg>
+                                </span>
+                                <p class="text-sm text-gray-700 dark:text-gray-300">
+                                    <span class="font-semibold">Maximum Offer:</span> 
+                                    <%= maxOffer %>% for this product
+                                </p>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="inline-block w-5 h-5 mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 dark:text-green-400">
+                                        <path d="M20 6L9 17l-5-5"></path>
+                                    </svg>
+                                </span>
+                                <p class="text-sm text-gray-700 dark:text-gray-300">
+                                    <span class="font-semibold">Special:</span> 
+                                    Free delivery on orders above ₹20000
+                                </p>
+                            </li>
+                        </ul>
+                        <button class="mt-2 text-sm text-green-700 dark:text-green-400 font-medium hover:text-green-800 dark:hover:text-green-300 flex items-center">
+                            View more offers
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <span class="text-sm text-gray-700 dark:text-gray-300">Availability:</span>
+                    <span class="text-sm font-semibold <%= product.stock > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' %>">
+                        <%= product.stock %> products <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
+                    </span>
+                </div>
+                
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Description</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mt-2"><%= product.description %></p>
+                </div>
+                
+                <div class="mt-6 flex items-center gap-4"> 
+                    <button onclick="addToCart('<%= product._id %>')" 
+                        class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>             
+                        <span class="font-medium">Add to Cart</span>         
+                    </button>         
+                
+                    <a href="/checkout"> 
+                        <button class="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
+                            Buy Now
+                        </button>   
+                    </a>  
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <div class="border-b border-gray-100 dark:border-gray-700">
+                <div class="flex overflow-x-auto">
+                    <button class="tab-button active" onclick="openTab(event, 'details')">Product Details</button>
+                    <button class="tab-button" onclick="openTab(event, 'reviews')">Reviews</button>
+                    <button class="tab-button" onclick="openTab(event, 'shipping')">Shipping & Returns</button>
+                </div>
+            </div>
+            
+            <!-- Tab Content -->
+            <div class="p-4 md:p-6">
+                <!-- Product Details Tab -->
+                <div id="details" class="tab-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-white">Specifications</h3>
+                            <table class="w-full text-sm">
+                                <tbody>
+                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <td class="py-2 text-gray-500 dark:text-gray-400">Brand</td>
+                                        <td class="py-2 font-medium text-gray-800 dark:text-white"><%= product.brands.name %></td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <td class="py-2 text-gray-500 dark:text-gray-400">Model</td>
+                                        <td class="py-2 font-medium text-gray-800 dark:text-white"><%= product.productName %></td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <td class="py-2 text-gray-500 dark:text-gray-400">Stock</td>
+                                        <td class="py-2 font-medium text-gray-800 dark:text-white"><%= product.stock %> units</td>
+                                    </tr>
+                                    <!-- Add more specifications as needed -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-white">Features</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span class="text-gray-700 dark:text-gray-300">Premium quality materials</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span class="text-gray-700 dark:text-gray-300">Durable construction</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span class="text-gray-700 dark:text-gray-300">Ergonomic design for comfort</span>
+                                </li>
+                                <!-- Add more features as needed -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reviews Tab (hidden by default) -->
+                <div id="reviews" class="tab-content hidden">
+                    <div class="flex items-center mb-4">
+                        <div class="flex items-center mr-4">
+                            <% if(review && review.length > 0) { %>
+                                <span class="text-3xl font-bold text-gray-900 dark:text-white mr-2">4.5</span>
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            <% } %>
+                        </div>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">Based on <%= review ? review.length : 0 %> reviews</span>
+                    </div>
+                    
+                    <% if(review && review.length > 0) { %>
+                        <% review.forEach(reviewItem => { %>
+                            <!-- Review Item -->
+                            <div class="border-t border-gray-100 dark:border-gray-700 py-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 mr-4">
+                                        <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 font-medium">
+                                            <%= reviewItem.user && reviewItem.user.name ? reviewItem.user.name.charAt(0).toUpperCase() : 'U' %>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center mb-1">
+                                            <h4 class="font-medium text-gray-900 dark:text-white mr-2"><%= reviewItem.user ? reviewItem.user.name : 'Anonymous' %></h4>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400"><%= new Date(reviewItem.createdAt).toLocaleDateString() %></span>
+                                        </div>
+                                        <div class="flex text-yellow-400 text-sm mb-2">
+                                            <% for(let i = 1; i <= 5; i++) { %>
+                                                <% if(i <= reviewItem.rating) { %>
+                                                    <i class="fas fa-star"></i>
+                                                <% } else { %>
+                                                    <i class="far fa-star"></i>
+                                                <% } %>
+                                            <% } %>
+                                        </div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300"><%= reviewItem.description %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="text-center py-8">
+                            <p class="text-gray-500 dark:text-gray-400">No reviews yet. Be the first to review this product!</p>
+                        </div>
+                    <% } %>
+                    
+                    <% if(review && review.length > 3) { %>
+                        <button class="mt-4 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200">
+                            Load more reviews
+                        </button>
+                    <% } %>
+                </div>
+                
+                <!-- Shipping Tab (hidden by default) -->
+                <div id="shipping" class="tab-content hidden">
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Shipping Information</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">We offer free shipping on all orders above ₹1000. Standard delivery takes 3-5 business days.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Return Policy</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">If you're not satisfied with your purchase, you can return it within 30 days for a full refund or exchange.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Warranty</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">This product comes with a 1-year manufacturer warranty covering defects in materials and workmanship.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products Section -->
+        <div class="mt-12">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Related Products</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <% if (relatedProducts && relatedProducts.length > 0) { %>
+                    <% relatedProducts.forEach(product => { %>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group">
+                            <div class="relative">
+                                <a href="/productdetails/<%= product._id %>" class="block w-full h-full"> 
+                                    <img 
+                                        src="/<%= product.mainImage %>" 
+                                        alt="<%= product.productName %>" 
+                                        class="w-full h-64 object-contain object-center group-hover:scale-105 transition-transform duration-300"
+                                    >
+                                </a>
+                                <div class="absolute top-4 left-4">
+                                    <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
+                                        <%= product.brands ? product.brands.name : 'No Brand' %>
+                                    </span>
+                                </div>
+                                <!-- Wishlist Button -->
+                                <button 
+                                    onclick="addToWishlist('<%= product._id %>', this)" 
+                                    class="absolute top-4 right-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 wishlist-btn"
+                                    aria-label="Add to wishlist"
+                                    data-product-id="<%= product._id %>"
+                                >
+                                    <svg 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        width="20" 
+                                        height="20" 
+                                        viewBox="0 0 24 24" 
+                                        fill="none" 
+                                        stroke="currentColor" 
+                                        stroke-width="2" 
+                                        stroke-linecap="round" 
+                                        stroke-linejoin="round" 
+                                        class="wishlist-icon text-gray-500 dark:text-gray-300 transition-colors duration-200"
+                                        data-product-id="<%= product._id %>"
+                                    >
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="p-4">
+                                <a href="/productdetails/<%= product._id %>" class="text-base font-medium text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2"> 
+                                    <h3 class="text-lg font-semibold mb-2"><%= product.productName %></h3>
+                                </a>
+                               
+                                <div class="flex items-center mb-2">
+                                    <div class="flex text-yellow-400">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">(4.5)</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xl font-bold text-primary">₹<%= product.price %></span>
+                                    <button onclick="addToCart('<%= product._id %>')" 
+                                        class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>             
+                                        <span class="font-medium">Add</span>         
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-span-full">
+                        <div class="p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                            </svg>
+                            <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">No related products found.</p>
+                            <button onclick="window.location.href='/shoplist'" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 flex items-center gap-2 mx-auto">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="m15 18-6-6 6-6"/>
                                 </svg>
@@ -514,64 +607,89 @@
                 <% } %>
             </div>
         </div>
-        
     </main>
 
     <!-- Toast Notification -->
-<div id="toast" class="hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
-    <span id="toast-message"></span>
-</div>
+    <div id="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- Dark Mode Toggle Button -->
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i class="fas fa-moon dark:hidden"></i>
+        <i class="fas fa-sun hidden dark:block"></i>
+    </button>
+
     <!-- Footer -->
     <%- include('partials/footer') %>
 
-
-
     <script>
+        // Dark mode toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference or use system preference
+            if (localStorage.getItem('darkMode') === 'true' || 
+                (!localStorage.getItem('darkMode') && 
+                window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+            }
+            
+            // Toggle dark mode
+            darkModeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                localStorage.setItem('darkMode', html.classList.contains('dark'));
+            });
+        });
+
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toast-message');
 
             toastMessage.textContent = message;
-            toast.classList.remove('hidden');
-
+            
             if (isError) {
-                toast.classList.add('bg-red-500');
-                toast.classList.remove('bg-gray-800');
+                toast.classList.add('error');
             } else {
-                toast.classList.remove('bg-red-500');
-                toast.classList.add('bg-gray-800');
+                toast.classList.remove('error');
             }
+            
+            toast.classList.add('show');
 
             setTimeout(() => {
-                toast.classList.add('hidden');
+                toast.classList.remove('show');
             }, 3000); // Hide after 3 seconds
         }
 
         function addToWishlist(productId, button) {
             // Get the SVG element inside the button
             const wishlistIcon = button.querySelector('.wishlist-icon');
+            const path = wishlistIcon.querySelector('path');
             
-            // Check if it's already in wishlist (has filled color)
-            const isInWishlist = wishlistIcon.getAttribute('fill') === 'red';
+            // Check if it's already in wishlist
+            const isInWishlist = wishlistIcon.classList.contains('text-red-500');
             
             if (isInWishlist) {
                 // Remove from wishlist
-                fetch(`/wishlist/₹{productId}`, {
+                fetch(`/wishlist/${productId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    credentials: 'include'
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update UI - change to unfilled heart
-                        wishlistIcon.setAttribute('fill', 'none');
+                        // Update UI
                         wishlistIcon.classList.remove('text-red-500');
-                        wishlistIcon.classList.add('text-gray-500');
+                        wishlistIcon.classList.add('text-gray-500', 'dark:text-gray-300');
+                        if (path) path.setAttribute('fill', 'none');
+                        
                         showToast('Product removed from wishlist!');
                     } else {
-                        showToast(data.message, true);
+                        showToast(data.message || 'Failed to remove from wishlist', true);
                     }
                 })
                 .catch(error => {
@@ -579,7 +697,7 @@
                     showToast('An error occurred.', true);
                 });
             } else {
-                // Add to wishlist - use your existing code
+                // Add to wishlist
                 fetch('/wishlist', {
                     method: 'POST',
                     headers: {
@@ -587,19 +705,26 @@
                     },
                     body: JSON.stringify({
                         productId
-                    })
+                    }),
+                    credentials: 'include'
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update UI - change to filled heart
-                        wishlistIcon.setAttribute('fill', 'red');
-                        wishlistIcon.setAttribute('stroke', 'red');
-                        wishlistIcon.classList.remove('text-gray-500');
+                        // Update UI
+                        wishlistIcon.classList.remove('text-gray-500', 'dark:text-gray-300');
                         wishlistIcon.classList.add('text-red-500');
+                        button.classList.add('wishlist-animation');
+                        if (path) path.setAttribute('fill', 'currentColor');
+                        
+                        // Remove animation class after animation completes
+                        setTimeout(() => {
+                            button.classList.remove('wishlist-animation');
+                        }, 1000);
+                        
                         showToast('Product added to wishlist!');
                     } else {
-                        showToast(data.message, true);
+                        showToast(data.message || 'Failed to add to wishlist', true);
                     }
                 })
                 .catch(error => {
@@ -612,8 +737,8 @@
         // Initialize wishlist status on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is logged in (has a token cookie)
-            const token = document.cookie.includes('token=');
-            if (!token) return;
+            const hasCookie = document.cookie.split(';').some(item => item.trim().startsWith('token='));
+            if (!hasCookie) return;
             
             // Get all wishlist icons
             const wishlistIcons = document.querySelectorAll('.wishlist-icon');
@@ -623,19 +748,26 @@
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                credentials: 'include'
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
-                if (data.success && data.wishlistItems) {
+                if (data.success && Array.isArray(data.wishlistItems)) {
                     // Update the icon colors for items in wishlist
                     wishlistIcons.forEach(icon => {
                         const productId = icon.dataset.productId;
+                        const path = icon.querySelector('path');
+                        
                         if (data.wishlistItems.includes(productId)) {
-                            icon.setAttribute('fill', 'red');
-                            icon.setAttribute('stroke', 'red');
-                            icon.classList.remove('text-gray-500');
+                            icon.classList.remove('text-gray-500', 'dark:text-gray-300');
                             icon.classList.add('text-red-500');
+                            if (path) path.setAttribute('fill', 'currentColor');
                         }
                     });
                 }
@@ -660,8 +792,15 @@
             .then(data => {
                 if (data.success) {
                     showToast('Product added to cart!');
+                    
+                    // Update cart count in header if it exists
+                    const cartCountElement = document.querySelector('.fa-shopping-cart + span');
+                    if (cartCountElement) {
+                        const currentCount = parseInt(cartCountElement.textContent);
+                        cartCountElement.textContent = currentCount + 1;
+                    }
                 } else {
-                    showToast(data.message, true);
+                    showToast(data.message || 'Failed to add product to cart', true);
                 }
             })
             .catch(error => {
@@ -684,27 +823,30 @@
             }
         }
 
+        // Image zoom functionality
         const mainImage = document.getElementById('mainImage');
         const zoomWrapper = document.getElementById('zoomWrapper');
         const zoomContainer = document.getElementById('zoomContainer');
 
-        mainImage.addEventListener('mouseenter', function(){
-            zoomContainer.style.backgroundImage = "url(" + mainImage.src + ")";
-            zoomWrapper.classList.remove('hidden');
-        });
+        if (mainImage && zoomWrapper && zoomContainer) {
+            mainImage.addEventListener('mouseenter', function(){
+                zoomContainer.style.backgroundImage = "url(" + mainImage.src + ")";
+                zoomWrapper.classList.remove('hidden');
+            });
 
-        mainImage.addEventListener('mousemove', function(e){
-            const rect = mainImage.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const xPercent = (x / rect.width) * 100;
-            const yPercent = (y / rect.height) * 100;
-            zoomContainer.style.backgroundPosition = xPercent + "% " + yPercent + "%";
-        });
+            mainImage.addEventListener('mousemove', function(e){
+                const rect = mainImage.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xPercent = (x / rect.width) * 100;
+                const yPercent = (y / rect.height) * 100;
+                zoomContainer.style.backgroundPosition = xPercent + "% " + yPercent + "%";
+            });
 
-        mainImage.addEventListener('mouseleave', function(){
-            zoomWrapper.classList.add('hidden');
-        });
+            mainImage.addEventListener('mouseleave', function(){
+                zoomWrapper.classList.add('hidden');
+            });
+        }
         
         // Tab functionality
         function openTab(evt, tabName) {

@@ -293,8 +293,7 @@
                       type="number"
                       name="offer"
                       placeholder="Enter discount percentage"
-                      min="0"
-                      max="100"
+                     
                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                       id="category_offer"
                     />
@@ -531,8 +530,8 @@
         document.getElementById('description-error').classList.remove('hidden');
         isValid = false;
       }
-      if (offer && (isNaN(offer) || offer < 0 || offer > 100)) {
-        document.getElementById('offer-error').textContent = 'Offer must be between 0 and 100';
+      if (offer && (isNaN(offer) || offer <0 || offer > 85)) {
+        document.getElementById('offer-error').textContent = 'Offer must be between 0 and 85';
         document.getElementById('offer-error').classList.remove('hidden');
         isValid = false;
       }

@@ -530,8 +530,8 @@
     }
 
     .cycle-icon {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -539,7 +539,7 @@
         background: white;
         border: 2px solid #e2e8f0;
         color: #94a3b8;
-        font-size: 16px;
+        font-size: 14px;
         position: relative;
         transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
@@ -551,12 +551,25 @@
     }
 
     .cycle-label {
-        margin-top: 8px;
-        font-size: 12px;
+        margin-top: 6px;
+        font-size: 10px;
         font-weight: 500;
         color: #64748b;
         text-align: center;
         transition: all 0.3s ease;
+    }
+    
+    @media (min-width: 640px) {
+        .cycle-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+        }
+        
+        .cycle-label {
+            margin-top: 8px;
+            font-size: 12px;
+        }
     }
     
     .dark .cycle-label {
@@ -565,12 +578,18 @@
 
     .cycle-line {
         position: absolute;
-        top: 20px;
+        top: 16px;
         left: 0;
         right: 0;
         height: 2px;
         background: #e2e8f0;
         z-index: 1;
+    }
+    
+    @media (min-width: 640px) {
+        .cycle-line {
+            top: 20px;
+        }
     }
     
     .dark .cycle-line {
@@ -579,12 +598,18 @@
 
     .cycle-progress {
         position: absolute;
-        top: 20px;
+        top: 16px;
         left: 0;
         height: 2px;
         background: linear-gradient(90deg, #0ea5e9, #3b82f6);
         z-index: 1;
         transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    @media (min-width: 640px) {
+        .cycle-progress {
+            top: 20px;
+        }
     }
 
     /* Status states */
@@ -745,104 +770,135 @@
     .dark-mode-toggle:hover i {
         transform: rotate(30deg);
     }
+    
+    /* Responsive adjustments for mobile */
+    @media (max-width: 640px) {
+        .order-status-cycle {
+            padding: 0 0.5rem;
+        }
+        
+        .pagination .page-link {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .order-card {
+            padding: 0.75rem;
+        }
+        
+        /* Improved mobile tracking visualization */
+        .cycle-step .cycle-label {
+            font-size: 8px;
+            max-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Better spacing for mobile order cards */
+        .order-card .flex {
+            flex-wrap: wrap;
+        }
+        
+        /* Adjust status badges for mobile */
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.65rem;
+        }
+    }
 </style>
 </head>
 <body class="bg-slate-50 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-100">
    <%-include('partials/header')  %>
-    <div class="container mx-auto p-4 max-w-7xl">
+    <div class="container mx-auto px-4 sm:px-6 max-w-7xl">
         <!-- Page header with animated gradient background -->
-        <div class="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl relative overflow-hidden">
+        <div class="mb-4 sm:mb-6 md:mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-4 sm:p-6 rounded-xl sm:rounded-2xl relative overflow-hidden">
             <div class="absolute inset-0 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm"></div>
             <div class="relative z-10">
-                <h1 class="text-3xl font-display font-bold text-slate-800 dark:text-white flex items-center">
-                    <i class="fas fa-shopping-bag text-blue-500 mr-3"></i>
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-display font-bold text-slate-800 dark:text-white flex items-center">
+                    <i class="fas fa-shopping-bag text-blue-500 mr-2 sm:mr-3"></i>
                     Order Details
                 </h1>
-                <p class="text-slate-600 dark:text-slate-300 mt-2">View and track your order information</p>
+                <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1 sm:mt-2">View and track your order information</p>
             </div>
             <!-- Decorative elements -->
-            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-200 dark:bg-blue-800 rounded-full opacity-20 -mr-10 -mt-10"></div>
-            <div class="absolute bottom-0 left-0 w-24 h-24 bg-indigo-200 dark:bg-indigo-800 rounded-full opacity-20 -ml-10 -mb-10"></div>
+            <div class="absolute top-0 right-0 w-16 sm:w-24 md:w-32 h-16 sm:h-24 md:h-32 bg-blue-200 dark:bg-blue-800 rounded-full opacity-20 -mr-6 sm:-mr-10 -mt-6 sm:-mt-10"></div>
+            <div class="absolute bottom-0 left-0 w-12 sm:w-16 md:w-24 h-12 sm:h-16 md:h-24 bg-indigo-200 dark:bg-indigo-800 rounded-full opacity-20 -ml-6 sm:-ml-10 -mb-6 sm:-mb-10"></div>
         </div>
         
         <!-- General overview -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
              <!-- Left sidebar with enhanced styling -->
-            <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <!-- User profile with enhanced styling -->
-                <div class="flex items-center justify-between mb-8">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                <div class="flex items-center justify-between mb-4 sm:mb-6 md:mb-8">
+                    <div class="flex items-center space-x-2 sm:space-x-3">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl md:text-2xl shadow-md">
                             <%= user.fullName ? user.fullName.charAt(0) : 'U' %>
                         </div>
                         <div>
-                            <p class="font-semibold text-lg text-gray-800 dark:text-gray-200"><%= user.fullName || 'Guest User' %></p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400"><%= user.email || 'No email' %></p>
+                            <p class="font-semibold text-sm sm:text-base md:text-lg text-gray-800 dark:text-gray-200"><%= user.fullName || 'Guest User' %></p>
+                            <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400"><%= user.email || 'No email' %></p>
                         </div>
                     </div>
-                  
                 </div>
                 
                 <!-- Navigation tabs with enhanced hover effects -->
-                <div class="flex justify-between mb-8">
+                <div class="flex justify-between mb-4 sm:mb-6 md:mb-8">
                     <div class="group cursor-pointer">
-                        <div class="w-14 h-14 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                            <i class="fas fa-user text-blue-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white dark:bg-gray-700 rounded-lg sm:rounded-xl flex items-center justify-center mb-1 sm:mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-user text-blue-500 text-base sm:text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                         </div>
                         <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-blue-500 transition-colors duration-300">Profile</span>
                     </div>
                     <div class="group cursor-pointer">
-                        <div class="w-14 h-14 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                            <i class="fas fa-gift text-purple-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white dark:bg-gray-700 rounded-lg sm:rounded-xl flex items-center justify-center mb-1 sm:mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                            <i class="fas fa-gift text-purple-500 text-base sm:text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
                         </div>
                         <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-purple-500 transition-colors duration-300">Gifts</span>
                     </div>
                     <div class="group cursor-pointer">
-                        <a href="/wallet/<%  %>">  
-                              <div class="w-14 h-14 bg-white dark:bg-gray-700 rounded-xl flex items-center justify-center mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
-                            <i class="fas fa-wallet text-green-500 text-xl group-hover:scale-110 transition-transform duration-300"></i>
-                        </div>
-                       <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-green-500 transition-colors duration-300">Wallet</span>
-                       </a>
+                        <a href="/wallet/<%  %>" class="flex flex-col items-center">  
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:w-14 bg-white dark:bg-gray-700 rounded-lg sm:rounded-xl flex items-center justify-center mb-1 sm:mb-2 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:-translate-y-1">
+                                <i class="fas fa-wallet text-green-500 text-base sm:text-lg md:text-xl group-hover:scale-110 transition-transform duration-300"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-green-500 transition-colors duration-300">Wallet</span>
+                        </a>
                     </div>
-                </a>
                 </div>
                 
-                
-                    <!-- Menu items -->
-                    <div class="space-y-2">
-                        <a href="/wishlist" class="flex items-center p-3 rounded-lg hover:bg-white dark:hover:bg-gray-700 transition-colors duration-300 group">
-                            <i class="fas fa-heart mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
-                            <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors duration-300">Favorite Items </span>
-                        </a>
+                <!-- Menu items -->
+                <div class="space-y-2">
+                    <a href="/wishlist" class="flex items-center p-2 sm:p-3 rounded-lg hover:bg-white dark:hover:bg-gray-700 transition-colors duration-300 group">
+                        <i class="fas fa-heart mr-2 sm:mr-3 text-gray-400 group-hover:text-blue-500 transition-colors duration-300"></i>
+                        <span class="font-medium text-sm sm:text-base text-gray-700 dark:text-gray-300 group-hover:text-blue-500 transition-colors duration-300">Favorite Items</span>
+                    </a>
                     
-                      
-                        
-                        <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-300 group">
-                            <i class="fas fa-sign-out-alt mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
-                            <span class="font-medium text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
-                        </a>
-                    </div>
+                    <a href="/logout" class="flex items-center p-2 sm:p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-300 group">
+                        <i class="fas fa-sign-out-alt mr-2 sm:mr-3 text-red-400 group-hover:text-red-500 transition-colors duration-300"></i>
+                        <span class="font-medium text-sm sm:text-base text-red-400 group-hover:text-red-500 transition-colors duration-300">Log out</span>
+                    </a>
+                </div>
             </div>
             
             <!-- Enhanced Order List Section -->
-            <div class="col-span-3">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 mb-6 hover:shadow-md transition-all duration-300">
-                    <div class="flex items-center justify-between mb-6">
+            <div class="col-span-1 md:col-span-3">
+                <div class="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 hover:shadow-md transition-all duration-300">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
-                                <i class="fas fa-shopping-bag text-blue-500 mr-3"></i>My Orders
+                            <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                                <i class="fas fa-shopping-bag text-blue-500 mr-2 sm:mr-3"></i>My Orders
                             </h1>
-                            <p class="text-gray-600 dark:text-gray-400 mt-1">Track and manage your purchase history</p>
+                            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">Track and manage your purchase history</p>
                         </div>
                         
                         <% if (orders.length > 0) { %>
-                        <div class="flex space-x-2">
+                        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-3 sm:mt-0">
                             <div class="relative">
-                                <input type="text" placeholder="Search orders..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm w-full">
-                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" placeholder="Search orders..." class="pl-8 sm:pl-10 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-xs sm:text-sm w-full">
+                                <i class="fas fa-search absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs sm:text-sm"></i>
                             </div>
-                            <select class="rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                            <select class="rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
                                 <option value="all">All Orders</option>
                                 <option value="pending">Pending</option>
                                 <option value="processing">Processing</option>
@@ -854,22 +910,22 @@
                     </div>
                     
                     <% if (orders.length > 0) { %>
-                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
-                        <div class="flex space-x-2">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-800">
-                                All <span class="ml-1 bg-blue-500 text-white rounded-full w-5 h-5 inline-flex items-center justify-center"><%= orders.length %></span>
+                    <div class="flex flex-wrap items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-gray-100 dark:border-gray-700">
+                        <div class="flex flex-wrap gap-1.5 sm:gap-2 mb-2 sm:mb-0">
+                            <span class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-800">
+                                All <span class="ml-1 bg-blue-500 text-white rounded-full w-4 sm:w-5 h-4 sm:h-5 inline-flex items-center justify-center text-xs"><%= orders.length %></span>
                             </span>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-100 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-100 dark:hover:border-blue-800 cursor-pointer transition-colors">
+                            <span class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-100 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-100 dark:hover:border-blue-800 cursor-pointer transition-colors">
                                 Active
                             </span>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-100 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-100 dark:hover:border-blue-800 cursor-pointer transition-colors">
+                            <span class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border border-gray-100 dark:border-gray-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-blue-700 dark:hover:text-blue-300 hover:border-blue-100 dark:hover:border-blue-800 cursor-pointer transition-colors">
                                 Completed
                             </span>
                         </div>
                         
-                        <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                            <span class="mr-2">Sort by:</span>
-                            <select class="bg-transparent border-none text-gray-700 dark:text-gray-300 font-medium focus:outline-none focus:ring-0">
+                        <div class="flex items-center text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                            <span class="mr-1 sm:mr-2 hidden xs:inline">Sort by:</span>
+                            <select class="bg-transparent border-none text-gray-700 dark:text-gray-300 font-medium focus:outline-none focus:ring-0 text-xs sm:text-sm py-1">
                                 <option value="newest">Newest first</option>
                                 <option value="oldest">Oldest first</option>
                                 <option value="price-high">Price: High to Low</option>
@@ -881,32 +937,32 @@
                     
                     <% if (orders.length === 0) { %>
                         <!-- Enhanced Empty State -->
-                        <div class="relative py-16">
+                        <div class="relative py-8 sm:py-12 md:py-16">
                             <!-- Background decoration elements -->
                             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                                <div class="absolute top-10 left-10 w-20 h-20 rounded-full bg-blue-50 dark:bg-blue-900/20 opacity-70"></div>
-                                <div class="absolute bottom-10 right-10 w-32 h-32 rounded-full bg-blue-50 dark:bg-blue-900/20 opacity-70"></div>
-                                <div class="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-900/20 opacity-70"></div>
-                                <div class="absolute bottom-1/3 left-1/4 w-24 h-24 rounded-full bg-indigo-50 dark:bg-indigo-900/20 opacity-70"></div>
+                                <div class="absolute top-10 left-10 w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20 rounded-full bg-blue-50 dark:bg-blue-900/20 opacity-70"></div>
+                                <div class="absolute bottom-10 right-10 w-16 sm:w-24 md:w-32 h-16 sm:h-24 md:h-32 rounded-full bg-blue-50 dark:bg-blue-900/20 opacity-70"></div>
+                                <div class="absolute top-1/3 right-1/4 w-8 sm:w-12 md:w-16 h-8 sm:h-12 md:h-16 rounded-full bg-indigo-50 dark:bg-indigo-900/20 opacity-70"></div>
+                                <div class="absolute bottom-1/3 left-1/4 w-12 sm:w-16 md:w-24 h-12 sm:h-16 md:h-24 rounded-full bg-indigo-50 dark:bg-indigo-900/20 opacity-70"></div>
                                 
                                 <!-- Decorative dots -->
-                                <div class="absolute top-1/4 left-1/3 w-2 h-2 rounded-full bg-blue-300 dark:bg-blue-600"></div>
-                                <div class="absolute top-2/3 right-1/3 w-2 h-2 rounded-full bg-indigo-300 dark:bg-indigo-600"></div>
-                                <div class="absolute bottom-1/4 left-2/3 w-2 h-2 rounded-full bg-blue-300 dark:bg-blue-600"></div>
+                                <div class="absolute top-1/4 left-1/3 w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-300 dark:bg-blue-600"></div>
+                                <div class="absolute top-2/3 right-1/3 w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-indigo-300 dark:bg-indigo-600"></div>
+                                <div class="absolute bottom-1/4 left-2/3 w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-300 dark:bg-blue-600"></div>
                                 
                                 <!-- Decorative lines -->
-                                <div class="absolute top-1/2 left-10 w-16 h-0.5 bg-gradient-to-r from-blue-200 dark:from-blue-700 to-transparent rounded"></div>
-                                <div class="absolute bottom-1/3 right-10 w-20 h-0.5 bg-gradient-to-l from-indigo-200 dark:from-indigo-700 to-transparent rounded"></div>
+                                <div class="absolute top-1/2 left-10 w-8 sm:w-12 md:w-16 h-0.5 bg-gradient-to-r from-blue-200 dark:from-blue-700 to-transparent rounded"></div>
+                                <div class="absolute bottom-1/3 right-10 w-10 sm:w-16 md:w-20 h-0.5 bg-gradient-to-l from-indigo-200 dark:from-indigo-700 to-transparent rounded"></div>
                             </div>
                             
                             <div class="relative z-10 text-center max-w-lg mx-auto">
                                 <!-- Animated shopping bag icon -->
-                                <div class="relative mx-auto mb-8 w-40 h-40">
+                                <div class="relative mx-auto mb-4 sm:mb-6 md:mb-8 w-24 sm:w-32 md:w-40 h-24 sm:h-32 md:h-40">
                                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-full"></div>
                                     <div class="absolute inset-2 bg-white dark:bg-gray-800 rounded-full shadow-inner"></div>
                                     <div class="absolute inset-0 flex items-center justify-center">
                                         <div class="float-animation">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-20 h-20 text-blue-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="w-12 sm:w-16 md:w-20 h-12 sm:h-16 md:h-20 text-blue-500">
                                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                                                 <line x1="3" y1="6" x2="21" y2="6"></line>
                                                 <path d="M16 10a4 4 0 0 1-8 0"></path>
@@ -916,41 +972,41 @@
                                 </div>
                                 
                                 <!-- Empty state message -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-3">Your Order List is Empty</h2>
-                                <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
+                                <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 dark:text-white mb-2 sm:mb-3">Your Order List is Empty</h2>
+                                <p class="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 md:mb-8 max-w-md mx-auto leading-relaxed">
                                     Looks like you haven't placed any orders yet. Start shopping to fill your order history with amazing products!
                                 </p>
                                 
                                 <!-- Animated dots -->
-                                <div class="flex justify-center mb-8">
+                                <div class="flex justify-center mb-4 sm:mb-6 md:mb-8">
                                     <div class="flex space-x-1">
-                                        <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
-                                        <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
-                                        <div class="w-2 h-2 rounded-full bg-blue-400 dot"></div>
+                                        <div class="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-400 dot"></div>
+                                        <div class="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-400 dot"></div>
+                                        <div class="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-blue-400 dot"></div>
                                     </div>
                                 </div>
                                 
                                 <!-- CTA Button with shine effect -->
-                                <a href="/shoplist" class="shine-button inline-flex items-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1">
-                                    <i class="fas fa-shopping-cart mr-2"></i>
+                                <a href="/shoplist" class="shine-button inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3 rounded-lg sm:rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium shadow-lg hover:shadow-xl transform transition-all duration-300 hover:-translate-y-1 text-xs sm:text-sm md:text-base">
+                                    <i class="fas fa-shopping-cart mr-1.5 sm:mr-2"></i>
                                     Explore Products
-                                    <i class="fas fa-arrow-right ml-2"></i>
+                                    <i class="fas fa-arrow-right ml-1.5 sm:ml-2"></i>
                                 </a>
                                 
                                 <!-- Suggested categories -->
-                                <div class="mt-10">
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Popular categories to explore:</p>
-                                    <div class="flex flex-wrap justify-center gap-2">
-                                        <a href="#" class="px-4 py-2 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full text-sm font-medium transition-colors">
+                                <div class="mt-6 sm:mt-8 md:mt-10">
+                                    <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-3 md:mb-4">Popular categories to explore:</p>
+                                    <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2">
+                                        <a href="#" class="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full text-xs md:text-sm font-medium transition-colors">
                                             <i class="fas fa-mobile-alt mr-1"></i> Electronics
                                         </a>
-                                        <a href="#" class="px-4 py-2 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full text-sm font-medium transition-colors">
+                                        <a href="#" class="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full text-xs md:text-sm font-medium transition-colors">
                                             <i class="fas fa-tshirt mr-1"></i> Fashion
                                         </a>
-                                        <a href="#" class="px-4 py-2 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full text-sm font-medium transition-colors">
+                                        <a href="#" class="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full text-xs md:text-sm font-medium transition-colors">
                                             <i class="fas fa-home mr-1"></i> Home
                                         </a>
-                                        <a href="#" class="px-4 py-2 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full text-sm font-medium transition-colors">
+                                        <a href="#" class="px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 bg-gray-50 dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full text-xs md:text-sm font-medium transition-colors">
                                             <i class="fas fa-gift mr-1"></i> Gifts
                                         </a>
                                     </div>
@@ -958,11 +1014,11 @@
                             </div>
                         </div>
                     <% } else { %>
-                        <div class="space-y-6">
+                        <div class="space-y-3 sm:space-y-4 md:space-y-6">
                             <% orders.items.forEach((order, index) => { %>
-                                <div class="order-card bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-                                    <div class="flex justify-between items-center p-5 border-b border-gray-50 dark:border-gray-700">
-                                        <div class="flex items-center space-x-3">
+                                <div class="order-card bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-3 sm:p-4 md:p-5 border-b border-gray-50 dark:border-gray-700">
+                                        <div class="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-0">
                                             <% 
                                             let statusIcon, statusColor, statusBg, statusText;
                                             switch(order.orderStatus) {
@@ -1011,19 +1067,19 @@
                                             }
                                             %>
                                             <div class="flex-shrink-0">
-                                                <div class="w-10 h-10 rounded-full <%= statusBg %> flex items-center justify-center <%= statusColor %>">
-                                                    <i class="fas <%= statusIcon %>"></i>
+                                                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full <%= statusBg %> flex items-center justify-center <%= statusColor %>">
+                                                    <i class="fas <%= statusIcon %> text-xs sm:text-sm md:text-base"></i>
                                                 </div>
                                             </div>
                                             <div>
-                                                <div class="flex items-center">
-                                                    <h3 class="font-semibold text-gray-800 dark:text-gray-200">Order #<%= order.orderId %></h3>
-                                                    <span class="ml-2 px-2.5 py-1 rounded-full text-xs font-medium <%= statusBg %> <%= statusColor %> flex items-center">
-                                                        <span class="w-1.5 h-1.5 rounded-full <%= statusColor %> status-indicator mr-1.5"></span>
+                                                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                                                    <h3 class="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-200">Order #<%= order.orderId %></h3>
+                                                    <span class="px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-xs font-medium <%= statusBg %> <%= statusColor %> flex items-center status-badge">
+                                                        <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full <%= statusColor %> status-indicator mr-1 sm:mr-1.5"></span>
                                                         <%= statusText %>
                                                     </span>
                                                 </div>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                                                     <i class="far fa-calendar-alt mr-1"></i> 
                                                     <%= new Date(order.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %> 
                                                     <span class="mx-1">•</span>
@@ -1033,14 +1089,14 @@
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <div class="text-lg font-bold text-gray-800 dark:text-gray-200">₹<%= order.totalAmount.toFixed(2) %></div>
+                                            <div class="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-200">₹<%= order.totalAmount.toFixed(2) %></div>
                                             <div class="text-xs text-gray-500 dark:text-gray-400"><%= order.items.length %> <%= order.items.length === 1 ? 'item' : 'items' %></div>
                                         </div>
                                     </div>
                                     
-                                    <div class="p-5">
-                                        <!-- NEW: Enhanced Order Status Cycle -->
-                                        <div class="order-status-cycle mb-6">
+                                    <div class="p-3 sm:p-4 md:p-5">
+                                        <!-- NEW: Enhanced Order Status Cycle - Responsive version -->
+                                        <div class="order-status-cycle mb-4 sm:mb-6">
                                             <div class="cycle-line"></div>
                                             <div class="cycle-progress" style="width: 
                                                 <% if (order.orderStatus === 'pending') { %>25%<% } 
@@ -1054,28 +1110,28 @@
                                             
                                             <div class="cycle-step <%= order.orderStatus !== 'pending' ? 'completed' : 'active' %>">
                                                 <div class="cycle-icon">
-                                                    <i class="fas fa-clipboard-check"></i>
+                                                    <i class="fas fa-clipboard-check text-xs sm:text-sm md:text-base"></i>
                                                 </div>
                                                 <div class="cycle-label">Ordered</div>
                                             </div>
                                             
                                             <div class="cycle-step <%= order.orderStatus === 'processing' ? 'active' : (order.orderStatus === 'shipped' || order.orderStatus === 'delivered' ? 'completed' : '') %>">
                                                 <div class="cycle-icon">
-                                                    <i class="fas fa-cog"></i>
+                                                    <i class="fas fa-cog text-xs sm:text-sm md:text-base"></i>
                                                 </div>
                                                 <div class="cycle-label">Processing</div>
                                             </div>
                                             
                                             <div class="cycle-step <%= order.orderStatus === 'shipped' ? 'active' : (order.orderStatus === 'delivered' ? 'completed' : '') %>">
                                                 <div class="cycle-icon">
-                                                    <i class="fas fa-truck"></i>
+                                                    <i class="fas fa-truck text-xs sm:text-sm md:text-base"></i>
                                                 </div>
                                                 <div class="cycle-label">Shipped</div>
                                             </div>
                                             
                                             <div class="cycle-step <%= order.orderStatus === 'delivered' ? 'active' : '' %>">
                                                 <div class="cycle-icon">
-                                                    <i class="fas fa-home"></i>
+                                                    <i class="fas fa-home text-xs sm:text-sm md:text-base"></i>
                                                 </div>
                                                 <div class="cycle-label">Delivered</div>
                                             </div>
@@ -1083,7 +1139,7 @@
                                             <% if (order.orderStatus === 'cancelled') { %>
                                             <div class="cycle-step cancelled">
                                                 <div class="cycle-icon">
-                                                    <i class="fas fa-times"></i>
+                                                    <i class="fas fa-times text-xs sm:text-sm md:text-base"></i>
                                                 </div>
                                                 <div class="cycle-label">Cancelled</div>
                                             </div>
@@ -1092,20 +1148,17 @@
                                             <% if (order.orderStatus === 'returned' || order.orderStatus === 'return request') { %>
                                             <div class="cycle-step returned">
                                                 <div class="cycle-icon">
-                                                    <i class="fas fa-undo"></i>
+                                                    <i class="fas fa-undo text-xs sm:text-sm md:text-base"></i>
                                                 </div>
                                                 <div class="cycle-label"><%= order.orderStatus === 'return request' ? 'Return Requested' : 'Returned' %></div>
                                             </div>
                                             <% } %>
                                         </div>
                                         
-                                      
-                                      
-                                        
-                                        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-50 dark:border-gray-700">
-                                            <div class="flex items-center space-x-2">
+                                        <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-3 pt-2 sm:pt-3 border-t border-gray-50 dark:border-gray-700">
+                                            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                                                 <% if (order.orderStatus === 'shipped') { %>
-                                                    <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors flex items-center">
+                                                    <button class="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors flex items-center">
                                                         <i class="fas fa-map-marker-alt mr-1"></i> Track Order
                                                     </button>
                                                 <% } %>
@@ -1113,62 +1166,60 @@
                                                 <% order.items.forEach(item => { %>
                                                     <% if (order.orderStatus === 'delivered') { %>
                                                         <a href="/review/<%= item.product._id %>/<%= order.orderId %>">
-                                                            <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors flex items-center">
+                                                            <button class="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors flex items-center">
                                                                 <i class="fas fa-star mr-1"></i> Leave Review
                                                             </button>
                                                         </a>
                                                     <% } %>
                                                 <% }); %>
                                                 
-                                                
                                                 <% if (['pending', 'processing'].includes(order.orderStatus)) { %>
-                                                    <button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors flex items-center">
+                                                    <button class="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors flex items-center">
                                                         <i class="fas fa-spinner fa-spin mr-1"></i> In Progress
                                                     </button>
                                                 <% } %>
                                             </div>
                                             
-                                            <a href="/orderdetails/<%= order.orderId %>" class="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors flex items-center"> 
-                                                View Details <i class="fas fa-chevron-right ml-1.5 text-xs"></i>
+                                            <a href="/orderdetails/<%= order.orderId %>" class="px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors flex items-center"> 
+                                                View Details <i class="fas fa-chevron-right ml-1 sm:ml-1.5 text-xs"></i>
                                             </a>
                                         </div>
                                     </div>
                                 </div>
                             <% }); %>
                             
-                            <div class="pagination-area mt-15 mb-50">
-    <nav aria-label="Page navigation">
-        <ul class="pagination flex flex-wrap items-center justify-center gap-2">
-            <!-- Previous Button -->
-            <% if (currentPage > 1) { %>
-                <li class="page-item">
-                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-500 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 shadow-sm" href="?page=<%= prevPage %>&limit=3">
-                        &laquo;
-                    </a>
-                </li>
-            <% } %>
+                            <div class="pagination-area mt-8 sm:mt-10 md:mt-15 mb-6 sm:mb-8 md:mb-10">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+                                        <!-- Previous Button -->
+                                        <% if (currentPage > 1) { %>
+                                            <li class="page-item">
+                                                <a class="page-link flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-500 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 shadow-sm text-xs sm:text-sm" href="?page=<%= prevPage %>&limit=3">
+                                                    &laquo;
+                                                </a>
+                                            </li>
+                                        <% } %>
 
-            <!-- Page Numbers -->
-             
-            <% for (let i = 1; i <= totalPages; i++) { %>
-                <li class="page-item">
-                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-500 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 shadow-sm <%= i === currentPage ? 'bg-blue-500 dark:bg-blue-600 border-blue-500 dark:border-blue-700 text-white hover:bg-blue-600 dark:hover:bg-blue-700 hover:border-blue-600 dark:hover:border-blue-800' : '' %>" href="?page=<%= i %>&limit=3">
-                        <%= i %>
-                    </a>
-                </li>
-            <% } %>
+                                        <!-- Page Numbers -->
+                                        <% for (let i = 1; i <= totalPages; i++) { %>
+                                            <li class="page-item">
+                                                <a class="page-link flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-500 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 shadow-sm text-xs sm:text-sm <%= i === currentPage ? 'bg-blue-500 dark:bg-blue-600 border-blue-500 dark:border-blue-700 text-white hover:bg-blue-600 dark:hover:bg-blue-700 hover:border-blue-600 dark:hover:border-blue-800' : '' %>" href="?page=<%= i %>&limit=3">
+                                                    <%= i %>
+                                                </a>
+                                            </li>
+                                        <% } %>
 
-            <!-- Next Button -->
-            <% if (currentPage < totalPages) { %>
-                <li class="page-item">
-                    <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-500 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 shadow-sm" href="?page=<%= nextPage %>&limit=3">
-                        &raquo;
-                    </a>
-                </li>
-            <% } %>
-        </ul>
-    </nav>
-</div>
+                                        <!-- Next Button -->
+                                        <% if (currentPage < totalPages) { %>
+                                            <li class="page-item">
+                                                <a class="page-link flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-500 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 shadow-sm text-xs sm:text-sm" href="?page=<%= nextPage %>&limit=3">
+                                                    &raquo;
+                                                </a>
+                                            </li>
+                                        <% } %>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
                     <% } %>
                 </div>
@@ -1358,7 +1409,6 @@
 <script>
     async function orders(orderId) {
         if(!orderId){
-        console.log('no orderID provided')
         return
     }
     try{ const response=  await fetch(`/orders/${orderId}`,{
@@ -1368,7 +1418,6 @@
        })
        const data =await response.json()
 
-       console.log('response',data)
        if(data.success){
         window.location.href = `/orders/${orderId}`
        }else{
@@ -1450,4 +1499,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-

@@ -16,14 +16,13 @@ const generateTransactionId=require('../../services/transactionids')
 const orderController={
     placeOrder:async (req,res,next) => {
 try {
-    console.log('here1',req.body);
+   
     
     const token =req.cookies.token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const userId = decoded.id;
-      console.log('here2',userId)
+     
 const user = await User.findById(userId)
-console.log('rewq',req.body)
 if(!user){
     return res.status(400).json({success:false,message:'Unauthorized'})
 
@@ -32,7 +31,6 @@ if(!user){
 
 const {productId,totalAmount,paymentMethod,paymentStatus,address,couponCode}=req.body
 
-console.log('methrt',paymentMethod)
 if(!totalAmount||!address||!paymentStatus){
     return res.status(400).json({success:false,message:'Your cart is empty. Please add some products.' })
 
@@ -42,21 +40,18 @@ if(!addressDoc){
     return res.status(404).json({success:false,message:'Address not found'})
 
 }
-console.log('here3',addressDoc)
+
 const cart = await Cart.findOne({user:userId})
-console.log('here' ,cart)
 if(!cart||!cart.items||cart.items.length===0){
     return res.status(404).json({success:false,message:'Cart is empty.Please add items to your cart before placing an order.'})
     
     
 }
-console.log('cart',cart)
 if(totalAmount>18000){
-    return res.status(302).json({success:false,message:'please use online payment orders above 12000'})
+    return res.status(302).json({success:false,message:'please use online payment orders above 18000'})
 }
 
 const coupon = await Coupon.findOne({couponCode:couponCode})
-console.log('coupon',coupon)
 
 if(coupon){
     coupon.usedBy.push(userId)
@@ -65,7 +60,6 @@ if(coupon){
 
 let outOfStockItems = []
 let items =[]
-console.log('cartitems',cart?.items)
 for(const item of cart.items)
 {
     const product = await Product.findById(item.product).populate('category')
@@ -101,7 +95,7 @@ if(outOfStockItems.length>0){
     })
 }
 const orderId= uuidv4()
-console.log('orderId',orderId)
+
 
 const currentDate=new Date()
 
@@ -118,6 +112,7 @@ const newOrder= new Order({
 })
 
 await newOrder.save()
+
 
 for(let item of newOrder.items){
     await Product.updateOne({_id:item.product._id},{$inc:{stock:-item.quantity}})
@@ -176,8 +171,8 @@ getorder:async (req,res,next) => {
     if(!user){
         return res.status(404).json({success:false,message:'user not found'})
     }
-    let cartCount =await Cart.countDocuments({user:userId})
-console.log('fgfdg',req.query)
+    let cartfind = await Cart.findOne({user: userId})
+             const cartCount = cartfind.items.length
 const {search}=req.query
 
 let filter = {};
@@ -191,10 +186,9 @@ let limit =parseInt(req.query.limit)|| 3
 let currentPage = page
 let itemsPerPage = limit
 let skip = (currentPage-1)*itemsPerPage
-console.log('eserer',search)
+
     const orderlist = await Order.find({user:userId,...filter}).populate('items.product').populate('address').sort({timestamp:-1}).limit(itemsPerPage).skip(skip)
-console.log('asdd',orderlist.items)
-    // console.log('orders',orders)
+
 
 if(!orderlist||orderlist.length===0){
     return res.status(404).render('order',{orders:[],user:user,cartCount:cartCount})
@@ -202,7 +196,6 @@ if(!orderlist||orderlist.length===0){
 const orders ={
     items:orderlist
 }
-console.log('idd',orders.items);
 
 
 
@@ -235,14 +228,14 @@ try {
     }
 
     const user = await User.findById(userId)
-    let cartCount =await Cart.countDocuments({user:userId})
+     let cartfind = await Cart.findOne({user: userId})
+              const cartCount = cartfind.items.length
    
     const orderId = req.params.orderId
 
 
     const order = await Order.findOne({orderId}) .populate('items.product').populate('address')
    
-    console.log('dfjlasjd',order)
 if(!order){
     return res.status(404).json({success:false,message:'Order not found'})
 }
@@ -261,19 +254,18 @@ if(!order){
             const token =req.cookies.token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
               const userId = decoded.id;
-              console.log('here2',userId)
+             
         const user = await User.findById(userId)
-        console.log('rewq',req.body)
+       
         if(!user){
             return res.status(400).json({success:false,message:'Unauthorized'})
         
         }
-console.log('para',req.params)
+
 
           const orderId = req.params.orderId
           const {cancelReason} = req.body
-          console.log('peresdfsd',orderId)
-          console.log('body',req.body)
+        
           if(!orderId){
       return res.status(400).json({success:false,message:'invalid input'})
           }
@@ -287,13 +279,12 @@ console.log('para',req.params)
 
           if(order.paymentMethod==='Razorpay'){
 
-
+order.paymentStatus='refunded'
             let admin = await Admin.findOne()
-            console.log('adim',admin);
             
 let adminWallet = await AdminWallet.findOne()
 
-console.log('adminWallet',adminWallet)
+
 if(!adminWallet){
     adminWallet= new AdminWallet({
         admin:admin._id,
@@ -306,7 +297,6 @@ let transactionId=generateTransactionId.generateTransactionId()
 adminWallet.transaction.push({transactionType:'debit',amount:order.totalAmount,reason:`debit of Order ${orderId}`, transactionId:transactionId})
 adminWallet.balance-=order.totalAmount
 await adminWallet.save()
-console.log('adminWallet',adminWallet)
       
             let wallet = await Wallet.findOne({user:userId})
             if(!wallet){
@@ -362,16 +352,15 @@ console.log('adminWallet',adminWallet)
         const token =req.cookies.token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
           const userId = decoded.id;
-          console.log('here2',userId)
+          
     const user = await User.findById(userId)
-    console.log('rewq',req.body)
+  
     if(!user){
         return res.status(400).json({success:false,message:'Unauthorized'})
     
     }
 
 
-        console.log('rew',req.params)
         const orderId = req.params.orderId
         const {returnReason}=req.body
         if(!orderId){

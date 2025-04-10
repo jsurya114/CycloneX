@@ -11,9 +11,9 @@ const settingController={
             const decoded=jwt.verify(token,process.env.JWT_SECRET)
 
             const userId= decoded.id;
-           //  console.log("user",userId);
             const user=await User.findById(userId);
-            let cartCount =await Cart.countDocuments({user:userId})
+           let cartfind = await Cart.findOne({user: userId})
+                    const cartCount = cartfind.items.length
 
             return res.status(200).render('settings',{user,cartCount})
         } catch (error) {
@@ -25,7 +25,6 @@ const settingController={
   // sending otp to the new email
 sendOtps:async (req,res,next) => {
    try {
-    console.log('ejejej',req.body)
     const {email:newEmail}=req.body
 
     
@@ -36,19 +35,16 @@ sendOtps:async (req,res,next) => {
     const decoded=jwt.verify(token,process.env.JWT_SECRET)
 
     const userId= decoded.id;
-   //  console.log("user",userId);
   
 
     const user = await User.findById(userId)
     if(!user){
         return res.status(404).json({success:false,message:'user not found'})
     }
-    console.log('useree',user)
     const otp = generateOTP()
     const otpExpiry = Date.now() + 1 * 60 * 1000
     await User.findByIdAndUpdate(user._id,{otp,otpExpiry})
     
-    console.log('saaass',otp)
     await sendEmail(newEmail, 'Your OTP for Password Reset', 
         `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in 1 minute.</p>`
     )
@@ -108,7 +104,6 @@ if(!token){
     return res.status(400).json({success:false,message:'Unauthorized:you cant access '})
 }
 
-console.log('kjkj',req.body)
 
         const {otp}=req.body
 const user=await User.findById(userId)
@@ -119,7 +114,6 @@ if (!otp) {
 if(!user||user.otp!==otp){
     return res.status(404).json({success:false,message:'invalid otp please check your otp'})
 }
-console.log('userr otp and user',otp,user)
 
 await User.findByIdAndUpdate(userId,{password:user.tempPassword,otp:null ,otpExpiry:null,tempPassword:null})
 return res.status(200).json({success:true,message:'otp verification successfull'})
@@ -154,7 +148,6 @@ if(!token){
        const decoded=jwt.verify(token,process.env.JWT_SECRET)
    
        const userId= decoded.id;
-      //  console.log("user",userId);
      
    
        const user = await User.findById(userId)
@@ -167,7 +160,6 @@ if(!token){
     const otpExpiry = Date.now() + 1 * 60 * 1000
     await User.findByIdAndUpdate(user._id,{otp,otpExpiry,tempPassword:newPassword})
     
-    console.log('saaass',otp)
     await sendEmail(user.email, 'Your OTP for Password Reset', 
         `<p>Your OTP is: <strong>${otp}</strong></p><p>It will expire in 1 minute.</p>`
     )

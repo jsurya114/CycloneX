@@ -7,7 +7,6 @@ const verifyUser = async (req, res, next) => {
     try {
       // Check for JWT token
       const token = req.cookies.token;
-      console.log('token',token);
       
      if(!token){
     

@@ -11,14 +11,14 @@ getWallet:async (req,res,next) => {
     
            const decoded = jwt.verify(token, process.env.JWT_SECRET);
              const userId = decoded.id;
-             console.log('here2',userId)
        const user = await User.findById(userId)
       
        if(!user){
            return res.status(400).json({success:false,message:'Unauthorized'})
        
        }
-       let cartCount =await Cart.countDocuments({user:userId})
+        let cartfind = await Cart.findOne({user: userId})
+                 const cartCount = cartfind.items.length
     
        let wallet = await Wallet.findOne({user:userId}).populate('transaction.orderId').sort({timestamp:-1})
        if(!wallet){
@@ -44,7 +44,6 @@ returnWallet:async (req,res,next) => {
      
            const decoded = jwt.verify(token, process.env.JWT_SECRET);
              const userId = decoded.id;
-             console.log('here23',userId)
        const user = await User.findById(userId)
        
        if(!user){
@@ -55,11 +54,9 @@ returnWallet:async (req,res,next) => {
        const {orderId}=req.params
        const {returnReason,returnDetails,returnItems}=req.body
 
-console.log('kjlk',returnItems)
 
 
        const order = await Order.findById(orderId).populate('items.product')
-       console.log('jsljfsdlkjf',order)
 if(!order){
     return res.status(404).json({success:false,message:'order not foound'})
 }
@@ -89,7 +86,6 @@ if(!wallet){
    })
 
 
-console.log('sdfs',order)
 
 
 

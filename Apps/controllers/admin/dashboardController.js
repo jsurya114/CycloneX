@@ -17,7 +17,7 @@ const dashboardController={
             // Get basic stats
             const totalOrders = await Order.countDocuments();
             const totalRevenue = await Order.aggregate([
-              { $group: { _id: null, total: { $sum: "$totalAmount" } } }
+              { $group: { _id: null, total: { $sum: "$totalAmount" } } }//taking the sum of the totalAmount
             ]);
             
             const pendingOrders = await Order.countDocuments({ orderStatus: "pending" });
@@ -32,28 +32,29 @@ const dashboardController={
             let timeLabels;
             let aggregation;
             
-            if (timeFilter === 'yearly') {
+            if (timeFilter === 'yearly') {//if the we want to filter based on the yearly
               // Last 5 years data
-              const years = Array.from({length: 5}, (_, i) => currentYear - i);
+              const years = Array.from({length: 5}, (_, i) => currentYear - i);//revenue based on 5 years
               aggregation = await Order.aggregate([
                 {
                   $group: {
-                    _id: { $year: "$timestamp" },
-                    count: { $sum: 1 },
-                    revenue: { $sum: "$totalAmount" }
+                    _id: { $year: "$timestamp" },//grouping by the years
+                    count: { $sum: 1 },//count the number of orders per year
+                    revenue: { $sum: "$totalAmount" }//total amount per the year(totalrevenue)
                   }
                 },
                 { $sort: { _id: 1 } }
               ]);
               
               salesData = years.map(year => {
-                const found = aggregation.find(item => item._id === year);
+                const found = aggregation.find(item => item._id === year);//finding the year has revenue 
                 return found ? found.revenue : 0;
               });
               
-              timeLabels = years.map(year => year.toString());
+              timeLabels = years.map(year => year.toString())
               
-            } else if (timeFilter === 'monthly') {
+            } else if (timeFilter === 'monthly') {//if the we want to filter based on the monthly
+              // Last 5 years data
               // Monthly data for current year
               const months = [
                 'January', 'February', 'March', 'April', 'May', 'June',
@@ -71,9 +72,9 @@ const dashboardController={
                 },
                 {
                   $group: {
-                    _id: { $month: "$timestamp" },
-                    count: { $sum: 1 },
-                    revenue: { $sum: "$totalAmount" }
+                    _id: { $month: "$timestamp" },//grouping by month
+                    count: { $sum: 1 },//count the number of orders per month
+                    revenue: { $sum: "$totalAmount" }//total revenue per month
                   }
                 },
                 { $sort: { _id: 1 } }
@@ -81,7 +82,7 @@ const dashboardController={
               
               salesData = Array(12).fill(0);
               aggregation.forEach(item => {
-                salesData[item._id - 1] = item.revenue;
+                salesData[item._id - 1] = item.revenue;//item._id is the month number and item.revenue is the total revenue for that month
               });
               
               timeLabels = months;
@@ -202,7 +203,7 @@ const dashboardController={
                 }
               },
               { $sort: { totalSold: -1 } },
-              { $limit: 5 },
+              { $limit: 10},
               {
                 $lookup: {
                   from: "products",

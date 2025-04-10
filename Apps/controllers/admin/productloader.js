@@ -23,7 +23,7 @@ if(!product){
 if(!product.category){
     product.category=null
 }
-console.log('product',product)
+
 res.render('editproduct',{product,brands,category})
         } catch (error) {
             console.error(error);
@@ -32,10 +32,8 @@ res.render('editproduct',{product,brands,category})
     },
     editProduct:async (req,res,next) => {
         try {
-            console.log('jdjdj',req.body)
-            console.log('files',req.files)
+       
             const { productId, productName,description, price, brands, category, stock ,offer} = req.body;
-            console.log('productId, productName, description, price, brands, category, stock ,offer',productId, productName, description, price, brands, category, stock ,offer)
             // Validation
             let errors = {};
             
@@ -47,15 +45,32 @@ res.render('editproduct',{product,brands,category})
             
             if (!description) {
                 errors.description = "Description is required.";
-            } else if (description.trim().length < 10) {
+              } else if (description.trim().length < 10) {
                 errors.description = "Description must be at least 10 characters long.";
+              }else if (!/[a-zA-Z]/.test(description)) {
+                errors.description = "Description must include at least one letter.";
             }
+
+              if (isNaN(Number(offer)) || Number(offer) < 0 || Number(offer) > 85) {
+                return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 85." });
+            }
+        
+            if(Number(offer)===0){
+              return res.status(400).json({ success: false, field: 'offer', message: "Offer must be greater than zero." })
+            }
+              
             
             if (!price) {
                 errors.price = "Price is required.";
             } else if (isNaN(price) || Number(price) <= 0) {
                 errors.price = "Price must be a positive number.";
             }
+
+            if(!stock){
+                errors.stock='Stock is required'
+              }else if (isNaN(stock) || Number(stock) < 0) {
+                errors.stock = 'Stock cannot be a negative number';
+              }
             
             if (Object.keys(errors).length > 0) {
                 return res.status(400).json({ success: false, errors });
@@ -76,14 +91,14 @@ res.render('editproduct',{product,brands,category})
                 offer
                 
             };
-            console.log('req.file',req.files)
+           
             
             // Handle main image if provided
             if (req.files && req.files.mainImage && req.files.mainImage.length > 0) {
                 updateData.mainImage = req.files.mainImage[0].path.replace(/\\/g, '/').replace('public/', '')
 
             }
-            console.log('updateData.mainImage',updateData.mainImage)
+         
             
             // Handle additional images if provided
             if (req.files && req.files.images && req.files.images.length > 0) {
@@ -97,7 +112,7 @@ res.render('editproduct',{product,brands,category})
                     updateData.images = req.files.images.map(file => file.path.replace(/\\/g, '/').replace('public/', ''));
                 }
             }
-            console.log('updatedata',updateData.images)
+    
             
             
             await Product.findByIdAndUpdate(productId, updateData, { new: true });
@@ -113,9 +128,7 @@ res.render('editproduct',{product,brands,category})
         try {
             const productId = req.params.id;
             const { type, image, index } = req.body;
-            console.log(",ain im,ag",image);
-            
-            console.log("type :",type);
+         
             
             
             const product = await Product.findById(productId);
@@ -129,7 +142,7 @@ res.render('editproduct',{product,brands,category})
             if (fs.existsSync(imagePath)) {
                 fs.unlinkSync(imagePath);
             }
-            console.log('imagePath',imagePath)
+           
             
             // Update database based on image type
             if (type === 'main') {

@@ -28,9 +28,7 @@ next(error)
 },
 addCoupon:async (req,res,next) => {
    try {
-    console.log('body',req.body)
 const {couponCode,startDate,expireDate,offerPrice,minAmount}=req.body
-console.log('couponCode,startDate,expireDate,offerPrice,minAmount',couponCode,startDate,expireDate,offerPrice,minAmount)
 if(!couponCode||!startDate||!expireDate||!offerPrice||!minAmount){
     return res.status(400).json({ success: false, field:'all', message: "All fields are required."  });
 
@@ -42,6 +40,9 @@ if (startDate < today) {
 }
 if (expireDate <= startDate) {
     return res.status(400).json({ success: false, message: 'Expiry date must be after the start date.' });
+}
+if(offerPrice>minAmount){
+    return res.status(400).json({success:false,message:'offer price cannot be greater than minimum amount'})
 }
 
 const existingCoupon = await Coupon.findOne({
@@ -75,10 +76,8 @@ couponBlocking:async (req,res,next) => {
     if(!coupon){
         return res.status(404).json({success:false,message:'coupon not found'})
     }
-    console.log('coupon activated2',coupon)
     coupon.isBlocked=req.body.isBlocked
     await coupon.save()
-    console.log('coupon activated1',coupon)
     res.status(200).json({success:true,message:`Coupon ${coupon.couponCode} is now ${coupon.isBlocked ? 'deactivated':'activated'} successfully`})
 }catch(error){
     next(error)
@@ -101,11 +100,9 @@ showEditCoupon:async (req,res,next) => {
 editCoupon:async (req,res,next) => {
     try {
         const couponId = req.params.couponId
-        console.log('assf',couponId)
        
         const {couponCode,startDate,expireDate,offerPrice,minAmount}=req.body
   
-        console.log('couponCode,startDate,expireDate,offerPrice,minAmount',couponCode,startDate,expireDate,offerPrice,minAmount)
         if(!couponCode||!startDate||!expireDate||!offerPrice||!minAmount){
             return res.status(400).json({ success: false, field:'all', message: "All fields are required."  });
         

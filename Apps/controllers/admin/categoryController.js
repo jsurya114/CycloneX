@@ -56,11 +56,10 @@ let sortOptions = { createdAt: -1 };
 },
 
   addCategory: async (req,res,next) => {
-    console.log('invoked add cat');
     try {
       const { name, slug, description, offer} = req.body;
       //validation
-      if (!name || !slug || !description||offer===undefined||offer===null) {
+      if (!name || !slug || !description||Number(offer)===undefined||Number(offer)===null) {
         return res.status(400).json({ success: false, field:'all', message: "All fields are required."  });
       }
       if(!/[A-Za-z\s]/.test(name)){
@@ -74,13 +73,37 @@ if(!/^[a-z0-9]+$/.test(slug)){
               return res.status(400).json({ success: false, field: "description", message: "Description must be at least 10 characters long." })
             }
       
-            if (isNaN(offer) || offer < 0 || offer > 100) {
-              return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 100." });
+            if (isNaN(Number(offer)) || Number(offer) < 0 || Number(offer) > 85) {
+              return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 85." });
           }
 
+          if(Number(offer)===0){
+            return res.status(400).json({success:false,field:'offer',message:'offer cannot be zero'})
+          }
+
+          if (/^\d+$/.test(slug)) {
+            return res.status(400).json({
+              success: false,
+              message: 'Category description cannot consist of only numbers'
+            });
+          }
+          
+          if (/^\d+$/.test(description)) {
+            return res.status(400).json({
+              success: false,
+              message: 'Category description cannot consist of only numbers'
+            });
+          }
+          
+          if (description.trim() === '') {
+            return res.status(400).json({
+              success: false,
+              message: 'Category description cannot be empty or contain only spaces'
+            });
+          }
       const existingCategory = await Category.findOne({$or:[{name:{$regex:new RegExp(`^${name}$`,'i')}},{slug:{$regex:new RegExp(`^${slug}$`,'i')}}]});
    if(existingCategory) {  
-      if (existingCategory.name===name) {
+      if (existingCategory.name.toLowerCase() === name.toLowerCase()) {
         return res.status(400).json({ success: false, message: 'category already exists' });
       }
       if(existingCategory.slug.toLowerCase()===slug.toLowerCase()){
@@ -117,21 +140,20 @@ if(!/^[a-z0-9]+$/.test(slug)){
 
   editcategory: async (req,res,next) => {
     try {
-      console.log('off',req.body)
+    
      const {name,slug,description,offer} =req.body
-     console.log('offer',offer)
+ 
      const categoryId =req.params.id
-     if(!name||!slug||!description||offer===undefined||offer===null){
+     if(!name||!slug||!description||Number(offer)===undefined||Number(offer)===null){
       return res.status(400).json({success:false,
         field:'all',
         message: "All fields are required." })
      }
-    //  if (!/[A-Za-z]\s]+$/.test(name)) {
-    //   return res.status(400).json({ success: false,
-    //      field: "name", 
-    //      message: "Name must contain at least one uppercase letter." });
-    // }
-
+   
+     if(!/[A-Za-z\s]/.test(name)){
+      return res.status(400).json({ success: false, field: "name", message: "Name must contain at least one uppercase letter and connot contain number." })
+          }
+    
     if (!/^[a-z0-9-]+$/.test(slug)) {
       return res.status(400).json({ success: false, 
         field: 'slug', 
@@ -144,9 +166,33 @@ if(!/^[a-z0-9]+$/.test(slug)){
     }
 
 
-    if (isNaN(offer) || offer < 0 || offer > 100) {
-      return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 100." });
+    if (isNaN(Number(offer)) || Number(offer) < 0 || Number(offer) > 85) {
+      return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 85." });
   }
+if(Number(offer)===0){
+  return res.status(200).json({success:false,field:'offer',message:'offer cannot be zero'})
+}
+
+if (/^\d+$/.test(slug)) {
+  return res.status(400).json({
+    success: false,
+    message: 'Category Slug cannot consist of only numbers'
+  });
+}
+
+if (/^\d+$/.test(description)) {
+  return res.status(400).json({
+    success: false,
+    message: 'Category description cannot consist of only numbers'
+  });
+}
+
+if (description.trim() === '') {
+  return res.status(400).json({
+    success: false,
+    message: 'Category description cannot be empty or contain only spaces'
+  });
+}
 
     // Check for duplicate category name and slug
     const existingCategory = await Category.findOne({ _id: { $ne: categoryId }, $or: [{ name: { $regex: new RegExp(`^${name}$`, 'i') } }, // Case-insensitive match
@@ -173,7 +219,7 @@ if(!/^[a-z0-9]+$/.test(slug)){
   listing: async (req,res,next) => {
     try {
       const categoryId = req.params.id;
-      console.log(categoryId);
+    
       const category = await Category.findById(categoryId);
       if (!category) {
         console.error(categoryId);
@@ -184,7 +230,6 @@ if(!/^[a-z0-9]+$/.test(slug)){
       }
       category.isBlocked = !category.isBlocked;
       await category.save();
-      console.log(`Category ${category.name} is now ${category.isBlocked ? "deactivated" : "activated"} successfully`);
       res.status(200).json({
         success: true,
         message: `Category ${category.isBlocked ? 'deactivated' : 'activated'} successfully`

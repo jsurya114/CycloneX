@@ -22,7 +22,6 @@ login: async (req, res) => {
 },
 
 loginPost: async (req, res) => {
-    console.log(req.body);
     const { email, password } = req.body;
     
     try {
@@ -61,7 +60,6 @@ loginPost: async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '7d' } // Token expires in 7 days
         );
-        console.log('Generated Token:', token);
         
         res.cookie('token', token, { 
             httpOnly: true, 

@@ -13,6 +13,13 @@ const walletController = {
                const decoded = jwt.verify(token, process.env.JWT_SECRET);
                
               const adminId =decoded.id 
+              const {search,transactionType,page,limit}=req.query
+              
+           
+
+              let cp = page||1
+              let ip  =limit||4
+              let skip =(cp-1)*ip
               
 
               let adminWallet = await AdminWallet.findOne({admin:adminId}).populate('transaction.orderId')
@@ -25,13 +32,22 @@ transaction:[],
     })
     await adminWallet.save()
 }
+let transactions = adminWallet.transaction
+if(search){
+  transactions=transactions.filter(tr=>tr.transactionId.toLowerCase().includes(search.toLowerCase()))
+}
 
-adminWallet.transaction.sort((a, b) => new Date(b.date) - new Date(a.date));
+if(transactionType==='credit'){
+  transactions=transactions.filter(tr=>tr.transactionType==='credit')
+}else if(transactionType==='debit'){
+  transactions=transactions.filter(tr=>tr.transactionType==='debit')
+}
 
 const transactionIds = adminWallet.transaction.map(tr => tr.transactionId);
-console.log("Transaction IDs:", transactionIds);
+
 
 const totalTransactions = adminWallet.transaction.length
+let totalPages = Math.ceil(totalTransactions/ip)
 const totalCredits = adminWallet.transaction.reduce((sum, tr) => {
     return tr.transactionType === 'credit' ? sum + Number(tr.amount) : sum;
 }, 0);
@@ -41,7 +57,19 @@ const totalDebits = adminWallet.transaction.reduce((sum, tr) => {
 }, 0);
 
 
-            return res.status(200).render('adminwallet',{adminId,adminWallet,totalTransactions,totalCredits,totalDebits,})
+const Pagination =transactions.slice(skip,skip+ip)
+adminWallet.transaction=Pagination
+transactions.sort((a,b)=>new Date(b.date)-new Date(a.date))
+
+            return res.status(200).render('adminwallet',{adminId,adminWallet,totalTransactions,totalCredits,totalDebits,
+              cp,totalPages,
+              search,
+              hasNextPage:cp<totalPages,
+              hasPrevPage:cp>1,
+              nextPage:cp<totalPages?cp+1:null,
+              prevPage:cp>1?cp-1:null,
+              transactionType
+            })
         } catch (error) {
             next(error)
         }
@@ -107,7 +135,7 @@ transaction:[],
               message: 'Transaction not found'
             });
           }
-          console.log(transaction.user);
+       
           const userId = transaction.user;
           const user = await User.findById(userId)
           
@@ -132,7 +160,7 @@ transaction:[],
             
           
 
-          console.log('userdetails',userDetails)
+        
       
           return res.status(200).render('transactionDetails', {
             transaction: populatedTransaction,

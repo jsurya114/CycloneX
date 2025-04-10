@@ -312,12 +312,48 @@
             <div class="flex items-center justify-between">
               <h3 class="text-lg font-semibold text-white">Transaction History</h3>
               <div class="flex items-center space-x-2">
-                <div class="relative">
-                  <input type="text" placeholder="Search transactions..." class="bg-white/10 border border-white/20 text-white placeholder-white/70 text-sm rounded-lg focus:ring-white/30 focus:border-white/30 block w-full p-2">
-                </div>
-                <button class="bg-white text-primary-700 px-3 py-2 rounded-lg hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-primary-700">
-                  <i class="fas fa-search"></i>
-                </button>
+                <form action="/admin/adminwallet" method="get" class="flex gap-2 mb-4">
+                  <div class="relative w-full">
+                    <input 
+                      type="text" 
+                      name="search" 
+                      placeholder="Search transactions..." 
+                      value="<%= search || '' %>" 
+                      class="bg-white/10 border border-white/20 text-white placeholder-white/70 text-sm rounded-lg focus:ring-white/30 focus:border-white/30 block w-full p-2"
+                    >
+                  </div>
+                  <button 
+                    type="submit" 
+                    class="bg-white text-primary-700 px-3 py-2 rounded-lg hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-primary-700"
+                  >
+                    <i class="fas fa-search"></i>
+                  </button>
+                
+                  <% if (search) { %>
+                    <a 
+                      href="/admin/adminwallet" 
+                      class="text-sm text-red-400 underline self-center"
+                    >
+                      Clear Search
+                    </a>
+                  <% } %>
+                </form>
+                <!-- Toggle Slide for All / Credit / Debit -->
+<div class="flex justify-center mt-2 mb-4">
+  <div class="bg-white/10 border border-white/20 rounded-lg flex text-white text-sm font-medium overflow-hidden">
+    
+    <input type="radio" name="transactionType" id="all" class="hidden peer/all" checked>
+    <label for="all" class="px-4 py-2 cursor-pointer peer-checked/all:bg-white peer-checked/all:text-primary-700 transition">All</label>
+
+    <input type="radio" name="transactionType" id="credit" class="hidden peer/credit">
+    <label for="credit" class="px-4 py-2 cursor-pointer peer-checked/credit:bg-white peer-checked/credit:text-primary-700 transition">Credit</label>
+
+    <input type="radio" name="transactionType" id="debit" class="hidden peer/debit">
+    <label for="debit" class="px-4 py-2 cursor-pointer peer-checked/debit:bg-white peer-checked/debit:text-primary-700 transition">Debit</label>
+  
+  </div>
+</div>
+
               </div>
             </div>
           </div>
@@ -338,7 +374,7 @@
                 <% if (adminWallet.transaction && adminWallet.transaction.length > 0) { %>
                   <% adminWallet.transaction.forEach(transaction => { %>
                     <tr class="hover:bg-gray-50 transition-colors">
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" id="transactionId">
                         <%= transaction.transactionId || 'N/A' %>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -366,29 +402,35 @@
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <% if (transaction.orderId) { %>
-                          <% if (transaction.orderId.orderStatus === 'delivered') { %>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              <i class="fas fa-check-circle mr-1"></i> DELIVERED
-                            </span>
-                          <% } else if (transaction.orderId.orderStatus === 'cancelled') { %>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                              <i class="fas fa-times-circle mr-1"></i> CANCELLED
-                            </span>
-                          <% } else if (transaction.orderId.orderStatus === 'returned') { %>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                              <i class="fas fa-undo mr-1"></i> RETURNED
-                            </span>
-                          <% } else if (transaction.orderId.orderStatus === 'pending') { %>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                              <i class="fas fa-clock mr-1"></i> PENDING
-                            </span>
-                          <% } else if (transaction.orderId.orderStatus === 'shipped') { %>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              <i class="fas fa-shipping-fast mr-1"></i> SHIPPED
-                            </span>
+                          <% if (typeof transaction.orderId === 'object' && transaction.orderId.orderStatus) { %>
+                            <% if (transaction.orderId.orderStatus === 'delivered') { %>
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-check-circle mr-1"></i> DELIVERED
+                              </span>
+                            <% } else if (transaction.orderId.orderStatus === 'cancelled') { %>
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                <i class="fas fa-times-circle mr-1"></i> CANCELLED
+                              </span>
+                            <% } else if (transaction.orderId.orderStatus === 'returned') { %>
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                <i class="fas fa-undo mr-1"></i> RETURNED
+                              </span>
+                            <% } else if (transaction.orderId.orderStatus === 'pending') { %>
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                <i class="fas fa-clock mr-1"></i> PENDING
+                              </span>
+                            <% } else if (transaction.orderId.orderStatus === 'shipped') { %>
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <i class="fas fa-shipping-fast mr-1"></i> SHIPPED
+                              </span>
+                            <% } else { %>
+                              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                <%= transaction.orderId.orderStatus ? transaction.orderId.orderStatus.toUpperCase() : 'UNKNOWN' %>
+                              </span>
+                            <% } %>
                           <% } else { %>
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                              <%= transaction.orderId.orderStatus.toUpperCase() %>
+                              <%= typeof transaction.orderId === 'string' ? transaction.orderId.toUpperCase() : (transaction.orderId ? transaction.orderId.toString() : 'UNKNOWN') %>
                             </span>
                           <% } %>
                         <% } else { %>
@@ -419,22 +461,50 @@
             </table>
           </div>
           
-          <!-- Pagination (Optional) -->
-          <div class="px-6 py-3 border-t border-gray-200 bg-gray-50">
-            <div class="flex items-center justify-between">
-              <div class="text-sm text-gray-500">
-                Showing <span class="font-medium">1</span> to <span class="font-medium"><%= adminWallet.transaction ? adminWallet.transaction.length : 0 %></span> of <span class="font-medium"><%= totalTransactions %></span> transactions
-              </div>
-              <div class="flex space-x-2">
-                <button class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                  <i class="fas fa-chevron-left mr-1.5"></i> Previous
-                </button>
-                <button class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                  Next <i class="fas fa-chevron-right ml-1.5"></i>
-                </button>
-              </div>
-            </div>
-          </div>
+        <!-- Pagination -->
+<div class="px-6 py-4 border-t border-gray-200">
+  <nav class="flex justify-between items-center">
+    <div class="text-sm text-gray-500">
+      Showing page <%= cp %> of <%= totalPages %>
+    </div>
+    <ul class="flex space-x-1">
+      
+      <% if (cp > 1) { %>
+        <li>
+          <a 
+            href="?page=<%= cp - 1 %><%= search ? '&search=' + search : '' %>" 
+            class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Previous
+          </a>
+        </li>
+      <% } %>
+
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <li>
+          <a 
+            href="?page=<%= i %><%= search ? '&search=' + search : '' %>" 
+            class="px-3 py-2 <%= i === cp ? 'bg-primary-50 border-primary-500 text-primary-600' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50' %> border rounded-md text-sm font-medium"
+          >
+            <%= i %>
+          </a>
+        </li>
+      <% } %>
+
+      <% if (cp < totalPages) { %>
+        <li>
+          <a 
+            href="?page=<%= cp + 1 %><%= search ? '&search=' + search : '' %>" 
+            class="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Next
+          </a>
+        </li>
+      <% } %>
+
+    </ul>
+  </nav>
+</div>
         </div>
       </main>
       
@@ -458,8 +528,77 @@
     </div>
   </div>
 
+  <script>
+    // Add this to your existing script at the bottom of your HTML file
+document.addEventListener('DOMContentLoaded', function() {
+  // Mobile sidebar toggle code (your existing code)
+  
+  // Transaction type filter
+  const allRadio = document.getElementById('all');
+  const creditRadio = document.getElementById('credit');
+  const debitRadio = document.getElementById('debit');
+  
+  function applyFilter(type) {
+    // Get current URL and parameters
+    const url = new URL(window.location.href);
+    
+    // Preserve existing search parameter if any
+    const searchParam = url.searchParams.get('search');
+    
+    // Clear existing parameters and set new ones
+    url.searchParams.delete('transactionType');
+    url.searchParams.delete('page'); // Reset to page 1 when filtering
+    
+    // Keep search parameter if it exists
+    if (searchParam) {
+      url.searchParams.set('search', searchParam);
+    }
+    
+    // Add transaction type if not "all"
+    if (type !== 'all') {
+      url.searchParams.set('transactionType', type);
+    }
+    
+    // Navigate to the new URL
+    window.location.href = url.toString();
+  }
+  
+  // Add event listeners to radio buttons
+  if (allRadio) {
+    allRadio.addEventListener('change', function() {
+      if (this.checked) applyFilter('all');
+    });
+  }
+  
+  if (creditRadio) {
+    creditRadio.addEventListener('change', function() {
+      if (this.checked) applyFilter('credit');
+    });
+  }
+  
+  if (debitRadio) {
+    debitRadio.addEventListener('change', function() {
+      if (this.checked) applyFilter('debit');
+    });
+  }
+  
+  // Set the correct radio button based on URL parameter
+  const params = new URLSearchParams(window.location.search);
+  const currentType = params.get('transactionType');
+  
+  if (currentType === 'credit' && creditRadio) {
+    creditRadio.checked = true;
+  } else if (currentType === 'debit' && debitRadio) {
+    debitRadio.checked = true;
+  } else if (allRadio) {
+    allRadio.checked = true;
+  }
+});
+  </script>
+
   <!-- Scripts -->
   <script>
+    
     // Mobile sidebar toggle
     document.addEventListener('DOMContentLoaded', function() {
       const sidebar = document.getElementById('sidebar');

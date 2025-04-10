@@ -10,7 +10,7 @@ const nocache = require('../../middlewares/nocache');
 const userController=require('../../controllers/user/userController')
 const passwordController = require('../../controllers/user/passwordcontroller');
 const shopController = require('../../controllers/user/shopController');
-const productController = require('../../controllers/admin/productController');
+
 const cartController = require('../../controllers/user/cartController')
 
 const checkoutController = require('../../controllers/user/checkoutController');
@@ -25,9 +25,10 @@ const RazorpayController = require('../../controllers/user/razorpayController');
 
 
 
+
+router.get('/',authController.landing)
 router.use(userEnsure,nocache);
-router.get('/landing',authController.landing)
-router.get('/', userEnsure, nocache, authController.logins);
+router.get('/login', userEnsure, nocache, authController.logins);
 router.post('/', authController.loginspost);
 router.get('/signup', authController.signup);
 router.post('/signup', authController.createUser);
@@ -55,10 +56,10 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
 
 router.get('/home', verifyUser, nocache, userController.home);
 
-router.get('/shoplist',verifyUser,shopController.shopList)
+router.get('/shoplist',shopController.shopList)
 router.post('/shoplist',shopController.shopList)
-router.get('/productdetails/:id',verifyUser,userController.productDetails)
-router.get('/product/:id',verifyUser,productController.quickView)
+router.get('/productdetails/:id',userController.productDetails)
+
 router.get('/about',verifyUser,authController.aboutAs)
 router.get('/logout', verifyUser, authController.logout);
 

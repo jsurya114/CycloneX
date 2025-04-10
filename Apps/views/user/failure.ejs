@@ -234,7 +234,6 @@ async function retryPayment(items, paymentMethod, address, totalAmount) {
                   description: "Retry Payment",
                   order_id: data.order.id,
                   handler: function(response){
-                      console.log("Payment successful on retry", response);
                       // Call your verification function here
                       verifyRazorpayPayment(response, data.order.id);
                   },

@@ -35,7 +35,8 @@ res.status(404).redirect('/login')
  }
 
 
- let cartCount =await Cart.countDocuments({user:userId})
+   let cartfind = await Cart.findOne({user: userId})
+            const cartCount = cartfind.items.length
  let cart = await Cart.findOne({ user: user._id }).populate({
     path: 'items.product',
     populate: [
@@ -95,7 +96,6 @@ let freeShipping =false
 
     subtotal = cart.items.reduce((sum, item) => sum + (item.subtotal || 0), 0);
     tax = subtotal * taxRate
-    console.log('Subtotal:', subtotal)
   
     freeShipping = subtotal>=5000
    if(shippingMethod==='standard'&&freeShipping){
@@ -104,11 +104,7 @@ let freeShipping =false
    }
     
      finalTotal = subtotal + tax + shippingCharge;
-   console.log('finalTotal',finalTotal)
 }
-console.log('Shipping Charge:', shippingCharge)
-          
-console.log('toaot', subtotal, tax,  finalTotal )
 
 
         res.render('checkout',{
@@ -143,11 +139,9 @@ console.log('toaot', subtotal, tax,  finalTotal )
        if(!userId){
        return res.status(400).json({success:false,message:'invalid input'})
        }
-       console.log('userId',userId)
-            console.log('ddsef',req.body)
+    
         const {couponCode,totalAmount,shippingCharge}=req.body
         const coupon = await Coupon.findOne({couponCode:couponCode,isBlocked:false,expireDate:{$gt:new Date}})
-        console.log('hjj',coupon)
      
 if(!coupon){
     return res.status(404).json({success:false,message:'coupon expired'})
@@ -169,7 +163,6 @@ if(totalAmount<coupon.minAmount){
 const discount = Math.min(coupon.offerPrice, totalAmount,shippingCharge);
 const total = totalAmount - discount
 
-console.log('jsj',discount)
 
 
 

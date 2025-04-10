@@ -8,19 +8,7 @@ const sharp = require('sharp')
 const fs = require('fs')
 
 const productController = {
-quickView:async (req,res,next) => {
-try {
-  const product=await Product.findById(req.params.id).populate('brands').populate('category')
 
-  if (!product) {
-    return res.status(404).send('Product not found');
-  }
-  res.render('quickview', { product });
-} catch (error) {
-  console.error(err);
-  res.status(500).render('500')
-}
-},
 
   showAddProductPage: async (req, res,next) => {
     try { 
@@ -28,12 +16,11 @@ try {
       const category = await Category.find();
       res.status(200).render('addproduct', { brands, category });
     } catch (error) {
-      console.log(error);
-      res.status(500).send('internal server error');
+      next(error)
     }
   },
   addproduct: async (req, res,next) => {
-    console.log('invoked add prod 1');
+   
     try {
       let errors = {};
       const { productName, description, price, brands, category, stock,offer } = req.body;
@@ -44,11 +31,12 @@ try {
       } else if (!/[A-Z]/.test(productName)) {
         errors.productName = "Product Name must contain at least one uppercase letter.";
       }
-      
       if (!description) {
         errors.description = "Description is required.";
       } else if (description.trim().length < 10) {
         errors.description = "Description must be at least 10 characters long.";
+      } else if (/\d/.test(description)) {
+        errors.description = "Description cannot contain numbers.";
       }
       
       if (!price) {
@@ -60,12 +48,25 @@ try {
       if (!category) {
         errors.category = "Category is required.";
       }
+      if(!stock){
+        errors.stock='Stock is required'
+      }else if (isNaN(stock) || Number(stock) < 0) {
+        errors.stock = 'Stock cannot be a negative number';
+      }
+   
       
       if (!brands) {
         errors.brands = "Brand is required.";
       }
-      if (isNaN(offer) || offer < 0 || offer > 100) {
-        return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 100." });
+      if (isNaN(offer) || offer < 0 || offer > 85) {
+        return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 85." });
+    }
+if(!offer){
+  errors.offer='Offer is required'
+}
+
+    if(offer===0){
+      return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 85." })
     }
       
       if (!req.files || !req.files.mainImage || req.files.mainImage.length === 0) {
@@ -153,7 +154,7 @@ try {
       res.status(201).json({ success: true, message: 'product added successful' });
       
     } catch (error) {
-      console.log(error);
+
       next(error)
     }
   },
@@ -237,6 +238,26 @@ let sortOptions = { createdAt: -1 };
         return res.status(400).json({ success: false, message: 'Brand description must be at least 10 characters long' });
       }
 
+      if (name.trim() === '') {
+        return res.status(400).json({
+          success: false,
+          message: 'Brand name cannot be empty or contain only spaces'
+        });
+      }
+      if (/^\d+$/.test(description)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Brand description cannot consist of only numbers'
+        });
+      }
+
+      if (description.trim() === '') {
+        return res.status(400).json({
+          success: false,
+          message: 'Brand description cannot be empty or contain only spaces'
+        });
+      }
+
       // Save the brand without an image field
       const newBrand = new Brand({
         name: trimmedName,
@@ -286,11 +307,32 @@ let sortOptions = { createdAt: -1 };
       if (!brand) {
         return res.render('404',{message:"Brand  not found"})
       }
-const existingBrand= await Brand.findOne({name:{ $regex: new RegExp(`^${name}$`, 'i') }})
-if(existingBrand){
-  return res.status(400).json({success:false,message:'brand already exist'})
-}
+      if (name.trim() === '') {
+        return res.status(400).json({
+          success: false,
+          message: 'Brand name cannot be empty or contain only spaces'
+        });
+      }
+      if (/^\d+$/.test(description)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Brand description cannot consist of only numbers'
+        });
+      }
 
+      if (description.trim() === '') {
+        return res.status(400).json({
+          success: false,
+          message: 'Brand description cannot be empty or contain only spaces'
+        });
+      }
+      // Validation: brand name must contain at least one uppercase letter
+if (!/[A-Z]/.test(name)) {
+  return res.status(400).json({
+    success: false,
+    message: 'Brand name must contain at least one uppercase letter'
+  });
+}
 
 
       await Brand.findByIdAndUpdate(brandId,{name,description})

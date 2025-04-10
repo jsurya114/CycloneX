@@ -6,7 +6,6 @@ const verifyAdmin = async (req, res, next) => {
         const token = req.cookies.token;
 
         if (!token) {
-            console.log('Token missing');
             return res.status(401).redirect('/admin/login');
         }
 
@@ -24,7 +23,6 @@ const verifyAdmin = async (req, res, next) => {
 
         const admin = await Admin.findById(decodedToken.id);
         if (!admin) {
-            console.log('Admin not found');
             res.clearCookie('token');
             return res.status(404).redirect('/admin/login');
         }

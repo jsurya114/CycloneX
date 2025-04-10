@@ -195,6 +195,25 @@
         body {
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        /* Toast notification custom styling */
+        .toastify {
+            border-radius: 8px !important;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            padding: 12px 20px !important;
+        }
+        
+        /* Quantity update animation */
+        @keyframes pulse-once {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse-animation {
+            animation: pulse-once 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body class="font-body bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -256,7 +275,7 @@
                                     <% address.forEach((addr, index) => { %>
                                         <!-- Address Card -->
                                         <div class="address-card bg-white dark:bg-gray-800 border-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 <%= index === 0 ? 'border-primary-500' : 'border-gray-200 dark:border-gray-700' %> p-5 cursor-pointer relative overflow-hidden group">
-                                            <input type="radio" name="address" id="address<%= index %>" class="hidden" <%= index === 0 ? 'checked' : '' %> value="<%= addr._id %>">
+                                            <input type="radio" name="address" id="address<%= index %>" class="address-radio hidden" <%= index === 0 ? 'checked' : '' %> value="<%= addr._id %>">
                                             <label for="address<%= index %>" class="absolute inset-0 cursor-pointer z-10"></label>
                                             
                                             <!-- Top Section with Badge -->
@@ -313,7 +332,7 @@
                                                 <button type="button" class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                                                     Edit
                                                 </button>
-                                                <button type="button" class="text-xs px-2 py-1 bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 rounded hover:bg-primary-100 dark:hover:bg-primary-800 transition-colors">
+                                                <button type="button" class="address-select-btn text-xs px-2 py-1 bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 rounded hover:bg-primary-100 dark:hover:bg-primary-800 transition-colors" data-address-id="<%= addr._id %>" data-index="<%= index %>">
                                                     Select
                                                 </button>
                                             </div>
@@ -640,32 +659,39 @@
                     </div>
                     <div class="flex items-center mt-1">
                         <span class="text-xs text-gray-500 dark:text-gray-400">
-                            Subtotal: ₹<%= (cart.itemSubtotal !== undefined ? item.totalSubtotal.toFixed(2) : (item.salePrice * item.quantity).toFixed(2)) %>
+                            Subtotal: ₹<span class="item-subtotal" data-product-id="<%= item.product._id %>"><%= (cart.itemSubtotal !== undefined ? item.totalSubtotal.toFixed(2) : (item.salePrice * item.quantity).toFixed(2)) %></span>
                         </span>
                     </div>
                     <div class="flex items-center justify-between mt-3">
                         <!-- Quantity Controls -->
                         <div class="flex items-center">
-                            <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'decrement')" 
-                                class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300">
+                            <button type="button" class="quantity-btn w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300" 
+                                data-product-id="<%= item.product._id %>" 
+                                data-action="decrement"
+                                data-price="<%= item.salePrice %>">
                                 <i class="fas fa-minus text-xs"></i>
                             </button>
                         
                             <input id="quantity-<%= item.product._id %>" 
                                 type="number" 
-                                class="w-10 h-8 border-0 bg-white dark:bg-gray-800 text-center text-gray-900 dark:text-white" 
-                                value="<%= item.quantity %>">
+                                class="quantity-input w-10 h-8 border-0 bg-white dark:bg-gray-800 text-center text-gray-900 dark:text-white" 
+                                value="<%= item.quantity %>"
+                                data-product-id="<%= item.product._id %>"
+                                data-price="<%= item.salePrice %>"
+                                min="1" max="99">
                         
-                            <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'increment')" 
-                                class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300">
+                            <button type="button" class="quantity-btn w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-300" 
+                                data-product-id="<%= item.product._id %>" 
+                                data-action="increment"
+                                data-price="<%= item.salePrice %>">
                                 <i class="fas fa-plus text-xs"></i>
                             </button>
                         </div>
                         
                         
                         <!-- Delete Button -->
-                        <button type="button" onclick="removeFromCart('<%= item.product._id %>')" 
-                            class="flex items-center text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 transition-colors">
+                        <button type="button" class="remove-item-btn flex items-center text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                            data-product-id="<%= item.product._id %>">
                             <i class="far fa-trash-alt mr-1"></i>
                             <span>Remove</span>
                         </button>
@@ -801,9 +827,9 @@
         <i class="fas fa-sun hidden dark:block"></i>
     </button>
     
-    <%- include('partials/footer') %>
 
-    <%-include('partials/loader') %>
+    <%- include('partials/footer') %>
+    <%- include('partials/loader') %>
     
     <!-- Add Toastify JS -->
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -826,6 +852,126 @@
            }).showToast();
        }
 
+       // Function to update order summary
+       function updateOrderSummary(subtotal, tax, discount, finalTotal) {
+           // Update the displayed values
+           document.getElementById('subtotalAmount').textContent = `₹${subtotal.toFixed(2)}`;
+           document.getElementById('taxAmount').textContent = `₹${tax.toFixed(2)}`;
+           document.getElementById('discountAmount').textContent = `-₹${discount.toFixed(2)}`;
+           document.getElementById('totalAmount').textContent = `₹${finalTotal.toFixed(2)}`;
+           
+           // Add a pulse animation to highlight the changes
+           document.getElementById('totalAmount').classList.add('pulse-animation');
+           setTimeout(() => {
+               document.getElementById('totalAmount').classList.remove('pulse-animation');
+           }, 500);
+       }
+
+       // Function to calculate order summary
+       function calculateOrderSummary() {
+           // Get all item subtotals
+           const itemSubtotals = document.querySelectorAll('.item-subtotal');
+           let subtotal = 0;
+           
+           itemSubtotals.forEach(item => {
+               subtotal += parseFloat(item.textContent);
+           });
+           
+           // Calculate tax (18%)
+           const tax = subtotal * 0.18;
+           
+           // Get shipping charge
+           const shippingElement = document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600");
+           const shippingCharge = shippingElement ? parseFloat(shippingElement.textContent.replace(/[^\d.]/g, "")) || 0 : 0;
+           
+           // Get discount
+           const discountText = document.getElementById('discountAmount').textContent;
+           const discount = parseFloat(discountText.replace(/[^\d.]/g, "")) || 0;
+           
+           // Calculate final total
+           const finalTotal = subtotal + tax + shippingCharge - discount;
+           
+           // Update the order summary
+           updateOrderSummary(subtotal, tax, discount, finalTotal);
+           
+           return {
+               subtotal,
+               tax,
+               discount,
+               shippingCharge,
+               finalTotal
+           };
+       }
+
+       // AJAX function to update quantity
+       async function updateQuantityAjax(productId, quantity, itemElement) {
+           try {
+               const response = await fetch(`/checkout/${productId}`, {
+                   method: 'PUT',
+                   headers: { 'Content-Type': 'application/json' },
+                   body: JSON.stringify({ quantity: quantity })
+               });
+
+               const data = await response.json();
+
+               if (data.success) {
+                   // Update the UI without page reload
+                   const quantityInput = itemElement.querySelector(`#quantity-${productId}`);
+                   const pricePerItem = parseFloat(quantityInput.dataset.price);
+                   const subtotalElement = itemElement.querySelector(`.item-subtotal[data-product-id="${productId}"]`);
+                   
+                   // Update quantity input
+                   quantityInput.value = quantity;
+                   
+                   // Update item subtotal
+                   const itemSubtotal = pricePerItem * quantity;
+                   subtotalElement.textContent = itemSubtotal.toFixed(2);
+                   
+                   // Recalculate and update order summary
+                   calculateOrderSummary();
+                   
+                   // Show success toast
+                   showToast('Quantity updated successfully');
+                   
+                   // Add highlight effect to the updated item
+                   itemElement.classList.add('bg-primary-50', 'dark:bg-primary-900/20');
+                   setTimeout(() => {
+                       itemElement.classList.remove('bg-primary-50', 'dark:bg-primary-900/20');
+                   }, 1000);
+                   
+                   return true;
+               } else {
+                   showToast(data.message || "Failed to update quantity", false);
+                   return false;
+               }
+           } catch (error) {
+               console.error("Error updating quantity:", error);
+               showToast("Failed to update quantity", false);
+               return false;
+           }
+       }
+
+       // AJAX function to remove item from cart
+       async function removeItemAjax(productId) {
+           try {
+               const response = await fetch(`/checkout/${productId}`, {
+                   method: 'DELETE',
+               });
+               
+               if (response.ok) {
+                   showToast('Item removed from cart');
+                   return true;
+               } else {
+                   showToast('Failed to remove item from cart', false);
+                   return false;
+               }
+           } catch (error) {
+               console.error('Error:', error);
+               showToast('An error occurred', false);
+               return false;
+           }
+       }
+
        // Dark mode toggle functionality
        document.addEventListener('DOMContentLoaded', function() {
            const darkModeToggle = document.getElementById('darkModeToggle');
@@ -843,10 +989,19 @@
                html.classList.toggle('dark');
                localStorage.setItem('darkMode', html.classList.contains('dark'));
            });
-       });
 
-       // Payment method selection (no default selection)
-       document.addEventListener('DOMContentLoaded', function() {
+           if(localStorage.getItem('couponRemoved')==='true'){
+               localStorage.removeItem('couponRemoved')
+               showToast('Coupon removed successfully')
+           }
+
+           // Initialize address selection functionality
+           initAddressSelection();
+
+           // Initialize quantity update functionality
+           initQuantityControls();
+
+           // Payment method selection (no default selection)
            const paymentCards = document.querySelectorAll('.payment-card');
            // Ensure no payment is selected on load
            paymentCards.forEach(card => {
@@ -880,10 +1035,13 @@
            const showAvailableCouponsBtn = document.getElementById('show-available-coupons');
            const availableCouponsContainer = document.getElementById('available-coupons-container');
            const applyCouponBtn = document.getElementById('apply-coupon-btn');
-           const couponInput = document.getElementById('coupon-code');
+           
         
+           const couponInput = document.getElementById('coupon-code');
+ 
            const couponInputContainer = document.getElementById('coupon-input-container');
            const removeCouponContainer = document.getElementById('remove-coupon-container');
+           
            const removeCouponBtn = document.getElementById('remove-coupon-btn');
            const activeCouponText = document.getElementById('active-coupon-text');
            const couponBadge = document.getElementById('coupon-badge');
@@ -929,7 +1087,6 @@
                   
                   
                    const userId = document.getElementById('userProfile').dataset.id;  
-                   console.log('jdjd',userId)
                    const response = await fetch(`/addaddress/${userId}`, {
                        method: 'POST',
                        headers: {
@@ -950,7 +1107,7 @@
                    // In a real application, you would reload the addresses or add the new one to the DOM
                    setTimeout(() => {
                        window.location.reload(); // Reload to show the new address
-                   }, 1500);
+                   }, 500);
                } catch (error) {
                    console.error('Error:', error);
                    showToast('Failed to add address', false);
@@ -980,13 +1137,185 @@
            });
        });
 
+       // Initialize address selection functionality
+       function initAddressSelection() {
+           // Handle address card selection
+           const addressCards = document.querySelectorAll('.address-card');
+           const addressRadios = document.querySelectorAll('.address-radio');
+           const addressSelectBtns = document.querySelectorAll('.address-select-btn');
+           
+           // Function to update address card styling
+           function updateAddressCardStyling(selectedIndex) {
+               addressCards.forEach((card, index) => {
+                   const radio = card.querySelector('input[type="radio"]');
+                   const indicator = card.querySelector('.w-6.h-6 .w-3.h-3');
+                   const badge = card.querySelector('.flex.items-center.space-x-2 span:first-child');
+                   
+                   if (index === selectedIndex) {
+                       // Selected card styling
+                       card.classList.remove('border-gray-200', 'dark:border-gray-700');
+                       card.classList.add('border-primary-500');
+                       
+                       // Update radio button
+                       radio.checked = true;
+                       
+                       // Update indicator dot
+                       indicator.classList.remove('bg-transparent', 'group-hover:bg-primary-200', 'dark:group-hover:bg-primary-800');
+                       indicator.classList.add('bg-primary-500');
+                       
+                       // Update badge
+                       if (badge) {
+                           badge.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'group-hover:bg-primary-100', 'dark:group-hover:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
+                           badge.classList.add('bg-primary-500', 'text-white');
+                       }
+                   } else {
+                       // Non-selected card styling
+                       card.classList.remove('border-primary-500');
+                       card.classList.add('border-gray-200', 'dark:border-gray-700');
+                       
+                       // Update radio button
+                       radio.checked = false;
+                       
+                       // Update indicator dot
+                       indicator.classList.remove('bg-primary-500');
+                       indicator.classList.add('bg-transparent', 'group-hover:bg-primary-200', 'dark:group-hover:bg-primary-800');
+                       
+                       // Update badge
+                       if (badge) {
+                           badge.classList.remove('bg-primary-500', 'text-white');
+                           badge.classList.add('bg-gray-200', 'dark:bg-gray-700', 'group-hover:bg-primary-100', 'dark:group-hover:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
+                       }
+                   }
+               });
+           }
+           
+           // Add click event to address cards
+           addressCards.forEach((card, index) => {
+               card.addEventListener('click', function() {
+                   updateAddressCardStyling(index);
+                   showToast('Delivery address selected');
+               });
+           });
+           
+           // Add click event to select buttons
+           addressSelectBtns.forEach(btn => {
+               btn.addEventListener('click', function(e) {
+                   e.stopPropagation(); // Prevent triggering the card click
+                   const index = parseInt(this.dataset.index);
+                   updateAddressCardStyling(index);
+                   showToast('Delivery address selected');
+               });
+           });
+       }
+
+       // Initialize quantity update functionality
+       function initQuantityControls() {
+           // Quantity buttons
+           const quantityBtns = document.querySelectorAll('.quantity-btn');
+           const quantityInputs = document.querySelectorAll('.quantity-input');
+           const removeItemBtns = document.querySelectorAll('.remove-item-btn');
+           
+           // Add event listeners to quantity buttons
+           quantityBtns.forEach(btn => {
+               btn.addEventListener('click', async function() {
+                   const productId = this.dataset.productId;
+                   const action = this.dataset.action;
+                   const itemElement = this.closest('.checkout-item');
+                   const quantityInput = itemElement.querySelector(`#quantity-${productId}`);
+                   let currentQuantity = parseInt(quantityInput.value);
+                   
+                   if (action === 'increment') {
+                       currentQuantity++;
+                   } else if (action === 'decrement' && currentQuantity > 1) {
+                       currentQuantity--;
+                   } else {
+                       return; // Don't proceed if trying to go below 1
+                   }
+                   
+                   // Update quantity via AJAX
+                   const success = await updateQuantityAjax(productId, currentQuantity, itemElement);
+                   
+                   // If AJAX update failed, revert the input value
+                   if (!success) {
+                       quantityInput.value = currentQuantity - (action === 'increment' ? 1 : -1);
+                   }
+               });
+           });
+           
+           // Add event listeners to quantity inputs for manual entry
+           quantityInputs.forEach(input => {
+               input.addEventListener('change', async function() {
+                   const productId = this.dataset.productId;
+                   const itemElement = this.closest('.checkout-item');
+                   let newQuantity = parseInt(this.value);
+                   
+                   // Validate quantity
+                   if (isNaN(newQuantity) || newQuantity < 1) {
+                       newQuantity = 1;
+                       this.value = 1;
+                   } else if (newQuantity > 99) {
+                       newQuantity = 99;
+                       this.value = 99;
+                   }
+                   
+                   // Update quantity via AJAX
+                   const success = await updateQuantityAjax(productId, newQuantity, itemElement);
+                   
+                   // If AJAX update failed, revert to previous value
+                   if (!success) {
+                       // You would need to store the previous value somewhere
+                       // For simplicity, we'll just reload the page if it fails
+                       location.reload();
+                   }
+               });
+           });
+           
+           // Add event listeners to remove buttons
+           removeItemBtns.forEach(btn => {
+               btn.addEventListener('click', async function() {
+                   const productId = this.dataset.productId;
+                   const itemElement = this.closest('.checkout-item');
+                   
+                   // Confirm removal
+                   if (confirm('Are you sure you want to remove this item from your cart?')) {
+                       // Remove item via AJAX
+                       const success = await removeItemAjax(productId);
+                       
+                       if (success) {
+                           // Animate removal
+                           itemElement.style.opacity = '0';
+                           itemElement.style.height = '0';
+                           itemElement.style.margin = '0';
+                           itemElement.style.padding = '0';
+                           itemElement.style.overflow = 'hidden';
+                           itemElement.style.transition = 'all 0.5s ease';
+                           
+                           // Remove from DOM after animation
+                           setTimeout(() => {
+                               itemElement.remove();
+                               
+                               // Check if cart is empty
+                               const remainingItems = document.querySelectorAll('.checkout-item');
+                               if (remainingItems.length === 0) {
+                                   // Reload to show empty cart message
+                                   location.reload();
+                               } else {
+                                   // Recalculate order summary
+                                   calculateOrderSummary();
+                               }
+                           }, 500);
+                       }
+                   }
+               });
+           });
+       }
+
        window.applyCoupon = async function(couponCode) {
            document.getElementById('coupon-code').value=couponCode
            const totalElement = document.getElementById("totalAmount");
            const totalText = totalElement.textContent; // e.g., "₹75340.00"
            const totalAmount = parseFloat(totalText.replace(/[^\d.]/g, ""));
-           console.log(totalAmount); // 75340.00
-           console.log('ddss',couponCode,totalAmount)
+          
            const shippingElement = document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600");
            const shippingCharge = shippingElement ? parseFloat(shippingElement.textContent.replace(/[^\d.]/g, "")) || 0 : 0;
            try {
@@ -997,7 +1326,6 @@
                });
 
                const data = await response.json();
-               console.log('ddd',data)
 
                if (data.success) {
                    document.getElementById('coupon-badge').textContent = couponCode;
@@ -1025,30 +1353,43 @@
            }
        };
 
-       function removeCoupon() {
-           // Show the input field again
-           couponInputContainer.classList.remove('hidden');
-           removeCouponContainer.classList.add('hidden');
-           
-           // Reset displayed coupon code
-           couponInput.value = '';
-           couponBadge.textContent = '';
+       window.removeCoupon = function() {
+    // Get references directly when function is called
+    const couponInputContainer = document.getElementById('coupon-input-container');
+    const removeCouponContainer = document.getElementById('remove-coupon-container');
+    const couponInput = document.getElementById('coupon-code');
+    const couponBadge = document.getElementById('coupon-badge');
+    
+    // Show the input field again
+    couponInputContainer.classList.remove('hidden');
+    removeCouponContainer.classList.add('hidden');
+    
+    // Reset displayed coupon code
+    couponInput.value = '';
+    couponBadge.textContent = '';
 
-           // Reset discount to ₹0.00
-           document.getElementById('discountAmount').textContent = '-₹0.00';
+    // Re-enable input and button
+    couponInput.disabled = false;
+    document.getElementById('apply-coupon-btn').disabled = false;
+    document.getElementById('apply-coupon-btn').classList.remove('opacity-50', 'cursor-not-allowed');
 
-           // Recalculate total without the discount
-           const subtotal = parseFloat(document.querySelector('dd.text-sm.font-medium.text-gray-900').textContent.replace(/[^\d.]/g, ""));
-           const tax = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900:last-of-type").textContent.replace(/[^\d.]/g, ""));
-           const shippingCharge = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600").textContent.replace(/[^\d.]/g, "")) || 0;
-           
-           const newTotal = subtotal + tax + shippingCharge;
-           document.getElementById('totalAmount').textContent = `₹${newTotal.toFixed(2)}`;
+    // Reset discount to ₹0.00
+    document.getElementById('discountAmount').textContent = '-₹0.00';
 
-           showToast('Coupon removed successfully!');
-           location.reload()
-       }
-
+    // Recalculate total without the discount
+    const subtotal = parseFloat(document.querySelector('dd.text-sm.font-medium.text-gray-900').textContent.replace(/[^\d.]/g, ""));
+    const tax = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900:last-of-type").textContent.replace(/[^\d.]/g, ""));
+    const shippingCharge = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600").textContent.replace(/[^\d.]/g, "")) || 0;
+    
+    const newTotal = subtotal + tax + shippingCharge;
+    document.getElementById('totalAmount').textContent = `₹${newTotal.toFixed(2)}`;
+    
+    // Set a flag in localStorage to indicate coupon was removed
+    localStorage.setItem('couponRemoved', 'true');
+    
+    // Now reload the page
+    location.reload();
+};
        // Place Order button handler
        document.getElementById('placeOrderBtn').addEventListener('click', async function() {
            const addressElement = document.querySelector('input[name="address"]:checked');
@@ -1066,7 +1407,6 @@
            const addressId = addressElement.value;
            const paymentMethod = paymentMethodElement.value;
 
-           console.log('kjdkdj',paymentMethod)
 
            const items = Array.from(document.querySelectorAll('.checkout-item')).map(item => {
                const productId = item.querySelector('input[id^="quantity-"]').id.replace('quantity-', '');
@@ -1090,7 +1430,6 @@
                couponCode
            };
 
-           console.log("🚀 Payment Method Selected:", paymentMethod);
 
            if (paymentMethod === 'razorpay') {
                initiateRazorpay(orderData);
@@ -1103,7 +1442,6 @@
        async function initiateRazorpay(orderData) {
           
            try {
-               console.log("ghjkl",orderData)
                const response = await fetch('/razorPay/createOrder',{
                    method: 'POST',
                            headers: { 'Content-Type': 'application/json' },
@@ -1111,7 +1449,6 @@
                })
 
                const data = await response.json()
-               console.log('ordercreated:',orderData)
 
                if(!data.success||!data.order.id){
                    showToast('failed to create razorpay order', false)
@@ -1126,7 +1463,6 @@
                            description: 'Order Payment',
                            order_id: data.order.id, 
                            handler: function(response) {
-                               console.log("🟢 Razorpay Payment Success:", response);
                                verifyRazorpayPayment(response, data.order.id);
                            },
                            prefill: {
@@ -1161,7 +1497,6 @@
 
        // Function to verify Razorpay Payment
        async function verifyRazorpayPayment(response, orderId) {
-           console.log('payment verifying:',response)
            if (!response.razorpay_order_id || !response.razorpay_payment_id || !response.razorpay_signature) {
                        console.error("❌ Missing Razorpay response values!", response);
                        return;
@@ -1179,7 +1514,6 @@
                })
 
                const data = await verifyResponse.json()
-               console.log("this si data : ",data)
                if(data.success){
                    showToast("Payment successful!...")
                    setTimeout(() => { window.location.href = "/confirmation"; })
@@ -1212,53 +1546,6 @@
                }
            } catch (error) {
                showToast('Failed to place order', false);
-           }
-       }
-
-       async function removeFromCart(productId) {
-           try {
-               const response = await fetch(`/checkout/${productId}`, {
-                   method: 'DELETE',
-               });
-               if (response.ok) {
-                   showToast('Item removed from cart');
-                   setTimeout(() => {
-                       window.location.reload(); // Reload the page to reflect the changes
-                   }, 1000);
-               } else {
-                   showToast('Failed to remove item from cart', false);
-               }
-           } catch (error) {
-               console.error('Error:', error);
-               showToast('An error occurred', false);
-           }
-       }
-
-       async function updateQuantity(productId, action) {
-           const quantityInput = document.getElementById(`quantity-${productId}`);
-           let newQuantity = parseInt(quantityInput.value);
-
-           if (action === 'increment') newQuantity++;
-           if (action === 'decrement' && newQuantity > 1) newQuantity--;
-
-           try {
-               const response = await fetch(`/checkout/${productId}`, {
-                   method: 'PUT',
-                   headers: { 'Content-Type': 'application/json' },
-                   body: JSON.stringify({ quantity: newQuantity })
-               });
-
-               const data = await response.json();
-
-               if (data.success) {
-                   quantityInput.value = newQuantity;
-                   location.reload();
-               } else {
-                   showToast(data.message || "Failed to update quantity", false);
-               }
-           } catch (error) {
-               console.error("Error updating quantity:", error);
-               showToast("Failed to update quantity", false);
            }
        }
     </script>

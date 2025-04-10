@@ -1,394 +1,748 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <%- include('partials/head') %>
-  <!-- Add CropperJS CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX Dashboard - Add Product</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#2e1065',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Toggle switch styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            background-color: #0284c7;
+            border-color: #0284c7;
+        }
+        
+        .toggle-label {
+            display: block;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 9999px;
+            height: 1.5rem;
+            background-color: #d1d5db;
+        }
+
+        /* Custom shadow */
+        .shadow-custom {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Glass effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* Custom animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Input focus effect */
+        .input-focus-effect:focus {
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+            border-color: #0284c7;
+        }
+        
+        /* Background pattern */
+        .bg-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-  <div class="min-h-screen flex flex-col">
-    <aside class="navbar-aside" id="offcanvas_aside">
-      <div class="aside-top">
-          <a href="" class="brand-wrap">
-              <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-          </a>
-          <div>
-              <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
-          </div>
-      </div>
-      <nav>
-          <ul class="menu-aside">
-              <li class="menu-item active">
-                  <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
-                      <span class="text">Dashboard</span>
-                  </a>
-              </li>
-              <li class="menu-item">
-                  <a class="menu-link " href="/admin/product-list2"> <i class="icon material-icons md-shopping_bag"></i>
-                      <span class="text">Products</span>
-                  </a>
-              </li>
-              <li class="menu-item">
-                  <a class="menu-link" href="/admin/category">  <i class="icon material-icons md-category"></i>
-                      <span class="text">category</span>
-                  </a>
-              </li>
-              <li class="menu-item">
-                  <a class="menu-link" href="/admin/brands"> <i class="icon material-icons md-stars"></i>
-                      <span class="text">Brands</span> </a>
-              </li>
-              <li class="menu-item ">
-                  <a class="menu-link" href="/admin/userlist">
-                    <i class="icon material-icons md-store"></i>
-                    <span class="text">Users</span>
-                  </a>
-                </li>
-
-
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 bg-pattern">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+            <div class="flex flex-col h-full">
+                <!-- Logo Area -->
+                <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+                    <a href="/admin/dashboard" class="flex items-center space-x-2">
+                        <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+                            <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+                        </div>
+                        <span class="text-xl font-bold text-gray-800">CycloneX</span>
+                    </a>
+                    <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
                 
-            <li class="menu-item ">
-              <a class="menu-link" href="/admin/orderlist">
-                <i class="icon material-icons md-shopping_bag"></i>
-                <span class="text">Orders</span>
-                <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-              </a>
-              <!-- <ul class="submenu">
-                <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li>
-                <li><a href="/admin/orderlist" class="submenu-link">Add Product</a></li>
-              </ul> -->
-            </li>
-          </ul>
-          <br>
-          <br>
-      </nav>
-  </aside>
-    <main class="flex-1 p-6">
-      <%- include('partials/header') %>
-      <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <% if (typeof success !== 'undefined' && success) { %>
-          <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <strong class="font-bold">Success!</strong>
-            <span class="block sm:inline">Product added successfully.</span>
-          </div>
-        <% } %>
+                <!-- Navigation -->
+                <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+                    <div class="space-y-1">
+                        <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+                        
+                        <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        
+                        <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium bg-primary-50 text-primary-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-primary-700"></i>
+                            <span>Products</span>
+                        </a>
+                        
+                        <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Categories</span>
+                        </a>
+                        
+                        <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Brands</span>
+                        </a>
+                    </div>
+                    
+                    <a href="/admin/salesreport" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                        <i class="fas fa-chart-line w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                        <span>Sales Report</span>
+                    </a>
+                    
+                    <div class="mt-8 space-y-1">
+                        <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+                        
+                        <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Users</span>
+                        </a>
+                        
+                        <a href="/admin/adminwallet" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-wallet w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Wallet</span>
+                        </a>
+                        
+                        <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Coupons</span>
+                        </a>
+                        
+                        <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 group">
+                            <i class="fas fa-clipboard-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Orders</span>
+                        </a>
+                        <a href="/admin/Logout" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-sign-out-alt w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
 
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Product</h2>
-        
-        <form action="/admin/addproduct" method="POST" enctype="multipart/form-data" class="space-y-4" id="addProductForm">
-            <!-- Product Name -->
-            <div>
-              <label class="block text-gray-700 font-semibold">Product Name</label>
-              <input type="text" name="productName" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-              <span id="error-productName" class="text-red-500 text-sm"></span>
-            </div>
-            
-            <!-- Description -->
-            <div>
-              <label class="block text-gray-700 font-semibold">Description</label>
-              <textarea name="description" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
-              <span id="error-description" class="text-red-500 text-sm"></span>
-            </div>
-            
-            <!-- Price -->
-            <div>
-              <label class="block text-gray-700 font-semibold">Price (₹)</label>
-              <input type="number" name="price" step="0.01" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-              <span id="error-price" class="text-red-500 text-sm"></span>
-            </div>
-            
-            <!-- Category Selection -->
-            <div>
-              <label class="block text-gray-700 font-semibold">Category</label>
-              <select name="category" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                <option value="">Select Category</option>
-                <% category.forEach(category => { %>
-                  <option value="<%= category._id %>"><%= category.name %></option>
-                <% }) %>
-              </select>
-              <span id="error-category" class="text-red-500 text-sm"></span>
-            </div>
-            
-            <!-- Brand Selection -->
-            <div>
-              <label class="block text-gray-700 font-semibold">Brand</label>
-              <select name="brands" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-                <option value="">Select Brand</option>
-                <% brands.forEach(brand => { %>
-                  <option value="<%= brand._id %>"><%= brand.name %></option>
-                <% }) %>
-              </select>
-              <span id="error-brands" class="text-red-500 text-sm"></span>
-            </div>
-            
-            <div>
-              <label class="block text-gray-700 font-semibold">Stock</label>
-              <input type="number" name="stock" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-              <span id="error-stock" class="text-red-500 text-sm"></span>
-            </div>
-            <div>
-              <label class="block text-gray-700 font-semibold">Offer</label>
-              <input type="number" name="offer" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-              <span id="error-offer" class="text-red-500 text-sm"></span>
-            </div>
+        <!-- Content Area -->
+        <div class="flex-1 lg:ml-64">
+      
 
-            <!-- Main Image (without cropping) -->
-            <div>
-              <label class="block text-gray-700 font-semibold">Main Image (No Cropping)</label>
-              <input type="file" name="mainImage" id="mainImage" accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-              <p class="text-sm text-gray-500 mt-1">Upload the main image without cropping.</p>
-              <span id="error-mainImage" class="text-red-500 text-sm"></span>
-            </div>
-            
-            <!-- Additional Images (to be cropped) -->
-            <div>
-              <label class="block text-gray-700 font-semibold">Product Images (Max 4)</label>
-              <input type="file" name="images" id="images" multiple accept="image/*" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
-              <p class="text-sm text-gray-500 mt-1">You can upload up to 4 additional images (these will be cropped).</p>
-              <span id="error-images" class="text-red-500 text-sm"></span>
-            </div>
-            
-            <!-- Hidden input to store crop data -->
-            <input type="hidden" name="cropData" id="cropData">
-            
-            <!-- Submit Button -->
-            <div>
-              <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">Add Product</button>
-            </div>
-          </form>
-      </div>
-    </main>
-    <%- include('partials/footer') %>
-  </div>
+            <!-- Main Content -->
+            <main class="p-4 md:p-6 lg:p-8">
+                <div class="max-w-5xl mx-auto">
+                    <!-- Page Header -->
+                    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Add New Product</h1>
+                            <p class="mt-1 text-sm text-gray-500">Create and publish a new product to your inventory</p>
+                        </div>
+                      
+                    </div>
 
-  <!-- Cropper Modal -->
-  <div id="cropperModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
-      <h2 class="text-xl font-bold mb-4">Crop Image <span id="imageCounter"></span></h2>
-      <div class="w-full h-96 overflow-hidden bg-gray-100 mb-4">
-        <img id="cropperImage" class="max-w-full">
-      </div>
-      <div class="flex justify-between items-center">
-        <p class="text-sm text-gray-500">Drag to adjust the crop area. For best results, make a square crop.</p>
-        <div class="flex space-x-4">
-          <button id="skipBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">Skip Cropping</button>
-          <button id="cropBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition">Save Crop</button>
+                    <!-- Success Alert -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6" role="alert">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle mr-2 text-green-500"></i>
+                            <strong class="font-medium">Success!</strong>
+                            <span class="ml-2">Product added successfully.</span>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <!-- Add Product Form Card -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                        <div class="bg-gradient-to-r from-primary-600 to-primary-700 p-4">
+                            <h3 class="text-white text-lg font-semibold flex items-center">
+                                <i class="fas fa-plus-circle mr-2"></i>
+                                Add New Product
+                            </h3>
+                            <p class="text-blue-100 text-sm mt-1">Fill in the product details below</p>
+                        </div>
+                        
+                        <div class="p-5">
+                            <!-- Add Product Form -->
+                            <form id="addProductForm" action="/admin/addproduct" method="POST" enctype="multipart/form-data" class="space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <!-- Product Name -->
+                                    <div class="relative">
+                                        <label for="productName" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Product Name <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-box text-gray-400"></i>
+                                            </div>
+                                            <input 
+                                                type="text" 
+                                                name="productName" 
+                                                id="productName"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                                 
+                                            >
+                                        </div>
+                                        <span id="error-productName" class="text-red-500 text-sm"></span>
+                                    </div>
+                                    
+                                    <!-- Price -->
+                                    <div class="relative">
+                                        <label for="price" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Price (₹) <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-tag text-gray-400"></i>
+                                            </div>
+                                            <input 
+                                                type="number" 
+                                                name="price" 
+                                                id="price"
+                                                step="0.01" 
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                                 
+                                            >
+                                        </div>
+                                        <span id="error-price" class="text-red-500 text-sm"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="relative">
+                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Description <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative rounded-md shadow-sm">
+                                        <div class="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
+                                            <i class="fas fa-align-left text-gray-400"></i>
+                                        </div>
+                                        <textarea 
+                                            name="description" 
+                                            id="description"
+                                            rows="4"
+                                            class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                             
+                                        ></textarea>
+                                    </div>
+                                    <span id="error-description" class="text-red-500 text-sm"></span>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <!-- Category Selection -->
+                                    <div class="relative">
+                                        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Category <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-folder text-gray-400"></i>
+                                            </div>
+                                            <select 
+                                                name="category" 
+                                                id="category"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                                 
+                                            >
+                                                <option value="">Select Category</option>
+                                                <% category.forEach(category => { %>
+                                                    <option value="<%= category._id %>"><%= category.name %></option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                        <span id="error-category" class="text-red-500 text-sm"></span>
+                                    </div>
+                                    
+                                    <!-- Brand Selection -->
+                                    <div class="relative">
+                                        <label for="brands" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Brand <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-star text-gray-400"></i>
+                                            </div>
+                                            <select 
+                                                name="brands" 
+                                                id="brands"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                                 
+                                            >
+                                                <option value="">Select Brand</option>
+                                                <% brands.forEach(brand => { %>
+                                                    <option value="<%= brand._id %>"><%= brand.name %></option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                        <span id="error-brands" class="text-red-500 text-sm"></span>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <!-- Stock -->
+                                    <div class="relative">
+                                        <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Stock <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-cubes text-gray-400"></i>
+                                            </div>
+                                            <input 
+                                                type="number" 
+                                                name="stock" 
+                                                id="stock"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                                 
+                                            >
+                                        </div>
+                                        <span id="error-stock" class="text-red-500 text-sm"></span>
+                                    </div>
+                                    
+                                    <!-- Offer -->
+                                    <div class="relative">
+                                        <label for="offer" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Discount Percentage (%)
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-percent text-gray-400"></i>
+                                            </div>
+                                            <input 
+                                                type="number" 
+                                                name="offer" 
+                                                id="offer"
+                                                min="0" 
+                                                max="100"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                            >
+                                        </div>
+                                        <span id="error-offer" class="text-red-500 text-sm"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Main Image -->
+                                <div class="relative">
+                                    <label for="mainImage" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Main Image <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-image text-3xl text-gray-400 mb-2"></i>
+                                            <p class="text-sm text-gray-600 mb-2">Drag and drop your main product image here</p>
+                                            <p class="text-xs text-gray-500">or</p>
+                                            <input 
+                                                type="file" 
+                                                name="mainImage" 
+                                                id="mainImage" 
+                                                accept="image/*"
+                                                class="hidden"
+                                                 
+                                            >
+                                            <button 
+                                                type="button" 
+                                                onclick="document.getElementById('mainImage').click()" 
+                                                class="mt-2 px-4 py-2 text-sm font-medium text-primary-600 bg-primary-50 rounded-md hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                                            >
+                                                Browse Files
+                                            </button>
+                                            <p class="text-xs text-gray-500 mt-1">This will be displayed as the primary product image</p>
+                                        </div>
+                                        <div id="mainImagePreview" class="hidden mt-4">
+                                            <p class="text-sm font-medium text-gray-700">Selected file:</p>
+                                            <p id="mainImageName" class="text-sm text-gray-500"></p>
+                                        </div>
+                                    </div>
+                                    <span id="error-mainImage" class="text-red-500 text-sm"></span>
+                                </div>
+
+                                <!-- Additional Images -->
+                                <div class="relative">
+                                    <label for="images" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Additional Images (Max 4)
+                                    </label>
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-secondary-400 transition-colors">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-images text-3xl text-gray-400 mb-2"></i>
+                                            <p class="text-sm text-gray-600 mb-2">Drag and drop additional product images here</p>
+                                            <p class="text-xs text-gray-500">or</p>
+                                            <input 
+                                                type="file" 
+                                                name="images" 
+                                                id="images" 
+                                                multiple 
+                                                accept="image/*"
+                                                class="hidden"
+                                            >
+                                            <button 
+                                                type="button" 
+                                                onclick="document.getElementById('images').click()" 
+                                                class="mt-2 px-4 py-2 text-sm font-medium text-secondary-600 bg-secondary-50 rounded-md hover:bg-secondary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500"
+                                            >
+                                                Browse Files
+                                            </button>
+                                            <p class="text-xs text-gray-500 mt-1">You can upload up to 4 additional images (these will be cropped)</p>
+                                        </div>
+                                        <div id="additionalImagesPreview" class="hidden mt-4">
+                                            <p class="text-sm font-medium text-gray-700">Selected files: <span id="imageCount">0</span></p>
+                                        </div>
+                                    </div>
+                                    <span id="error-images" class="text-red-500 text-sm"></span>
+                                </div>
+
+                                <!-- Hidden input to store crop data -->
+                                <input type="hidden" name="cropData" id="cropData">
+                                
+                                <!-- Submit Button -->
+                                <div class="flex flex-wrap gap-3 pt-6">
+                                    <button 
+                                        type="submit" 
+                                        class="flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm rounded-lg shadow-md hover:shadow-lg hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-300"
+                                    >
+                                        <i class="fas fa-plus-circle mr-2"></i>
+                                        Add Product
+                                    </button>
+                                    <a 
+                                        href="/admin/product-list2"
+                                        class="flex items-center px-6 py-3 bg-gray-100 text-gray-700 text-sm rounded-lg shadow-md hover:shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-300"
+                                    >
+                                        <i class="fas fa-times mr-2"></i>
+                                        Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="mt-auto py-4 px-6 bg-white border-t border-gray-200">
+                <div class="text-center text-sm text-gray-500">
+                    &copy; 2025 CycloneX. All rights reserved.
+                </div>
+            </footer>
         </div>
-      </div>
     </div>
-  </div>
-  
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script>
+
+  <!-- Cropper Modal (continuation) -->
+  <div id="cropperModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Crop Image <span id="imageCounter" class="text-primary-600"></span></h2>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="w-full h-96 overflow-hidden bg-gray-100 mb-4">
+            <img id="cropperImage" class="max-w-full">
+        </div>
+        <div class="flex justify-between items-center">
+            <p class="text-sm text-gray-500">Drag to adjust the crop area. For best results, make a square crop.</p>
+            <div class="flex space-x-4">
+                <button id="skipBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition">Skip Cropping</button>
+                <button id="cropBtn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition">Save Crop</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for sidebar functionality -->
+<script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Form submission with validation
-      document.getElementById('addProductForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+        const sidebar = document.getElementById('sidebar');
+        const openSidebarBtn = document.getElementById('openSidebar');
+        const closeSidebarBtn = document.getElementById('closeSidebar');
         
-        // Clear any previous error messages
-        document.querySelectorAll('.text-red-500').forEach(el => el.textContent = "");
-        
-        // Confirm before submitting
-        const result = await Swal.fire({
-          title: 'Add New Product?',
-          text: 'Are you sure you want to add this product?',
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonText: 'Yes, add it!',
-          cancelButtonText: 'Cancel',
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33'
+        // Open sidebar on mobile
+        openSidebarBtn.addEventListener('click', function() {
+            sidebar.classList.remove('-translate-x-full');
         });
         
-        if (result.isConfirmed) {
-          const formData = new FormData(this);
-          try {
-            const response = await fetch('/admin/addproduct', {
-              method: 'POST',
-              body: formData
-            });
-            
-            const data = await response.json();
-            
-            if (!response.ok) {
-              // Display validation errors
-              if (data.errors) {
-                for (const field in data.errors) {
-                  const errorElement = document.getElementById(`error-${field}`);
-                  if (errorElement) {
-                    errorElement.textContent = data.errors[field];
-                  }
-                }
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Failed to add product',
-                  text: data.message || 'An error occurred'
-                });
-              }
-              return;
-            }
-            
-            // Success message and redirect
-            Swal.fire({
-              icon: 'success',
-              title: 'Product added successfully!'
-            }).then(() => {
-              window.location.href = '/admin/product-list2';
-            });
-          } catch (error) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Failed to add product',
-              text: error.message
-            });
-          }
-        }
+        // Close sidebar on mobile
+        closeSidebarBtn.addEventListener('click', function() {
+            sidebar.classList.add('-translate-x-full');
+        });
+    });
+</script>
+
+<!-- Cropper.js and other   scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Form submission with validation
+    document.getElementById('addProductForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Clear any previous error messages
+      document.querySelectorAll('.text-red-500').forEach(el => el.textContent = "");
+      
+      // Confirm before submitting
+      const result = await Swal.fire({
+        title: 'Add New Product?',
+        text: 'Are you sure you want to add this product?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, add it!',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
       });
-
-      // Image cropping functionality
-      let files = [];
-      let cropDataArray = [];
-      let currentFileIndex = 0;
-      let cropperInstance = null;
-
-      // Get elements
-      const imagesInput = document.getElementById('images');
-      const cropperModal = document.getElementById('cropperModal');
-      const cropperImage = document.getElementById('cropperImage');
-      const cropDataInput = document.getElementById('cropData');
-      const cropBtn = document.getElementById('cropBtn');
-      const skipBtn = document.getElementById('skipBtn');
-      const imageCounter = document.getElementById('imageCounter');
-
-      // Initialize with empty array
-      cropDataInput.value = JSON.stringify([]);
-
-      // Handle file selection
-      imagesInput.addEventListener('change', function(e) {
-        files = Array.from(e.target.files);
-        
-        // Validate maximum number of files
-        if (files.length > 4) {
-          files = files.slice(0, 4);
-          Swal.fire({
-            icon: 'info',
-            title: 'Maximum 4 images allowed',
-            text: 'Only the first 4 images will be processed.'
-          });
-        }
-        
-        if (files.length === 0) return;
-        
-        // Initialize crop data array
-        cropDataArray = new Array(files.length).fill(null);
-        currentFileIndex = 0;
-        
-        // Start cropping process
-        startCroppingProcess();
-      });
-
-      function startCroppingProcess() {
-        if (files.length === 0) return;
-        
-        // Update image counter display
-        imageCounter.textContent = `(${currentFileIndex + 1}/${files.length})`;
-        
-        // Show modal
-        cropperModal.classList.remove('hidden');
-        
-        // Load image
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          cropperImage.src = e.target.result;
-          
-          // Destroy previous cropper instance if it exists
-          if (cropperInstance) {
-            cropperInstance.destroy();
-          }
-          
-          // Initialize new cropper with a delay to ensure image is loaded
-          setTimeout(() => {
-            cropperInstance = new Cropper(cropperImage, {
-              aspectRatio: 1,
-              viewMode: 1,
-              guides: true,
-              autoCropArea: 0.8,
-              responsive: true,
-              ready: function() {
-                console.log('Cropper initialized for image', currentFileIndex + 1);
-              }
-            });
-          }, 200);
-        };
-        
-        reader.readAsDataURL(files[currentFileIndex]);
-      }
-
-      // Handle crop button click
-      cropBtn.addEventListener('click', function() {
-        if (!cropperInstance) return;
-        
+      
+      if (result.isConfirmed) {
+        const formData = new FormData(this);
         try {
-          // Get crop data
-          const data = cropperInstance.getData(true);
-          cropDataArray[currentFileIndex] = {
-            x: Math.round(data.x),
-            y: Math.round(data.y),
-            width: Math.round(data.width),
-            height: Math.round(data.height)
-          };
+          const response = await fetch('/admin/addproduct', {
+            method: 'POST',
+            body: formData
+          });
           
-          console.log('Crop data saved for image', currentFileIndex + 1, cropDataArray[currentFileIndex]);
+          const data = await response.json();
           
-          // Proceed to next image
-          processNextImage();
-        } catch (err) {
-          console.error('Error getting crop data:', err);
-          cropDataArray[currentFileIndex] = null;
-          processNextImage();
-        }
-      });
-
-      // Handle skip button click
-      skipBtn.addEventListener('click', function() {
-        cropDataArray[currentFileIndex] = null;
-        console.log('Skipped cropping for image', currentFileIndex + 1);
-        processNextImage();
-      });
-
-      function processNextImage() {
-        // Destroy current cropper instance
-        if (cropperInstance) {
-          cropperInstance.destroy();
-          cropperInstance = null;
-        }
-        
-        // Move to next image
-        currentFileIndex++;
-        
-        if (currentFileIndex < files.length) {
-          // Process next image
-          startCroppingProcess();
-        } else {
-          // We're done with all images
-          cropperModal.classList.add('hidden');
+          if (!response.ok) {
+            // Display validation errors
+            if (data.errors) {
+              for (const field in data.errors) {
+                const errorElement = document.getElementById(`error-${field}`);
+                if (errorElement) {
+                  errorElement.textContent = data.errors[field];
+                }
+              }
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Failed to add product',
+                text: data.message || 'An error occurred'
+              });
+            }
+            return;
+          }
           
-          // Save final crop data to hidden input
-          cropDataInput.value = JSON.stringify(cropDataArray);
-          
-          console.log('All images processed. Final crop data:', cropDataInput.value);
-          
-          // Show completion message
+          // Success message and redirect
           Swal.fire({
             icon: 'success',
-            title: 'Images Processed',
-            text: 'All images have been prepared for upload'
+            title: 'Product added successfully!'
+          }).then(() => {
+            window.location.href = '/admin/product-list2';
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to add product',
+            text: error.message
           });
         }
       }
     });
-  </script>
+
+    // Image cropping functionality
+    let files = [];
+    let cropDataArray = [];
+    let currentFileIndex = 0;
+    let cropperInstance = null;
+
+    // Get elements
+    const imagesInput = document.getElementById('images');
+    const cropperModal = document.getElementById('cropperModal');
+    const cropperImage = document.getElementById('cropperImage');
+    const cropDataInput = document.getElementById('cropData');
+    const cropBtn = document.getElementById('cropBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const imageCounter = document.getElementById('imageCounter');
+
+    // Initialize with empty array
+    cropDataInput.value = JSON.stringify([]);
+
+    // Handle file selection
+    imagesInput.addEventListener('change', function(e) {
+      files = Array.from(e.target.files);
+      
+      // Validate maximum number of files
+      if (files.length > 4) {
+        files = files.slice(0, 4);
+        Swal.fire({
+          icon: 'info',
+          title: 'Maximum 4 images allowed',
+          text: 'Only the first 4 images will be processed.'
+        });
+      }
+      
+      if (files.length === 0) return;
+      
+      // Initialize crop data array
+      cropDataArray = new Array(files.length).fill(null);
+      currentFileIndex = 0;
+      
+      // Start cropping process
+      startCroppingProcess();
+    });
+
+    function startCroppingProcess() {
+      if (files.length === 0) return;
+      
+      // Update image counter display
+      imageCounter.textContent = `(${currentFileIndex + 1}/${files.length})`;
+      
+      // Show modal
+      cropperModal.classList.remove('hidden');
+      
+      // Load image
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        cropperImage.src = e.target.result;
+        
+        // Destroy previous cropper instance if it exists
+        if (cropperInstance) {
+          cropperInstance.destroy();
+        }
+        
+        // Initialize new cropper with a delay to ensure image is loaded
+        setTimeout(() => {
+          cropperInstance = new Cropper(cropperImage, {
+            aspectRatio: 1,
+            viewMode: 1,
+            guides: true,
+            autoCropArea: 0.8,
+            responsive: true,
+            ready: function() {
+            }
+          });
+        }, 200);
+      };
+      
+      reader.readAsDataURL(files[currentFileIndex]);
+    }
+
+    // Handle crop button click
+    cropBtn.addEventListener('click', function() {
+      if (!cropperInstance) return;
+      
+      try {
+        // Get crop data
+        const data = cropperInstance.getData(true);
+        cropDataArray[currentFileIndex] = {
+          x: Math.round(data.x),
+          y: Math.round(data.y),
+          width: Math.round(data.width),
+          height: Math.round(data.height)
+        };
+        
+        
+        // Proceed to next image
+        processNextImage();
+      } catch (err) {
+        console.error('Error getting crop data:', err);
+        cropDataArray[currentFileIndex] = null;
+        processNextImage();
+      }
+    });
+
+    // Handle skip button click
+    skipBtn.addEventListener('click', function() {
+      cropDataArray[currentFileIndex] = null;
+      processNextImage();
+    });
+
+    function processNextImage() {
+      // Destroy current cropper instance
+      if (cropperInstance) {
+        cropperInstance.destroy();
+        cropperInstance = null;
+      }
+      
+      // Move to next image
+      currentFileIndex++;
+      
+      if (currentFileIndex < files.length) {
+        // Process next image
+        startCroppingProcess();
+      } else {
+        // We're done with all images
+        cropperModal.classList.add('hidden');
+        
+        // Save final crop data to hidden input
+        cropDataInput.value = JSON.stringify(cropDataArray);
+        
+        
+        // Show completion message
+        Swal.fire({
+          icon: 'success',
+          title: 'Images Processed',
+          text: 'All images have been prepared for upload'
+        });
+      }
+    }
+  });
+</script>
 </body>
 </html>

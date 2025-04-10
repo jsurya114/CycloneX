@@ -353,7 +353,7 @@
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase tracking-wider">Full Name</p>
-                                        <p class="font-medium text-gray-800"><%= orders.address.fullname %></p>
+                                        <p class="font-medium text-gray-800"><%= orders.address?.fullname %></p>
                                     </div>
                                 </div>
                                 
@@ -364,7 +364,7 @@
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase tracking-wider">Email</p>
-                                        <p class="font-medium text-gray-800 break-all"><%= orders.address.email %></p>
+                                        <p class="font-medium text-gray-800 break-all"><%= orders.address?.email %></p>
                                     </div>
                                 </div>
                                 
@@ -375,7 +375,7 @@
                                     </div>
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase tracking-wider">Street Address</p>
-                                        <p class="font-medium text-gray-800"><%= orders.address.address %></p>
+                                        <p class="font-medium text-gray-800"><%= orders.address?.address %></p>
                                     </div>
                                 </div>
                                 
@@ -389,18 +389,18 @@
                                         <div class="font-medium text-gray-800">
                                             <span class="inline-flex items-center bg-primary-50 px-2 py-0.5 rounded mr-1 text-sm">
                                                 <i class="fas fa-landmark text-xs mr-1 text-primary-500"></i>
-                                                <%= orders.address.landmark %>
+                                                <%= orders.address?.landmark %>
                                             </span>
                                             <span class="inline-flex items-center bg-primary-50 px-2 py-0.5 rounded mr-1 text-sm">
                                                 <i class="fas fa-map text-xs mr-1 text-primary-500"></i>
-                                                <%= orders.address.state %>
+                                                <%= orders.address?.state %>
                                             </span>
                                             <span class="inline-flex items-center bg-primary-50 px-2 py-0.5 rounded text-sm">
                                                 <i class="fas fa-thumbtack text-xs mr-1 text-primary-500"></i>
-                                                <%= orders.address.pincode %>
+                                                <%= orders.address?.pincode %>
                                             </span>
                                         </div>
-                                        <p class="font-medium text-gray-800 mt-1"><%= orders.address.country %></p>
+                                        <p class="font-medium text-gray-800 mt-1"><%= orders.address?.country %></p>
                                     </div>
                                 </div>
                                 
@@ -412,8 +412,8 @@
                                     <div>
                                         <p class="text-xs text-gray-500 uppercase tracking-wider">Phone</p>
                                         <p class="font-medium text-gray-800 flex items-center">
-                                            <%= orders.address.mobileNum %>
-                                            <a href="tel:<%= orders.address.mobileNum %>" class="ml-2 text-primary-600 hover:text-primary-700">
+                                            <%= orders.address?.mobileNum %>
+                                            <a href="tel:<%= orders.address?.mobileNum %>" class="ml-2 text-primary-600 hover:text-primary-700">
                                                 <i class="fas fa-phone-alt text-xs"></i>
                                             </a>
                                         </p>

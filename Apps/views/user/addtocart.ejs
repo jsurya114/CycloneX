@@ -218,6 +218,35 @@
         body {
             transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        /* Quantity update animation */
+        @keyframes pulse-update {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .quantity-updated {
+            animation: pulse-update 0.5s ease;
+        }
+
+        /* New animations for real-time updates */
+        @keyframes highlight-update {
+            0% { background-color: rgba(14, 165, 233, 0.2); }
+            100% { background-color: transparent; }
+        }
+        .highlight-update {
+            animation: highlight-update 1.5s ease;
+        }
+
+        /* Price change animation */
+        @keyframes price-change {
+            0% { color: #10b981; }
+            50% { color: #0ea5e9; }
+            100% { color: inherit; }
+        }
+        .price-changed {
+            animation: price-change 1.5s ease;
+        }
     </style>
 </head>
 <body class="font-body bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -266,16 +295,16 @@
                             <h3 class="text-lg md:text-xl font-semibold flex items-center">
                                 <i class="fas fa-shopping-bag text-primary-500 mr-2"></i>
                                 Cart Items
-                                <span class="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                <span class="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400" id="cart-item-count">
                                     (<%= cart && cart.items ? cart.items.length : 0 %> items)
                                 </span>
                             </h3>
                         </div>
                         
-                        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700 max-h-[400px] md:max-h-[600px] overflow-y-auto">
+                        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700 max-h-[400px] md:max-h-[600px] overflow-y-auto" id="cart-items-container">
                             <% if (cart && cart.items && cart.items.length > 0) { %>
                                 <% cart.items.forEach(item => { %>
-                                    <li class="cart-item p-4 md:p-6 transition-all duration-300">
+                                    <li class="cart-item p-4 md:p-6 transition-all duration-300" id="cart-item-<%= item.product._id %>">
                                         <div class="flex flex-col sm:flex-row sm:items-center">
                                             <!-- Enhanced product image container -->
                                             <div class="flex-shrink-0 relative overflow-hidden rounded-xl bg-white dark:bg-gray-700 w-full sm:w-36 h-36 mb-4 sm:mb-0 mx-auto sm:mx-0 border border-gray-100 dark:border-gray-600 shadow-md group">
@@ -315,22 +344,27 @@
                                                         <div class="flex items-center mt-2">
                                                             <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">Qty:</span>
                                                             <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden shadow-sm">
-                                                                <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'decrement')" 
-                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                                                <button type="button" 
+                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                                                                    onclick="updateQuantityAjax('<%= item.product._id %>', 'decrement', '<%= item.product.productName %>', <%= item.salePrice %>)">
                                                                     <i class="fas fa-minus text-xs"></i>
                                                                 </button>
                                                                 <input id="quantity-<%= item.product._id %>" type="number" 
                                                                     class="w-10 h-8 border-0 bg-white dark:bg-gray-800 text-center text-gray-900 dark:text-white" 
-                                                                    value="<%= item.quantity %>">
-                                                                <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'increment')" 
-                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                                                                    value="<%= item.quantity %>"
+                                                                    data-product-name="<%= item.product.productName %>"
+                                                                    data-product-price="<%= item.salePrice %>"
+                                                                    onchange="updateQuantityAjax('<%= item.product._id %>', 'input', '<%= item.product.productName %>', <%= item.salePrice %>)">
+                                                                <button type="button" 
+                                                                    class="w-8 h-8 flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                                                                    onclick="updateQuantityAjax('<%= item.product._id %>', 'increment', '<%= item.product.productName %>', <%= item.salePrice %>)">
                                                                     <i class="fas fa-plus text-xs"></i>
                                                                 </button>
                                                             </div>
                                                         </div>
                                                         
                                                         <p class="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                            Subtotal: <span class="text-primary-600 dark:text-primary-400 font-semibold">₹<%= (item.salePrice* item.quantity).toFixed(2) %></span>
+                                                            Subtotal: <span class="text-primary-600 dark:text-primary-400 font-semibold" id="subtotal-<%= item.product._id %>">₹<%= (item.salePrice* item.quantity).toFixed(2) %></span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -346,7 +380,7 @@
                                                             <i class="far fa-heart mr-1"></i>
                                                             <span>Save for later</span>
                                                         </button>
-                                                        <button type="button" onclick="removeFromCart('<%= item.product._id %>')" 
+                                                        <button type="button" onclick="removeFromCartAjax('<%= item.product._id %>', '<%= item.product.productName %>')" 
                                                             class="flex items-center text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300 transition-colors">
                                                             <i class="far fa-trash-alt mr-1"></i>
                                                             <span>Remove</span>
@@ -358,7 +392,7 @@
                                     </li>
                                 <% }) %>
                             <% } else { %>
-                                <li class="py-12 md:py-16 px-4 md:px-6 text-center">
+                                <li class="py-12 md:py-16 px-4 md:px-6 text-center" id="empty-cart-message">
                                     <div class="flex flex-col items-center">
                                         <div class="w-20 h-20 md:w-24 md:h-24 bg-primary-50 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-4 animate-float">
                                             <i class="fas fa-shopping-cart text-3xl md:text-4xl text-primary-400 dark:text-primary-300"></i>
@@ -396,10 +430,10 @@
                         </div>
                         
                         <div class="p-4 md:p-6">
-                            <dl class="space-y-4">
+                            <dl class="space-y-4" id="order-summary">
                                 <div class="flex items-center justify-between">
                                     <dt class="text-sm text-gray-600 dark:text-gray-400">Subtotal</dt>
-                                    <dd class="text-sm font-medium text-gray-900 dark:text-white">
+                                    <dd class="text-sm font-medium text-gray-900 dark:text-white" id="cart-subtotal">
                                         ₹<%= cart && cart.totalSubtotal ? cart.totalSubtotal.toFixed(2) : 0 %>
                                     </dd>
                                 </div>
@@ -409,14 +443,14 @@
                                         <span>Tax</span>
                                     </dt>
 
-                                    <dd class="text-sm font-medium text-gray-900 dark:text-white">
+                                    <dd class="text-sm font-medium text-gray-900 dark:text-white" id="cart-tax">
                                         ₹<%= cart && cart.totalSubtotal ? taxAmount.toFixed(2) : 0 %>
                                     </dd>
                                 </div>
                                 
                                 <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                                     <dt class="text-base font-medium text-gray-900 dark:text-white">Order total</dt>
-                                    <dd class="text-base font-bold text-primary-600 dark:text-primary-400">
+                                    <dd class="text-base font-bold text-primary-600 dark:text-primary-400" id="cart-total">
                                         ₹<%= cart && cart.totalSubtotal ? finalTotal.toFixed(2) : 0 %>
                                     </dd>
                                 </div>
@@ -425,14 +459,14 @@
                             <!-- Checkout button -->
                             <div class="mt-6">
                                 <% if (cart && cart.items && cart.items.length > 0) { %>
-                                    <a href="/checkout">
+                                    <a href="/checkout" id="checkout-button">
                                         <button type="submit" class="w-full flex items-center justify-center px-4 md:px-6 py-3 md:py-4 border border-transparent text-sm md:text-base font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300">
                                             <i class="fas fa-lock mr-2"></i>
                                             Proceed to Checkout
                                         </button>
                                     </a>
                                 <% } else { %>
-                                    <button type="button" onclick="showEmptyCartMessage()" class="w-full flex items-center justify-center px-4 md:px-6 py-3 md:py-4 border border-transparent text-sm md:text-base font-medium rounded-lg shadow-sm text-white bg-gray-400 dark:bg-gray-600 cursor-not-allowed">
+                                    <button type="button" onclick="showEmptyCartMessage()" class="w-full flex items-center justify-center px-4 md:px-6 py-3 md:py-4 border border-transparent text-sm md:text-base font-medium rounded-lg shadow-sm text-white bg-gray-400 dark:bg-gray-600 cursor-not-allowed" id="disabled-checkout-button">
                                         <i class="fas fa-lock mr-2"></i>
                                         Proceed to Checkout
                                     </button>
@@ -595,8 +629,61 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
-        // Dark mode toggle functionality
+        // Cart state management
+        let cartState = {
+            items: [],
+            totalSubtotal: 0,
+            taxRate: 0.18, // 18% tax rate
+            taxAmount: 0,
+            finalTotal: 0,
+            itemCount: 0
+        };
+
+        // Initialize cart state from server data
         document.addEventListener('DOMContentLoaded', function() {
+            // Extract cart data from the page
+            const subtotalElement = document.getElementById('cart-subtotal');
+            const taxElement = document.getElementById('cart-tax');
+            const totalElement = document.getElementById('cart-total');
+            const itemCountElement = document.getElementById('cart-item-count');
+            
+            if (subtotalElement && taxElement && totalElement) {
+                cartState.totalSubtotal = parseFloat(subtotalElement.textContent.replace('₹', '')) || 0;
+                cartState.taxAmount = parseFloat(taxElement.textContent.replace('₹', '')) || 0;
+                cartState.finalTotal = parseFloat(totalElement.textContent.replace('₹', '')) || 0;
+                
+                // Extract item count from the text
+                if (itemCountElement) {
+                    const countText = itemCountElement.textContent;
+                    const match = countText.match(/$$(\d+)\s+items$$/);
+                    if (match && match[1]) {
+                        cartState.itemCount = parseInt(match[1]);
+                    }
+                }
+                
+                // Extract items data
+                const itemElements = document.querySelectorAll('.cart-item');
+                itemElements.forEach(item => {
+                    const productId = item.id.replace('cart-item-', '');
+                    const quantityInput = document.getElementById(`quantity-${productId}`);
+                    const subtotalElement = document.getElementById(`subtotal-${productId}`);
+                    
+                    if (quantityInput && subtotalElement) {
+                        const quantity = parseInt(quantityInput.value);
+                        const price = parseFloat(quantityInput.dataset.productPrice) || 0;
+                        const subtotal = parseFloat(subtotalElement.textContent.replace('₹', '')) || 0;
+                        
+                        cartState.items.push({
+                            productId,
+                            quantity,
+                            price,
+                            subtotal
+                        });
+                    }
+                });
+            }
+            
+            // Initialize dark mode
             const darkModeToggle = document.getElementById('darkModeToggle');
             const html = document.documentElement;
             
@@ -614,8 +701,116 @@
             });
         });
 
+        // Function to update cart state and UI
+        function updateCartState(data) {
+            // Update cart totals
+            if (data.cartSubtotal !== undefined) {
+                cartState.totalSubtotal = data.cartSubtotal;
+                const subtotalElement = document.getElementById('cart-subtotal');
+                if (subtotalElement) {
+                    subtotalElement.textContent = `₹${data.cartSubtotal.toFixed(2)}`;
+                    subtotalElement.classList.add('highlight-update');
+                    setTimeout(() => subtotalElement.classList.remove('highlight-update'), 1500);
+                }
+            }
+            
+            if (data.taxAmount !== undefined) {
+                cartState.taxAmount = data.taxAmount;
+                const taxElement = document.getElementById('cart-tax');
+                if (taxElement) {
+                    taxElement.textContent = `₹${data.taxAmount.toFixed(2)}`;
+                    taxElement.classList.add('highlight-update');
+                    setTimeout(() => taxElement.classList.remove('highlight-update'), 1500);
+                }
+            }
+            
+            if (data.finalTotal !== undefined) {
+                cartState.finalTotal = data.finalTotal;
+                const totalElement = document.getElementById('cart-total');
+                if (totalElement) {
+                    totalElement.textContent = `₹${data.finalTotal.toFixed(2)}`;
+                    totalElement.classList.add('price-changed');
+                    setTimeout(() => totalElement.classList.remove('price-changed'), 1500);
+                }
+            }
+            
+            // Update item count
+            if (data.itemCount !== undefined) {
+                cartState.itemCount = data.itemCount;
+                const itemCountElement = document.getElementById('cart-item-count');
+                if (itemCountElement) {
+                    itemCountElement.textContent = `(${data.itemCount} items)`;
+                    itemCountElement.classList.add('highlight-update');
+                    setTimeout(() => itemCountElement.classList.remove('highlight-update'), 1500);
+                }
+                
+                // Toggle between empty cart and checkout button
+                updateCheckoutButtonState(data.itemCount);
+            }
+            
+            // Animate the order summary section
+            const orderSummary = document.getElementById('order-summary');
+            if (orderSummary) {
+                orderSummary.classList.add('highlight-update');
+                setTimeout(() => orderSummary.classList.remove('highlight-update'), 1500);
+            }
+        }
+        
+        // Function to update checkout button state based on cart items
+        function updateCheckoutButtonState(itemCount) {
+            const checkoutButton = document.getElementById('checkout-button');
+            const disabledCheckoutButton = document.getElementById('disabled-checkout-button');
+            
+            if (itemCount === 0) {
+                // Show empty cart message if not already visible
+                const emptyCartMessage = document.getElementById('empty-cart-message');
+                const cartItemsContainer = document.getElementById('cart-items-container');
+                
+                if (!emptyCartMessage) {
+                    // Create and insert empty cart message
+                    cartItemsContainer.innerHTML = `
+                        <li class="py-12 md:py-16 px-4 md:px-6 text-center" id="empty-cart-message">
+                            <div class="flex flex-col items-center">
+                                <div class="w-20 h-20 md:w-24 md:h-24 bg-primary-50 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-4 animate-float">
+                                    <i class="fas fa-shopping-cart text-3xl md:text-4xl text-primary-400 dark:text-primary-300"></i>
+                                </div>
+                                <h3 class="text-lg md:text-xl font-medium text-gray-900 dark:text-white mb-2">Your cart is empty</h3>
+                                <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-md">Looks like you haven't added anything to your cart yet. Explore our products and find something you'll love!</p>
+                                <a href="/shoplist" class="inline-flex items-center px-4 md:px-6 py-2 md:py-3 border border-transparent text-sm md:text-base font-medium rounded-md shadow-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                                    <i class="fas fa-arrow-left mr-2"></i>
+                                    Continue Shopping
+                                </a>
+                            </div>
+                        </li>
+                    `;
+                }
+                
+                // Replace checkout button with disabled version
+                if (checkoutButton) {
+                    checkoutButton.outerHTML = `
+                        <button type="button" onclick="showEmptyCartMessage()" class="w-full flex items-center justify-center px-4 md:px-6 py-3 md:py-4 border border-transparent text-sm md:text-base font-medium rounded-lg shadow-sm text-white bg-gray-400 dark:bg-gray-600 cursor-not-allowed" id="disabled-checkout-button">
+                            <i class="fas fa-lock mr-2"></i>
+                            Proceed to Checkout
+                        </button>
+                    `;
+                }
+            } else {
+                // Replace disabled button with active checkout button
+                if (disabledCheckoutButton && !checkoutButton) {
+                    disabledCheckoutButton.outerHTML = `
+                        <a href="/checkout" id="checkout-button">
+                            <button type="submit" class="w-full flex items-center justify-center px-4 md:px-6 py-3 md:py-4 border border-transparent text-sm md:text-base font-medium rounded-lg shadow-md text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300">
+                                <i class="fas fa-lock mr-2"></i>
+                                Proceed to Checkout
+                            </button>
+                        </a>
+                    `;
+                }
+            }
+        }
+
         function showEmptyCartMessage() {
-            showToast('Your cart is empty. Please add items before checkout.', 'error');
+            showToast('Your cart is empty. Please add items before checkout.', false);
         }
 
         function addToCart(productId) {
@@ -632,14 +827,22 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Product added to cart!');
+                    // Update cart state with new data
+                    updateCartState(data);
+                    
+                    // If this is the first item, refresh the page to show cart items
+                    if (cartState.itemCount === 0) {
+                        window.location.reload();
+                    }
+                    
+                    showToast('Product added to cart!', true);
                 } else {
-                    showToast(data.message, true);
+                    showToast(data.message, false);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showToast('An error occurred.', true);
+                showToast('An error occurred.', false);
             });
         }
 
@@ -659,18 +862,45 @@
             }).showToast();
         }
 
-        // Function to update quantity
-        async function updateQuantity(productId, action) {
+        // AJAX function to update quantity
+        async function updateQuantityAjax(productId, action, productName, productPrice) {
             const quantityInput = document.getElementById(`quantity-${productId}`);
             let quantity = parseInt(quantityInput.value);
+            const originalQuantity = quantity;
 
             if (action === 'increment') {
                 quantity += 1;
             } else if (action === 'decrement' && quantity > 1) {
                 quantity -= 1;
+            } else if (action === 'input') {
+                // Ensure quantity is at least 1
+                if (quantity < 1) {
+                    quantity = 1;
+                    quantityInput.value = 1;
+                }
+            }
+
+            // If quantity didn't change, do nothing
+            if (quantity === originalQuantity && action !== 'input') {
+                return;
+            }
+
+            // Update the input value immediately for better UX
+            quantityInput.value = quantity;
+            
+            // Calculate and update the subtotal immediately for better UX
+            const subtotalElement = document.getElementById(`subtotal-${productId}`);
+            if (subtotalElement && productPrice) {
+                const newSubtotal = quantity * productPrice;
+                subtotalElement.textContent = `₹${newSubtotal.toFixed(2)}`;
+                subtotalElement.classList.add('quantity-updated');
             }
 
             try {
+                // Show loading indicator
+                const cartItem = document.getElementById(`cart-item-${productId}`);
+                cartItem.style.opacity = "0.7";
+                
                 const response = await fetch(`/addtocart/${productId}`, {
                     method: 'PUT',
                     headers: {
@@ -678,43 +908,109 @@
                     },
                     body: JSON.stringify({ quantity }),
                 });
+                
                 const data = await response.json();
                 
+                // Remove loading indicator
+                cartItem.style.opacity = "1";
+                
                 if (data.success) {
-                    // Show success toast before reloading
-                    showToast('Cart updated successfully');
-                    setTimeout(() => {
-                        window.location.reload(); // Reload the page to reflect the changes
-                    }, 1000);
-                } else {
-                    // Show toast only for stock unavailability
-                    if (data.message.includes('stock') || data.message.includes('available')) {
-                        showToast(data.message, false);
+                    // Update the subtotal for this item
+                    if (subtotalElement && data.itemSubtotal) {
+                        subtotalElement.textContent = `₹${data.itemSubtotal.toFixed(2)}`;
+                        setTimeout(() => {
+                            subtotalElement.classList.remove('quantity-updated');
+                        }, 500);
                     }
+                    
+                    // Update cart state with new data
+                    updateCartState(data);
+                    
+                    // Show success toast with product name
+                    showToast(`${productName} quantity updated to ${quantity}`, true);
+                } else {
+                    // Revert the input value if there was an error
+                    quantityInput.value = originalQuantity;
+                    
+                    // Revert the subtotal if there was an error
+                    if (subtotalElement && productPrice) {
+                        subtotalElement.textContent = `₹${(originalQuantity * productPrice).toFixed(2)}`;
+                        subtotalElement.classList.remove('quantity-updated');
+                    }
+                    
+                    // Show error toast
+                    showToast(data.message || 'Failed to update quantity', false);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showToast('An error occurred', false);
+                
+                // Revert the input value if there was an error
+                quantityInput.value = originalQuantity;
+                
+                // Revert the subtotal if there was an error
+                if (subtotalElement && productPrice) {
+                    subtotalElement.textContent = `₹${(originalQuantity * productPrice).toFixed(2)}`;
+                    subtotalElement.classList.remove('quantity-updated');
+                }
+                
+                // Show error toast
+                showToast('An error occurred while updating the cart', false);
             }
         }
 
-        // Function to remove item from cart
-        async function removeFromCart(productId) {
+        // AJAX function to remove item from cart
+        async function removeFromCartAjax(productId, productName) {
             try {
+                // Show loading indicator
+                const cartItem = document.getElementById(`cart-item-${productId}`);
+                cartItem.style.opacity = "0.7";
+                
                 const response = await fetch(`/addtocart/${productId}`, {
                     method: 'DELETE',
                 });
-                if (response.ok) {
-                    showToast('Item removed from cart');
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Animate the item removal
+                    cartItem.style.height = cartItem.offsetHeight + 'px';
+                    cartItem.style.overflow = 'hidden';
+                    
                     setTimeout(() => {
-                        window.location.reload(); // Reload the page to reflect the changes
-                    }, 1000);
+                        cartItem.style.height = '0';
+                        cartItem.style.padding = '0';
+                        cartItem.style.margin = '0';
+                        cartItem.style.borderWidth = '0';
+                        
+                        setTimeout(() => {
+                            // Remove the item from DOM
+                            cartItem.remove();
+                            
+                            // Update cart state with new data
+                            updateCartState(data);
+                            
+                            // Show success toast
+                            showToast(`${productName} removed from cart`, true);
+                        }, 300);
+                    }, 10);
                 } else {
-                    showToast('Failed to remove item from cart', false);
+                    // Remove loading indicator
+                    cartItem.style.opacity = "1";
+                    
+                    // Show error toast
+                    showToast(data.message || 'Failed to remove item', false);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                showToast('An error occurred', false);
+                
+                // Remove loading indicator if there was an error
+                const cartItem = document.getElementById(`cart-item-${productId}`);
+                if (cartItem) {
+                    cartItem.style.opacity = "1";
+                }
+                
+                // Show error toast
+                showToast('An error occurred while removing the item', false);
             }
         }
 

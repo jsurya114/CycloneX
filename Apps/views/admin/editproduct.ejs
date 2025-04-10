@@ -140,6 +140,7 @@
                     <input type="number" name="stock" placeholder="Enter stock quantity"
                            class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" 
                            value="<%= product.stock %>">
+                           <p id="stockError" class="text-red-500 text-sm mt-1"></p>
                 </div>
 
                 <!-- Main Image Upload -->
@@ -208,7 +209,6 @@
                     const imagePath = this.dataset.image;
                     const imageIndex = this.dataset.index;
                     const productId = document.querySelector('input[name="productId"]').value;
-                    console.log('imageIndex',imageType)
                     const result = await Swal.fire({
                         title: 'Delete Image?',
                         text: "This image will be permanently deleted!",
@@ -254,12 +254,12 @@
 
                 const formData = new FormData(this);
                 const productId = formData.get('productId');
-                console.log('data',formData)
             
                 // Clear previous errors
                 document.getElementById('productNameError').textContent = '';
                 document.getElementById('descriptionError').textContent = '';
                 document.getElementById('priceError').textContent = '';
+                document.getElementById('stockError').textContent = '';
 
                 const result = await Swal.fire({
                     title: 'Confirm Update?',
@@ -291,6 +291,9 @@
                             }
                             if (data.errors.price) {
                                 document.getElementById('priceError').textContent = data.errors.price;
+                            }
+                            if (data.errors.stock) {
+                                document.getElementById('stockError').textContent = data.errors.stock;
                             }
                         } else {
                             Swal.fire('Error', data.message || 'Failed to update product.', 'error');

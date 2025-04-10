@@ -20,9 +20,9 @@ const userController = {
              const decoded=jwt.verify(token,process.env.JWT_SECRET)
 
              const userId= decoded.id;
-            //  console.log("user",userId);
              const user=await User.findById(userId);
-             let cartCount =await Cart.countDocuments({user:userId})
+          let cartfind = await Cart.findOne({user: userId})
+                   const cartCount = cartfind.items.length
              let orderCount=await Order.countDocuments({user:userId})
             const categories = await Category.find({});
             const brands = await Brand.find({});
@@ -91,8 +91,6 @@ const userController = {
                     const productOffer = p.offer||0
                   const categoryOffer = (p.category && p.category.offer) ? p.category.offer : 0;
                     const maxOffer = Math.max(productOffer,categoryOffer)
-                    console.log(Math.max(productOffer, categoryOffer))
-                      // Calculate sale price if there's any discount; otherwise, remain the same as original price
                 
                     const salePrice = maxOffer>0?p.price*(1-maxOffer/100):p.price
                 
@@ -164,11 +162,21 @@ cartCount,
             const id =req.params.id
 const {search}=req.query
 let filter ={}
-              const token = req.cookies.token;
-                        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                        
-                        const userId = decoded.id;
-                        const user = await User.findById(userId);
+const token = req.cookies.token;
+
+let userId = null;
+let user = null;
+let cartCount = 0;
+
+if (token) {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    userId = decoded.id;
+    user = await User.findById(userId);
+    
+    let cartfind = await Cart.findOne({ user: userId });
+    cartCount = cartfind ? cartfind.items.length : 0;
+}
+
                         const categories = await Category.find({});
                                    const brands = await Brand.find({});
         const product = await Product.findById(id).populate('category').populate('brands')
@@ -179,13 +187,15 @@ let filter ={}
         
         const salePrice = product.price * (1 - maxOffer / 100); // Apply discount correctly
         
-        let cartCount =await Cart.countDocuments({user:userId})
-        const breadcrumbs = [
-            { name: 'Home', url: '/' },
-            { name: product.category.name, url: `/home?categoryFilter=${encodeURIComponent(product.category.name)}` },
-            { name: product.brands.name, url: `/home?brandsFilter=${encodeURIComponent(product.brands.name)}` },
-            { name: product.productName, url: `/productdetails/${product._id}` }
-        ];
+        let cartfind = await Cart.findOne({user: userId})
+                //  const cartCount = cartfind.items.length
+                 const breadcrumbs = [
+                    { name: 'Home', url: '/' },
+                    product.category ? { name: product.category.name, url: `/home?categoryFilter=${encodeURIComponent(product.category.name)}` } : { name: 'Category', url: '#' },
+                    product.brands ? { name: product.brands.name, url: `/home?brandsFilter=${encodeURIComponent(product.brands.name)}` } : { name: 'Brand', url: '#' },
+                    { name: product.productName, url: `/productdetails/${product._id}` }
+                  ];
+                  
 
 
         const relatedProducts= await Product.find({
@@ -205,7 +215,8 @@ let filter ={}
 
 
 
-        res.status(200).render('productdetails',{product,user:user._id,relatedProducts, breadcrumbs,brands,cartCount,review,maxOffer,salePrice})
+        res.status(200).render('productdetails',{product, user: user ? user._id : null,
+            relatedProducts, breadcrumbs,brands,cartCount,review,maxOffer,salePrice})
         
         } catch (error) {
             console.error(error)
@@ -220,7 +231,6 @@ let filter ={}
     showUserProfile:async (req,res,next) => {
 try
 {
-console.log('invoked profile');
 
  
     const userId= req.params.userId
@@ -228,7 +238,8 @@ const user = await User.findById(userId)
 
 const users= req.user.id
 const wishlist = await Wishlist.countDocuments({ user: userId });
-let cartCount =await Cart.countDocuments({user:userId})
+   let cartfind = await Cart.findOne({user: userId})
+            const cartCount = cartfind.items.length
 let orderCount=await Order.countDocuments({user:userId})
 let reviewCount =await Review.countDocuments({user:userId})
 

@@ -46,7 +46,6 @@ return res.status(200).json({success:true,address})
 },
 manageAddress:async (req,res,next) => {
     try {
-        console.log('reqbody',req.body)
 const userId = req.params.userId
 if(!userId){
     return res.status(404).json({success:false,message:'invalid input'})
