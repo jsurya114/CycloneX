@@ -298,6 +298,8 @@ res.status(200).json({message:'OTP verified successfully'})
         }
     },
     logout:(req, res,next)=>{
+      console.log('invoked logout');
+      
       res.clearCookie('token')
       res.status(200).redirect('/')
   },

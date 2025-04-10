@@ -25,9 +25,8 @@ const RazorpayController = require('../../controllers/user/razorpayController');
 
 
 
-
-router.get('/',authController.landing)
 router.use(userEnsure,nocache);
+router.get('/',authController.landing)
 router.get('/login', userEnsure, nocache, authController.logins);
 router.post('/', authController.loginspost);
 router.get('/signup', authController.signup);

@@ -106,7 +106,10 @@ const cartController = {
     addToCart: async (req, res, next) => {
         try {
             const { productId, quantity } = req.body
-            const userId = req.user._id
+            const userId = req.user?._id
+            if(!userId){
+                return res.status(400).json({success:false, message: "Please login to add to cart"});
+            }
             if (quantity <= 0) {
                 return res.status(400).json({ success: false, message: "Quantity must be at least 1" });
             }
