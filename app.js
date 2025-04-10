@@ -82,6 +82,9 @@ app.use((error, req, res, next) => {
 
 
 // Start the server
-app.listen(PORT, () => {
-    console.log(`CycloneX running on http://127.0.0.1:${PORT}`);
+// app.listen(PORT, () => {
+//     console.log(`CycloneX running on http://127.0.0.1:${PORT}`);
+// });
+app.listen(3000, '0.0.0.0', () => {
+  console.log('CycloneX running on http://0.0.0.0:3000');
 });
