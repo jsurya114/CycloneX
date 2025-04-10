@@ -17,7 +17,7 @@ const UserSchema = new mongoose.Schema({
     otpExpires: { type: Date }, // Add this field for storing OTP expiry time
     googleId: { type: String },
     facebookId: { type: String },
-    refferalCode:{type:String,unique:true},
+    refferalCode:{type:String},
     refferedBy:{type:String}
 },{timestamps:true});
 
