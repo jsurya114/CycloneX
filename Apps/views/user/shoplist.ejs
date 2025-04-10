@@ -392,10 +392,16 @@
         .dark .product-card.color-green .card-image-container { background: #166534; }
         .dark .product-card.color-orange .card-image-container { background: #7C2D12; }
         
-        .product-card .three-canvas {
+        .product-card .card-image {
             width: 100%;
             height: 100%;
-            display: block;
+            object-fit: contain;
+            padding: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover .card-image {
+            transform: scale(1.05);
         }
         
         .product-card .card-content {
@@ -801,10 +807,16 @@
             background: #1E3A8A;
         }
         
-        .modal-three-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
+        .modal-product-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            padding: 2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-product-image:hover {
+            transform: scale(1.05);
         }
         
         .modal-close-btn {
@@ -1359,18 +1371,11 @@
             <div class="product-card <%= colorClass %>" data-product-id="<%= pro._id %>">
                 <!-- Product Image Container -->
                 <div class="card-image-container">
-                    <!-- Loading Spinner for Three.js -->
-                    <div class="loading-spinner"></div>
-                    
-                    <!-- Three.js Canvas -->
-                    <canvas class="three-canvas"></canvas>
-                    
-                    <!-- Original Image (hidden, used as texture for Three.js) -->
+                    <!-- Product Image -->
                     <img 
                         src="/<%= pro.mainImage %>" 
                         alt="<%= pro.productName %>" 
-                        class="card-image hidden"
-                        data-src="/<%= pro.mainImage %>"
+                        class="card-image"
                         crossorigin="anonymous"
                     >
                     
@@ -1419,7 +1424,7 @@
                     
                     <!-- Quick View Button -->
                     <button 
-                        onclick="openQuickView('<%= pro._id %>', '<%= pro.productName %>', '/<%= pro.mainImage %>', '<%= pro.price %>','<%= pro.description %>', '<%= pro.brands ? pro.brands.name : 'No Brand' %>', '<%= pro.maxOffer %>', '<%= pro.salePrice %>', '<%= pro.stock %>')" 
+                        onclick="openQuickView('<%= pro._id %>', '<%= pro.productName %>', '/<%= pro.mainImage %>', '<%= pro.description %>', '<%= pro.price %>','<%= pro.brands ? pro.brands.name : 'No Brand' %>', '<%= pro.maxOffer %>', '<%= pro.salePrice %>', '<%= pro.stock %>')" 
                         class="quick-view-btn"
                     >
                         <i class="fas fa-eye mr-2"></i> Quick View
@@ -1489,7 +1494,6 @@
             <div class="col-span-full">
                 <div class="empty-state">
                     <svg xmlns="http://www.w3.org/2000/svg" class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4  stroke-linejoin="round">
                         <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
                         <path d="M16.5 9.4 7.55 4.24"/>
                         <polyline points="3.29 7 12 12 20.71 7"/>
@@ -1521,13 +1525,9 @@
 <div id="quickViewModal" class="modal">
     <div class="modal-content enhanced-modal p-0 overflow-hidden">
         <div class="flex flex-col md:flex-row">
-            <!-- Product Image with Three.js -->
+            <!-- Product Image -->
             <div class="md:w-1/2 modal-product-container">
-                <!-- Loading Spinner for Three.js -->
-                <div class="loading-spinner"></div>
-                
-                <!-- Three.js Canvas -->
-                <canvas id="modalThreeCanvas" class="modal-three-canvas"></canvas>
+                <img id="modalProductImage" class="modal-product-image" src="/placeholder.svg" alt="Product Image">
                 
                 <!-- Close Button -->
                 <button onclick="closeQuickView()" class="modal-close-btn">
@@ -1555,11 +1555,7 @@
                 
                 <div id="modalPriceContainer" class="modal-price-container"></div>
                 
-                <p class="modal-description">
-
-                    </p>
-                
-               
+                <p id="modalDescription" class="modal-description"></p>
                 
                 <div id="modalStockStatus" class="mb-4"></div>
                 
@@ -1596,526 +1592,6 @@
 
 <!-- JavaScript -->
 <script>
-    // Three.js Product Card Renderer
-    class ProductRenderer {
-        constructor() {
-            this.scenes = new Map();
-            this.renderers = new Map();
-            this.cameras = new Map();
-            this.textures = new Map();
-            this.meshes = new Map();
-            this.animationFrames = new Map();
-            this.isInitialized = false;
-            this.modalScene = null;
-            this.modalRenderer = null;
-            this.modalCamera = null;
-            this.modalMesh = null;
-            this.modalAnimationFrame = null;
-            this.mouseInteractionEnabled = true;
-        }
-        
-        // Initialize all product cards with Three.js
-        init() {
-            if (this.isInitialized) return;
-            
-            const productCards = document.querySelectorAll('.product-card');
-            productCards.forEach(card => {
-                const productId = card.dataset.productId;
-                const canvas = card.querySelector('.three-canvas');
-                const img = card.querySelector('.card-image');
-                
-                if (canvas && img && productId) {
-                    this.initProductCard(productId, canvas, img);
-                }
-            });
-            
-            this.isInitialized = true;
-            
-            // Add resize event listener
-            window.addEventListener('resize', this.handleResize.bind(this));
-        }
-        
-        // Initialize a single product card
-        initProductCard(productId, canvas, img) {
-            // Create scene
-            const scene = new THREE.Scene();
-            
-            // Make scene background transparent to show the colored container
-            scene.background = null;
-            
-            // Create camera
-            const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-            camera.position.z = 1.5;
-            
-            // Create renderer
-            const renderer = new THREE.WebGLRenderer({ 
-                canvas: canvas,
-                antialias: true,
-                alpha: true
-            });
-            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            
-            // Create lighting
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            scene.add(ambientLight);
-            
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(1, 1, 1);
-            scene.add(directionalLight);
-            
-            const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
-            backLight.position.set(-1, -1, -1);
-            scene.add(backLight);
-            
-            // Load texture
-            const textureLoader = new THREE.TextureLoader();
-            textureLoader.crossOrigin = 'anonymous';
-            
-            // Show loading spinner
-            const loadingSpinner = canvas.parentElement.querySelector('.loading-spinner');
-            if (loadingSpinner) {
-                loadingSpinner.style.display = 'block';
-            }
-            
-            // Load the image as texture
-            textureLoader.load(
-                img.dataset.src,
-                (texture) => {
-                    // Create a plane geometry with proper aspect ratio
-                    const aspectRatio = texture.image.width / texture.image.height;
-                    let width = 1;
-                    let height = 1 / aspectRatio;
-                    
-                    // Adjust if image is taller than wide
-                    if (aspectRatio < 1) {
-                        width = aspectRatio;
-                        height = 1;
-                    }
-                    
-                    const geometry = new THREE.PlaneGeometry(width, height, 1, 1);
-                    const material = new THREE.MeshStandardMaterial({ 
-                        map: texture,
-                        side: THREE.DoubleSide,
-                        transparent: true
-                    });
-                    
-                    const mesh = new THREE.Mesh(geometry, material);
-                    scene.add(mesh);
-                    
-                    // Store references
-                    this.textures.set(productId, texture);
-                    this.meshes.set(productId, mesh);
-                    
-                    // Hide loading spinner
-                    if (loadingSpinner) {
-                        loadingSpinner.style.display = 'none';
-                    }
-                    
-                    // Start animation
-                    this.animate(productId);
-                },
-                undefined,
-                (error) => {
-                    console.error('Error loading texture:', error);
-                    // Hide loading spinner on error
-                    if (loadingSpinner) {
-                        loadingSpinner.style.display = 'none';
-                    }
-                },
-            );
-            
-            // Store references
-            this.scenes.set(productId, scene);
-            this.cameras.set(productId, camera);
-            this.renderers.set(productId, renderer);
-            
-            // Add mouse interaction
-            canvas.addEventListener('mousemove', (event) => {
-                this.handleMouseMove(event, productId, canvas);
-            });
-            
-            canvas.addEventListener('mouseleave', () => {
-                this.resetRotation(productId);
-            });
-            
-            // Add touch interaction for mobile
-            canvas.addEventListener('touchmove', (event) => {
-                if (event.touches.length === 1) {
-                    event.preventDefault();
-                    const touch = event.touches[0];
-                    const mouseEvent = new MouseEvent('mousemove', {
-                        clientX: touch.clientX,
-                        clientY: touch.clientY
-                    });
-                    this.handleMouseMove(mouseEvent, productId, canvas);
-                }
-            });
-            
-            canvas.addEventListener('touchend', () => {
-                this.resetRotation(productId);
-            });
-            
-            // Add double-tap to reset rotation
-            let lastTap = 0;
-            canvas.addEventListener('touchstart', (event) => {
-                const currentTime = new Date().getTime();
-                const tapLength = currentTime - lastTap;
-                if (tapLength < 300 && tapLength > 0) {
-                    this.resetRotation(productId);
-                }
-                lastTap = currentTime;
-            });
-        }
-        
-        // Handle mouse movement for interactive rotation
-        handleMouseMove(event, productId, canvas) {
-            if (!this.mouseInteractionEnabled) return;
-            
-            const mesh = this.meshes.get(productId);
-            if (!mesh) return;
-            
-            const rect = canvas.getBoundingClientRect();
-            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-            
-            // Rotate based on mouse position - more subtle rotation for minimalist aesthetic
-            mesh.rotation.y = x * 0.8;
-            mesh.rotation.x = y * 0.5;
-            
-            // Add slight z-axis rotation for more realism
-            mesh.rotation.z = x * y * 0.1;
-            
-            // Add slight position shift for parallax effect
-            mesh.position.x = x * 0.05;
-            mesh.position.y = y * 0.05;
-        }
-        
-        // Reset rotation when mouse leaves
-        resetRotation(productId) {
-            const mesh = this.meshes.get(productId);
-            if (!mesh) return;
-            
-            // Smoothly animate back to default rotation
-            this.animateToDefaultPosition(mesh);
-        }
-        
-        // Smoothly animate to default position
-        animateToDefaultPosition(mesh) {
-            const duration = 800; // ms
-            const startTime = Date.now();
-            const startRotation = {
-                x: mesh.rotation.x,
-                y: mesh.rotation.y,
-                z: mesh.rotation.z
-            };
-            const startPosition = {
-                x: mesh.position.x,
-                y: mesh.position.y,
-                z: mesh.position.z
-            };
-            
-            const animate = () => {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                // Easing function (ease-out)
-                const easeOut = t => 1 - Math.pow(1 - t, 3);
-                const easedProgress = easeOut(progress);
-                
-                // Interpolate rotation
-                mesh.rotation.x = startRotation.x * (1 - easedProgress);
-                mesh.rotation.y = startRotation.y * (1 - easedProgress) + (0.003 * easedProgress); // Slight rotation for idle animation
-                mesh.rotation.z = startRotation.z * (1 - easedProgress);
-                
-                // Interpolate position
-                mesh.position.x = startPosition.x * (1 - easedProgress);
-                mesh.position.y = startPosition.y * (1 - easedProgress);
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                }
-            };
-            
-            animate();
-        }
-        
-        // Animation loop for a specific product
-        animate(productId) {
-            const scene = this.scenes.get(productId);
-            const camera = this.cameras.get(productId);
-            const renderer = this.renderers.get(productId);
-            const mesh = this.meshes.get(productId);
-            
-            if (!scene || !camera || !renderer || !mesh) return;
-            
-            const animateFrame = () => {
-                // Auto-rotate slightly when not being interacted with
-                if (!this.mouseInteractionEnabled || 
-                    (Math.abs(mesh.rotation.x) < 0.05 && Math.abs(mesh.rotation.y) < 0.05)) {
-                    mesh.rotation.y += 0.003;
-                }
-                
-                renderer.render(scene, camera);
-                const frameId = requestAnimationFrame(animateFrame);
-                this.animationFrames.set(productId, frameId);
-            };
-            
-            animateFrame();
-        }
-        
-        // Initialize the modal 3D view
-        initModal(imageSrc) {
-            const canvas = document.getElementById('modalThreeCanvas');
-            const loadingSpinner = canvas.parentElement.querySelector('.loading-spinner');
-            
-            if (loadingSpinner) {
-                loadingSpinner.style.display = 'block';
-            }
-            
-            // Create scene
-            this.modalScene = new THREE.Scene();
-            
-            // Make scene background transparent to show the colored container
-            this.modalScene.background = null;
-            
-            // Create camera
-            this.modalCamera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-            this.modalCamera.position.z = 1.5;
-            
-            // Create renderer
-            this.modalRenderer = new THREE.WebGLRenderer({ 
-                canvas: canvas,
-                antialias: true,
-                alpha: true
-            });
-            this.modalRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            this.modalRenderer.setPixelRatio(window.devicePixelRatio);
-            
-            // Create lighting
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            this.modalScene.add(ambientLight);
-            
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(1, 1, 1);
-            this.modalScene.add(directionalLight);
-            
-            const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
-            backLight.position.set(-1, -1, -1);
-            this.modalScene.add(backLight);
-            
-            // Add spotlight for dramatic effect
-            const spotLight = new THREE.SpotLight(0xffffff, 0.5);
-            spotLight.position.set(0, 2, 2);
-            spotLight.angle = Math.PI / 6;
-            spotLight.penumbra = 0.2;
-            this.modalScene.add(spotLight);
-            
-            // Load texture
-            const textureLoader = new THREE.TextureLoader();
-            textureLoader.crossOrigin = 'anonymous';
-            
-            // Load the image as texture
-            textureLoader.load(
-                imageSrc,
-                (texture) => {
-                    // Create a plane geometry with proper aspect ratio
-                    const aspectRatio = texture.image.width / texture.image.height;
-                    let width = 1;
-                    let height = 1 / aspectRatio;
-                    
-                    // Adjust if image is taller than wide
-                    if (aspectRatio < 1) {
-                        width = aspectRatio;
-                        height = 1;
-                    }
-                    
-                    const geometry = new THREE.PlaneGeometry(width, height, 1, 1);
-                    const material = new THREE.MeshStandardMaterial({ 
-                        map: texture,
-                        side: THREE.DoubleSide,
-                        transparent: true
-                    });
-                    
-                    this.modalMesh = new THREE.Mesh(geometry, material);
-                    this.modalScene.add(this.modalMesh);
-                    
-                    // Hide loading spinner
-                    if (loadingSpinner) {
-                        loadingSpinner.style.display = 'none';
-                    }
-                    
-                    // Start animation
-                    this.animateModal();
-                },
-                undefined,
-                (error) => {
-                    console.error('Error loading texture:', error);
-                    // Hide loading spinner on error
-                    if (loadingSpinner) {
-                        loadingSpinner.style.display = 'none';
-                    }
-                }
-            );
-            
-            // Add mouse interaction
-            canvas.addEventListener('mousemove', (event) => {
-                this.handleModalMouseMove(event, canvas);
-            });
-            
-            canvas.addEventListener('mouseleave', () => {
-                this.resetModalRotation();
-            });
-            
-            // Add touch interaction for mobile
-            canvas.addEventListener('touchmove', (event) => {
-                if (event.touches.length === 1) {
-                    event.preventDefault();
-                    const touch = event.touches[0];
-                    const mouseEvent = new MouseEvent('mousemove', {
-                        clientX: touch.clientX,
-                        clientY: touch.clientY
-                    });
-                    this.handleModalMouseMove(mouseEvent, canvas);
-                }
-            });
-            
-            canvas.addEventListener('touchend', () => {
-                this.resetModalRotation();
-            });
-        }
-        
-        // Handle mouse movement for modal
-        handleModalMouseMove(event, canvas) {
-            if (!this.modalMesh) return;
-            
-            const rect = canvas.getBoundingClientRect();
-            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-            
-            // Rotate based on mouse position - more pronounced rotation for modal
-            this.modalMesh.rotation.y = x * 1.2;
-            this.modalMesh.rotation.x = y * 0.8;
-            
-            // Add slight z-axis rotation for more realism
-            this.modalMesh.rotation.z = x * y * 0.2;
-            
-            // Add slight position shift for parallax effect
-            this.modalMesh.position.x = x * 0.1;
-            this.modalMesh.position.y = y * 0.1;
-        }
-        
-        // Reset modal rotation
-        resetModalRotation() {
-            if (!this.modalMesh) return;
-            
-            // Smoothly animate back to default rotation
-            this.animateToDefaultPosition(this.modalMesh);
-        }
-        
-        // Animation loop for modal
-        animateModal() {
-            if (!this.modalScene || !this.modalCamera || !this.modalRenderer || !this.modalMesh) return;
-            
-            const animateFrame = () => {
-                // Auto-rotate slightly when not being interacted with
-                if (Math.abs(this.modalMesh.rotation.x) < 0.05 && Math.abs(this.modalMesh.rotation.y) < 0.05) {
-                    this.modalMesh.rotation.y += 0.003;
-                }
-                
-                this.modalRenderer.render(this.modalScene, this.modalCamera);
-                this.modalAnimationFrame = requestAnimationFrame(animateFrame);
-            };
-            
-            animateFrame();
-        }
-        
-        // Clean up modal resources
-        cleanupModal() {
-            if (this.modalAnimationFrame) {
-                cancelAnimationFrame(this.modalAnimationFrame);
-                this.modalAnimationFrame = null;
-            }
-            
-            if (this.modalMesh) {
-                this.modalScene.remove(this.modalMesh);
-                this.modalMesh.geometry.dispose();
-                this.modalMesh.material.dispose();
-                this.modalMesh = null;
-            }
-            
-            this.modalScene = null;
-            this.modalCamera = null;
-            this.modalRenderer = null;
-        }
-        
-        // Handle window resize
-        handleResize() {
-            // Resize all product card renderers
-            this.renderers.forEach((renderer, productId) => {
-                const canvas = renderer.domElement;
-                const camera = this.cameras.get(productId);
-                
-                if (canvas && camera) {
-                    const width = canvas.clientWidth;
-                    const height = canvas.clientHeight;
-                    
-                    camera.aspect = width / height;
-                    camera.updateProjectionMatrix();
-                    
-                    renderer.setSize(width, height);
-                }
-            });
-            
-            // Resize modal renderer if active
-            if (this.modalRenderer && this.modalCamera) {
-                const canvas = this.modalRenderer.domElement;
-                const width = canvas.clientWidth;
-                const height = canvas.clientHeight;
-                
-                this.modalCamera.aspect = width / height;
-                this.modalCamera.updateProjectionMatrix();
-                
-                this.modalRenderer.setSize(width, height);
-            }
-        }
-        
-        // Enable/disable mouse interaction
-        setMouseInteraction(enabled) {
-            this.mouseInteractionEnabled = enabled;
-        }
-        
-        // Clean up all resources
-        cleanup() {
-            // Cancel all animation frames
-            this.animationFrames.forEach((frameId) => {
-                cancelAnimationFrame(frameId);
-            });
-            
-            // Dispose of all meshes, materials, and geometries
-            this.meshes.forEach((mesh) => {
-                mesh.geometry.dispose();
-                mesh.material.dispose();
-            });
-            
-            // Clear all maps
-            this.scenes.clear();
-            this.renderers.clear();
-            this.cameras.clear();
-            this.textures.clear();
-            this.meshes.clear();
-            this.animationFrames.clear();
-            
-            // Clean up modal
-            this.cleanupModal();
-            
-            // Remove resize event listener
-            window.removeEventListener('resize', this.handleResize.bind(this));
-            
-            this.isInitialized = false;
-        }
-    }
-
     // Toggle Filter Section
     document.addEventListener('DOMContentLoaded', function() {
         const filterToggleBtn = document.getElementById('filterToggleBtn');
@@ -2147,13 +1623,6 @@
             localStorage.setItem('darkMode', html.classList.contains('dark'));
         });
         
-        // Initialize Three.js for product cards
-        const productRenderer = new ProductRenderer();
-        productRenderer.init();
-        
-        // Make productRenderer globally accessible
-        window.productRenderer = productRenderer;
-        
         // View toggle functionality
         const gridViewBtn = document.getElementById('gridViewBtn');
         const listViewBtn = document.getElementById('listViewBtn');
@@ -2182,11 +1651,6 @@
             
             // Save preference
             localStorage.setItem('viewMode', 'grid');
-            
-            // Force resize to ensure Three.js canvases are properly sized
-            setTimeout(function() {
-                window.dispatchEvent(new Event('resize'));
-            }, 100);
         });
         
         // Toggle to list view
@@ -2212,11 +1676,6 @@
             
             // Save preference
             localStorage.setItem('viewMode', 'list');
-            
-            // Force resize to ensure Three.js canvases are properly sized
-            setTimeout(function() {
-                window.dispatchEvent(new Event('resize'));
-            }, 100);
         });
         
         // Load saved view preference
@@ -2243,7 +1702,7 @@
         });
     });
 
-    function openQuickView(productId, productName, productImage,description, productPrice, productBrand, maxOffer, salePrice, stock) {
+    function openQuickView(productId, productName, productImage, description, productPrice, productBrand, maxOffer, salePrice, stock) {
         const modal = document.getElementById('quickViewModal');
         const modalProductName = document.getElementById('modalProductName');
         const modalProductBrand = document.getElementById('modalProductBrand');
@@ -2251,10 +1710,15 @@
         const modalAddToCart = document.getElementById('modalAddToCart');
         const modalViewDetails = document.getElementById('modalViewDetails');
         const modalStockStatus = document.getElementById('modalStockStatus');
+        const modalProductImage = document.getElementById('modalProductImage');
+        const modalDescription = document.getElementById('modalDescription');
         
         // Set modal content
         modalProductName.textContent = productName;
         modalProductBrand.textContent = productBrand;
+        modalProductImage.src = productImage;
+        modalProductImage.alt = productName;
+        modalDescription.textContent = description || 'High-performance cycle with advanced features for both casual riders and enthusiasts.';
         
         // Update price display dynamically
         if (maxOffer > 0) {
@@ -2312,11 +1776,6 @@
         
         modalViewDetails.href = `/productdetails/${productId}`;
         
-        // Initialize Three.js for modal
-        if (window.productRenderer) {
-            window.productRenderer.initModal(productImage);
-        }
-        
         // Show modal and prevent body scrolling
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
@@ -2325,11 +1784,6 @@
     function closeQuickView() {
         const modal = document.getElementById('quickViewModal');
         modal.classList.remove('show');
-        
-        // Clean up Three.js resources
-        if (window.productRenderer) {
-            window.productRenderer.cleanupModal();
-        }
         
         // Re-enable body scrolling
         document.body.style.overflow = 'auto';

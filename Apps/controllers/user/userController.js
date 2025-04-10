@@ -239,7 +239,7 @@ const user = await User.findById(userId)
 const users= req.user.id
 const wishlist = await Wishlist.countDocuments({ user: userId });
    let cartfind = await Cart.findOne({user: userId})
-            const cartCount = cartfind.items.length
+            const cartCount = cartfind?.items.length
 let orderCount=await Order.countDocuments({user:userId})
 let reviewCount =await Review.countDocuments({user:userId})
 

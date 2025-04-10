@@ -1,175 +1,164 @@
-<header class="bg-white shadow-md sticky top-0 z-40">
-    <div class="container mx-auto px-4 py-3">
-        <div class="flex items-center justify-between">
-            <!-- Logo -->
-            <a href="/" class="flex items-center space-x-2">
-                <img src="/frontend/imgs/logos/cyclonelogo.png" alt="" class="w-24 md:w-32 h-auto">
-            </a>
-                         
-            <!-- Navigation -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="/" class="text-dark hover:text-primary font-medium relative group">
-                    Home
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="/shoplist" class="text-dark hover:text-primary font-medium relative group">
-                    Shop
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </a>
-                <a href="/about" class="text-dark hover:text-primary font-medium relative group">
-                    About Us
-                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-                </a>
-            </nav>
-                         
-            <!-- Icons and Auth -->
-            <div class="flex items-center space-x-2 md:space-x-4">
-              <!-- Search - Hidden on mobile, shown on larger screens -->
-              <div class="hidden md:block w-full md:w-auto">
-                <div class="relative">
-                    <input type="text" placeholder="Search..." id="searchInput" class="w-full border border-gray-300 rounded-full py-2 px-4 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                </div>
+<header class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 shadow-lg sticky top-0 z-40">
+  <div class="container mx-auto px-4 py-2">
+    <!-- Top Bar with Logo and Auth -->
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <a href="/" class="group relative overflow-hidden rounded-xl">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 opacity-0 group-hover:opacity-100 rounded-xl transition-all duration-300"></div>
+        <img src="/frontend/imgs/logos/cyclonelogo.png" alt="CycloneX" class="w-24 md:w-32 h-auto relative z-10 transform group-hover:scale-105 transition-transform duration-300">
+      </a>
+      
+      <!-- Nav, Search, Cart, Auth -->
+      <div class="flex items-center gap-3">
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-1 bg-white dark:bg-gray-800 rounded-full shadow-sm px-4 py-1.5">
+          <a href="/" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium px-3 py-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700 transition-all">Home</a>
+          <span class="text-gray-300 dark:text-gray-600">•</span>
+          <a href="/shoplist" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium px-3 py-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700 transition-all">Shop</a>
+          <span class="text-gray-300 dark:text-gray-600">•</span>
+          <a href="/about" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium px-3 py-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700 transition-all">About</a>
+        </nav>
+        
+        <!-- Desktop Search -->
+        <div class="hidden md:block relative">
+          <input type="text" placeholder="Search products..." id="searchInput" 
+                 class="w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full py-1.5 px-4 pl-9 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
+          <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        </div>
+        
+        <!-- Shopping Cart -->
+        <a href="/addtocart" class="relative group">
+          <div class="p-2 bg-white dark:bg-gray-800 rounded-full shadow-sm group-hover:shadow-md transition-all group-hover:bg-blue-50 dark:group-hover:bg-gray-700">
+            <i class="fas fa-shopping-cart text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors"></i>
+          </div>
+          <span class="absolute -top-1 -right-1 bg-secondary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"><%=cartCount %></span>
+        </a>
+        
+        <!-- Auth Section -->
+        <% if(user){ %>
+          <!-- User dropdown -->
+          <div class="relative group">
+            <button class="flex items-center gap-1 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm">
+              <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-primary dark:text-blue-400 text-xs"></i>
               </div>
-
-              <!-- Shopping Cart - Always visible -->
-              <a href="/addtocart" class="text-dark hover:text-primary relative">
-                <i class="fas fa-shopping-cart text-xl"></i>
-                <span class="absolute -top-2 -right-2 bg-secondary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"><%=cartCount %></span>
+              <span class="hidden md:inline text-sm font-medium text-gray-700 dark:text-gray-300">Account</span>
+              <i class="fas fa-chevron-down text-xs text-gray-500 dark:text-gray-400 group-hover:rotate-180 transition-transform"></i>
+            </button>
+            
+            <!-- Dropdown Menu -->
+            <div class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl py-2 z-50 hidden group-hover:block transform origin-top scale-95 group-hover:scale-100 opacity-0 group-hover:opacity-100 transition-all border border-gray-100 dark:border-gray-700">
+              <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                <p class="text-xs text-gray-500 dark:text-gray-400">Signed in as</p>
+                <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate"><%= user.email || user.username || 'User' %></p>
+              </div>
+              <a href="/userprofile/<%=user._id %>" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                <i class="fas fa-user-circle mr-3 text-gray-400"></i>
+                <span>My Profile</span>
               </a>
-
-              <!-- Authentication Links -->
-              <% if(user){ %>
-                <!-- User is logged in -->
-                <div class="relative group">
-                  <button class="flex items-center space-x-1 text-dark hover:text-primary">
-                    <i class="fas fa-user text-xl"></i>
-                    <span class="hidden md:inline text-sm font-medium">Account</span>
-                    <i class="fas fa-chevron-down text-xs ml-1"></i>
-                  </button>
-                  
-                  <!-- Dropdown Menu -->
-                  <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block">
-                    <a href="/userprofile/<%=user._id %>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      <i class="fas fa-user-circle mr-2"></i>My Profile
-                    </a>
-                    <a href="/orders" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      <i class="fas fa-box mr-2"></i>My Orders
-                    </a>
-                    <div class="border-t border-gray-100 my-1"></div>
-                    <a href="/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                      <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                    </a>
-                  </div>
-                </div>
-              <% } else { %>
-                <!-- User is not logged in -->
-                <div class="hidden md:flex items-center space-x-2">
-                  <a href="/login" class="text-dark hover:text-primary font-medium text-sm">
-                    Login
-                  </a>
-                  <span class="text-gray-300">|</span>
-                  <a href="/register" class="bg-primary text-white hover:bg-primary-dark rounded-full px-4 py-1.5 text-sm font-medium transition-colors">
-                    Sign Up
-                  </a>
-                </div>
-              <% } %>
-              
-              <!-- Mobile menu button -->
-              <button class="md:hidden text-dark p-2" id="mobile-menu-button" aria-label="Toggle menu">
-                  <i class="fas fa-bars text-xl"></i>
-              </button>
+              <a href="/order" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700">
+                <i class="fas fa-box mr-3 text-gray-400"></i>
+                <span>My Orders</span>
+              </a>
+              <div class="border-t border-gray-100 dark:border-gray-700 my-1"></div>
+              <a href="/logout" class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                <i class="fas fa-sign-out-alt mr-3 text-red-400"></i>
+                <span>Logout</span>
+              </a>
             </div>
-        </div>
-                 
-        <!-- Mobile Search - Only visible on mobile -->
-        <div class="mt-3 md:hidden">
-            <div class="relative">
-                <input type="text" placeholder="Search for cycles..." id="mobileSearchInput" class="w-full border border-gray-300 rounded-full py-2 px-4 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
-                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div class="md:hidden hidden mt-4 pb-4 border-t border-gray-200 pt-3" id="mobile-menu">
-            <nav class="flex flex-col space-y-3">
-                <a href="/" class="text-dark hover:text-primary font-medium py-2">Home</a>
-                <a href="/shoplist" class="text-dark hover:text-primary font-medium py-2">Shop</a>
-                <a href="/about" class="text-dark hover:text-primary font-medium py-2">About Us</a>
-                
-                <% if(user){ %>
-                  <!-- User is logged in - Mobile -->
-                  <div class="border-t border-gray-200 my-2 pt-2">
-                    <a href="/userprofile/<%=user._id %>" class="flex items-center text-dark hover:text-primary font-medium py-2">
-                      <i class="fas fa-user-circle mr-2"></i>My Profile
-                    </a>
-                    <a href="/orders" class="flex items-center text-dark hover:text-primary font-medium py-2">
-                      <i class="fas fa-box mr-2"></i>My Orders
-                    </a>
-                    <a href="/logout" class="flex items-center text-red-600 hover:text-red-700 font-medium py-2">
-                      <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                    </a>
-                  </div>
-                <% } else { %>
-                  <!-- User is not logged in - Mobile -->
-                  <div class="border-t border-gray-200 my-2 pt-2">
-                    <a href="/login" class="flex items-center text-dark hover:text-primary font-medium py-2">
-                      <i class="fas fa-sign-in-alt mr-2"></i>Login
-                    </a>
-                    <a href="/signup" class="flex items-center text-primary hover:text-primary-dark font-medium py-2">
-                      <i class="fas fa-user-plus mr-2"></i>Create Account
-                    </a>
-                  </div>
-                <% } %>
-            </nav>
-        </div>
+          </div>
+        <% } else { %>
+          <!-- Login/Signup buttons -->
+          <div class="hidden md:flex items-center gap-2">
+            <a href="/login" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium text-sm px-3 py-1.5 transition-colors">Login</a>
+            <a href="/signup" class="bg-primary hover:bg-blue-600 text-white rounded-full px-4 py-1.5 text-sm font-medium transition-colors">Sign Up</a>
+          </div>
+        <% } %>
+        
+        <!-- Mobile menu button -->
+        <button class="md:hidden p-2 bg-white dark:bg-gray-800 rounded-full shadow-sm hover:shadow-md" id="mobile-menu-button">
+          <i class="fas fa-bars text-gray-700 dark:text-gray-300"></i>
+        </button>
+      </div>
     </div>
+    
+    <!-- Mobile Search -->
+    <div class="mt-2 md:hidden">
+      <div class="relative">
+        <input type="text" placeholder="Search..." id="mobileSearchInput" class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full py-2 px-4 pl-9 focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="md:hidden hidden mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-md" id="mobile-menu">
+      <nav class="flex flex-col">
+        <a href="/" class="text-gray-700 dark:text-gray-300 hover:text-primary px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center">
+          <i class="fas fa-home mr-3 text-gray-400"></i>Home
+        </a>
+        <a href="/shoplist" class="text-gray-700 dark:text-gray-300 hover:text-primary px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center">
+          <i class="fas fa-shopping-bag mr-3 text-gray-400"></i>Shop
+        </a>
+        <a href="/about" class="text-gray-700 dark:text-gray-300 hover:text-primary px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center">
+          <i class="fas fa-info-circle mr-3 text-gray-400"></i>About
+        </a>
+        
+        <% if(user){ %>
+          <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+          <a href="/userprofile/<%=user._id %>" class="text-gray-700 dark:text-gray-300 hover:text-primary px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center">
+            <i class="fas fa-user-circle mr-3 text-gray-400"></i>My Profile
+          </a>
+          <a href="/order" class="text-gray-700 dark:text-gray-300 hover:text-primary px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center">
+            <i class="fas fa-box mr-3 text-gray-400"></i>My Orders
+          </a>
+          <a href="/logout" class="text-red-600 hover:text-red-700 px-4 py-2.5 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center">
+            <i class="fas fa-sign-out-alt mr-3 text-red-400"></i>Logout
+          </a>
+        <% } else { %>
+          <div class="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+          <a href="/login" class="text-gray-700 dark:text-gray-300 hover:text-primary px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center">
+            <i class="fas fa-sign-in-alt mr-3 text-gray-400"></i>Login
+          </a>
+          <a href="/register" class="text-primary hover:text-blue-600 px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 flex items-center">
+            <i class="fas fa-user-plus mr-3 text-primary"></i>Sign Up
+          </a>
+        <% } %>
+      </nav>
+    </div>
+  </div>
 </header>
 
 <script>
-    // Mobile menu toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        if (mobileMenuButton && mobileMenu) {
-            mobileMenuButton.addEventListener('click', function() {
-                // Toggle the 'hidden' class on the mobile menu
-                mobileMenu.classList.toggle('hidden');
-                
-                // Change the icon based on menu state
-                const icon = mobileMenuButton.querySelector('i');
-                if (icon) {
-                    if (mobileMenu.classList.contains('hidden')) {
-                        icon.classList.remove('fa-times');
-                        icon.classList.add('fa-bars');
-                    } else {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-times');
-                    }
-                }
-            });
+  document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+        const icon = mobileMenuButton.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('fa-bars');
+          icon.classList.toggle('fa-times');
         }
-        
-        // Ensure search functionality works on both desktop and mobile
-        const searchInput = document.getElementById('searchInput');
-        const mobileSearchInput = document.getElementById('mobileSearchInput');
-        
-        function handleSearch(event) {
-            if (event.key === 'Enter') {
-                const searchTerm = event.target.value.trim();
-                if (searchTerm) {
-                    window.location.href = `/shoplist?search=${encodeURIComponent(searchTerm)}`;
-                }
-            }
+      });
+    }
+    
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const mobileSearchInput = document.getElementById('mobileSearchInput');
+    
+    function handleSearch(event) {
+      if (event.key === 'Enter') {
+        const searchTerm = event.target.value.trim();
+        if (searchTerm) {
+          window.location.href = `/shoplist?search=${encodeURIComponent(searchTerm)}`;
         }
-        
-        if (searchInput) {
-            searchInput.addEventListener('keypress', handleSearch);
-        }
-        
-        if (mobileSearchInput) {
-            mobileSearchInput.addEventListener('keypress', handleSearch);
-        }
-    });
+      }
+    }
+    
+    if (searchInput) searchInput.addEventListener('keypress', handleSearch);
+    if (mobileSearchInput) mobileSearchInput.addEventListener('keypress', handleSearch);
+  });
 </script>
