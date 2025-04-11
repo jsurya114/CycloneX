@@ -21,7 +21,7 @@ const walletController = require('../../controllers/user/walletController');
 const reviewController = require('../../controllers/user/reviewController');
 const settingController = require('../../controllers/user/settingsController');
 const RazorpayController = require('../../controllers/user/razorpayController');
-
+const feedback = require('../../controllers/user/feedback')
 
 
 
@@ -60,6 +60,7 @@ router.post('/shoplist',shopController.shopList)
 router.get('/productdetails/:id',userController.productDetails)
 
 router.get('/about',verifyUser,authController.aboutAs)
+router.post('/about/send',feedback.sendEmail)
 router.get('/logout', verifyUser, authController.logout);
 
 router.get('/userprofile/:userId',verifyUser,userEnsure,userController.showUserProfile)

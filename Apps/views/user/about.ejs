@@ -15,6 +15,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
    
     <!-- Tailwind Configuration -->
     <script>
@@ -861,7 +863,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-6 sm:p-8 shadow-lg">
                     <h3 class="text-xl sm:text-2xl font-semibold mb-6 dark:text-white">Send Us a Message</h3>
                     
-                    <form>
+                    <form id="sendForm">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6">
                             <div>
                                 <label for="name" class="block text-gray-700 dark:text-gray-300 mb-2">Your Name</label>
@@ -903,7 +905,7 @@
                             ></textarea>
                         </div>
                         
-                        <button type="submit" class="bg-primary hover:bg-blue-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-medium transition duration-300 shadow-lg shadow-blue-500/20 flex items-center gap-2 group">
+                        <button type="submit" class="bg-primary-500 hover:bg-primary-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-medium transition duration-300 shadow-lg shadow-blue-500/20 flex items-center gap-2 group">
                             Send Message
                             <i class="fas fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
                         </button>
@@ -922,7 +924,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-semibold dark:text-white">Headquarters</h4>
-                                    <p class="text-gray-600 dark:text-gray-400">Hamsburg,324Avenue,Germany and India</p>
+                                    <p class="text-gray-600 dark:text-gray-400">Kottayam,Kerala, India</p>
                                 </div>
                             </div>
                             
@@ -932,7 +934,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-semibold dark:text-white">Phone</h4>
-                                    <p class="text-gray-600 dark:text-gray-400">+91 98765 43210</p>
+                                    <p class="text-gray-600 dark:text-gray-400">+91 8590184265</p>
                                 </div>
                             </div>
                             
@@ -1063,8 +1065,61 @@
     <i class="fas fa-moon dark:hidden"></i>
     <i class="fas fa-sun hidden dark:block"></i>
 </button>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
     <!-- JavaScript -->
+<script>
+    function showToast(message, isSuccess = true) {
+    Toastify({
+        text: message,
+        duration: 3000,
+        gravity: "bottom",
+        position: "center",
+        backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
+        stopOnFocus: true,
+        className: "rounded-lg",
+        style: {
+            boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
+        }
+    }).showToast();
+}
+const form = document.getElementById('sendForm');
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value
+    };
+
+    try {
+        const response = await fetch('/about/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            showToast('Your message was sent to our support team successfully!');
+            form.reset();
+        } else {
+            showToast('Failed to send message. Please try again.', false);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('An error occurred. Please try again later.', false);
+    }
+});
+</script>
+
+
+    <!-- darkmode -->
     <script>
         // Dark mode toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -1135,7 +1190,7 @@
             statCounters.forEach(counter => {
                 observer.observe(counter);
             });
-        });
+    
     </script>
 </body>
 </html>
