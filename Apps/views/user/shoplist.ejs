@@ -392,16 +392,66 @@
         .dark .product-card.color-green .card-image-container { background: #166534; }
         .dark .product-card.color-orange .card-image-container { background: #7C2D12; }
         
+        /* Product image slider styles */
+        .product-images-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
         .product-card .card-image {
             width: 100%;
             height: 100%;
             object-fit: contain;
             padding: 1rem;
             transition: transform 0.3s ease;
+            flex-shrink: 0;
         }
         
         .product-card:hover .card-image {
             transform: scale(1.05);
+        }
+        
+        /* Image navigation controls */
+        .image-nav {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .product-card:hover .image-nav {
+            opacity: 1;
+        }
+        
+        .image-nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .image-nav-dot.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        
+        .dark .image-nav-dot {
+            background-color: rgba(30, 41, 59, 0.5);
+        }
+        
+        .dark .image-nav-dot.active {
+            background-color: #1E293B;
         }
         
         .product-card .card-content {
@@ -1149,6 +1199,46 @@
             background-color: #EF4444;
         }
         
+        /* Cart confirmation message */
+        #cartConfirmation {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: white;
+            color: #0F172A;
+            padding: 1.25rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            z-index: 51;
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            width: 320px;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .dark #cartConfirmation {
+            background-color: #1E293B;
+            color: #F8FAFC;
+            border-color: #334155;
+        }
+        
+        #cartConfirmation.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        /* Animation for the cart icon */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+        
+        .cart-bounce {
+            animation: bounce 1s ease;
+        }
+        
         /* Dark mode toggle button */
         .dark-mode-toggle {
             position: fixed;
@@ -1371,13 +1461,38 @@
             <div class="product-card <%= colorClass %>" data-product-id="<%= pro._id %>">
                 <!-- Product Image Container -->
                 <div class="card-image-container">
-                    <!-- Product Image -->
-                    <img 
-                        src="/<%= pro.mainImage %>" 
-                        alt="<%= pro.productName %>" 
-                        class="card-image"
-                        crossorigin="anonymous"
-                    >
+                    <!-- Product Images Slider -->
+                    <div class="product-images-slider" data-current-image="0">
+                        <!-- Main Product Image -->
+                        <img 
+                            src="/<%= pro.mainImage %>" 
+                            alt="<%= pro.productName %>" 
+                            class="card-image"
+                            crossorigin="anonymous"
+                        >
+                        
+                        <!-- Additional Product Images (if available) -->
+                        <% if (pro.images && pro.images.length > 0) { %>
+                            <% pro.images.forEach(img => { %>
+                                <img 
+                                    src="/<%= img %>" 
+                                    alt="<%= pro.productName %>" 
+                                    class="card-image"
+                                    crossorigin="anonymous"
+                                >
+                            <% }); %>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Image Navigation Dots -->
+                    <% if (pro.images && pro.images.length > 0) { %>
+                        <div class="image-nav">
+                            <span class="image-nav-dot active" data-index="0"></span>
+                            <% pro.images.forEach((img, imgIndex) => { %>
+                                <span class="image-nav-dot" data-index="<%= imgIndex + 1 %>"></span>
+                            <% }); %>
+                        </div>
+                    <% } %>
                     
                     <!-- Save Badge (Kreo Style) -->
                     <% if (pro.maxOffer > 0) { %>
@@ -1580,6 +1695,29 @@
     <span id="toast-message"></span>
 </div>
 
+<!-- Cart Confirmation Message -->
+<div id="cartConfirmation" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 z-50 w-80 border border-gray-200 dark:border-gray-700 opacity-0 translate-y-10 transition-all duration-300">
+    <div class="flex items-center mb-3">
+        <div class="flex-shrink-0 bg-green-100 dark:bg-green-900/30 rounded-full p-2 mr-3">
+            <svg class="w-6 h-6 text-green-500 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        <div>
+            <h3 class="font-medium text-gray-900 dark:text-white">Added to cart!</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400" id="cart-product-name">Item added to your shopping cart</p>
+        </div>
+    </div>
+    <div class="flex space-x-3">
+        <button id="continueShoppingBtn" class="flex-1 py-2 px-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+            Continue Shopping
+        </button>
+        <a href="/cart" class="flex-1 py-2 px-3 bg-primary text-white rounded-md text-sm font-medium text-center hover:bg-primary/90 transition-colors">
+            Go to Cart
+        </a>
+    </div>
+</div>
+
 <!-- Dark Mode Toggle Button -->
 <button id="darkModeToggle" class="dark-mode-toggle">
     <i class="fas fa-moon dark:hidden"></i>
@@ -1700,7 +1838,42 @@
                 this.classList.add('active');
             });
         });
+        
+        // Initialize product image sliders
+        initProductImageSliders();
+        
+        // Add event listener for continue shopping button
+        const continueShoppingBtn = document.getElementById('continueShoppingBtn');
+        if (continueShoppingBtn) {
+            continueShoppingBtn.addEventListener('click', hideCartConfirmation);
+        }
     });
+    
+    // Initialize product image sliders
+    function initProductImageSliders() {
+        document.querySelectorAll('.product-images-slider').forEach(slider => {
+            const dots = slider.closest('.card-image-container').querySelectorAll('.image-nav-dot');
+            if (dots.length > 0) {
+                dots.forEach(dot => {
+                    dot.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const index = parseInt(this.getAttribute('data-index'));
+                        const slider = this.closest('.card-image-container').querySelector('.product-images-slider');
+                        
+                        // Update active dot
+                        this.closest('.image-nav').querySelectorAll('.image-nav-dot').forEach(d => {
+                            d.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        
+                        // Slide to the selected image
+                        slider.style.transform = `translateX(-${index * 100}%)`;
+                        slider.setAttribute('data-current-image', index);
+                    });
+                });
+            }
+        });
+    }
 
     function openQuickView(productId, productName, productImage, description, productPrice, productBrand, maxOffer, salePrice, stock) {
         const modal = document.getElementById('quickViewModal');
@@ -1814,6 +1987,32 @@
         setTimeout(() => {
             toast.classList.remove('show');
         }, 3000); // Hide after 3 seconds
+    }
+    
+    // Show cart confirmation message
+    function showCartConfirmation() {
+        const cartConfirmation = document.getElementById('cartConfirmation');
+        cartConfirmation.classList.add('show');
+        
+        // Hide confirmation after 5 seconds if user doesn't interact with it
+        const confirmationTimeout = setTimeout(() => {
+            hideCartConfirmation();
+        }, 5000);
+        
+        // Store timeout ID to clear it if user interacts with buttons
+        cartConfirmation.dataset.timeoutId = confirmationTimeout;
+    }
+    
+    // Hide cart confirmation message
+    function hideCartConfirmation() {
+        const cartConfirmation = document.getElementById('cartConfirmation');
+        cartConfirmation.classList.remove('show');
+        
+        // Clear timeout if it exists
+        if (cartConfirmation.dataset.timeoutId) {
+            clearTimeout(parseInt(cartConfirmation.dataset.timeoutId));
+            cartConfirmation.dataset.timeoutId = '';
+        }
     }
 
     // Save wishlist items to localStorage
@@ -2024,7 +2223,37 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Get product name for the notification
+                const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+                let productName = "Product";
+                
+                if (productCard) {
+                    const titleElement = productCard.querySelector('.product-title');
+                    if (titleElement) {
+                        productName = titleElement.textContent.trim();
+                    }
+                }
+                
+                // Update the cart confirmation with product name
+                const cartProductName = document.getElementById('cart-product-name');
+                if (cartProductName) {
+                    cartProductName.textContent = `${productName} added to your cart`;
+                }
+                
+                // Show toast notification
                 showToast('Product added to cart!');
+                
+                // Show cart confirmation message with redirect option
+                showCartConfirmation();
+                
+                // Animate the cart icon in the header
+                const cartIcon = document.querySelector('.fa-shopping-cart');
+                if (cartIcon) {
+                    cartIcon.classList.add('cart-bounce');
+                    setTimeout(() => {
+                        cartIcon.classList.remove('cart-bounce');
+                    }, 1000);
+                }
                 
                 // Check if product is in wishlist
                 const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
@@ -2051,39 +2280,230 @@
         });
     }
     
-    // Function to remove from wishlist after adding to cart
-    function removeFromWishlist(productId) {
-        fetch(`/wishlist/${productId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include'
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Update UI
-            updateWishlistUI(productId, false);
-            
-            // Update localStorage
-            saveWishlistToStorage(productId, false);
-            
-            showToast('Product moved from wishlist to cart!');
-        })
-        .catch(error => {
-            console.error('Error removing from wishlist:', error);
-            // Still update UI and localStorage even if server request fails
-            updateWishlistUI(productId, false);
-            saveWishlistToStorage(productId, false);
-        });
+    // Show cart confirmation message with enhanced functionality
+    function showCartConfirmation() {
+        const cartConfirmation = document.getElementById('cartConfirmation');
+        cartConfirmation.classList.add('show');
+        
+        // Hide confirmation after 5 seconds if user doesn't interact with it
+        const confirmationTimeout = setTimeout(() => {
+            hideCartConfirmation();
+        }, 5000);
+        
+        // Store timeout ID to clear it if user interacts with buttons
+        cartConfirmation.dataset.timeoutId = confirmationTimeout;
     }
     
-    // Update cart count in header
-    function updateCartCount(increment) {
-        const cartCountElement = document.querySelector('.fa-shopping-cart + span');
-        if (cartCountElement) {
-            const currentCount = parseInt(cartCountElement.textContent);
-            cartCountElement.textContent = currentCount + increment;
+    // Hide cart confirmation message
+    function hideCartConfirmation() {
+        const cartConfirmation = document.getElementById('cartConfirmation');
+        cartConfirmation.classList.remove('show');
+        
+        // Clear timeout if it exists
+        if (cartConfirmation.dataset.timeoutId) {
+            clearTimeout(parseInt(cartConfirmation.dataset.timeoutId));
+            cartConfirmation.dataset.timeoutId = '';
+        }
+    }
+    
+    // Make sure the continue shopping button works
+    document.addEventListener('DOMContentLoaded', function() {
+        const continueShoppingBtn = document.getElementById('continueShoppingBtn');
+        if (continueShoppingBtn) {
+            continueShoppingBtn.addEventListener('click', hideCartConfirmation);
+        }
+    });
+
+    // Save wishlist items to localStorage
+    function saveWishlistToStorage(productId, isAdded) {
+        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        
+        if (isAdded) {
+            // Add to wishlist if not already there
+            if (!wishlist.includes(productId)) {
+                wishlist.push(productId);
+            }
+        } else {
+            // Remove from wishlist
+            wishlist = wishlist.filter(id => id !== productId);
+        }
+        
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    }
+    
+    // Load wishlist status from localStorage and update UI
+    function loadWishlistStatus() {
+        const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        
+        // Get all wishlist buttons
+        document.querySelectorAll('.wishlist-btn').forEach(button => {
+            const productId = button.getAttribute('data-product-id');
+            const wishlistIcon = button.querySelector('.wishlist-icon');
+            const path = wishlistIcon?.querySelector('path');
+            
+            if (wishlist.includes(productId)) {
+                // Update UI for items in wishlist
+                wishlistIcon.classList.remove('text-gray-500');
+                wishlistIcon.classList.add('text-red-500');
+                button.classList.add('active');
+                
+                // Set fill to current color (red)
+                if (path) path.setAttribute('fill', 'currentColor');
+            }
+        });
+        
+        // Also fetch from server if user is logged in
+        const hasCookie = document.cookie.split(';').some(item => item.trim().startsWith('token='));
+        if (hasCookie) {
+            fetch('/wishlistStatus', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include' 
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && Array.isArray(data.wishlistItems)) {
+                    // Merge server wishlist with local wishlist
+                    let localWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+                    
+                    // Add server items to local storage
+                    data.wishlistItems.forEach(productId => {
+                        if (!localWishlist.includes(productId)) {
+                            localWishlist.push(productId);
+                        }
+                        
+                        // Update UI for this product
+                        updateWishlistUI(productId, true);
+                    });
+                    
+                    // Save merged wishlist to localStorage
+                    localStorage.setItem('wishlist', JSON.stringify(localWishlist));
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching wishlist status:', error);
+            });
+        }
+    }
+    
+    // Update wishlist UI for a specific product
+    function updateWishlistUI(productId, isInWishlist) {
+        // Find all wishlist buttons for this product (could be multiple if same product appears in different views)
+        document.querySelectorAll(`.wishlist-btn[data-product-id="${productId}"]`).forEach(button => {
+            const wishlistIcon = button.querySelector('.wishlist-icon');
+            const path = wishlistIcon?.querySelector('path');
+            
+            if (isInWishlist) {
+                // Add to wishlist UI
+                wishlistIcon.classList.remove('text-gray-500');
+                wishlistIcon.classList.add('text-red-500');
+                button.classList.add('active');
+                button.classList.add('wishlist-animation');
+                
+                // Set fill to current color (red)
+                if (path) path.setAttribute('fill', 'currentColor');
+                
+                // Remove animation class after animation completes
+                setTimeout(() => {
+                    button.classList.remove('wishlist-animation');
+                }, 1000);
+            } else {
+                // Remove from wishlist UI
+                wishlistIcon.classList.remove('text-red-500');
+                wishlistIcon.classList.add('text-gray-500');
+                button.classList.remove('active');
+                
+                // Set fill to none
+                if (path) path.setAttribute('fill', 'none');
+            }
+        });
+    }
+
+    // AJAX function to add to wishlist
+    function addToWishlist(productId, button) {
+        // Check if it's already in wishlist
+        const isInWishlist = button.classList.contains('active');
+        
+        if (isInWishlist) {
+            // Remove from wishlist
+            fetch(`/wishlist/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    updateWishlistUI(productId, false);
+                    
+                    // Update localStorage
+                    saveWishlistToStorage(productId, false);
+                    
+                    showToast('Product removed from wishlist!');
+                } else {
+                    // Even if server request fails, update local storage and UI
+                    updateWishlistUI(productId, false);
+                    saveWishlistToStorage(productId, false);
+                    
+                    showToast('Product removed from wishlist!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Even if server request fails, update local storage and UI
+                updateWishlistUI(productId, false);
+                saveWishlistToStorage(productId, false);
+                
+                showToast('Product removed from wishlist!');
+            });
+        } else {
+            // Add to wishlist
+            fetch('/wishlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId
+                }),
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    updateWishlistUI(productId, true);
+                    
+                    // Update localStorage
+                    saveWishlistToStorage(productId, true);
+                    
+                    showToast('Product added to wishlist!');
+                } else {
+                    // Even if server request fails, update local storage and UI
+                    updateWishlistUI(productId, true);
+                    saveWishlistToStorage(productId, true);
+                    
+                    showToast('Product added to wishlist!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Even if server request fails, update local storage and UI
+                updateWishlistUI(productId, true);
+                saveWishlistToStorage(productId, true);
+                
+                showToast('Product added to wishlist!');
+            });
         }
     }
 
@@ -2359,6 +2779,42 @@
             });
         }
     });
+    
+    // Function to remove from wishlist after adding to cart
+    function removeFromWishlist(productId) {
+        fetch(`/wishlist/${productId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update UI
+            updateWishlistUI(productId, false);
+            
+            // Update localStorage
+            saveWishlistToStorage(productId, false);
+            
+            showToast('Product moved from wishlist to cart!');
+        })
+        .catch(error => {
+            console.error('Error removing from wishlist:', error);
+            // Still update UI and localStorage even if server request fails
+            updateWishlistUI(productId, false);
+            saveWishlistToStorage(productId, false);
+        });
+    }
+    
+    // Update cart count in header
+    function updateCartCount(increment) {
+        const cartCountElement = document.querySelector('.fa-shopping-cart + span');
+        if (cartCountElement) {
+            const currentCount = parseInt(cartCountElement.textContent);
+            cartCountElement.textContent = currentCount + increment;
+        }
+    }
 </script>
 </body>
 </html>
