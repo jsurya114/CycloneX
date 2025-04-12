@@ -414,6 +414,30 @@
             transform: scale(1.05);
         }
         
+        /* Enhanced image slider animation on hover - Kreo Style */
+        .product-card:hover .product-images-slider {
+            animation: slideImages 5s ease-in-out infinite;
+        }
+        
+        @keyframes slideImages {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(0); }
+            25% { transform: translateX(-100%); }
+            45% { transform: translateX(-100%); }
+            50% { transform: translateX(-200%); }
+            70% { transform: translateX(-200%); }
+            75% { transform: translateX(-100%); }
+            95% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
+        }
+        
+        /* Pause animation when user interacts with dots */
+        .product-card .image-nav:hover + .product-images-slider,
+        .product-card .image-nav:focus + .product-images-slider,
+        .product-card .image-nav:active + .product-images-slider {
+            animation-play-state: paused;
+        }
+        
         /* Image navigation controls */
         .image-nav {
             position: absolute;
@@ -574,33 +598,45 @@
             animation: heartBeat 1s;
         }
         
+        /* Redesigned Quick View Button - Kreo Style */
         .product-card .quick-view-btn {
             position: absolute;
             bottom: 1rem;
-            left: 1rem;
-            right: 1rem;
-            background: rgba(255, 255, 255, 0.9);
-            color: #3B82F6;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
             text-align: center;
-            padding: 0.6rem;
+            padding: 0.4rem 0.8rem;
             opacity: 0;
-            transform: translateY(10px);
             transition: all 0.3s ease;
             font-weight: 500;
             z-index: 5;
-            font-size: 0.875rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 0.75rem;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(4px);
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            min-width: 0;
+            white-space: nowrap;
         }
-        
+
         .dark .product-card .quick-view-btn {
-            background: rgba(30, 41, 59, 0.9);
-            color: #60A5FA;
+            background: rgba(59, 130, 246, 0.8);
         }
-        
+
         .product-card:hover .quick-view-btn {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .product-card .quick-view-btn:hover {
+            background: rgba(37, 99, 235, 0.9);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
         
         .product-card .brand-name {
@@ -1542,7 +1578,7 @@
                         onclick="openQuickView('<%= pro._id %>', '<%= pro.productName %>', '/<%= pro.mainImage %>', '<%= pro.description %>', '<%= pro.price %>','<%= pro.brands ? pro.brands.name : 'No Brand' %>', '<%= pro.maxOffer %>', '<%= pro.salePrice %>', '<%= pro.stock %>')" 
                         class="quick-view-btn"
                     >
-                        <i class="fas fa-eye mr-2"></i> Quick View
+                        <i class="fas fa-eye"></i> Quick
                     </button>
                 </div>
                 
@@ -2424,87 +2460,6 @@
                 if (path) path.setAttribute('fill', 'none');
             }
         });
-    }
-
-    // AJAX function to add to wishlist
-    function addToWishlist(productId, button) {
-        // Check if it's already in wishlist
-        const isInWishlist = button.classList.contains('active');
-        
-        if (isInWishlist) {
-            // Remove from wishlist
-            fetch(`/wishlist/${productId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update UI
-                    updateWishlistUI(productId, false);
-                    
-                    // Update localStorage
-                    saveWishlistToStorage(productId, false);
-                    
-                    showToast('Product removed from wishlist!');
-                } else {
-                    // Even if server request fails, update local storage and UI
-                    updateWishlistUI(productId, false);
-                    saveWishlistToStorage(productId, false);
-                    
-                    showToast('Product removed from wishlist!');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Even if server request fails, update local storage and UI
-                updateWishlistUI(productId, false);
-                saveWishlistToStorage(productId, false);
-                
-                showToast('Product removed from wishlist!');
-            });
-        } else {
-            // Add to wishlist
-            fetch('/wishlist', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    productId
-                }),
-                credentials: 'include'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update UI
-                    updateWishlistUI(productId, true);
-                    
-                    // Update localStorage
-                    saveWishlistToStorage(productId, true);
-                    
-                    showToast('Product added to wishlist!');
-                } else {
-                    // Even if server request fails, update local storage and UI
-                    updateWishlistUI(productId, true);
-                    saveWishlistToStorage(productId, true);
-                    
-                    showToast('Product added to wishlist!');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // Even if server request fails, update local storage and UI
-                updateWishlistUI(productId, true);
-                saveWishlistToStorage(productId, true);
-                
-                showToast('Product added to wishlist!');
-            });
-        }
     }
 
     // Debounce function to delay execution
