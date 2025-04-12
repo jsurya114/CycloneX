@@ -2,6 +2,7 @@ const User = require('../../models/userModel')
 const Address = require('../../models/addressModel')
 const Product =require('../../models/productModel')
 const jwt = require('jsonwebtoken')
+const { log } = require('console')
 
 const addressController={
     getUserAddress:async (req,res,next) => {
@@ -46,6 +47,7 @@ return res.status(200).json({success:true,address})
 },
 manageAddress:async (req,res,next) => {
     try {
+        
 const userId = req.params.userId
 if(!userId){
     return res.status(404).json({success:false,message:'invalid input'})

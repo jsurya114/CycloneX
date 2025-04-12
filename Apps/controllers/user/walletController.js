@@ -18,7 +18,7 @@ getWallet:async (req,res,next) => {
        
        }
         let cartfind = await Cart.findOne({user: userId})
-                 const cartCount = cartfind.items.length
+                 const cartCount = cartfind?.items.length
     
        let wallet = await Wallet.findOne({user:userId}).populate('transaction.orderId').sort({timestamp:-1})
        if(!wallet){

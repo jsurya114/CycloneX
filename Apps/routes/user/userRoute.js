@@ -93,6 +93,7 @@ router.post('/sendPasswordOtp', settingController.passwordSentOtp);
 router.post('/verifyPasswordOtp', settingController.passwordOtpverify);
 
 router.get('/checkout',verifyUser,checkoutController.showcheckOut)
+router.post('/checkout/addaddress',checkoutController.userAddress)
 router.put('/checkout/:productId',cartController.updateQuantity)
 router.delete('/checkout/:productId',cartController.removeFromCart)
 router.get('/checkout/:productId', verifyUser, checkoutController.showcheckOut);

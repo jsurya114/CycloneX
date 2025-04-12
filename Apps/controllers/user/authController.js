@@ -314,7 +314,8 @@ res.status(200).json({message:'OTP verified successfully'})
               return res.status(400).json({success:false,message:'Unauthorized'})
           }
           const user = await User.findById(userId)
-            let cartCount =await Cart.countDocuments({user:userId})
+             let cartfind = await Cart.findOne({ user: userId })
+                      const cartCount = cartfind.items.length
       return res.status(200).render('about',{user,cartCount})
      } catch (error) {
       next(error)

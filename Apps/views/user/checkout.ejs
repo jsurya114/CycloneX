@@ -1065,54 +1065,56 @@
            });
            
            // Handle address form submission
-           const newAddressForm = document.getElementById('newAddressForm');
-           newAddressForm.addEventListener('submit', async function(e) {
-               e.preventDefault();
-               
-               try {
-                   
-                   // Collect form data
-                   const formData = {
-                       fullName: document.getElementById('fullName').value,
-                       email: document.getElementById('email').value,
-                       mobile: document.getElementById('mobile').value,
-                       country: document.getElementById('country').value,
-                       state: document.getElementById('state').value,
-                       address: document.getElementById('address').value,
-                       pincode: document.getElementById('pincode').value,
-                       landmark: document.getElementById('landmark').value,
-                       addressType: document.getElementById('addressType').value,
-                     
-                   };
-                  
-                  
-                   const userId = document.getElementById('userProfile').dataset.id;  
-                   const response = await fetch(`/addaddress/${userId}`, {
-                       method: 'POST',
-                       headers: {
-                           'Content-Type': 'application/json'
-                       },
-                       body: JSON.stringify(formData)
-                   });
-                   
-                   const result = await response.json();
-                   if(result.success){
-                       showToast('Address added successfully!');
-                   }
-
-                   // Reset form and hide it
-                   newAddressForm.reset();
-                   addAddressForm.classList.add('hidden');
-                   
-                   // In a real application, you would reload the addresses or add the new one to the DOM
-                   setTimeout(() => {
-                       window.location.reload(); // Reload to show the new address
-                   }, 500);
-               } catch (error) {
-                   console.error('Error:', error);
-                   showToast('Failed to add address', false);
-               }
-           });
+const newAddressForm = document.getElementById('newAddressForm');
+newAddressForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    try {
+        // Collect form data with exact field names matching server expectations
+        const formData = {
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            mobile: document.getElementById('mobile').value,
+            country: document.getElementById('country').value,
+            state: document.getElementById('state').value,
+            address: document.getElementById('address').value,
+            pincode: document.getElementById('pincode').value,
+            landmark: document.getElementById('landmark').value,
+            addressType: document.getElementById('addressType').value,
+            userId: document.getElementById('userProfile').dataset.id 
+        };
+        
+        // Log the data being sent for debugging
+        console.log('Sending address data:', formData);
+        
+        const response = await fetch('checkout/addaddress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        console.log('Server response:', result); // Log server response for debugging
+        
+        if(result.success){
+            showToast('Address added successfully!');
+            
+            // Reset form and hide it
+            newAddressForm.reset();
+            addAddressForm.classList.add('hidden');
+            
+            // Reload the page to show the new address
+            window.location.reload();
+        } else {
+            showToast(result.message || 'Failed to add address: Validation failed', false);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('Failed to add address: ' + (error.message || 'Unknown error'), false);
+    }
+});
 
            // Toggle available coupons
            showAvailableCouponsBtn.addEventListener('click', function() {
