@@ -21,7 +21,9 @@ const walletController = require('../../controllers/user/walletController');
 const reviewController = require('../../controllers/user/reviewController');
 const settingController = require('../../controllers/user/settingsController');
 const RazorpayController = require('../../controllers/user/razorpayController');
-const feedback = require('../../controllers/user/feedback')
+const feedback = require('../../controllers/user/feedback');
+const productController = require('../../controllers/user/productController');
+const wishlistController = require('../../controllers/user/wishlistController');
 
 
 
@@ -57,9 +59,9 @@ router.get('/home', verifyUser, nocache, userController.home);
 
 router.get('/shoplist',shopController.shopList)
 router.post('/shoplist',shopController.shopList)
-router.get('/productdetails/:id',userController.productDetails)
+router.get('/productdetails/:id',productController.productDetails)
 
-router.get('/about',verifyUser,authController.aboutAs)
+router.get('/about',verifyUser,userController.aboutAs)
 router.post('/about/send',feedback.sendEmail)
 router.get('/logout', verifyUser, authController.logout);
 
@@ -79,10 +81,10 @@ router.get('/addtocart',verifyUser,cartController.showCartPage)
 router.post('/addtocart',cartController.addToCart)
 router.put('/addtocart/:productId',cartController.updateQuantity)
 router.delete('/addtocart/:productId',cartController.removeFromCart)
-router.get('/wishlist',verifyUser,cartController.showWhishlistPage)
-router.post('/wishlistStatus',cartController.addToWishlist)
-router.post('/wishlist',cartController.addToWishlist)
-router.delete('/wishlist/:productId',cartController.removeFromWishlist)
+router.get('/wishlist',verifyUser,wishlistController.showWhishlistPage)
+router.post('/wishlistStatus',wishlistController.addToWishlist)
+router.post('/wishlist',wishlistController.addToWishlist)
+router.delete('/wishlist/:productId',wishlistController.removeFromWishlist)
 
 
 router.get('/settings/:id', verifyUser, settingController.userSettings);
@@ -93,7 +95,7 @@ router.post('/sendPasswordOtp', settingController.passwordSentOtp);
 router.post('/verifyPasswordOtp', settingController.passwordOtpverify);
 
 router.get('/checkout',verifyUser,checkoutController.showcheckOut)
-router.post('/checkout/addaddress',checkoutController.userAddress)
+
 router.put('/checkout/:productId',cartController.updateQuantity)
 router.delete('/checkout/:productId',cartController.removeFromCart)
 router.get('/checkout/:productId', verifyUser, checkoutController.showcheckOut);

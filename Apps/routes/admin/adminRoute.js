@@ -15,6 +15,7 @@ const couponController = require('../../controllers/admin/couponController');
 const salesController = require('../../controllers/admin/salesController')
 const dashboardController=require('../../controllers/admin/dashboardController');
 const walletController=require('../../controllers/admin/wallet');
+const brandController = require('../../controllers/admin/brandController');
 
 
 router.use(nocache);
@@ -52,16 +53,15 @@ router.put(
 router.delete('/delete-product-image/:id', productloader.deleteProductImage);
 router.put('/toggle-product/:id', productloader.productsoftdelete);
 
-router.get('/brands', verifyAdmin,productController.showAddBrandPage);
+router.get('/brands', verifyAdmin,brandController.showBrandPage);
 
-router.post('/addbrand',upload.single('brandLogo') ,productController.addBrand);
-router.get('/editbrand/:id',verifyAdmin,productController.showEditBrandPage)
-router.put('/editbrand/:id', upload.single('brandLogo'), productController.editbrand);
-router.put('/brand/listing/:id', productController.listing);
+
+router.get('/editbrand/:id',verifyAdmin,brandController.showEditBrandPage)
+
+router.put('/brand/listing/:id', brandController.listing);
 router.get('/category',verifyAdmin,categoryController.category)
-router.post('/category/add',upload.single('image'),categoryController.addCategory)
+
 router.get('/category/edit/:id',verifyAdmin,categoryController.showEditCategrory)
-router.put('/category/update/:id',upload.single('image'),categoryController.editcategory)
 router.put('/category/listing/:id', categoryController.listing)
 
 router.get('/userlist',verifyAdmin,adminController.userlist)
