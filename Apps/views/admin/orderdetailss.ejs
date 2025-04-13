@@ -328,17 +328,26 @@
                             <tr class="hover:bg-gray-50">
                               <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                  <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-md overflow-hidden">
-                                    <% if (item.product && item.product.productImages && item.product.images.length > 0) { %>
-                                      <img src="<%= item.product.productImages[0] %>" class="h-full w-full object-cover" alt="<%= item.product.name %>">
+                                  <div class="flex-shrink-0 h-16 w-16 bg-gray-100 rounded-md overflow-hidden">
+                                    <% if (item.product && item.product.mainImage) { %>
+                                      <img 
+                                        src="/<%= item.product.mainImage %>" 
+                                        class="h-full w-full object-contain" 
+                                        alt="<%= item.product.productName %>"
+                                        loading="lazy"
+                                        onerror="this.onerror=null; this.src='/placeholder.svg?height=64&width=64';"
+                                      >
                                     <% } else { %>
-                                      <img src="/placeholder.svg?height=40&width=40" class="h-full w-full object-cover" alt="Product">
+                                      <img 
+                                        src="/placeholder.svg?height=64&width=64" 
+                                        class="h-full w-full object-contain" 
+                                        alt="Product"
+                                      >
                                     <% } %>
                                   </div>
                                   <div class="ml-4">
                                     <div class="text-sm font-medium text-gray-900"><%= item.product ? item.product.productName : 'Product' %></div>
                                   </div>
-                                </div>
                               </td>
                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">₹<%= item.product? item.product.price: '0.00' %></td>
                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= item.quantity %></td>

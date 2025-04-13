@@ -104,18 +104,20 @@
             background: #64748B;
         }
 
-        /* Product image zoom effect */
+        /* Product image zoom effect - only on desktop */
         .zoom-container {
             position: relative;
             overflow: hidden;
         }
         
-        .zoom-image {
-            transition: transform 0.5s ease;
-        }
-        
-        .zoom-container:hover .zoom-image {
-            transform: scale(1.1);
+        @media (min-width: 768px) {
+            .zoom-image {
+                transition: transform 0.5s ease;
+            }
+            
+            .zoom-container:hover .zoom-image {
+                transform: scale(1.1);
+            }
         }
         
         /* Wishlist button animation */
@@ -200,6 +202,37 @@
         .dark-mode-toggle:hover i {
             transform: rotate(30deg);
         }
+
+        /* Product thumbnails grid for mobile */
+        .product-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 8px;
+        }
+
+        @media (min-width: 640px) {
+            .product-thumbnails {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                gap: 12px;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767px) {
+            .tab-button {
+                @apply px-3 py-2 text-sm;
+            }
+            
+            /* Hide zoom container on mobile */
+            #zoomWrapper {
+                display: none !important;
+            }
+        }
+
+        /* Active thumbnail indicator */
+        .thumbnail-active {
+            border: 2px solid #3B82F6;
+        }
     </style>
 </head>
 <body class="text-gray-800 dark:text-gray-100">
@@ -207,9 +240,9 @@
     <%- include('partials/header') %>
     
     <!-- Breadcrumbs -->
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 py-6">
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 py-4 md:py-6">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-heading font-bold text-gray-900 dark:text-white mb-2 relative">
+            <h1 class="text-2xl md:text-3xl font-heading font-bold text-gray-900 dark:text-white mb-2 relative">
                 Product Details
                 <span class="absolute -bottom-2 left-0 w-16 h-1 bg-primary rounded-full"></span>
             </h1>
@@ -220,8 +253,8 @@
     </div>
 
     <!-- Product Details Section -->
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <!-- Product Images -->
             <div class="space-y-4">
                 <!-- Main Image and Zoom Container Wrapper -->
@@ -231,7 +264,7 @@
                         <img id="mainImage" src="/<%= product.mainImage %>" alt="<%= product.productName %>" class="w-full h-auto rounded-lg zoom-image">
                     </div>
                     
-                    <!-- Zoom Container (appears on hover) -->
+                    <!-- Zoom Container (appears on hover - desktop only) -->
                     <div id="zoomWrapper" class="hidden absolute top-0 left-full ml-4 w-96 h-96 border border-gray-300 dark:border-gray-700 overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-xl" style="backdrop-filter: blur(5px);">
                         <div id="zoomContainer" class="w-full h-full bg-no-repeat bg-center" style="background-size: 200%;"></div>
                     </div>
@@ -261,28 +294,38 @@
                     </button>
                 </div>
                 
-                <!-- Sub Images -->
-                <div class="grid grid-cols-4 gap-4">
-                    <% product.images.forEach(image => { %>
-                        <div class="bg-white dark:bg-gray-800 p-2 shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                            <img src="/<%= image %>" alt="Product Image" class="w-full h-auto rounded-lg cursor-pointer"
-                                onclick="updateMainImage(this.src)">
+                <!-- Sub Images - Grid layout for mobile and desktop -->
+                <div class="product-thumbnails">
+                    <% product.images.forEach((image, index) => { %>
+                        <div class="bg-white dark:bg-gray-800 p-2 shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 thumbnail-container">
+                            <img 
+                                src="/<%= image %>" 
+                                alt="Product Image" 
+                                class="w-full h-auto aspect-square object-cover rounded-lg cursor-pointer thumbnail"
+                                onclick="updateMainImage(this.src, this)"
+                                data-index="<%= index %>"
+                            >
                         </div>
                     <% }) %>
-                    <div class="bg-white dark:bg-gray-800 p-2 shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                        <img src="/<%= product.mainImage %>" alt="Product Image" class="w-full h-auto rounded-lg cursor-pointer"
-                            onclick="updateMainImage(this.src)">
+                    <div class="bg-white dark:bg-gray-800 p-2 shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 thumbnail-container">
+                        <img 
+                            src="/<%= product.mainImage %>" 
+                            alt="Product Image" 
+                            class="w-full h-auto aspect-square object-cover rounded-lg cursor-pointer thumbnail thumbnail-active"
+                            onclick="updateMainImage(this.src, this)"
+                            data-index="main"
+                        >
                     </div>
                 </div>
             </div>
             
             <!-- Product Details -->
-            <div class="bg-white dark:bg-gray-800 p-6 shadow-lg rounded-lg">
-                <h1 class="text-2xl font-bold text-gray-800 dark:text-white"><%= product.productName %></h1>
+            <div class="bg-white dark:bg-gray-800 p-4 md:p-6 shadow-lg rounded-lg">
+                <h1 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white"><%= product.productName %></h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Brand: <span class="font-semibold"><%= product.brands.name %></span></p>
                 
                 <div class="mt-4">
-                    <span class="text-3xl font-bold text-primary">₹<%= salePrice.toFixed(2) %></span>
+                    <span class="text-2xl md:text-3xl font-bold text-primary">₹<%= salePrice.toFixed(2) %></span>
                     <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">(Inclusive of all taxes)</span>
                 </div>
 
@@ -352,22 +395,22 @@
                     </span>
                 </div>
                 
-                <div class="mt-6">
+                <div class="mt-4 md:mt-6">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Description</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-300 mt-2"><%= product.description %></p>
                 </div>
                 
-                <div class="mt-6 flex items-center gap-4"> 
+                <div class="mt-4 md:mt-6 flex flex-col sm:flex-row items-center gap-3 sm:gap-4"> 
                     <button onclick="addToCart('<%= product._id %>')" 
-                        class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
+                        class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>             
                         <span class="font-medium">Add to Cart</span>         
                     </button>         
                 
-                    <a href="/checkout"> 
-                        <button class="px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
+                    <a href="/checkout" class="w-full sm:w-auto"> 
+                        <button class="w-full px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
                             Buy Now
                         </button>   
                     </a>  
@@ -376,7 +419,7 @@
         </div>
 
         <!-- Tabs Section -->
-        <div class="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="mt-6 md:mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
             <div class="border-b border-gray-100 dark:border-gray-700">
                 <div class="flex overflow-x-auto">
                     <button class="tab-button active" onclick="openTab(event, 'details')">Product Details</button>
@@ -518,9 +561,9 @@
         </div>
 
         <!-- Related Products Section -->
-        <div class="mt-12">
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Related Products</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="mt-8 md:mt-12">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">Related Products</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 <% if (relatedProducts && relatedProducts.length > 0) { %>
                     <% relatedProducts.forEach(product => { %>
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden group">
@@ -529,7 +572,7 @@
                                     <img 
                                         src="/<%= product.mainImage %>" 
                                         alt="<%= product.productName %>" 
-                                        class="w-full h-64 object-contain object-center group-hover:scale-105 transition-transform duration-300"
+                                        class="w-full h-48 md:h-64 object-contain object-center group-hover:scale-105 transition-transform duration-300"
                                     >
                                 </a>
                                 <div class="absolute top-4 left-4">
@@ -591,8 +634,8 @@
                     <% }) %>
                 <% } else { %>
                     <div class="col-span-full">
-                        <div class="p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="p-8 md:p-12 text-center bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 md:h-16 md:w-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                             </svg>
                             <p class="text-gray-500 dark:text-gray-400 text-lg mb-4">No related products found.</p>
@@ -624,6 +667,9 @@
     <%- include('partials/footer') %>
 
     <script>
+        // Store wishlist items in localStorage for persistence
+        let wishlistItems = JSON.parse(localStorage.getItem('wishlistItems')) || [];
+
         // Dark mode toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
             const darkModeToggle = document.getElementById('darkModeToggle');
@@ -641,6 +687,9 @@
                 html.classList.toggle('dark');
                 localStorage.setItem('darkMode', html.classList.contains('dark'));
             });
+
+            // Initialize wishlist icons on page load
+            initializeWishlistIcons();
         });
 
         function showToast(message, isError = false) {
@@ -668,7 +717,7 @@
             const path = wishlistIcon.querySelector('path');
             
             // Check if it's already in wishlist
-            const isInWishlist = wishlistIcon.classList.contains('text-red-500');
+            const isInWishlist = wishlistItems.includes(productId);
             
             if (isInWishlist) {
                 // Remove from wishlist
@@ -682,10 +731,17 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update UI
+                        // Update UI immediately
                         wishlistIcon.classList.remove('text-red-500');
                         wishlistIcon.classList.add('text-gray-500', 'dark:text-gray-300');
                         if (path) path.setAttribute('fill', 'none');
+                        
+                        // Update localStorage
+                        wishlistItems = wishlistItems.filter(item => item !== productId);
+                        localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+                        
+                        // Update all instances of this product's wishlist icon
+                        updateAllWishlistIcons(productId, false);
                         
                         showToast('Product removed from wishlist!');
                     } else {
@@ -711,11 +767,20 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update UI
+                        // Update UI immediately
                         wishlistIcon.classList.remove('text-gray-500', 'dark:text-gray-300');
                         wishlistIcon.classList.add('text-red-500');
                         button.classList.add('wishlist-animation');
                         if (path) path.setAttribute('fill', 'currentColor');
+                        
+                        // Update localStorage
+                        if (!wishlistItems.includes(productId)) {
+                            wishlistItems.push(productId);
+                            localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+                        }
+                        
+                        // Update all instances of this product's wishlist icon
+                        updateAllWishlistIcons(productId, true);
                         
                         // Remove animation class after animation completes
                         setTimeout(() => {
@@ -734,48 +799,88 @@
             }
         }
 
-        // Initialize wishlist status on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        // Update all wishlist icons for a specific product
+        function updateAllWishlistIcons(productId, isInWishlist) {
+            const allIcons = document.querySelectorAll(`.wishlist-icon[data-product-id="${productId}"]`);
+            
+            allIcons.forEach(icon => {
+                const path = icon.querySelector('path');
+                
+                if (isInWishlist) {
+                    icon.classList.remove('text-gray-500', 'dark:text-gray-300');
+                    icon.classList.add('text-red-500');
+                    if (path) path.setAttribute('fill', 'currentColor');
+                } else {
+                    icon.classList.remove('text-red-500');
+                    icon.classList.add('text-gray-500', 'dark:text-gray-300');
+                    if (path) path.setAttribute('fill', 'none');
+                }
+            });
+        }
+
+        // Initialize wishlist icons on page load
+        function initializeWishlistIcons() {
             // Check if user is logged in (has a token cookie)
             const hasCookie = document.cookie.split(';').some(item => item.trim().startsWith('token='));
-            if (!hasCookie) return;
             
             // Get all wishlist icons
             const wishlistIcons = document.querySelectorAll('.wishlist-icon');
             
-            // Make a single request to get all wishlist items
-            fetch('/wishlistStatus', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            // First, apply any locally stored wishlist items
+            wishlistIcons.forEach(icon => {
+                const productId = icon.dataset.productId;
+                const path = icon.querySelector('path');
+                
+                if (wishlistItems.includes(productId)) {
+                    icon.classList.remove('text-gray-500', 'dark:text-gray-300');
+                    icon.classList.add('text-red-500');
+                    if (path) path.setAttribute('fill', 'currentColor');
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success && Array.isArray(data.wishlistItems)) {
-                    // Update the icon colors for items in wishlist
-                    wishlistIcons.forEach(icon => {
-                        const productId = icon.dataset.productId;
-                        const path = icon.querySelector('path');
-                        
-                        if (data.wishlistItems.includes(productId)) {
-                            icon.classList.remove('text-gray-500', 'dark:text-gray-300');
-                            icon.classList.add('text-red-500');
-                            if (path) path.setAttribute('fill', 'currentColor');
-                        }
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching wishlist status:', error);
             });
-        });
+            
+            // If logged in, fetch server wishlist and update
+            if (hasCookie) {
+                fetch('/wishlistStatus', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success && Array.isArray(data.wishlistItems)) {
+                        // Update localStorage with server data
+                        wishlistItems = data.wishlistItems;
+                        localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+                        
+                        // Update all wishlist icons
+                        wishlistIcons.forEach(icon => {
+                            const productId = icon.dataset.productId;
+                            const path = icon.querySelector('path');
+                            
+                            if (data.wishlistItems.includes(productId)) {
+                                icon.classList.remove('text-gray-500', 'dark:text-gray-300');
+                                icon.classList.add('text-red-500');
+                                if (path) path.setAttribute('fill', 'currentColor');
+                            } else {
+                                icon.classList.remove('text-red-500');
+                                icon.classList.add('text-gray-500', 'dark:text-gray-300');
+                                if (path) path.setAttribute('fill', 'none');
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching wishlist status:', error);
+                });
+            }
+        }
 
         function addToCart(productId) {
             fetch('/addtocart', {
@@ -812,39 +917,57 @@
         function updateMainImage(src, thumbnail) {
             // Update main image
             document.getElementById('mainImage').src = src;
-            document.getElementById('zoomContainer').style.backgroundImage = "url(" + src + ")";
+            
+            // Only update zoom container if not on mobile
+            if (window.innerWidth >= 768) {
+                document.getElementById('zoomContainer').style.backgroundImage = "url(" + src + ")";
+            }
             
             // Update active thumbnail
             document.querySelectorAll('.thumbnail').forEach(el => {
-                el.classList.remove('active');
+                el.classList.remove('thumbnail-active');
             });
+            
             if (thumbnail) {
-                thumbnail.classList.add('active');
+                thumbnail.classList.add('thumbnail-active');
             }
         }
 
-        // Image zoom functionality
+        // Image zoom functionality - only enable on desktop
         const mainImage = document.getElementById('mainImage');
         const zoomWrapper = document.getElementById('zoomWrapper');
         const zoomContainer = document.getElementById('zoomContainer');
 
         if (mainImage && zoomWrapper && zoomContainer) {
-            mainImage.addEventListener('mouseenter', function(){
-                zoomContainer.style.backgroundImage = "url(" + mainImage.src + ")";
-                zoomWrapper.classList.remove('hidden');
-            });
+            // Check if device is not mobile
+            const isMobile = () => window.innerWidth < 768;
+            
+            // Only add zoom functionality on desktop
+            if (!isMobile()) {
+                mainImage.addEventListener('mouseenter', function(){
+                    zoomContainer.style.backgroundImage = "url(" + mainImage.src + ")";
+                    zoomWrapper.classList.remove('hidden');
+                });
 
-            mainImage.addEventListener('mousemove', function(e){
-                const rect = mainImage.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const xPercent = (x / rect.width) * 100;
-                const yPercent = (y / rect.height) * 100;
-                zoomContainer.style.backgroundPosition = xPercent + "% " + yPercent + "%";
-            });
+                mainImage.addEventListener('mousemove', function(e){
+                    const rect = mainImage.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const xPercent = (x / rect.width) * 100;
+                    const yPercent = (y / rect.height) * 100;
+                    zoomContainer.style.backgroundPosition = xPercent + "% " + yPercent + "%";
+                });
 
-            mainImage.addEventListener('mouseleave', function(){
-                zoomWrapper.classList.add('hidden');
+                mainImage.addEventListener('mouseleave', function(){
+                    zoomWrapper.classList.add('hidden');
+                });
+            }
+            
+            // Handle window resize to disable zoom on mobile
+            window.addEventListener('resize', function() {
+                if (isMobile()) {
+                    zoomWrapper.classList.add('hidden');
+                }
             });
         }
         

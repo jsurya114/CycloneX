@@ -1,231 +1,637 @@
 <!DOCTYPE HTML>
 <html lang="en">
-  <%- include('partials/head') %>
-  <body>
-    <div class="screen-overlay"></div>
-    <aside class="navbar-aside" id="offcanvas_aside">
-      <div class="aside-top">
-        <a href="" class="brand-wrap">
-          <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-        </a>
-        <div>
-          <button class="btn btn-icon btn-aside-minimize">
-            <i class="text-muted material-icons md-menu_open"></i>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycloneX Dashboard - User Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+      tailwind.config = {
+          darkMode: 'class',
+          theme: {
+              extend: {
+                  colors: {
+                      primary: {
+                          50: '#f0f9ff',
+                          100: '#e0f2fe',
+                          200: '#bae6fd',
+                          300: '#7dd3fc',
+                          400: '#38bdf8',
+                          500: '#0ea5e9',
+                          600: '#0284c7',
+                          700: '#0369a1',
+                          800: '#075985',
+                          900: '#0c4a6e',
+                          950: '#082f49',
+                      },
+                      secondary: {
+                          50: '#f5f3ff',
+                          100: '#ede9fe',
+                          200: '#ddd6fe',
+                          300: '#c4b5fd',
+                          400: '#a78bfa',
+                          500: '#8b5cf6',
+                          600: '#7c3aed',
+                          700: '#6d28d9',
+                          800: '#5b21b6',
+                          900: '#4c1d95',
+                          950: '#2e1065',
+                      },
+                  },
+              },
+          },
+      }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+      body {
+          font-family: 'Inter', sans-serif;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      
+      /* Toggle switch styling */
+      .toggle-checkbox:checked {
+          right: 0;
+          background-color: #0284c7;
+          border-color: #0284c7;
+      }
+      
+      .toggle-label {
+          display: block;
+          overflow: hidden;
+          cursor: pointer;
+          border-radius: 9999px;
+          height: 1.5rem;
+          background-color: #d1d5db;
+      }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Main Container -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- Overlay for mobile sidebar -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+      <div class="flex flex-col h-full">
+        <!-- Logo Area -->
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <a href="/admin/dashboard" class="flex items-center space-x-2">
+            <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+              <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+            </div>
+            <span class="text-xl font-bold text-gray-800">CycloneX</span>
+          </a>
+          <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
+        
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+          <div class="space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+            
+            <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Dashboard</span>
+            </a>
+            
+            <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Products</span>
+            </a>
+            
+            <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Categories</span>
+            </a>
+            
+            <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Brands</span>
+            </a>
+          </div>
+
+          <a href="/admin/salesreport" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+            <i class="fas fa-chart-line w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+            <span>salesreport</span>
+          </a>
+          
+          <div class="mt-8 space-y-1">
+            <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+            
+            <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium bg-primary-50 text-primary-700 rounded-lg group">
+              <i class="fas fa-users w-5 h-5 mr-2"></i>
+              <span>Users</span>
+            </a>
+            
+            <a href="/admin/adminwallet" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-wallet w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Wallet</span>
+            </a>
+            
+            <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Coupons</span>
+            </a>
+            
+            <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-clipboard-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Orders</span>
+            </a>
+
+            <a href="/admin/Logout" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+              <i class="fas fa-sign-out-alt w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
       </div>
-      <nav>
-        <ul class="menu-aside">
-          <li class="menu-item">
-            <a class="menu-link" href="/admin/dashboard">
-              <i class="icon material-icons md-home"></i>
-              <span class="text">Dashboard</span>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a class="menu-link" href="/admin/product-list2">
-              <i class="icon material-icons md-shopping_bag"></i>
-              <span class="text">Products</span>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a class="menu-link" href="/admin/category">
-              <i class="icon material-icons md-category"></i>
-              <span class="text">Category</span>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a class="menu-link" href="/admin/brands">
-              <i class="icon material-icons md-stars"></i>
-              <span class="text">Brands</span>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a class="menu-link" href="/admin/coupons">
-              <i class="icon material-icons md-card_giftcard"></i>
-              <span class="text">Coupons</span>
-            </a>
-          </li>
-          <li class="menu-item active">
-            <a class="menu-link" href="/admin/userlist">
-              <i class="icon material-icons md-store"></i>
-              <span class="text">Users</span>
-            </a>
-          
-          </li>
-          <li class="menu-item  ">
-            <a class="menu-link" href="/admin/orderlist">
-              <i class="icon material-icons md-shopping_bag"></i>
-              <span class="text">Orders</span>
-              <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-            </a>
-            <!-- <ul class="submenu">
-              <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li>
-              <li><a href="/admin/orderlist" class="submenu-link">Add Product</a></li>
-            </ul> -->
-          </li>
-          
-        </ul>
-        <br>
-        <br>
-      </nav>
     </aside>
-    <main class="main-wrap">
-      <%- include('partials/header') %>
-      <section class="content-main">
-        <div class="content-header">
-          <a href="javascript:history.back()">
-            <i class="material-icons md-arrow_back"></i> Go back
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-6">
+          <!-- Left: Hamburger Menu -->
+          <div class="flex items-center">
+            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div class="hidden md:flex items-center ml-4">
+              <h1 class="text-xl font-semibold text-gray-800">User Details</h1>
+              <span class="ml-2 px-2 py-0.5 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content - Scrollable area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <!-- Page Header with Back Button -->
+        <div class="flex items-center mb-6">
+          <a href="javascript:history.back()" class="flex items-center text-gray-600 hover:text-primary-600 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            <span>Back to Users</span>
           </a>
         </div>
-        <div class="card mb-4">
-          <div class="card-header bg-primary" style="height:150px">
-            <!-- Optional dynamic header content -->
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-xl-auto col-lg-auto">
-                <div class="img-thumbnail shadow bg-white position-relative text-center" 
-                     style="height: 190px; width: 190px; margin-top: -140px; overflow: hidden;">
-                  <img src="/backend/imgs/logos/download.png" 
-                       class="center-xy img-fluid" 
-                       alt="Default Avatar" 
-                       style="height: 100%; width: 100%; object-fit: cover;">
+        
+        <!-- User Profile Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
+          <!-- Profile Header Banner -->
+          <div class="h-40 bg-gradient-to-r from-primary-600 to-secondary-600"></div>
+          
+          <!-- User Info Section -->
+          <div class="px-6 pb-6">
+            <div class="flex flex-col md:flex-row md:items-end -mt-20 mb-6">
+              <!-- Profile Image -->
+              <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                <div class="relative inline-block">
+                  <img 
+                    src="<%= user.profileImage ? user.profileImage : '/backend/imgs/logos/download.png' %>" 
+                    alt="<%= user.fullName %>" 
+                    class="w-32 h-32 rounded-full border-4 border-white object-cover bg-white shadow-md"
+                  >
                 </div>
               </div>
-          
-              <!-- Add margin-left for spacing -->
-              <div class="col-xl col-lg ms-4">
-                <h3><%= user.fullName %></h3>
-               <p>UserId:<%= user._id %></p>
-              </div>  
-            </div>
-          
-            <hr class="my-4">
-            <div class="row g-4">
-              <div class="col-sm-4 col-lg-4 col-xl-3">
-                <h6>Contacts</h6>
-                <p>
-                  Name: <%= user.username || user.fullName %> <br>
-                  <%= user.email %> <br>
-                  <%= user.mobile %>
-                </p>
+              
+              <!-- User Name and Basic Info -->
+              <div class="flex-1 mt-4 md:mt-0">
+                <h2 class="text-2xl font-bold text-gray-900"><%= user.fullName %></h2>
+                <p class="text-sm text-gray-500">User ID: <%= user._id %></p>
               </div>
-          
-              <!-- Merged Status Field -->
-              <div class="col-sm-4 col-lg-4 col-xl-3">
-                <h6>Status</h6>
-                <div class="d-flex align-items-center">
-                  <!-- Status Text -->
-                  <span class="px-3 py-1 text-sm font-semibold rounded-full 
-                              <%= user.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-                    <%= user.isActive ? 'Active' : 'Deactive' %>
+              
+              <!-- Status Badge and Toggle -->
+              <div class="mt-4 md:mt-0 flex items-center">
+                <div class="flex items-center space-x-3">
+                  <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full <%= user.isActive ? 'bg-green-100 text-green-800 ring-1 ring-inset ring-green-600/20' : 'bg-red-100 text-red-800 ring-1 ring-inset ring-red-600/20' %>">
+                    <%= user.isActive ? 'Active' : 'Deactivated' %>
                   </span>
-          
-                  <!-- Toggle Switch -->
-                  <label class="relative inline-flex items-center cursor-pointer ms-3">
+                  
+                  <label class="relative inline-flex items-center cursor-pointer">
                     <input 
-                      type="checkbox" data-id="<%= user._id %>"  
+                      type="checkbox" 
+                      data-id="<%= user._id %>" 
                       class="sr-only peer toggle-checkbox"
-                      <%= user.isActive ? 'checked' : '' %> />
-                    <div class="w-11 h-6 rounded-full bg-red-200 
-                                peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 
-                                dark:peer-focus:ring-red-800
-                                peer-checked:bg-green-600 relative
-                                after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                                after:border-gray-300 after:border after:rounded-full 
-                                after:h-5 after:w-5 after:transition-all 
-                                peer-checked:after:translate-x-full peer-checked:after:border-white">
-                    </div>
+                      <%= user.isActive ? 'checked' : '' %> 
+                    />
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
                   </label>
                 </div>
               </div>
             </div>
-          </div>
-          
-          
-          
-        </div>
-        <div class="card mb-4">
-          <!-- <div class="card-body">
-            <h5 class="card-title">Products by seller</h5>
-            <div class="row">
-              <div class="col-xl-2 col-lg-3 col-md-6">
-                <div class="card card-product-grid">
-                  <a href="#" class="img-wrap">
-                    <img src="assets/imgs/items/1.jpg" alt="Product">
-                  </a>
-                  <div class="info-wrap">
-                    <a href="#" class="title">Product name</a>
-                    <div class="price mt-1">$179.00</div>
-                  </div>
+            
+            <!-- Divider -->
+            <div class="border-t border-gray-200 my-6"></div>
+            
+            <!-- User Details Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <!-- Contact Information -->
+              <div class="bg-gray-50 rounded-lg p-5">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Contact Information</h3>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fas fa-user text-primary-600 mt-1 mr-3 w-5"></i>
+                    <div>
+                      <p class="text-sm text-gray-500">Full Name</p>
+                      <p class="text-base font-medium text-gray-900"><%= user.username || user.fullName %></p>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-envelope text-primary-600 mt-1 mr-3 w-5"></i>
+                    <div>
+                      <p class="text-sm text-gray-500">Email</p>
+                      <p class="text-base font-medium text-gray-900"><%= user.email %></p>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-phone text-primary-600 mt-1 mr-3 w-5"></i>
+                    <div>
+                      <p class="text-sm text-gray-500">Phone</p>
+                      <p class="text-base font-medium text-gray-900"><%= user.mobileNum || 'Not provided' %></p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+              <!-- Account Information -->
+              <div class="bg-gray-50 rounded-lg p-5">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <i class="fas fa-calendar text-primary-600 mt-1 mr-3 w-5"></i>
+                    <div>
+                      <p class="text-sm text-gray-500">Registered On</p>
+                      <p class="text-base font-medium text-gray-900"><%= new Date(user.createdAt).toLocaleDateString() %></p>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-clock text-primary-600 mt-1 mr-3 w-5"></i>
+                    <div>
+                      <p class="text-sm text-gray-500">Last Updated</p>
+                      <p class="text-base font-medium text-gray-900"><%= new Date(user.updatedAt).toLocaleDateString() %></p>
+                    </div>
+                  </li>
+                  <% if(user.address) { %>
+                  <li class="flex items-start">
+                    <i class="fas fa-map-marker-alt text-primary-600 mt-1 mr-3 w-5"></i>
+                    <div>
+                      <p class="text-sm text-gray-500">Address</p>
+                      <p class="text-base font-medium text-gray-900"><%= user.address %></p>
+                    </div>
+                  </li>
+                  <% } %>
+                </ul>
+              </div>
+              
+              <!-- Account Actions -->
+              <div class="bg-gray-50 rounded-lg p-5">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Account Actions</h3>
+                <div class="space-y-3">
+                  <button id="viewOrdersBtn" class="w-full flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-history mr-2"></i>
+                    View Order History
+                  </button>
+                  <button class="w-full flex items-center justify-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors">
+                    <i class="fas fa-ban mr-2"></i>
+                    <%= user.isActive ? 'Deactivate Account' : 'Activate Account' %>
+                  </button>
                 </div>
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
+        
+        <!-- Additional User Information Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Activity Log Card -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+                  <i class="fas fa-sign-in-alt text-primary-600"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">Account Created</p>
+                  <p class="text-xs text-gray-500"><%= new Date(user.createdAt).toLocaleString() %></p>
+                </div>
+              </div>
+              
+              <% if(user.updatedAt && user.updatedAt !== user.createdAt) { %>
+              <div class="flex items-start">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                  <i class="fas fa-edit text-blue-600"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">Profile Updated</p>
+                  <p class="text-xs text-gray-500"><%= new Date(user.updatedAt).toLocaleString() %></p>
+                </div>
+              </div>
+              <% } %>
+            </div>
+          </div>
+          
+          <!-- Purchase Stats Card (you can add this if needed) -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Purchase Statistics</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <p class="text-3xl font-bold text-primary-600"><%= orders.length %></p>
+                <p class="text-sm text-gray-500">Total Orders</p>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <p class="text-3xl font-bold text-primary-600">
+                  <% let totalSpent = 0; %>
+                  <% orders.forEach(order => { totalSpent += order.totalAmount || 0; }); %>
+                  ₹<%= totalSpent.toFixed(0) %>
+                </p>
+                <p class="text-sm text-gray-500">Total Spent</p>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <p class="text-3xl font-bold text-primary-600">
+                  <% 
+                    let totalItems = 0;
+                    orders.forEach(order => {
+                      order.items.forEach(item => {
+                        totalItems += item.quantity || 0;
+                      });
+                    });
+                  %>
+                  <%= totalItems %>
+                </p>
+                <p class="text-sm text-gray-500">Items Purchased</p>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <p class="text-3xl font-bold text-primary-600">
+                  <% 
+                    const today = new Date();
+                    let activeOrders = 0;
+                    orders.forEach(order => {
+                      if (order.status !== 'Delivered' && order.status !== 'Cancelled') {
+                        activeOrders++;
+                      }
+                    });
+                  %>
+                  <%= activeOrders %>
+                </p>
+                <p class="text-sm text-gray-500">Active Orders</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Order History Section -->
+        <div id="orderHistorySection" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Order History</h3>
+            <span class="text-sm text-gray-500"><%= orders.length %> Orders</span>
+          </div>
+          
+          <% if(orders && orders.length > 0) { %>
+            <div class="space-y-4">
+              <% orders.forEach(order => { %>
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                  <!-- Order Header -->
+                  <div class="bg-gray-50 p-4 border-b border-gray-200">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                      <div>
+                        <span class="text-xs font-semibold text-gray-500">ORDER ID</span>
+                        <p class="text-sm font-medium text-gray-900">#<%= order._id.toString().slice(-8).toUpperCase() %></p>
+                      </div>
+                      <div>
+                        <span class="text-xs font-semibold text-gray-500">DATE</span>
+                        <p class="text-sm font-medium text-gray-900"><%= new Date(order.createdAt).toLocaleDateString() %></p>
+                      </div>
+                      <div>
+                        <span class="text-xs font-semibold text-gray-500">STATUS</span>
+                        <span class="inline-flex px-2 py-0.5 text-xs font-semibold rounded-full
+                          <%= order.status === 'Delivered' ? 'bg-green-100 text-green-800' : 
+                            (order.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 
+                            'bg-blue-100 text-blue-800') %>">
+                          <%= order.status %>
+                        </span>
+                      </div>
+                      <div>
+                        <span class="text-xs font-semibold text-gray-500">TOTAL</span>
+                        <p class="text-sm font-medium text-gray-900">₹<%= order.totalAmount?.toFixed(2) %></p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Order Items -->
+                  <div class="p-4">
+                    <div class="space-y-3">
+                      <% order.items.forEach(item => { %>
+                        <div class="flex items-center space-x-4">
+                          <div class="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-md overflow-hidden">
+                            <% if(item.product && item.product.mainImage) { %>
+                              <img 
+                                src="/<%= item.product.mainImage %>" 
+                                alt="<%= item.product.productName %>" 
+                                class="w-full h-full object-contain"
+                                loading="lazy"
+                                onerror="this.onerror=null; this.src='/placeholder.svg?height=80&width=80';"
+                              >
+                            <% } else { %>
+                              <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                                <i class="fas fa-box text-gray-400 text-xl"></i>
+                              </div>
+                            <% } %>
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900 truncate">
+                              <%= item.product ? item.product.productName : 'Product Unavailable' %>
+                            </p>
+                            <p class="text-xs text-gray-500">
+                              Qty: <%= item.quantity %> × ₹<%= item.product ? item.product.price.toFixed(2) : '0.00' %>
+                            </p>
+                          </div>
+                          <div class="text-sm font-medium text-gray-900">
+                            ₹<%= (item.quantity * (item.product ? item.product.price : 0)).toFixed(2) %>
+                          </div>
+                        </div>
+                      <% }) %>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <div class="py-8 text-center">
+              <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+                <i class="fas fa-shopping-bag text-gray-400 text-xl"></i>
+              </div>
+              <h3 class="text-lg font-medium text-gray-900 mb-1">No Orders Yet</h3>
+              <p class="text-gray-500">This user hasn't placed any orders.</p>
+            </div>
+          <% } %>
+        </div>
+      </main>
       
-      </section>
-      <%- include('partials/footer') %>
-    </main>
-    <%- include('partials/scripts') %>
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-500">© 2023 CycloneX. All rights reserved.</p>
+          <div class="flex space-x-4 mt-2 md:mt-0">
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-facebook"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-gray-600">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
 
-    <script>
-      document.querySelectorAll('.toggle-checkbox').forEach((switchElement)=>{
-        switchElement.addEventListener('change',async function (e) {
-          e.preventDefault()
-          const userId =this.getAttribute('data-id')
-          const newStatus = this.checked
+  <!-- Include SweetAlert2 script from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Scripts -->
+  <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+  const viewOrdersBtn = document.getElementById('viewOrdersBtn');
+  const orderHistorySection = document.getElementById('orderHistorySection');
+  
+  if (viewOrdersBtn && orderHistorySection) {
+    // Initially hide the order history section
+    orderHistorySection.style.display = 'none';
+    
+    viewOrdersBtn.addEventListener('click', function() {
+      // Toggle the visibility
+      if (orderHistorySection.style.display === 'none') {
+        orderHistorySection.style.display = 'block';
+        viewOrdersBtn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Hide Order History';
+      } else {
+        orderHistorySection.style.display = 'none';
+        viewOrdersBtn.innerHTML = '<i class="fas fa-history mr-2"></i>View Order History';
+      }
+    });
+  }
+});
+
+    // Mobile sidebar toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      const openSidebarBtn = document.getElementById('openSidebar');
+      const closeSidebarBtn = document.getElementById('closeSidebar');
+      
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden', 'lg:overflow-auto');
+      }
+      
+      if (openSidebarBtn) {
+        openSidebarBtn.addEventListener('click', openSidebar);
+      }
+      
+      if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+      }
+      
+      if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+      }
+      
+      // Close sidebar on window resize if screen becomes large
+      window.addEventListener('resize', function() {
+        if (window.innerWidth >= 1024) {
+          closeSidebar();
+        }
+      });
+      
+      // User status toggle functionality
+      document.querySelectorAll('.toggle-checkbox').forEach((switchElement) => {
+        switchElement.addEventListener('change', async function(e) {
+          e.preventDefault();
+          const userId = this.getAttribute('data-id');
+          const newStatus = this.checked;
 
           const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: `Do you want to ${newStatus ? 'deactive3' : 'active'} this User?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes',
-    });
-    if(!result.isConfirmed){
-      this.checked = !newStatus
-      return
-    }
-try {
-  const response = await fetch(`/admin/toggle-user/${userId}`,{
-    method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: newStatus }),
-  })
-  const data = await response.json()
-  if (response.ok) {
-        Swal.fire({
-          toast: true,
-          position: 'top-end',
-          icon: 'success',
-          title: data.message,
-          showConfirmButton: false,
-          timer: 3000,
-        });
+            title: 'Are you sure?',
+            text: `Do you want to ${newStatus ? 'activate' : 'deactivate'} this User?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+          });
+          
+          if (!result.isConfirmed) {
+            this.checked = !newStatus;
+            return;
+          }
+          
+          try {
+            const response = await fetch(`/admin/toggle-user/${userId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ isActive: newStatus }),
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+              Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: data.message,
+                showConfirmButton: false,
+                timer: 3000,
+              });
 
-        setTimeout(() => {
-          location.reload();
-        }, 1000);
-      } else {
-        throw new Error(data.message);
-      }
-} catch (error) {
-  Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'error',
-        title: error.message || 'Failed to update status',
-        showConfirmButton: false,
-        timer: 3000,
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
+            } else {
+              throw new Error(data.message);
+            }
+          } catch (error) {
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'error',
+              title: error.message || 'Failed to update status',
+              showConfirmButton: false,
+              timer: 3000,
+            });
+            this.checked = !newStatus;
+          }
+        });
       });
-      this.checked = !newStatus;
-}
-        })
-      })
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>

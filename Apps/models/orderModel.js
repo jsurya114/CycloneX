@@ -32,6 +32,6 @@ const OrderSchema = new mongoose.Schema({
       }
     }],
     cancelledAmount: { type: Number, default: 0 }
-});
+},{timestamps:true});
 
 module.exports = mongoose.model('Order', OrderSchema);

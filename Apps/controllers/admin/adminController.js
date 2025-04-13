@@ -1,10 +1,11 @@
 const User = require('../../models/userModel');
-
+const Order = require('../../models/orderModel')
 const Product = require('../../models/productModel');
 const Brand = require('../../models/brandModel')
 const Category = require('../../models/categoryModel')
 const Productloader = require('../admin/productloader');
 const { category } = require('./categoryController');
+
 
 const adminController = {
   
@@ -202,7 +203,9 @@ let totalUsers = await User.countDocuments(filter)
             if(!user){
                 return res.status(404).redirect('/admin/userlist')
             }
-            res.render('userdetails',{user,message:null})
+const orders = await Order.find({user:userId})
+.populate('items.product')
+            res.render('userdetails',{user,message:null,orders})
         } catch (error) {
             next(error)
         }

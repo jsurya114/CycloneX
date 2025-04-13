@@ -4,7 +4,162 @@ const Product = require('../../models/productModel');
 const Cart = require('../../models/cartModel')
 const jwt = require('jsonwebtoken')
 const User = require('../../models/userModel')
+const Order = require('../../models/orderModel')
+const Wishlist=require("../../models/wislistModel")
+const Coupon =require('../../models/couponModel')
 const shopController = {
+
+ home: async (req, res,next) => {
+        try {
+            const { search, categoryFilter, brandsFilter, sortBy ,page} = req.query;
+            let filter = {};
+             const token = req.cookies.token
+             const decoded=jwt.verify(token,process.env.JWT_SECRET)
+
+             const userId= decoded.id;
+             const user=await User.findById(userId);
+          let cartfind = await Cart.findOne({user: userId})
+                   const cartCount = cartfind?.items.length
+             let orderCount=await Order.countDocuments({user:userId})
+            const categories = await Category.find({});
+            const brands = await Brand.find({});
+            if (search) {
+                filter.$or = [
+                    { productName: { $regex: search.trim(), $options: "i" } },
+                    { brands: { $regex: search.trim(), $options: "i" } },
+                    { category: { $regex: search.trim(), $options: "i" } },
+                ];
+            }
+    
+            let selectedCategory = null;
+            if (categoryFilter) {
+                const categoryObj = await Category.findOne({ name: categoryFilter });
+                if (categoryObj) {
+                    filter.category = categoryObj._id;
+                    selectedCategory = categoryObj;
+                }
+            }
+    
+            let selectedBrand = null;
+            if (brandsFilter) {
+                const brandObj = await Brand.findOne({ name: brandsFilter });
+                if (brandObj) {
+                    filter.brands = brandObj._id;
+                    selectedBrand = brandObj;
+                }
+            }
+    
+            let sortOptions = { maxOffer:-1,createdAt: -1 };
+            if (sortBy) {
+                switch (sortBy) {
+                    case 'priceLowHigh':
+                        sortOptions = { price: 1 };
+                        break;
+                    case 'priceHighLow':
+                        sortOptions = { price: -1 };
+                        break;
+                    case 'aToZ':
+                        sortOptions = { productName: 1 };
+                        break;
+                    case 'zToA':
+                        sortOptions = { productName: -1 };
+                        break;
+                }
+            }
+    
+
+            // Pagination logic
+                      let currentPage = parseInt(page) || 1;
+                let limit=10
+                      let skip =0;
+          
+                      // Count total products
+                      let totalProducts = await Product.countDocuments({ ...filter, isDeleted: false });
+
+            const product = await Product.find({ ...filter, isDeleted: false })
+                .sort(sortOptions)
+                .skip(skip)
+                .limit(limit)
+                .populate({ path: 'brands', select: 'name' }) // Ensure only needed fields are populated
+                .populate({ path: 'category',select:'offer' }) 
+
+
+                const productWithoffer = product.map(p=>{
+                    const productOffer = p.offer||0
+                  const categoryOffer = (p.category && p.category.offer) ? p.category.offer : 0;
+                    const maxOffer = Math.max(productOffer,categoryOffer)
+                
+                    const salePrice = maxOffer>0?p.price*(1-maxOffer/100):p.price
+                
+                
+                
+                     // Return a new object with additional properties for view rendering
+                    return {...p.toObject(),maxOffer,salePrice}
+                })
+                
+
+
+        const coupon = await Coupon.findOne({isBlocked:false,expireDate:{$gt:new Date}})
+
+    // Calculate total pages
+    let totalPages = Math.ceil(totalProducts / limit);
+
+
+                const breadcrumbs=[
+
+                    {name:'Home',url:'/'}
+                ]
+
+                if(selectedCategory){
+                    breadcrumbs.push({name:selectedCategory.name,
+                        url:`/home?categoryFilter=${encodeURIComponent(selectedCategory.name)}`
+                    })
+                }
+                if(selectedBrand){
+                    breadcrumbs.push({name:selectedBrand.name,
+                        url:`/home?brandsFilter=${encodeURIComponent(selectedBrand.name)}`
+                    })
+                }
+
+
+                if(search){
+                    breadcrumbs.push({name:`Search: "${search}"`,
+                    url: `/home?search=${encodeURIComponent(search)}`})
+                }
+    
+
+                // Filter out products with null category or brand
+const filteredProducts = product.filter(pro => pro.category && pro.brands)
+            res.render('home', {
+                user,
+cartCount,
+
+                product: productWithoffer, 
+                categories,
+                filteredProducts,
+                brands,
+                breadcrumbs,
+                success: req.query.added === 'true',
+                currentFilters: { search, categoryFilter, brandsFilter, sortBy },
+                coupon,
+                currentPage,
+                totalPages,
+                hasNextPage: currentPage < totalPages,
+                hasPrevPage: currentPage > 1,
+                nextPage: currentPage < totalPages ? currentPage + 1 : null,
+                prevPage: currentPage > 1 ? currentPage - 1 : null,
+            });
+        } catch (error) {
+            console.error('Error loading home page:', error);
+            next(error)
+        }
+    },
+
+
+
+
+
+
     shopList: async (req, res, next) => {
         try {
             const token = req.cookies.token;

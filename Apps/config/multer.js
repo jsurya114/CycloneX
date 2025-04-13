@@ -9,10 +9,8 @@ const getUploadPath = (req) => {
   let uploadPath = 'public/backend/imgs';
   if (req.originalUrl.includes('addproduct') || req.originalUrl.includes('editproduct')) {
     uploadPath = path.join(uploadPath, 'products');
-  } else if (req.originalUrl.includes('addbrand') || req.originalUrl.includes('editbrand')) {
-    uploadPath = path.join(uploadPath, 'brands');
-  } else if (req.originalUrl.includes('addcategory') || req.originalUrl.includes('editcategory')) {
-    uploadPath = path.join(uploadPath, 'categories');
+  } else if(req.originalUrl.includes('userprofile')){
+    uploadPath=path.join(uploadPath,'profiles')
   }
   if (!fs.existsSync(uploadPath)) {
     fs.mkdirSync(uploadPath, { recursive: true });

@@ -10,6 +10,7 @@ const nocache = require('../../middlewares/nocache');
 const userController=require('../../controllers/user/userController')
 const passwordController = require('../../controllers/user/passwordcontroller');
 const shopController = require('../../controllers/user/shopController');
+const upload = require('../../config/multer'); // Adjust path as needed
 
 const cartController = require('../../controllers/user/cartController')
 
@@ -55,7 +56,7 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
   res.redirect('/home');
 });
 
-router.get('/home', verifyUser, nocache, userController.home);
+router.get('/home', verifyUser, nocache, shopController.home);
 
 router.get('/shoplist',shopController.shopList)
 router.post('/shoplist',shopController.shopList)
@@ -67,6 +68,8 @@ router.get('/logout', verifyUser, authController.logout);
 
 router.get('/userprofile/:userId',verifyUser,userEnsure,userController.showUserProfile)
 router.post('/userprofile/:userId',userController.userAddress)
+router.post('/userprofile/upload/:userId', upload.single('profileImage'), userController.userprofileUpload);
+
 
 router.get('/addaddress/:userId',verifyUser,addressController.getUserAddress)
 router.get('/addaddress/:userId/:addressId',verifyUser,addressController.specificAddress)
