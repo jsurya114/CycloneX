@@ -199,7 +199,7 @@ const orders ={
 
 
 
-let totalOrders=await Order.countDocuments()
+let totalOrders=await Order.countDocuments({user:userId,...filter})
 let totalPages=Math.ceil(totalOrders/itemsPerPage)
     res.status(200).render('order',{orders:orders,user:user,cartCount:cartCount,
         currentPage,
