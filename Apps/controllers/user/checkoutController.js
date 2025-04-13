@@ -169,7 +169,7 @@ const total = totalAmount - discount
 
 
 
-
+await Coupon.findByIdAndUpdate()
 return res.status(200).json({success:true,discount,couponId:coupon._id,total})
         } catch (error) {
          
