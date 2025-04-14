@@ -55,13 +55,14 @@ router.put('/toggle-product/:id', productloader.productsoftdelete);
 
 router.get('/brands', verifyAdmin,brandController.showBrandPage);
 
-
+router.post('/brands/addbrand',brandController.addBrand)
 router.get('/editbrand/:id',verifyAdmin,brandController.showEditBrandPage)
-
+router.put('/editbrand/:id',brandController.editbrand)
 router.put('/brand/listing/:id', brandController.listing);
 router.get('/category',verifyAdmin,categoryController.category)
-
+router.post('/category/add',categoryController.addCategory)
 router.get('/category/edit/:id',verifyAdmin,categoryController.showEditCategrory)
+router.put('/category/edit/:id',categoryController.editcategory)
 router.put('/category/listing/:id', categoryController.listing)
 
 router.get('/userlist',verifyAdmin,adminController.userlist)

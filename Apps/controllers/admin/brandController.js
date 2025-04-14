@@ -52,20 +52,18 @@ let sortOptions = { createdAt: -1 };
   addBrand: async (req, res,next) => {
     try {
       // Removed image (req.file) requirement and processing
-      
+      console.log('rew',req.body)
       const { name, description } = req.body;
 
-      // Trim input to remove extra spaces
-      const trimmedName = name.trim();
-      const trimmedDescription = description.trim();
+      
 
       // Validate brand name
-      if (!trimmedName) {
+      if (!name) {
         return res.status(400).json({ success: false, message: 'Brand name is required' });
       }
 
        // Validate that brand name contains at least one uppercase letter
-    if (!/[A-Z]/.test(trimmedName)) {
+    if (!/[A-Z]/.test(name)) {
       return res.status(400).json({ 
         success: false, 
         message: 'Brand name must contain at least one uppercase letter' 
@@ -73,22 +71,16 @@ let sortOptions = { createdAt: -1 };
     }
 
       // Check if brand name already exists (case insensitive)
-      const existingBrand = await Brand.findOne({ name: { $regex: `^${trimmedName}$`, $options: 'i' } });
+      const existingBrand = await Brand.findOne({ name: { $regex: `^${name}$`, $options: 'i' } });
       if (existingBrand) {
         return res.status(400).json({ success: false, message: 'Brand already exists' });
       }
 
       // Validate description
-      if (!trimmedDescription || trimmedDescription.length < 10) {
+      if (!description || description.length < 10) {
         return res.status(400).json({ success: false, message: 'Brand description must be at least 10 characters long' });
       }
 
-      if (name.trim() === '') {
-        return res.status(400).json({
-          success: false,
-          message: 'Brand name cannot be empty or contain only spaces'
-        });
-      }
       if (/^\d+$/.test(description)) {
         return res.status(400).json({
           success: false,
@@ -96,17 +88,10 @@ let sortOptions = { createdAt: -1 };
         });
       }
 
-      if (description.trim() === '') {
-        return res.status(400).json({
-          success: false,
-          message: 'Brand description cannot be empty or contain only spaces'
-        });
-      }
-
       // Save the brand without an image field
       const newBrand = new Brand({
-        name: trimmedName,
-        description: trimmedDescription,
+        name: name,
+        description: description,
       });
 
       await newBrand.save();
@@ -139,6 +124,7 @@ let sortOptions = { createdAt: -1 };
   editbrand: async (req, res,next) => {
 
     try {
+      console.log('ree',req.body)
       const brandId = req.params.id;
       const { name, description } = req.body;
       if (!name || !description) {

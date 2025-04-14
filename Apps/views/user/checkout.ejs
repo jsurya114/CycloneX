@@ -1703,7 +1703,7 @@ async function verifyRazorpayPayment(response, orderId) {
         const data = await verifyResponse.json()
         if(data.success){
             showToast("Payment successful!...")
-            setTimeout(() => { window.location.href = "/confirmation"; })
+            setTimeout(() => { window.location.href = `/confirmation/${orderId}`; })
         }else{
             showToast("Payment verification faliled!...", false)
         }
@@ -1716,6 +1716,8 @@ async function verifyRazorpayPayment(response, orderId) {
 // Function to process Cash on Delivery or post-Razorpay order
 async function processCODOrder(orderData) {
     try {
+     
+        
         if(orderData.paymentMethod==="on"){
             orderData.paymentMethod="COD"
         }
@@ -1725,9 +1727,11 @@ async function processCODOrder(orderData) {
             body: JSON.stringify(orderData)
         });
         const data = await response.json();
+  
+        
         if (data.success) {
-            // showToast('Order placed successfully', 'info');
-            setTimeout(() => { window.location.href = '/confirmation'; });
+           
+            setTimeout(() => { window.location.href = `/confirmation/${data.order.orderId}`; });
         } else {
             showToast(data.message, false);
         }

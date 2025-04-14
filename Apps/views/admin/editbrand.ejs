@@ -342,12 +342,20 @@
         }
       }).then(async (result) => {
         if (result.isConfirmed) {
-          const form = document.getElementById("editBrandForm");
-          const formData = new FormData(form);
+          const nameValue = document.getElementById('name').value;
+          const descriptionValue = document.getElementById('description').value;
+          const formData = {
+  name: nameValue,
+  description: descriptionValue
+};
+console.log('formData',formData)
           try {
             const response = await fetch(`/admin/editbrand/<%= brand._id %>`, {
               method: "PUT",
-              body: formData
+              headers: {  
+    'Content-Type': 'application/json'
+  },
+              body: JSON.stringify(formData)
             });
             const data = await response.json();
             if (response.ok && data.success) {

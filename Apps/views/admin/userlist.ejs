@@ -322,7 +322,7 @@
                     <% if (currentPage > 1) { %>
                       <li class="page-item">
                         <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-primary-50 hover:border-primary-500 hover:text-primary-600 transition-all duration-300 shadow-sm" 
-                           href="?page=<%= prevPage %>&limit=10<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %>">
+                           href="?page=<%= prevPage %>&limit=4<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %>">
                           &laquo;
                         </a>
                       </li>
@@ -332,7 +332,7 @@
                     <% for (let i = 1; i <= totalPages; i++) { %>
                       <li class="page-item">
                         <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-primary-50 hover:border-primary-500 hover:text-primary-600 transition-all duration-300 shadow-sm <%= i === currentPage ? 'bg-primary-500 border-primary-500 text-white hover:bg-primary-600 hover:border-primary-600' : '' %>" 
-                           href="?page=<%= i %>&limit=10<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %>">
+                           href="?page=<%= i %>&limit=4<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %>">
                           <%= i %>
                         </a>
                       </li>
@@ -342,7 +342,7 @@
                     <% if (currentPage < totalPages) { %>
                       <li class="page-item">
                         <a class="page-link flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-300 text-gray-600 hover:bg-primary-50 hover:border-primary-500 hover:text-primary-600 transition-all duration-300 shadow-sm" 
-                           href="?page=<%= nextPage %>&limit=10<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %>">
+                           href="?page=<%= nextPage %>&limit=4<%= search ? '&search=' + search : '' %><%= statusFilter ? '&statusFilter=' + statusFilter : '' %><%= sortBy ? '&sortBy=' + sortBy : '' %>">
                           &raquo;
                         </a>
                       </li>

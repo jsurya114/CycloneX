@@ -471,86 +471,98 @@
     });
   
     document.getElementById('addBrandForm').addEventListener('submit', async function (e) {
-      e.preventDefault(); // Prevent default form submission
-      
-      // Clear any previous inline errors
-      document.getElementById('brand_name_error').classList.add('hidden');
-      document.getElementById('brand_description_error').classList.add('hidden');
-      
-      // Retrieve form field values
-      const nameField = document.getElementById('brand_name');
-      const descriptionField = document.getElementById('brand_description');
-      const name = nameField.value.trim();
-      const description = descriptionField.value.trim();
-      
-      let hasError = false;
-      
-      // Validate the "Name" field is not empty
-      if (!name) {
-        const nameError = document.getElementById('brand_name_error');
-        nameError.textContent = 'Brand name is required';
-        nameError.classList.remove('hidden');
-        hasError = true;
-      } else if (!/[A-Z]/.test(name)) {
-        // Validate that the brand name contains at least one uppercase letter
-        const nameError = document.getElementById('brand_name_error');
-        nameError.textContent = 'Brand name must contain at least one uppercase letter';
-        nameError.classList.remove('hidden');
-        hasError = true;
-      }
-      
-      // Validate the "Description" field
-      if (!description) {
-        const descriptionError = document.getElementById('brand_description_error');
-        descriptionError.textContent = 'Brand description is required';
-        descriptionError.classList.remove('hidden');
-        hasError = true;
-      } else if (description.length < 10) {
-        const descriptionError = document.getElementById('brand_description_error');
-        descriptionError.textContent = 'Brand description must be at least 10 characters long';
-        descriptionError.classList.remove('hidden');
-        hasError = true;
-      }
-      
-      // If there are validation errors, show a toast alert and abort submission
-      if (hasError) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Please fix the errors in the form.'
-        });
-        return;
-      }
-      
-      // Create FormData from the form
-      const formData = new FormData(this);
-      try {
-        const response = await fetch('/admin/addbrand', {
-          method: 'POST',
-          body: formData
-        });
-        const data = await response.json();
-        if (response.ok && data.success) {
-          Toast.fire({
-            icon: 'success',
-            title: data.message,
-          }).then(() => {
-            location.reload();
-          });
-        } else {
-          Toast.fire({
-            icon: 'error',
-            title: data.message || 'An error occurred'
-          });
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        Toast.fire({
-          icon: 'error',
-          title: 'An error occurred. Please try again.'
-        });
-      }
+  e.preventDefault(); // Prevent default form submission
+
+  // Clear any previous inline errors
+  document.getElementById('brand_name_error').classList.add('hidden');
+  document.getElementById('brand_description_error').classList.add('hidden');
+
+  // Retrieve and trim form field values
+  const nameField = document.getElementById('brand_name');
+  const descriptionField = document.getElementById('brand_description');
+  const name = nameField.value.trim();
+  const description = descriptionField.value.trim();
+
+  let hasError = false;
+
+  // Validate the "Name" field: not empty and must include an uppercase letter
+  if (!name) {
+    const nameError = document.getElementById('brand_name_error');
+    nameError.textContent = 'Brand name is required';
+    nameError.classList.remove('hidden');
+    hasError = true;
+  } else if (!/[A-Z]/.test(name)) {
+    const nameError = document.getElementById('brand_name_error');
+    nameError.textContent = 'Brand name must contain at least one uppercase letter';
+    nameError.classList.remove('hidden');
+    hasError = true;
+  }
+
+  // Validate the "Description" field: must not be empty, at least 10 characters, and not only numbers
+  if (!description) {
+    const descriptionError = document.getElementById('brand_description_error');
+    descriptionError.textContent = 'Brand description is required';
+    descriptionError.classList.remove('hidden');
+    hasError = true;
+  } else if (description.length < 10) {
+    const descriptionError = document.getElementById('brand_description_error');
+    descriptionError.textContent = 'Brand description must be at least 10 characters long';
+    descriptionError.classList.remove('hidden');
+    hasError = true;
+  } else if (/^\d+$/.test(description)) {
+    const descriptionError = document.getElementById('brand_description_error');
+    descriptionError.textContent = 'Brand description cannot consist of only numbers';
+    descriptionError.classList.remove('hidden');
+    hasError = true;
+  }
+
+  // If there are validation errors, show a toast alert and abort submission
+  if (hasError) {
+    Toast.fire({
+      icon: 'error',
+      title: 'Please fix the errors in the form.'
     });
-  
+    return;
+  }
+
+  const formData = {
+  name: name,
+  description: description
+};
+console.log('formData',formData)
+  try {
+    const response = await fetch('/admin/brands/addbrand', {
+      method: 'POST',
+      headers: {  // This is missing in your code
+    'Content-Type': 'application/json'
+  },
+
+      body: JSON.stringify(formData)
+    });
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      Toast.fire({
+        icon: 'success',
+        title: data.message,
+      }).then(() => {
+        location.reload();
+      });
+    } else {
+      Toast.fire({
+        icon: 'error',
+        title: data.message || 'An error occurred'
+      });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    Toast.fire({
+      icon: 'error',
+      title: 'An error occurred. Please try again.'
+    });
+  }
+});
+
     // Toggle Brand Status
     document.querySelectorAll('.toggle-checkbox').forEach(switchElement => {
       switchElement.addEventListener('change', async function(e) {
