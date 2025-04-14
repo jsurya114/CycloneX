@@ -12,7 +12,9 @@ const { timeStamp } = require('console')
 const Admin = require('../../models/adminModel')
 const AdminWallet = require('../../models/adminWalletModel')
 const generateTransactionId = require('../../services/transactionids')
-
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path');
 const orderController = {
     placeOrder: async (req, res, next) => {
         try {
@@ -170,6 +172,195 @@ const orderController = {
             next(err)
         }
     },
+
+    generateInvoice: async (req, res, next) => {
+        try {
+          // Authentication
+          const token = req.cookies.token;
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          const userId = decoded.id;
+    
+          const user = await User.findById(userId);
+          if (!user) {
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
+          }
+    
+          // Get order ID from params
+          const orderId = req.params.orderId;
+          if (!orderId) {
+            return res.status(400).json({ success: false, message: 'Order ID is required' });
+          }
+    
+          // Get order details
+          const order = await Order.findOne({ orderId })
+            .populate('items.product')
+            .populate('user', 'email firstName lastName')
+            .populate('address');
+    
+          if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+          }
+    
+          // Check if user owns this order
+          if (order.user._id.toString() !== userId) {
+            return res.status(403).json({ success: false, message: 'Access denied' });
+          }
+    
+          // Create a PDF document
+          const doc = new PDFDocument({ margin: 50 });
+          
+          // Set response headers for PDF download
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader('Content-Disposition', `attachment; filename=invoice-${orderId}.pdf`);
+          
+          // Pipe the PDF document to the response
+          doc.pipe(res);
+          
+          // Company info
+          doc.fontSize(20).text('CycloneX', { align: 'center' });
+          doc.fontSize(10).text('Ride Beyond Limits', { align: 'center' });
+          doc.moveDown();
+          
+          // Add horizontal line
+          doc.moveTo(50, doc.y)
+             .lineTo(550, doc.y)
+             .stroke();
+          doc.moveDown();
+          
+          // Invoice title
+          doc.fontSize(16).text('INVOICE', { align: 'center' });
+          doc.moveDown();
+          
+          // Order and customer info
+          doc.fontSize(10);
+          doc.text(`Invoice No: INV-${orderId.substring(0, 8)}`, { align: 'right' });
+          
+          // Format date
+          const orderDate = new Date(order.timestamp);
+          const formattedDate = orderDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          
+          doc.text(`Date: ${formattedDate}`, { align: 'right' });
+          doc.moveDown();
+          
+          // Customer details
+          doc.fontSize(12).text('Customer Details:', { underline: true });
+          doc.fontSize(10);
+          doc.text(`Name: ${order.user.firstName || ''} ${order.user.lastName || ''}`);
+          doc.text(`Email: ${order.user.email}`);
+          
+          // Address details
+          if (order.address) {
+            doc.text(`Shipping Address: ${order.address.addressLine1}, ${order.address.city}, ${order.address.state}, ${order.address.pincode}`);
+          }
+          doc.moveDown();
+          
+          // Order details
+          doc.fontSize(12).text('Order Details:', { underline: true });
+          doc.fontSize(10);
+          doc.text(`Order ID: ${order.orderId}`);
+          doc.text(`Order Date: ${formattedDate}`);
+          doc.text(`Payment Method: ${order.paymentMethod}`);
+          doc.text(`Payment Status: ${order.paymentStatus}`);
+          doc.moveDown();
+          
+          // Create item table
+          // Define table structure
+          const tableTop = doc.y + 10;
+          const itemX = 50;
+          const quantityX = 300;
+          const priceX = 370;
+          const amountX = 450;
+          
+          // Add table headers
+          doc.font('Helvetica-Bold');
+          doc.text('Item', itemX, tableTop);
+          doc.text('Qty', quantityX, tableTop);
+          doc.text('Price', priceX, tableTop);
+          doc.text('Amount', amountX, tableTop);
+          doc.font('Helvetica');
+          
+          // Add horizontal line
+          doc.moveTo(50, tableTop + 15)
+             .lineTo(550, tableTop + 15)
+             .stroke();
+          
+          let tableY = tableTop + 25;
+          
+          // Add items
+          const items = order.items;
+          let taxRate = 0.18; // 18% tax
+          let subtotal = 0;
+          
+          items.forEach(item => {
+            const product = item.product;
+            const unitPrice = item.subTotal / item.quantity;
+            subtotal += item.subTotal;
+            
+            doc.text(product.productName, itemX, tableY);
+            doc.text(item.quantity.toString(), quantityX, tableY);
+            doc.text(`₹${unitPrice.toFixed(2)}`, priceX, tableY);
+            doc.text(`₹${item.subTotal.toFixed(2)}`, amountX, tableY);
+            
+            tableY += 20;
+          });
+          
+          // Add horizontal line
+          doc.moveTo(50, tableY)
+             .lineTo(550, tableY)
+             .stroke();
+          tableY += 15;
+          
+          // Calculate totals
+          const tax = subtotal * taxRate;
+          const discount = 0; // Add logic for discount if applicable
+          const total = subtotal + tax - discount;
+          
+          // Add totals
+          doc.text('Subtotal:', 350, tableY);
+          doc.text(`₹${subtotal.toFixed(2)}`, amountX, tableY);
+          tableY += 20;
+          
+          doc.text('Tax (18%):', 350, tableY);
+          doc.text(`₹${tax.toFixed(2)}`, amountX, tableY);
+          tableY += 20;
+          
+          if (discount > 0) {
+            doc.text('Discount:', 350, tableY);
+            doc.text(`₹${discount.toFixed(2)}`, amountX, tableY);
+            tableY += 20;
+          }
+          
+          // Add horizontal line
+          doc.moveTo(350, tableY)
+             .lineTo(550, tableY)
+             .stroke();
+          tableY += 15;
+          
+          // Total
+          doc.font('Helvetica-Bold');
+          doc.text('Total:', 350, tableY);
+          doc.text(`₹${total.toFixed(2)}`, amountX, tableY);
+          doc.font('Helvetica');
+          
+          // Add footer
+          doc.moveDown(4);
+          doc.fontSize(10).text('Thank you for shopping with CycloneX!', { align: 'center' });
+          doc.text('For any inquiries, please contact us at cyclonex.gethelp@gmal.com', { align: 'center' });
+          
+          // Finalize the PDF
+          doc.end();
+        } catch (error) {
+          next(error);
+        }
+      },
+
+
+
+
     getorder: async (req, res, next) => {
         try {
             const token = req.cookies.token

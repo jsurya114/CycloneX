@@ -532,7 +532,10 @@
       e.preventDefault(); // Prevent default form submission
       
       // Clear any previous inline errors
-      document.querySelectorAll('[id$="_error"]').forEach(el => el.classList.add('hidden'));
+ document.querySelectorAll('[id$="_error"]').forEach(el=>{
+  el.textContent=''
+  el.classList.add('hidden')
+ })
       
       // Retrieve form field values
       const couponCode = document.getElementById('couponCode').value.trim();
@@ -605,23 +608,25 @@
         document.getElementById('minAmount_error').classList.remove('hidden');
         hasError = true;
       }
+      if(parseFloat(minAmount) === parseFloat(offerPrice)){
+   document.getElementById('minAmount_error').textContent = 'Offer price and minimum amount cannot be equal';
+   document.getElementById('minAmount_error').classList.remove('hidden');
+   hasError = true;
+}
       
       // If there are validation errors, show a toast alert and abort submission
       if (hasError) {
-        Toast.fire({
-          icon: 'error',
-          title: 'Please fix the errors in the form.'
-        });
+       
         return;
       }
       
       try {
         const formData = {
-          couponCode: document.getElementById('couponCode').value.trim(),
-          startDate: document.getElementById('startDate').value.trim(),
-          expireDate: document.getElementById('expireDate').value.trim(),
-          offerPrice: document.getElementById('offerPrice').value.trim(),
-          minAmount: document.getElementById('minAmount').value.trim()
+          couponCode,
+      startDate,
+      expireDate,
+      offerPrice,
+      minAmount
         };
         const response = await fetch('/admin/addcoupon', {
           method: 'POST',
@@ -637,11 +642,37 @@
             location.reload();
           });
         } else {
-          Toast.fire({
-            icon: 'error',
-            title: data.message || 'An error occurred'
-          });
+         // Handle specific field errors from backend
+      if (data.field && data.field !== 'all') {
+        const errorElement = document.getElementById(`${data.field}_error`);
+        if (errorElement) {
+          errorElement.textContent = data.message;
+          errorElement.classList.remove('hidden');
         }
+      } else if (data.message.includes('offer price cannot be greater')) {
+        // Handle specific error message about offer price
+        document.getElementById('offerPrice_error').textContent = data.message;
+        document.getElementById('offerPrice_error').classList.remove('hidden');
+      } else if (data.message.includes('Coupon already exists')) {
+        // Handle existing coupon error
+        document.getElementById('couponCode_error').textContent = data.message;
+        document.getElementById('couponCode_error').classList.remove('hidden');
+      } else if (data.message.includes('Start date cannot be')) {
+        // Handle start date error
+        document.getElementById('startDate_error').textContent = data.message;
+        document.getElementById('startDate_error').classList.remove('hidden');
+      } else if (data.message.includes('Expiry date must be')) {
+        // Handle expiry date error
+        document.getElementById('expireDate_error').textContent = data.message;
+        document.getElementById('expireDate_error').classList.remove('hidden');
+      } else {
+        // For any other generic errors, show toast
+        Toast.fire({
+          icon: 'error',
+          title: data.message || 'An error occurred'
+        });
+      }
+    }
       } catch (error) {
         console.error('Error:', error);
         Toast.fire({

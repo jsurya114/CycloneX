@@ -7,7 +7,7 @@ const { timeStamp } = require('console');
 const salesController = {
   getSaleReport: async (req, res, next) => {
     try {
-      let { startDate, endDate,  timeFilters, page = 1, limit = 2 } = req.query;
+      let { startDate, endDate,  timeFilters, page = 1, limit = 10 } = req.query;
 
       // Base date setup
       let today = new Date();
@@ -73,7 +73,7 @@ const salesController = {
       const query = { timestamp: { $gte: startDateTime, $lte: endDateTime } };
 
       const pageNum = parseInt(page) || 1;
-      const limitNum = parseInt(limit) || 2
+      const limitNum = parseInt(limit) || 10
       
       // Fetch orders
       const allOrders = await Order.find(query)
@@ -123,315 +123,275 @@ const salesController = {
   
   downloadPDF: async (req, res, next) => {
     try {
-        const salesData = req.body;
-
-        if (!Array.isArray(salesData) || salesData.length === 0) {
-            return res.status(400).json({ success: false, message: "No sales data available." });
+      const salesData = req.body;
+  
+      if (!Array.isArray(salesData) || salesData.length === 0) {
+        return res.status(400).json({ success: false, message: "No sales data available." });
+      }
+  
+      // Fetch product details for all orders
+      const orderIds = salesData.map(sale => sale.orderid);
+      const ordersWithProducts = await Order.find({ _id: { $in: orderIds } })
+        .populate('user', 'fullName email')
+        .populate({
+          path: 'items.product',
+          select: 'productName'
+        });
+  
+      // Create a mapping of order ID to products
+      const orderProductMap = {};
+      ordersWithProducts.forEach(order => {
+        if (order._id) {
+          orderProductMap[order._id.toString()] = order.items || [];
         }
-
-        // Fetch product details for all orders
-        const orderIds = salesData.map(sale => sale.orderid);
-        const ordersWithProducts = await Order.find({ _id: { $in: orderIds } })
-            .populate('user', 'fullName email')
-            .populate({
-                path: 'items.product',
-                select: 'productName'
+      });
+  
+      // Prepare data for PDF with product information - LIMIT TO TOP 6 ITEMS
+      let pdfData = [];
+      salesData.forEach(sale => {
+        const orderItems = orderProductMap[sale.orderid?.toString()] || [];
+        
+        if (orderItems.length > 0) {
+          // Create one row per product
+          orderItems.forEach(item => {
+            pdfData.push({
+              ...sale,
+              productName: item.product?.productName || "Unknown Product"
             });
-
-        // Create a mapping of order ID to products
-        const orderProductMap = {};
-        ordersWithProducts.forEach(order => {
-            if (order._id) {
-                orderProductMap[order._id.toString()] = order.items || [];
-            }
-        });
-
-        // Prepare data for PDF with product information
-        let pdfData = [];
-        salesData.forEach(sale => {
-            const orderItems = orderProductMap[sale.orderid?.toString()] || [];
-            
-            if (orderItems.length > 0) {
-                // Create one row per product
-                orderItems.forEach(item => {
-                    pdfData.push({
-                        ...sale,
-                        productName: item.product?.productName || "Unknown Product"
-                    });
-                });
-            } else {
-                // If no products found, include order with N/A product
-                pdfData.push({
-                    ...sale,
-                    productName: "N/A"
-                });
-            }
-        });
-
-        const doc = new PDFDocument({ margin: 50, size: 'A4' });
-        res.setHeader("Content-Disposition", "attachment; filename=sales_report.pdf");
-        res.setHeader("Content-Type", "application/pdf");
-
-        doc.pipe(res);
+          });
+        } else {
+          // If no products found, include order with N/A product
+          pdfData.push({
+            ...sale,
+            productName: "N/A"
+          });
+        }
+      });
+  
+      // Limit to maximum 6 items to ensure single page
+      const displayData = pdfData.slice(0, 6);
+      const hiddenItems = pdfData.length - displayData.length;
+  
+      const doc = new PDFDocument({ margin: 30, size: 'A4' }); // Reduced margins
+      res.setHeader("Content-Disposition", "attachment; filename=sales_report.pdf");
+      res.setHeader("Content-Type", "application/pdf");
+  
+      doc.pipe(res);
+      
+      // Add title and date with smaller spacing
+      doc.fontSize(18).font('Helvetica-Bold').text("Sales Report", { align: "center" });
+      doc.fontSize(10).font('Helvetica').text(`Generated on: ${new Date().toLocaleDateString()}`, { align: "center" });
+      doc.moveDown(1); // Reduced spacing
+  
+      // Define table layout with more compact widths
+      const headers = ["Order ID", "Customer", "Product", "Date", "Amount", "Payment"];
+      const columnWidths = [70, 85, 95, 65, 65, 65]; // More compact widths
+      const tableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
+      const startX = (doc.page.width - tableWidth) / 2;
+      const rowHeight = 25; // Reduced row height for better spacing
+      let y = doc.y;
+  
+      // Add table header
+      doc.fillColor("#4472C4").rect(startX, y, tableWidth, rowHeight).fill();
+      doc.fillColor("white").font("Helvetica-Bold").fontSize(9); // Smaller font
+      
+      let x = startX;
+      headers.forEach((header, i) => {
+        doc.text(
+          header, 
+          x + 3, 
+          y + (rowHeight/2) - 4, 
+          { 
+            width: columnWidths[i] - 6, 
+            align: i === 0 ? "left" : i === 4 ? "right" : "center",
+            lineBreak: false
+          }
+        );
+        x += columnWidths[i];
+      });
+      
+      y += rowHeight;
+  
+      // Draw table rows with more compact styling
+      doc.font("Helvetica").fontSize(8); // Smaller font for data
+      
+      displayData.forEach((sale, rowIndex) => {
+        // Alternate row background
+        if (rowIndex % 2 === 0) {
+          doc.fillColor("#E9EDF8").rect(startX, y, tableWidth, rowHeight).fill();
+        }
+        doc.fillColor("black"); // Reset fill color
         
-        // Add title and date
-        doc.fontSize(22).font('Helvetica-Bold').text("Sales Report", { align: "center" });
-        doc.fontSize(12).font('Helvetica').text(`Generated on: ${new Date().toLocaleDateString()}`, { align: "center" });
-        doc.moveDown(2);
-
-        // Define table layout with more appropriate widths based on content
-        const headers = ["Order ID", "Customer", "Product", "Date", "Total Amount", "Payment Method"];
-        const columnWidths = [75, 90, 100, 70, 75, 75]; // Updated with Product column
-        const tableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
-        const startX = (doc.page.width - tableWidth) / 2;
-        const rowHeight = 35; // Increased row height for better spacing
-        let y = doc.y;
-
-        // Draw table header
-        doc.fillColor("#4472C4").rect(startX, y, tableWidth, rowHeight).fill();
-        doc.fillColor("white").font("Helvetica-Bold").fontSize(10);
-        
+        // Draw row data
         let x = startX;
-        headers.forEach((header, i) => {
-            doc.text(
-                header, 
-                x + 5, 
-                y + (rowHeight/2) - 5, 
-                { 
-                    width: columnWidths[i] - 10, 
-                    align: i === 0 ? "left" : i === 4 ? "right" : "center",
-                    lineBreak: false
-                }
-            );
-            x += columnWidths[i];
-        });
-
-        y += rowHeight;
-
-        // Draw table rows with text truncation/wrapping handling
-        doc.font("Helvetica").fontSize(9).fillColor("black");
         
-        pdfData.forEach((sale, rowIndex) => {
-            const currentRowHeight = rowHeight;
-            
-            // Alternate row background
-            if (rowIndex % 2 === 0) {
-                doc.fillColor("#E9EDF8").rect(startX, y, tableWidth, currentRowHeight).fill();
-            }
-            
-            // Check if we need to add a new page
-            if (y + currentRowHeight > doc.page.height - 70) {
-                doc.addPage();
-                y = 50; // Reset y position for new page
-                
-                // Redraw header on new page
-                doc.fillColor("#4472C4").rect(startX, y, tableWidth, rowHeight).fill();
-                doc.fillColor("white").font("Helvetica-Bold").fontSize(10);
-                
-                x = startX;
-                headers.forEach((header, i) => {
-                    doc.text(
-                        header, 
-                        x + 5, 
-                        y + (rowHeight/2) - 5, 
-                        { 
-                            width: columnWidths[i] - 10, 
-                            align: i === 0 ? "left" : i === 4 ? "right" : "center",
-                            lineBreak: false
-                        }
-                    );
-                    x += columnWidths[i];
-                });
-                
-                y += rowHeight;
-                
-                // Reset fill color for row content
-                if (rowIndex % 2 === 0) {
-                    doc.fillColor("#E9EDF8").rect(startX, y, tableWidth, currentRowHeight).fill();
-                }
-            }
-            
-            // Draw row data
-            x = startX;
-            
-            // Format and handle potential overflow for Order ID
-            const orderId = sale.orderId;
-            let displayOrderId = orderId;
-            
-            // If order ID is too long, truncate it with ellipsis
-            if (orderId && orderId.length > 12) {
-                displayOrderId = orderId.substring(0, 10) + "...";
-            }
-            
-            // Format data
-            const customerName = sale.user?.fullName || "Guest";
-            const truncatedName = customerName.length > 16 ? 
-                customerName.substring(0, 14) + "..." : 
-                customerName;
-                
-            // Product name handling
-            const productName = sale.productName || "N/A";
-            const truncatedProduct = productName.length > 18 ?
-                productName.substring(0, 16) + "..." :
-                productName;
-                
-            const formattedDate = new Date(sale.timestamp).toLocaleDateString();
-            const formattedAmount = `₹${sale.totalAmount.toFixed(2)}`;
-            
-            const rowData = [
-                displayOrderId,
-                truncatedName,
-                truncatedProduct,
-                formattedDate,
-                formattedAmount,
-                sale.paymentMethod
-            ];
-            
-            doc.fillColor("black");
-            rowData.forEach((text, i) => {
-                const textOptions = { 
-                    width: columnWidths[i] - 10,
-                    align: i === 0 ? "left" : i === 4 ? "right" : "center",
-                    lineBreak: false
-                };
-                
-                // Center text vertically in the taller row
-                doc.text(text, x + 5, y + (currentRowHeight/2) - 5, textOptions);
-                x += columnWidths[i];
-            });
-            
-            // Draw cell borders
-            doc.strokeColor("#CCCCCC");
-            
-            // Horizontal line at bottom of row
-            doc.moveTo(startX, y + currentRowHeight)
-               .lineTo(startX + tableWidth, y + currentRowHeight)
-               .stroke();
-            
-            // Vertical lines
-            x = startX;
-            for (let i = 0; i <= columnWidths.length; i++) {
-                doc.moveTo(x, y)
-                   .lineTo(x, y + currentRowHeight)
-                   .stroke();
-                
-                if (i < columnWidths.length) {
-                    x += columnWidths[i];
-                }
-            }
-            
-            y += currentRowHeight;
-        });
-
-        // Add Grand Total
-        // Check if we need a new page for the grand total
-        if (y + rowHeight > doc.page.height - 70) {
-            doc.addPage();
-            y = 50;
-        }
-
-        doc.strokeColor("#000000");
-        doc.lineWidth(1);
-        doc.rect(startX, y, tableWidth, rowHeight).stroke();
+        // Format data with shorter truncation
+        const orderId = sale.orderId;
+        let displayOrderId = orderId;
         
-        doc.font("Helvetica-Bold").fontSize(11).fillColor("#4472C4");
-        doc.text(
-            "Grand Total:",
-            startX + 5, 
-            y + (rowHeight/2) - 5,
-            { width: tableWidth - 105, align: "right" }
-        );
-        
-        doc.text(
-            `₹${salesData.reduce((sum, sale) => sum + sale.totalAmount, 0).toFixed(2)}`,
-            startX + tableWidth - 100,
-            y + (rowHeight/2) - 5,
-            { width: 95, align: "right" }
-        );
-
-        // Add Summary Section
-        y += rowHeight * 2; // Add spacing after grand total
-        
-        // Check if we need a new page for the summary
-        if (y + (rowHeight * 6) > doc.page.height - 70) {
-            doc.addPage();
-            y = 50;
+        if (orderId && orderId.length > 10) {
+          displayOrderId = orderId.substring(0, 8) + "...";
         }
         
-        // Add Summary Header
-        doc.font("Helvetica-Bold").fontSize(14).fillColor("#000000");
-        doc.text("SUMMARY", startX, y);
-        y += 20;
+        const customerName = sale.user?.fullName || "Guest";
+        const truncatedName = customerName.length > 14 ? 
+          customerName.substring(0, 12) + "..." : 
+          customerName;
+            
+        const productName = sale.productName || "N/A";
+        const truncatedProduct = productName.length > 16 ?
+          productName.substring(0, 14) + "..." :
+          productName;
+            
+        const formattedDate = new Date(sale.timestamp).toLocaleDateString();
+        const formattedAmount = `₹${sale.totalAmount.toFixed(2)}`;
         
-        // Calculate summary statistics
-        const uniqueOrders = new Set(salesData.map(sale => sale.orderId)).size;
-        const totalProducts = pdfData.length;
-        const totalRevenue = salesData.reduce((sum, sale) => sum + sale.totalAmount, 0);
-        const avgOrderValue = uniqueOrders > 0 ? totalRevenue / uniqueOrders : 0;
-        
-        // Create summary table
-        const summaryData = [
-            ["Total Orders", uniqueOrders.toString()],
-            ["Total Products Sold", totalProducts.toString()],
-            ["Total Revenue", `₹${totalRevenue.toFixed(2)}`],
-            ["Average Order Value", `₹${avgOrderValue.toFixed(2)}`]
+        const rowData = [
+          displayOrderId,
+          truncatedName,
+          truncatedProduct,
+          formattedDate,
+          formattedAmount,
+          sale.paymentMethod
         ];
         
-        const summaryColWidths = [150, 150];
-        
-        summaryData.forEach((row, i) => {
-            // Add alternating background for summary rows
-            if (i % 2 === 0) {
-                doc.fillColor("#F5F5F5").rect(startX, y, summaryColWidths[0] + summaryColWidths[1], rowHeight).fill();
-            }
-            
-            doc.fillColor("#000000");
-            doc.font("Helvetica-Bold").fontSize(10);
-            doc.text(row[0], startX + 5, y + (rowHeight/2) - 5);
-            
-            doc.font("Helvetica").fontSize(10);
-            doc.text(row[1], startX + summaryColWidths[0] + 5, y + (rowHeight/2) - 5);
-            
-            y += rowHeight;
+        rowData.forEach((text, i) => {
+          const textOptions = { 
+            width: columnWidths[i] - 6,
+            align: i === 0 ? "left" : i === 4 ? "right" : "center",
+            lineBreak: false
+          };
+          
+          doc.text(text, x + 3, y + (rowHeight/2) - 4, textOptions);
+          x += columnWidths[i];
         });
-
-        // Add footer with page numbers
-        const pageCount = doc.bufferedPageRange().count;
-        for (let i = 0; i < pageCount; i++) {
-            doc.switchToPage(i);
-            
-            // Add company name or report identification in footer
-            doc.fontSize(8).fillColor("#666666")
-                .text(
-                    "COMPANY NAME | CONFIDENTIAL",
-                    50,
-                    doc.page.height - 50,
-                    { align: "left" }
-                );
-                
-            // Add page number
-            doc.text(
-                `Page ${i + 1} of ${pageCount}`,
-                0,
-                doc.page.height - 50,
-                { align: "center" }
-            );
-            
-            // Add timestamp
-            doc.text(
-                `Generated: ${new Date().toLocaleString()}`,
-                doc.page.width - 150,
-                doc.page.height - 50,
-                { align: "right" }
-            );
+        
+        // Draw cell borders
+        doc.strokeColor("#CCCCCC");
+        
+        // Horizontal line at bottom of row
+        doc.moveTo(startX, y + rowHeight)
+           .lineTo(startX + tableWidth, y + rowHeight)
+           .stroke();
+        
+        // Vertical lines
+        x = startX;
+        for (let i = 0; i <= columnWidths.length; i++) {
+          doc.moveTo(x, y)
+             .lineTo(x, y + rowHeight)
+             .stroke();
+          
+          if (i < columnWidths.length) {
+            x += columnWidths[i];
+          }
         }
-
-        doc.end();
+        
+        y += rowHeight;
+      });
+  
+      // Add note about hidden items if any
+      if (hiddenItems > 0) {
+        doc.font("Helvetica-Italic").fontSize(8).fillColor("#666666");
+        doc.text(`Note: ${hiddenItems} more items not shown to fit report on single page.`, startX, y + 5);
+        y += 20;
+      } else {
+        y += 10;
+      }
+  
+      // Add Grand Total with compact styling
+      doc.strokeColor("#000000");
+      doc.lineWidth(1);
+      doc.rect(startX, y, tableWidth, rowHeight).stroke();
+      
+      doc.font("Helvetica-Bold").fontSize(10).fillColor("#4472C4");
+      doc.text(
+        "Grand Total:",
+        startX + 5, 
+        y + (rowHeight/2) - 5,
+        { width: tableWidth - 105, align: "right" }
+      );
+      
+      doc.text(
+        `₹${salesData.reduce((sum, sale) => sum + sale.totalAmount, 0).toFixed(2)}`,
+        startX + tableWidth - 100,
+        y + (rowHeight/2) - 5,
+        { width: 95, align: "right" }
+      );
+  
+      // Add Summary Section with compact styling
+      y += rowHeight + 15;
+      
+      // Calculate summary statistics
+      const uniqueOrders = new Set(salesData.map(sale => sale.orderId)).size;
+      const totalProducts = pdfData.length;
+      const totalRevenue = salesData.reduce((sum, sale) => sum + sale.totalAmount, 0);
+      const avgOrderValue = uniqueOrders > 0 ? totalRevenue / uniqueOrders : 0;
+      
+      // Create compact summary layout (2x2 grid instead of vertical)
+      doc.font("Helvetica-Bold").fontSize(12).fillColor("#000000");
+      doc.text("SUMMARY", startX, y);
+      y += 15;
+      
+      const summaryRowHeight = 20;
+      const summaryWidth = tableWidth / 2;
+      
+      // First row of summary (2 columns)
+      doc.fillColor("#F5F5F5").rect(startX, y, tableWidth, summaryRowHeight).fill();
+      doc.fillColor("#000000");
+      
+      // Column 1
+      doc.font("Helvetica-Bold").fontSize(9);
+      doc.text("Total Orders:", startX + 5, y + 6);
+      doc.font("Helvetica").fontSize(9);
+      doc.text(uniqueOrders.toString(), startX + 80, y + 6);
+      
+      // Column 2
+      doc.font("Helvetica-Bold").fontSize(9);
+      doc.text("Total Products:", startX + summaryWidth + 5, y + 6);
+      doc.font("Helvetica").fontSize(9);
+      doc.text(totalProducts.toString(), startX + summaryWidth + 85, y + 6);
+      
+      y += summaryRowHeight;
+      
+      // Second row of summary (2 columns)
+      doc.fillColor("#FFFFFF").rect(startX, y, tableWidth, summaryRowHeight).fill();
+      doc.fillColor("#000000");
+      
+      // Column 1
+      doc.font("Helvetica-Bold").fontSize(9);
+      doc.text("Total Revenue:", startX + 5, y + 6);
+      doc.font("Helvetica").fontSize(9);
+      doc.text(`₹${totalRevenue.toFixed(2)}`, startX + 80, y + 6);
+      
+      // Column 2
+      doc.font("Helvetica-Bold").fontSize(9);
+      doc.text("Avg Order Value:", startX + summaryWidth + 5, y + 6);
+      doc.font("Helvetica").fontSize(9);
+      doc.text(`₹${avgOrderValue.toFixed(2)}`, startX + summaryWidth + 85, y + 6);
+  
+      // Add footer at bottom of page
+      doc.fontSize(8).fillColor("#666666")
+        .text(
+          "COMPANY NAME | CONFIDENTIAL",
+          50,
+          doc.page.height - 30,
+          { align: "left" }
+        );
+            
+      // Add timestamp on right
+      doc.text(
+        `Generated: ${new Date().toLocaleString()}`,
+        doc.page.width - 150,
+        doc.page.height - 30,
+        { align: "right" }
+      );
+  
+      doc.end();
     } catch (error) {
-        console.error("Error generating PDF:", error);
-        next(error);
+      console.error("Error generating PDF:", error);
+      next(error);
     }
-},
+  },
 
   downloadEXCEL: async (req, res, next) => {
     try {

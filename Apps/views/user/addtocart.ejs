@@ -928,6 +928,7 @@
                     
                     // Show success toast with product name
                     showToast(`${productName} quantity updated to ${quantity}`, true);
+                    window.location.reload()
                 } else {
                     // Revert the input value if there was an error
                     quantityInput.value = originalQuantity;

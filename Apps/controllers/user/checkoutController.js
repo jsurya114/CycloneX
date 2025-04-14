@@ -150,7 +150,7 @@ if(!coupon){
 }
 
 
-// const userObjectId = new mongoose.Types.ObjectId(userId); // Convert to ObjectId
+
 
 
 if(coupon.usedBy&&coupon.usedBy.includes(userId)){

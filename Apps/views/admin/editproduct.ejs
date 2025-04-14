@@ -1,205 +1,498 @@
-<!DOCTYPE HTML>
+
+<!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CycloneX Dashboard - Edit Product</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#2e1065',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Toggle switch styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            background-color: #0284c7;
+            border-color: #0284c7;
+        }
+        
+        .toggle-label {
+            display: block;
+            overflow: hidden;
+            cursor: pointer;
+            border-radius: 9999px;
+            height: 1.5rem;
+            background-color: #d1d5db;
+        }
 
-<%- include('partials/head') %>
-<body class="bg-gray-100">
-
-    <div class="screen-overlay"></div>
-
-    <!-- Sidebar -->
-    <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-          <a href="" class="brand-wrap">
-            <img src="/backend/imgs/logos/cyclonelogo.png" class="logo" alt="CycloneX Dashboard">
-          </a>
-          <div>
-            <button class="btn btn-icon btn-aside-minimize">
-              <i class="text-muted material-icons md-menu_open"></i>
-            </button>
-          </div>
-        </div>
-        <nav>
-          <ul class="menu-aside">
-            <li class="menu-item">
-              <a class="menu-link" href="/admin/dashboard">
-                <i class="icon material-icons md-home"></i>
-                <span class="text">Dashboard</span>
-              </a>
-            </li>
-            <li class="menu-item has-submenu active">
-                <a class="menu-link" href="#">
-                  <i class="icon material-icons md-shopping_bag"></i>
-                  <span class="text">Products</span>
-                </a>
-                <ul class="submenu">
-                  <li><a href="/admin/addproduct" class="submenu-link">Add Product</a></li>
-                </ul>
-              </li>
-            <li class="menu-item">
-              <a class="menu-link" href="/admin/category">
-                <i class="icon material-icons md-category"></i>
-                <span class="text">Category</span>
-              </a>
-            </li>
-            <li class="menu-item">
-              <a class="menu-link" href="/admin/brands">
-                <i class="icon material-icons md-stars"></i>
-                <span class="text">Brands</span>
-              </a>
-            </li>
-            <li class="menu-item active">
-              <a class="menu-link" href="#">
-                <i class="icon material-icons md-store"></i>
-                <span class="text">Users</span>
-              </a>
-            </li>
-
-
-            <li class="menu-item ">
-                <a class="menu-link" href="/admin/orderlist">
-                  <i class="icon material-icons md-shopping_bag"></i>
-                  <span class="text">Orders</span>
-                  <!-- <i class="icon-expand material-icons md-expand_more"></i> -->
-                </a>
-                <!-- <ul class="submenu">
-                  <li><a href="/admin/product-list2" class="submenu-link">Product List</a></li>
-                  <li><a href="/admin/orderlist" class="submenu-link">Add Product</a></li>
-                </ul> -->
-              </li>
-
-          </ul>
-        </nav>
-      </aside>
-
-    <!-- Main Content -->
-    <main class="main-wrap ml-64 p-6">
-      
-        <section class="content-main bg-white shadow-md rounded-lg p-6">
-            <div class="flex justify-between items-center border-b pb-4 mb-6">
-                <h2 class="text-2xl font-semibold text-gray-800">Edit Product</h2>
-            </div>
-
-            <form id="editProductForm" action="/admin/edit-product/<%= product._id %>" method="POST" enctype="multipart/form-data" class="space-y-6">
-                <input type="hidden" name="productId" value="<%= product._id %>">
-
-                <!-- Product Title -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Product Title</label>
-                    <input type="text" name="productName" placeholder="Enter product name"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.productName %>" >
-                    <p id="productNameError" class="text-red-500 text-sm mt-1"></p>
-                </div>
-
-                <!-- Description -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Description</label>
-                    <textarea name="description" placeholder="Enter description" rows="4"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" ><%= product.description %></textarea>
-                    <p id="descriptionError" class="text-red-500 text-sm mt-1"></p>
-                </div>
-
-                <!-- Brand Selection -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Brand</label>
-                    <select name="brands" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" >
-                        <% brands.forEach(brand => { %>
-                            <option value="<%= brand._id %>" <%= brand._id.toString() === product.brands._id.toString() ? 'selected' : '' %>><%= brand.name %></option>
-                        <% }) %>
-                    </select>
-                </div>
-
-                <!-- Category Selection -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Category</label>
-                    <select name="category" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" >
-                        <% category.forEach(cat => { %>
-                            <option value="<%= cat._id %>" <%= product.category && product.category._id.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.name %></option>
-                        <% }) %>
-                    </select>
-                </div>
-
-                <!-- Price -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Price</label>
-                    <input type="number" name="price" placeholder="00.0"
-                        class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" value="<%= product.price %>" >
-                    <p id="priceError" class="text-red-500 text-sm mt-1"></p>
-                </div>  
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Offer (%)</label>
-                    <input type="number" name="offer" placeholder="Enter discount percentage"
-                           class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" 
-                           value="<%= product.offer || 0 %>">
-                    <p id="offerError" class="text-red-500 text-sm mt-1"></p>
+        /* Custom shadow */
+        .shadow-custom {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Glass effect */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        /* Custom animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .float-animation {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Input focus effect */
+        .input-focus-effect:focus {
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+            border-color: #0284c7;
+        }
+        
+        /* Background pattern */
+        .bg-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 bg-pattern">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 shadow-lg transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 flex-shrink-0">
+            <div class="flex flex-col h-full">
+                <!-- Logo Area -->
+                <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+                    <a href="/admin/dashboard" class="flex items-center space-x-2">
+                        <div class="bg-gradient-to-r from-primary-600 to-secondary-600 p-1.5 rounded-lg">
+                            <img src="/backend/imgs/logos/cyclonelogo.png" class="h-6 w-6" alt="CycloneX Dashboard">
+                        </div>
+                        <span class="text-xl font-bold text-gray-800">CycloneX</span>
+                    </a>
+                    <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
                 
-                <!-- Stock -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Stock</label>
-                    <input type="number" name="stock" placeholder="Enter stock quantity"
-                           class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300" 
-                           value="<%= product.stock %>">
-                           <p id="stockError" class="text-red-500 text-sm mt-1"></p>
-                </div>
-
-                <!-- Main Image Upload -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Main Image</label>
-                    <input type="file" name="mainImage" class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300">
+                <!-- Navigation -->
+                <nav class="flex-1 px-4 py-4 overflow-y-auto scrollbar-hide">
+                    <div class="space-y-1">
+                        <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Main</p>
+                        
+                        <a href="/admin/dashboard" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-home w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        
+                        <a href="/admin/product-list2" class="flex items-center px-3 py-2.5 text-sm font-medium bg-primary-50 text-primary-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-shopping-bag w-5 h-5 mr-2 text-primary-700"></i>
+                            <span>Products</span>
+                        </a>
+                        
+                        <a href="/admin/category" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-tags w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Categories</span>
+                        </a>
+                        
+                        <a href="/admin/brands" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-star w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Brands</span>
+                        </a>
+                    </div>
                     
-                    <% if (product.mainImage) { %>
-                        <div class="mt-3 flex items-center gap-3">
-                            <div class="relative">
-                                <img src="/<%= product.mainImage.replace(/\\/g, '/') %>" class="w-32 h-32 object-cover rounded-lg shadow-md">
-                                <button type="button" data-image="<%= product.mainImage %>" data-type="main" 
-                                        class="delete-image absolute -top-2 -right-2 bg-white text-black rounded-full p-1 ">
-                                    <i class="material-icons text-sm">X</i>
-                                </button>
-                            </div>
+                    <div class="mt-8 space-y-1">
+                        <p class="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Management</p>
+                        
+                        <a href="/admin/userlist" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-users w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Users</span>
+                        </a>
+                        
+                        <a href="/admin/adminwallet" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-wallet w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Wallet</span>
+                        </a>
+                        
+                        <a href="/admin/coupons" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-gift w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Coupons</span>
+                        </a>
+                        
+                        <a href="/admin/orderlist" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 group">
+                            <i class="fas fa-clipboard-list w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Orders</span>
+                        </a>
+                        
+                        <a href="/admin/Logout" class="flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 group">
+                            <i class="fas fa-sign-out-alt w-5 h-5 mr-2 text-gray-500 group-hover:text-gray-700"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+        
+        <!-- Content Area -->
+        <div class="flex-1 lg:ml-64">
+            <!-- Main Content -->
+            <main class="p-4 md:p-6 lg:p-8">
+                <div class="max-w-5xl mx-auto">
+                    <!-- Page Header -->
+                    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Edit Product</h1>
+                            <p class="mt-1 text-sm text-gray-500">Update product details and information</p>
                         </div>
-                    <% } %>
-                </div>
+                        <div class="mt-4 md:mt-0">
+                            <a href="/admin/product-list2" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Back to Products
+                            </a>
+                        </div>
+                    </div>
 
-                <!-- Additional Images Upload -->
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Additional Images</label>
-                    <input type="file" name="images" multiple class="w-full px-4 py-2 border rounded-lg focus:ring focus:ring-blue-300">
-                    
-                    <% if (product.images && product.images.length > 0) { %>
-                        <div class="mt-3">
-                            <p class="text-gray-600">Current Additional Images:</p>
-                            <div class="flex flex-wrap gap-3 mt-2">
-                                <% product.images.forEach((image, index) => { %>
+                    <!-- Edit Product Form Card -->
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                        <div class="bg-gradient-to-r from-primary-600 to-primary-700 p-4">
+                            <h3 class="text-white text-lg font-semibold flex items-center">
+                                <i class="fas fa-edit mr-2"></i>
+                                Edit Product
+                            </h3>
+                            <p class="text-blue-100 text-sm mt-1">Update product information below</p>
+                        </div>
+                        
+                        <div class="p-5">
+                            <!-- Edit Product Form -->
+                            <form id="editProductForm" action="/admin/edit-product/<%= product._id %>" method="POST" enctype="multipart/form-data" class="space-y-5">
+                                <input type="hidden" name="productId" value="<%= product._id %>">
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <!-- Product Name -->
                                     <div class="relative">
-                                        <img src="/<%= image %>" class="w-24 h-24 object-cover rounded-lg shadow-md">
-                                        <button type="button" data-image="<%= image %>" data-index="<%= index %>" data-type="additional"
-                                          class="delete-image absolute -top-2 -right-2 bg-white text-black rounded-full p-1 ">
-                                            <i class="material-icons text-sm">X</i>
-                                        </button>
+                                        <label for="productName" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Product Name <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-box text-gray-400"></i>
+                                            </div>
+                                            <input 
+                                                type="text" 
+                                                name="productName" 
+                                                id="productName"
+                                                value="<%= product.productName %>"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                            >
+                                        </div>
+                                        <p id="productNameError" class="text-red-500 text-sm mt-1"></p>
                                     </div>
-                                <% }) %>
-                            </div>
+                                    
+                                    <!-- Price -->
+                                    <div class="relative">
+                                        <label for="price" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Price (₹) <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-tag text-gray-400"></i>
+                                            </div>
+                                            <input 
+                                                type="number" 
+                                                name="price" 
+                                                id="price"
+                                                step="0.01" 
+                                                value="<%= product.price %>"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                            >
+                                        </div>
+                                        <p id="priceError" class="text-red-500 text-sm mt-1"></p>
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="relative">
+                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Description <span class="text-red-500">*</span>
+                                    </label>
+                                    <div class="relative rounded-md shadow-sm">
+                                        <div class="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
+                                            <i class="fas fa-align-left text-gray-400"></i>
+                                        </div>
+                                        <textarea 
+                                            name="description" 
+                                            id="description"
+                                            rows="4"
+                                            class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                        ><%= product.description %></textarea>
+                                    </div>
+                                    <p id="descriptionError" class="text-red-500 text-sm mt-1"></p>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <!-- Category Selection -->
+                                    <div class="relative">
+                                        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Category <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-folder text-gray-400"></i>
+                                            </div>
+                                            <select 
+                                                name="category" 
+                                                id="category"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                            >
+                                                <% category.forEach(cat => { %>
+                                                    <option value="<%= cat._id %>" <%= product.category && product.category._id.toString() === cat._id.toString() ? 'selected' : '' %>><%= cat.name %></option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Brand Selection -->
+                                    <div class="relative">
+                                        <label for="brands" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Brand <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-star text-gray-400"></i>
+                                            </div>
+                                            <select 
+                                                name="brands" 
+                                                id="brands"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                            >
+                                                <% brands.forEach(brand => { %>
+                                                    <option value="<%= brand._id %>" <%= brand._id.toString() === product.brands._id.toString() ? 'selected' : '' %>><%= brand.name %></option>
+                                                <% }) %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <!-- Stock -->
+                                    <div class="relative">
+                                        <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Stock <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-cubes text-gray-400"></i>
+                                            </div>
+                                            <input 
+                                                type="number" 
+                                                name="stock" 
+                                                id="stock"
+                                                value="<%= product.stock %>"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                            >
+                                        </div>
+                                        <p id="stockError" class="text-red-500 text-sm mt-1"></p>
+                                    </div>
+                                    
+                                    <!-- Offer -->
+                                    <div class="relative">
+                                        <label for="offer" class="block text-sm font-medium text-gray-700 mb-1">
+                                            Discount Percentage (%)
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-percent text-gray-400"></i>
+                                            </div>
+                                            <input 
+                                                type="number" 
+                                                name="offer" 
+                                                id="offer"
+                                                value="<%= product.offer || 0 %>"
+                                                class="input-focus-effect block w-full pl-10 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none transition-shadow duration-200 ease-in-out"
+                                            >
+                                        </div>
+                                        <p id="offerError" class="text-red-500 text-sm mt-1"></p>
+                                    </div>
+                                </div>
+
+                                <!-- Main Image -->
+                                <div class="relative">
+                                    <label for="mainImage" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Main Image
+                                    </label>
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-image text-3xl text-gray-400 mb-2"></i>
+                                            <p class="text-sm text-gray-600 mb-2">Drag and drop to replace main product image</p>
+                                            <p class="text-xs text-gray-500">or</p>
+                                            <input 
+                                                type="file" 
+                                                name="mainImage" 
+                                                id="mainImage" 
+                                                accept="image/*"
+                                                class="hidden"
+                                            >
+                                            <button 
+                                                type="button" 
+                                                onclick="document.getElementById('mainImage').click()" 
+                                                class="mt-2 px-4 py-2 text-sm font-medium text-primary-600 bg-primary-50 rounded-md hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                                            >
+                                                Browse Files
+                                            </button>
+                                        </div>
+                                        
+                                        <% if (product.mainImage) { %>
+                                        <div class="mt-4">
+                                            <p class="text-sm font-medium text-gray-700 mb-2">Current Main Image:</p>
+                                            <div class="flex justify-center">
+                                                <div class="relative">
+                                                    <img src="/<%= product.mainImage.replace(/\\/g, '/') %>" class="w-32 h-32 object-cover rounded-lg shadow-md">
+                                                    <button type="button" data-image="<%= product.mainImage %>" data-type="main" 
+                                                            class="delete-image absolute -top-2 -right-2 bg-white text-red-500 rounded-full p-1 shadow-md hover:text-red-700 transition-colors">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Images -->
+                                <div class="relative">
+                                    <label for="images" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Additional Images (Max 4)
+                                    </label>
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-secondary-400 transition-colors">
+                                        <div class="flex flex-col items-center">
+                                            <i class="fas fa-images text-3xl text-gray-400 mb-2"></i>
+                                            <p class="text-sm text-gray-600 mb-2">Drag and drop to add more product images</p>
+                                            <p class="text-xs text-gray-500">or</p>
+                                            <input 
+                                                type="file" 
+                                                name="images" 
+                                                id="images" 
+                                                multiple 
+                                                accept="image/*"
+                                                class="hidden"
+                                            >
+                                            <button 
+                                                type="button" 
+                                                onclick="document.getElementById('images').click()" 
+                                                class="mt-2 px-4 py-2 text-sm font-medium text-secondary-600 bg-secondary-50 rounded-md hover:bg-secondary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500"
+                                            >
+                                                Browse Files
+                                            </button>
+                                        </div>
+                                        
+                                        <% if (product.images && product.images.length > 0) { %>
+                                        <div class="mt-4">
+                                            <p class="text-sm font-medium text-gray-700 mb-2">Current Additional Images:</p>
+                                            <div class="flex flex-wrap gap-4 justify-center">
+                                                <% product.images.forEach((image, index) => { %>
+                                                <div class="relative">
+                                                    <img src="/<%= image %>" class="w-24 h-24 object-cover rounded-lg shadow-md">
+                                                    <button type="button" data-image="<%= image %>" data-index="<%= index %>" data-type="additional"
+                                                            class="delete-image absolute -top-2 -right-2 bg-white text-red-500 rounded-full p-1 shadow-md hover:text-red-700 transition-colors">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                                <% }) %>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="flex flex-wrap gap-3 pt-6">
+                                    <button 
+                                        type="submit" 
+                                        class="flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm rounded-lg shadow-md hover:shadow-lg hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-300"
+                                    >
+                                        <i class="fas fa-save mr-2"></i>
+                                        Update Product
+                                    </button>
+                                    <a 
+                                        href="/admin/product-list2"
+                                        class="flex items-center px-6 py-3 bg-gray-100 text-gray-700 text-sm rounded-lg shadow-md hover:shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-300"
+                                    >
+                                        <i class="fas fa-times mr-2"></i>
+                                        Cancel
+                                    </a>
+                                </div>
+                            </form>
                         </div>
-                    <% } %>
+                    </div>
                 </div>
-
-                <!-- Submit Button -->
-                <div class="flex items-center gap-4">
-                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
-                        Update Product
-                    </button>
-                    <a href="/admin/product-list2" class="text-gray-600 hover:text-gray-800 transition">Cancel</a>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="mt-auto py-4 px-6 bg-white border-t border-gray-200">
+                <div class="text-center text-sm text-gray-500">
+                    &copy; 2025 CycloneX. All rights reserved.
                 </div>
-            </form>
-        </section>
-
-        <%- include('partials/footer') %>
-    </main>
+            </footer>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <%- include('partials/scripts') %>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Handle image deletion
@@ -260,6 +553,7 @@
                 document.getElementById('descriptionError').textContent = '';
                 document.getElementById('priceError').textContent = '';
                 document.getElementById('stockError').textContent = '';
+                document.getElementById('offerError').textContent = '';
 
                 const result = await Swal.fire({
                     title: 'Confirm Update?',
@@ -294,6 +588,9 @@
                             }
                             if (data.errors.stock) {
                                 document.getElementById('stockError').textContent = data.errors.stock;
+                            }
+                            if(data.errors.offer){
+                                document.getElementById('offerError').textContent=data.errors.offer
                             }
                         } else {
                             Swal.fire('Error', data.message || 'Failed to update product.', 'error');

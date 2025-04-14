@@ -75,25 +75,32 @@
             0%, 100% { opacity: 0.1; }
             50% { opacity: 0.3; }
         }
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .content-card {
+                width: 100%;
+                margin: 0 16px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-b from-red-100 to-orange-100 min-h-screen flex flex-col overflow-hidden">
-    <!-- Animated background elements -->
+    <!-- Animated background elements - improved responsive positioning -->
     <div class="fixed inset-0 pointer-events-none">
-        <div class="absolute top-10 left-10 opacity-20">
-            <svg class="cog" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="absolute top-[5%] left-[5%] opacity-20">
+            <svg class="cog w-[15vw] max-w-[100px] h-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
         </div>
-        <div class="absolute bottom-10 right-10 opacity-20">
-            <svg class="cog" xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="absolute bottom-[5%] right-[5%] opacity-20">
+            <svg class="cog w-[20vw] max-w-[150px] h-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
         </div>
-        <div class="absolute top-1/3 right-1/4 opacity-10">
-            <svg class="cog" style="animation-duration: 20s; animation-direction: reverse;" xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <div class="absolute top-1/3 right-1/4 opacity-10 hidden sm:block">
+            <svg class="cog w-[18vw] max-w-[120px] h-auto" style="animation-duration: 20s; animation-direction: reverse;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
@@ -101,24 +108,25 @@
     </div>
 
     <div class="flex-grow flex items-center justify-center p-4 relative">
-        <div class="max-w-4xl w-full bg-white bg-opacity-90 rounded-3xl shadow-2xl overflow-hidden relative">
-            <div class="md:flex">
+        <div class="w-full max-w-4xl bg-white bg-opacity-90 rounded-3xl shadow-2xl overflow-hidden relative mx-2 sm:mx-4">
+            <!-- Made flex-direction column on all screens, row on medium screens and up -->
+            <div class="flex flex-col md:flex-row">
                 <!-- Left side - Illustration -->
-                <div class="md:w-1/2 bg-gradient-to-br from-red-500 to-yellow-500 p-8 flex items-center justify-center relative overflow-hidden">
+                <div class="w-full md:w-1/2 bg-gradient-to-br from-red-500 to-yellow-500 p-4 sm:p-6 md:p-8 flex items-center justify-center relative overflow-hidden">
                     <div class="absolute inset-0 background-pulse">
                         <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
                             <path fill="#FFFFFF" d="M47.1,-77.9C59.9,-70.6,68.9,-55.5,75.1,-40.3C81.3,-25,84.8,-9.6,83.1,5.3C81.4,20.2,74.6,34.6,65.7,47.4C56.8,60.2,45.8,71.3,32.3,77.7C18.8,84.1,2.8,85.8,-13.4,83.5C-29.7,81.3,-46.1,75.1,-58.6,64.5C-71,53.9,-79.4,38.9,-83.4,23C-87.4,7,-87,-9.9,-81.7,-25.1C-76.4,-40.3,-66.3,-53.8,-53.5,-61.2C-40.7,-68.6,-25.3,-69.9,-9.7,-70.3C5.9,-70.7,22.5,-70.1,37.1,-77.7Z" transform="translate(200 200)" />
                         </svg>
                     </div>
                     
-                    <div class="relative z-10">
-                        <div class="text-white text-center mb-8">
-                            <h2 class="text-4xl font-bold mb-2">Oops!</h2>
-                            <p class="text-xl">Our gears got a bit tangled</p>
+                    <div class="relative z-10 w-full">
+                        <div class="text-white text-center mb-4 sm:mb-6">
+                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2">Oops!</h2>
+                            <p class="text-base sm:text-lg md:text-xl">Our gears got a bit tangled</p>
                         </div>
                         
-                        <!-- Animated bike repair - Enhanced -->
-                        <div class="bike-repair relative h-64 w-full">
+                        <!-- Animated bike repair - Enhanced with responsive height -->
+                        <div class="bike-repair relative h-36 sm:h-40 md:h-48 lg:h-64 w-full">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-full h-full">
                                 <!-- Bicycle frame -->
                                 <path d="M20,70 L35,50 L50,70 L35,70 Z" fill="none" stroke="white" stroke-width="2"/>
@@ -134,16 +142,6 @@
                                 <circle cx="50" cy="70" r="7" fill="none" stroke="white" stroke-width="1" class="wheel-spokes" style="animation-delay: 0.5s"/>
                                 <circle cx="50" cy="70" r="2" fill="white"/>
                                 
-                                <!-- Mechanic with animated parts -->
-                                <circle cx="65" cy="45" r="5" fill="white"/> <!-- Head -->
-                                <line x1="65" y1="50" x2="65" y2="60" stroke="white" stroke-width="2"/> <!-- Body -->
-                                <line x1="65" y1="52" x2="55" y2="58" stroke="white" stroke-width="2" class="mechanic-arm"/> <!-- Animated Arm -->
-                                <line x1="65" y1="60" x2="60" y2="70" stroke="white" stroke-width="2"/> <!-- Leg -->
-                                <line x1="65" y1="60" x2="70" y2="70" stroke="white" stroke-width="2"/> <!-- Other Leg -->
-                                
-                                <!-- Wrench with animation -->
-                                <path d="M45,40 Q55,50 45,60" fill="none" stroke="white" stroke-width="2" class="wrench"/>
-                                
                                 <!-- Enhanced sparks with staggered animation -->
                                 <circle cx="40" cy="55" r="1.5" fill="white" class="spark"/>
                                 <circle cx="43" cy="52" r="1.5" fill="white" class="spark" style="animation-delay: 0.2s"/>
@@ -153,56 +151,57 @@
                             </svg>
                         </div>
                         
-                        <div class="text-white text-center mt-8">
-                            <div class="text-7xl font-bold">500</div>
-                            <div class="text-xl mt-2 font-medium">SERVER ERROR</div>
+                        <div class="text-white text-center mt-4 sm:mt-6">
+                            <div class="text-5xl sm:text-6xl md:text-7xl font-bold">500</div>
+                            <div class="text-base sm:text-lg md:text-xl mt-1 sm:mt-2 font-medium">SERVER ERROR</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Right side - Content -->
-                <div class="md:w-1/2 p-8 md:p-12">
+                <div class="w-full md:w-1/2 p-4 sm:p-6 md:p-8 lg:p-12">
                     <div class="h-full flex flex-col justify-between">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-800 mb-4">We've Hit a Bump in the Road</h1>
-                            <p class="text-gray-600 mb-8">Our server is experiencing some technical difficulties. Our team of expert mechanics is working hard to get things rolling smoothly again.</p>
+                            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2 sm:mb-3 md:mb-4">We've Hit a Bump in the Road</h1>
+                            <p class="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 md:mb-8">Our server is experiencing some technical difficulties. Our team of expert mechanics is working hard to get things rolling smoothly again.</p>
                             
-                            <div class="space-y-4 mb-8">
-                                <div class="flex items-center p-4 bg-red-50 rounded-lg transition-all duration-300 hover:shadow-md">
-                                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="space-y-3 mb-4 sm:mb-6 md:mb-8">
+                                <div class="flex items-center p-2 sm:p-3 md:p-4 bg-red-50 rounded-lg transition-all duration-300 hover:shadow-md">
+                                    <div class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-red-100 flex items-center justify-center mr-2 sm:mr-3 md:mr-4 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 class="font-medium text-gray-800">What Happened?</h3>
-                                        <p class="text-sm text-gray-600">Our server encountered an unexpected issue</p>
+                                        <h3 class="font-medium text-gray-800 text-sm sm:text-base">What Happened?</h3>
+                                        <p class="text-xs sm:text-sm text-gray-600">Our server encountered an unexpected issue</p>
                                     </div>
                                 </div>
                                 
-                                <div class="flex items-center p-4 bg-yellow-50 rounded-lg transition-all duration-300 hover:shadow-md">
-                                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center mr-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div class="flex items-center p-2 sm:p-3 md:p-4 bg-yellow-50 rounded-lg transition-all duration-300 hover:shadow-md">
+                                    <div class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-yellow-100 flex items-center justify-center mr-2 sm:mr-3 md:mr-4 flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 class="font-medium text-gray-800">What Can You Do?</h3>
-                                        <p class="text-sm text-gray-600">Try refreshing the page or come back later</p>
+                                        <h3 class="font-medium text-gray-800 text-sm sm:text-base">What Can You Do?</h3>
+                                        <p class="text-xs sm:text-sm text-gray-600">Try refreshing the page or come back later</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="/" class="inline-flex justify-center items-center px-6 py-3 bg-red-600 text-white font-medium rounded-full shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <!-- Improved button responsiveness -->
+                        <div class="flex flex-col xs:flex-row gap-2 sm:gap-3 md:gap-4 w-full">
+                            <a href="/" class="inline-flex justify-center items-center px-3 py-2 sm:px-4 sm:py-3 md:px-6 bg-red-600 text-white text-sm sm:text-base font-medium rounded-full shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                 </svg>
                                 Back to Homepage
                             </a>
-                            <button onclick="window.location.reload()" class="inline-flex justify-center items-center px-6 py-3 bg-yellow-500 text-white font-medium rounded-full shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <button onclick="window.location.reload()" class="inline-flex justify-center items-center px-3 py-2 sm:px-4 sm:py-3 md:px-6 bg-yellow-500 text-white text-sm sm:text-base font-medium rounded-full shadow-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
                                 Refresh Page
@@ -214,8 +213,8 @@
         </div>
     </div>
     
-    <footer class="bg-white bg-opacity-90 py-6 mt-auto">
-        <div class="container mx-auto px-4 text-center text-gray-600 text-sm">
+    <footer class="bg-white bg-opacity-90 py-3 sm:py-4 md:py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center text-gray-600 text-xs md:text-sm">
             <p>&copy;CycloneX. All rights reserved. We'll be back on track soon!</p>
         </div>
     </footer>

@@ -29,10 +29,21 @@ next(error)
 addCoupon:async (req,res,next) => {
    try {
 const {couponCode,startDate,expireDate,offerPrice,minAmount}=req.body
-if(!couponCode||!startDate||!expireDate||!offerPrice||!minAmount){
-    return res.status(400).json({ success: false, field:'all', message: "All fields are required."  });
-
-}
+if (!couponCode) {
+    return res.status(400).json({ success: false, field: 'couponCode', message: "Coupon code is required." });
+  }
+  if (!startDate) {
+    return res.status(400).json({ success: false, field: 'startDate', message: "Start date is required." });  
+  }
+  if (!expireDate) {
+    return res.status(400).json({ success: false, field: 'expireDate', message: "Expiry date is required." });  
+  }
+  if (!offerPrice) {
+    return res.status(400).json({ success: false, field: 'offerPrice', message: "Offer price is required." });  
+  }
+  if (!minAmount) {
+    return res.status(400).json({ success: false, field: 'minAmount', message: "Minimum amount is required." });  
+  }
 const today = new Date().toISOString().split('T')[0]
 
 if (startDate < today) {
@@ -44,6 +55,10 @@ if (expireDate <= startDate) {
 if(offerPrice>minAmount){
     return res.status(400).json({success:false,message:'offer price cannot be greater than minimum amount'})
 }
+if(offerPrice>=minAmount){
+    return res.status(400).json({success:false,message:'offer price cannot be equal to the minimum amount'})
+}
+
 
 const existingCoupon = await Coupon.findOne({
     couponCode: { $regex: new RegExp(`^${couponCode}$`, 'i') }

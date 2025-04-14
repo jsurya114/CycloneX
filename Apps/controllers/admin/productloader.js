@@ -51,13 +51,11 @@ res.render('editproduct',{product,brands,category})
                 errors.description = "Description must include at least one letter.";
             }
 
-              if (isNaN(Number(offer)) || Number(offer) < 0 || Number(offer) > 85) {
-                return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 85." });
-            }
-        
-            if(Number(offer)===0){
-              return res.status(400).json({ success: false, field: 'offer', message: "Offer must be greater than zero." })
-            }
+            if (!offer) {
+                errors.offer = 'Offer is required';
+              } else if (isNaN(offer) || Number(offer) <= 0 || Number(offer) > 85) {
+                errors.offer = 'Offer must be greater than 0 and not exceed 85.';
+              }
               
             
             if (!price) {

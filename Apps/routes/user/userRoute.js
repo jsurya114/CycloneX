@@ -119,6 +119,7 @@ router.get('/orderdetails/:orderId',orderController.order)
 router.post('/orders/cod',orderController.placeOrder)
 
 router.get('/confirmation/:orderId',verifyUser,orderController.confirmation)
+router.get('/confirmation/invoice/:orderId',verifyUser,orderController.generateInvoice)
 router.put('/order/cancel/:orderId',orderController.cancelOrder)
 router.put('/order/return/:orderId',orderController.returnOrder)
 router.get('/wallet',verifyUser,walletController.getWallet)

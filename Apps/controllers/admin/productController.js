@@ -58,16 +58,14 @@ const productController = {
       if (!brands) {
         errors.brands = "Brand is required.";
       }
-      if (isNaN(offer) || offer < 0 || offer > 85) {
-        return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 85." });
+   
+    if (!offer) {
+      errors.offer = 'Offer is required';
+    } else if (isNaN(offer) || Number(offer) <= 0 || Number(offer) > 85) {
+      errors.offer = 'Offer must be greater than 0 and not exceed 85.';
     }
-if(!offer){
-  errors.offer='Offer is required'
-}
 
-    if(offer===0){
-      return res.status(400).json({ success: false, field: 'offer', message: "Offer must be between 0 and 85." })
-    }
+    
       
       if (!req.files || !req.files.mainImage || req.files.mainImage.length === 0) {
         errors.mainImage = "Main image is required.";
@@ -85,7 +83,7 @@ if(!offer){
       }
       
       // Check for unique product name
-      const existingProduct = await Product.findOne({ productName });
+      const existingProduct = await Product.findOne({ productName :{$regex:RegExp(`${productName}$`,'i')}});
       if (existingProduct) {
         errors.productName = "A product with this name already exists.";
         return res.status(400).json({ success: false, errors });
@@ -160,49 +158,7 @@ if(!offer){
   },
   
 
-  showAddBrandPage: async (req, res,next) => {
-    try {
-const {search,statusFilter,page,limit}=req.query
-let filter={}
-if(search){
-  filter.$or=[
-    {name:{$regex:search,$options:'i'}},
-   
-  ]
-}
-if(statusFilter==='active'){
-  filter.isBlocked=false
-}else if(statusFilter==='deactive'){
-  filter.isBlocked=true
-}
-
-let currentPage=parseInt(page)||1
-let itemsPerPage=parseInt(limit)||3
-let skip = (currentPage-1)*itemsPerPage
-let totalProducts =await Brand.countDocuments(filter)
-
-
-let sortOptions = { createdAt: -1 };
-      const brands = await Brand.find(filter).skip(skip)
-      .limit(itemsPerPage).sort(sortOptions)
-
-      let totalPages = Math.ceil(totalProducts/itemsPerPage)
-      res.render('brands', { brands ,
-        search,
-        statusFilter,
-        currentPage,
-        totalPages,
-        hasNextPage: currentPage < totalPages,
-        hasPrevPage: currentPage > 1,
-        nextPage: currentPage < totalPages ? currentPage + 1 : null,
-        prevPage: currentPage > 1 ? currentPage - 1 : null,
-    });
-
-     
-    } catch (error) {
-    next(error)
-    }
-  },
+ 
 
   addBrand: async (req, res,next) => {
     try {
