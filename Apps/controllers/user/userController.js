@@ -225,11 +225,30 @@ return res.status(200).json({
               }
               const user = await User.findById(userId)
                  let cartfind = await Cart.findOne({ user: userId })
-                          const cartCount = cartfind.items.length
+                          const cartCount = cartfind?.items?.length
           return res.status(200).render('about',{user,cartCount})
          } catch (error) {
           next(error)
          }
+        },
+        showCoupons:async (req,res,next) => {
+            try {
+                const token = req.cookies.token
+              const decoded =jwt.verify(token, process.env.JWT_SECRET)
+              const userId = decoded.id
+          
+              if(!userId){
+                  return res.status(400).json({success:false,message:'Unauthorized'})
+              }
+              const user = await User.findById(userId)
+                 let cartfind = await Cart.findOne({ user: userId })
+                          const cartCount = cartfind?.items?.length
+                            const coupons = await Coupon.find({isBlocked:false})
+return res.status(200).render('coupon',{user,cartCount,coupons})
+
+            } catch (error) {
+                next(error)
+            }
         }
   
         

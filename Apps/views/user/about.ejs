@@ -987,78 +987,9 @@
         </div>
     </section>
 
-    <!-- Footer (Placeholder - Include your actual footer here) -->
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-4 sm:px-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">CycloneX</h3>
-                    <p class="text-gray-400 mb-4">Redefining cycling experiences through innovation, quality, and community.</p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
-                    <ul class="space-y-2">
-                        <li><a href="/" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
-                        <li><a href="/about" class="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="/shoplist" class="text-gray-400 hover:text-white transition-colors">Shop</a></li>
-                        <li><a href="/contact" class="text-gray-400 hover:text-white transition-colors">Contact</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Categories</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Mountain Bikes</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Road Bikes</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Urban Bikes</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Accessories</a></li>
-                    </ul>
-                </div>
-                
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Contact</h3>
-                    <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
-                            <span>123 Cycling Avenue, Mumbai, Maharashtra 400001, India</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-phone mt-1 mr-2"></i>
-                            <span>+91 98765 43210</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-envelope mt-1 mr-2"></i>
-                            <span>info@cyclonex.com</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2023 CycloneX. All rights reserved.</p>
-                <div class="flex flex-wrap justify-center gap-4 sm:gap-6">
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
-                    <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Shipping Policy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+
+    <%-include('partials/footer') %>
+    <%-include('partials/loader') %>
 
   <!-- Dark Mode Toggle Button -->
   <button id="darkModeToggle" class="dark-mode-toggle">

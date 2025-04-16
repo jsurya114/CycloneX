@@ -151,6 +151,8 @@
         /* Coupon card hover effect */
         .coupon-card {
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         .coupon-card:hover {
             transform: translateY(-3px);
@@ -158,6 +160,31 @@
         }
         .dark .coupon-card:hover {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Coupon card dashed border */
+        .coupon-card::before {
+            content: "";
+            position: absolute;
+            left: -2px;
+            top: 50%;
+            height: 20px;
+            width: 10px;
+            background-color: inherit;
+            border-radius: 0 50% 50% 0;
+            transform: translateY(-50%);
+        }
+
+        .coupon-card::after {
+            content: "";
+            position: absolute;
+            right: -2px;
+            top: 50%;
+            height: 20px;
+            width: 10px;
+            background-color: inherit;
+            border-radius: 50% 0 0 50%;
+            transform: translateY(-50%);
         }
         
         /* Dark mode toggle button */
@@ -214,6 +241,65 @@
         
         .pulse-animation {
             animation: pulse-once 0.5s ease-in-out;
+        }
+
+        /* Applied coupon container */
+        .applied-coupon-container {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Coupon badge */
+        .coupon-badge {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coupon-badge::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: translateX(-100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -543,7 +629,7 @@
                           <!-- Available Coupons Section (Hidden by default) -->
 <div id="available-coupons-container" class="hidden mt-4 mb-6 border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50">
     <h4 class="text-sm font-medium text-gray-800 dark:text-white mb-3">Available Coupons</h4>
-    <div class="space-y-3">
+    <div class="space-y-3 coupon-list">
         <% if(coupons && coupons.length > 0) { %>
             <% coupons.forEach(coupon => { %>
                 <% if(!coupon.isBlocked && new Date(coupon.expireDate) >= new Date()) { %>
@@ -852,21 +938,55 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
-      // Toast notification function
-function showToast(message, isSuccess = true) {
-    Toastify({
-        text: message,
-        duration: 3000,
-        gravity: "bottom",
-        position: "center",
-        backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
-        stopOnFocus: true,
-        className: "rounded-lg",
-        style: {
-            boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
-        }
-    }).showToast();
-}
+      // Toast notification function - Fixed to prevent duplicate toasts
+      let toastQueue = [];
+      let isShowingToast = false;
+
+      function showToast(message, isSuccess = true) {
+          // Check if this message is already in the queue or currently showing
+          if (toastQueue.some(item => item.message === message) || 
+              (isShowingToast && toastQueue[0]?.message === message)) {
+              return; // Skip duplicate toast
+          }
+
+          // Add to queue
+          toastQueue.push({ message, isSuccess });
+          
+          // If not currently showing a toast, show this one
+          if (!isShowingToast) {
+              showNextToast();
+          }
+      }
+
+      function showNextToast() {
+          if (toastQueue.length === 0) {
+              isShowingToast = false;
+              return;
+          }
+
+          isShowingToast = true;
+          const { message, isSuccess } = toastQueue.shift();
+          
+          Toastify({
+              text: message,
+              duration: 3000,
+              gravity: "bottom",
+              position: "center",
+              backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
+              stopOnFocus: true,
+              className: "rounded-lg",
+              style: {
+                  boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
+              },
+              callback: function() {
+                  // After toast is dismissed, show next toast if any
+                  setTimeout(() => {
+                      isShowingToast = false;
+                      showNextToast();
+                  }, 300);
+              }
+          }).showToast();
+      }
 
 // Function to update order summary
 function updateOrderSummary(subtotal, tax, discount, finalTotal) {
@@ -967,7 +1087,6 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast('Address added successfully');
     }
 
-
     // Initialize address selection functionality
     initAddressSelection();
 
@@ -1004,42 +1123,384 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Coupon code functionality
-    const showAvailableCouponsBtn = document.getElementById('show-available-coupons');
-    const availableCouponsContainer = document.getElementById('available-coupons-container');
-    const applyCouponBtn = document.getElementById('apply-coupon-btn');
+    // Initialize Coupon Manager
+    const couponManager = new CouponManager();
     
- 
-    const couponInput = document.getElementById('coupon-code');
+    // Initialize Add Address Form
+    initAddAddressForm();
+});
 
-    const couponInputContainer = document.getElementById('coupon-input-container');
-    const removeCouponContainer = document.getElementById('remove-coupon-container');
-    
-    const removeCouponBtn = document.getElementById('remove-coupon-btn');
-    const activeCouponText = document.getElementById('active-coupon-text');
-    const couponBadge = document.getElementById('coupon-badge');
-    
-    // Add New Address Form Toggle
+// Initialize Add Address Form functionality
+function initAddAddressForm() {
     const showAddAddressFormBtn = document.getElementById('showAddAddressForm');
     const addAddressForm = document.getElementById('addAddressForm');
     const cancelAddAddressBtn = document.getElementById('cancelAddAddress');
     
-    // Toggle address form visibility
-    showAddAddressFormBtn.addEventListener('click', function() {
-        addAddressForm.classList.toggle('hidden');
-        // Scroll to the form
-        addAddressForm.scrollIntoView({ behavior: 'smooth' });
+    if (showAddAddressFormBtn && addAddressForm) {
+        showAddAddressFormBtn.addEventListener('click', function() {
+            addAddressForm.classList.remove('hidden');
+            // Scroll to the form
+            addAddressForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+    
+    if (cancelAddAddressBtn && addAddressForm) {
+        cancelAddAddressBtn.addEventListener('click', function() {
+            addAddressForm.classList.add('hidden');
+            // Clear form fields and error messages
+            document.getElementById('newAddressForm').reset();
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            document.querySelectorAll('.border-red-500').forEach(el => {
+                el.classList.remove('border-red-500', 'focus:ring-red-200');
+            });
+        });
+    }
+}
+
+// Coupon Manager Class
+class CouponManager {
+  constructor() {
+    this.couponCode = document.getElementById("coupon-code")
+    this.applyButton = document.getElementById("apply-coupon-btn")
+    this.removeCouponContainer = document.getElementById("remove-coupon-container")
+    this.couponInputContainer = document.getElementById("coupon-input-container")
+    this.activeCouponText = document.getElementById("active-coupon-text")
+    this.couponBadge = document.getElementById("coupon-badge")
+    this.removeButton = document.getElementById("remove-coupon-btn")
+    this.availableCouponsContainer = document.getElementById("available-coupons-container")
+    this.showAvailableCouponsBtn = document.getElementById("show-available-coupons")
+
+    // Order summary elements
+    this.subtotalElement = document.getElementById("subtotalAmount")
+    this.taxElement = document.getElementById("taxAmount")
+    this.discountElement = document.getElementById("discountAmount")
+    this.totalElement = document.getElementById("totalAmount")
+
+    // Track the active coupon
+    this.activeCoupon = null
+
+    // Initialize event listeners
+    this.initEventListeners()
+  }
+
+  initEventListeners() {
+    // Apply coupon button
+    this.applyButton.addEventListener("click", () => this.applyCoupon())
+
+    // Remove coupon button
+    this.removeButton.addEventListener("click", () => this.removeCoupon())
+
+    // Toggle available coupons
+    this.showAvailableCouponsBtn.addEventListener("click", () => {
+      this.availableCouponsContainer.classList.toggle("hidden")
+    })
+
+    // Enter key in coupon input
+    this.couponCode.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault()
+        this.applyCoupon()
+      }
+    })
+
+    // Setup click handlers for available coupon cards
+    document.querySelectorAll(".coupon-card button").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const couponCode = e.target.closest(".coupon-card").querySelector("h5").textContent.trim()
+        this.couponCode.value = couponCode
+        this.applyCoupon()
+      })
+    })
+  }
+
+  async applyCoupon() {
+    const code = this.couponCode.value.trim()
+
+    if (!code) {
+      showToast("Please enter a coupon code", false)
+      return
+    }
+
+    // Show loading state
+    this.applyButton.disabled = true
+    this.applyButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Applying...'
+
+    try {
+      // Get current order total and shipping charge for backend validation
+      const totalAmount = this.extractAmount(this.totalElement.textContent)
+      const shippingElement = document.querySelector(
+        "dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600",
+      )
+      const shippingCharge = shippingElement ? this.extractAmount(shippingElement.textContent) : 0
+
+      // Send AJAX request to backend
+      const response = await fetch("/applycoupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          couponCode: code,
+          totalAmount,
+          shippingCharge,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Update UI to show applied coupon
+        this.activeCoupon = {
+          code,
+          discount: result.discount,
+          total: result.total,
+          couponId: result.couponId,
+        }
+
+        this.updateUIForAppliedCoupon()
+        this.updateOrderSummary(result.discount, result.total)
+        showToast(`Coupon "${code}" applied successfully!`)
+
+        // Hide available coupons container if it's open
+        this.availableCouponsContainer.classList.add("hidden")
+      } else {
+        showToast(result.message, false)
+        this.couponCode.focus()
+      }
+    } catch (error) {
+      console.error("Error applying coupon:", error)
+      showToast("Failed to apply coupon. Please try again.", false)
+    } finally {
+      // Reset button state
+      this.applyButton.disabled = false
+      this.applyButton.innerHTML = "Apply"
+    }
+  }
+
+  async removeCoupon() {
+    if (!this.activeCoupon) return
+
+    try {
+      // Show loading state
+      this.removeButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Removing...'
+
+      // Reset UI
+      this.resetCouponUI()
+
+      // Get current values for recalculation
+      const subtotal = this.extractAmount(this.subtotalElement.textContent)
+      const tax = this.extractAmount(this.taxElement.textContent)
+      const shippingElement = document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600")
+      const shippingCharge = shippingElement ? this.extractAmount(shippingElement.textContent) : 0
+      
+      // Calculate new total without discount
+      const total = subtotal + tax + shippingCharge
+
+      // Update order summary
+      this.updateOrderSummary(0, total)
+      
+      // Set a flag in localStorage to indicate coupon was removed
+      localStorage.setItem('couponRemoved', 'true')
+      
+      // Reload the page to ensure server-side state is updated
+      location.reload()
+    } catch (error) {
+      console.error("Error removing coupon:", error)
+      showToast("Failed to remove coupon. Please try again.", false)
+    } finally {
+      // Reset button state
+      this.removeButton.innerHTML = "Remove"
+    }
+  }
+
+  updateUIForAppliedCoupon() {
+    // Update badge
+    this.couponBadge.textContent = this.activeCoupon.code
+
+    // Show remove container, hide input container
+    this.removeCouponContainer.classList.remove("hidden")
+    this.couponInputContainer.classList.add("hidden")
+
+    // Update active coupon text
+    this.activeCouponText.textContent = `Coupon "${this.activeCoupon.code}" applied`
+  }
+
+  resetCouponUI() {
+    // Reset coupon state
+    this.activeCoupon = null
+
+    // Show input container, hide remove container
+    this.couponInputContainer.classList.remove("hidden")
+    this.removeCouponContainer.classList.add("hidden")
+
+    // Clear input
+    this.couponCode.value = ""
+    this.couponBadge.textContent = ""
+  }
+
+  updateOrderSummary(discount, total) {
+    // Update discount amount
+    this.discountElement.textContent = `-₹${discount.toFixed(2)}`
+
+    // Update total amount
+    this.totalElement.textContent = `₹${total.toFixed(2)}`
+
+    // Add pulse animation to highlight changes
+    this.totalElement.classList.add("pulse-animation")
+    setTimeout(() => {
+      this.totalElement.classList.remove("pulse-animation")
+    }, 500)
+  }
+
+  extractAmount(amountString) {
+    return Number.parseFloat(amountString.replace(/[^\d.]/g, "")) || 0
+  }
+}
+
+// Initialize address selection functionality
+function initAddressSelection() {
+    // Handle address card selection
+    const addressCards = document.querySelectorAll('.address-card');
+    const addressRadios = document.querySelectorAll('.address-radio');
+    const addressSelectBtns = document.querySelectorAll('.address-select-btn');
+    
+    // Track last selected address to prevent duplicate toasts
+    let lastSelectedIndex = -1;
+    
+    // Function to show address selection toast
+    function showAddressToast(index) {
+        // Only show toast if this is a different address than last time
+        if (index !== lastSelectedIndex) {
+            showToast('Delivery address selected');
+            lastSelectedIndex = index;
+        }
+    }
+
+    function updateAddressCardStyling(selectedIndex) {
+        addressCards.forEach((card, index) => {
+            const radio = card.querySelector('input[type="radio"]');
+            const indicator = card.querySelector('.w-6.h-6 .w-3.h-3');
+            const badge = card.querySelector('.flex.items-center.space-x-2 span:first-child');
+            
+            if (index === selectedIndex) {
+                // Selected card styling
+                card.classList.remove('border-gray-200', 'dark:border-gray-700');
+                card.classList.add('border-primary-500');
+                
+                // Update radio button
+                radio.checked = true;
+                
+                // Update indicator dot
+                indicator.classList.remove('bg-transparent', 'group-hover:bg-primary-200', 'dark:group-hover:bg-primary-800');
+                indicator.classList.add('bg-primary-500');
+                
+                // Update badge
+                if (badge) {
+                    badge.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'group-hover:bg-primary-100', 'dark:group-hover:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
+                    badge.classList.add('bg-primary-500', 'text-white');
+                }
+            } else {
+                // Non-selected card styling
+                card.classList.remove('border-primary-500');
+                card.classList.add('border-gray-200', 'dark:border-gray-700');
+                
+                // Update radio button
+                radio.checked = false;
+                
+                // Update indicator dot
+                indicator.classList.remove('bg-primary-500');
+                indicator.classList.add('bg-transparent', 'group-hover:bg-primary-200', 'dark:group-hover:bg-primary-800');
+                
+                // Update badge
+                if (badge) {
+                    badge.classList.remove('bg-primary-500', 'text-white');
+                    badge.classList.add('bg-gray-200', 'dark:bg-gray-700', 'group-hover:bg-primary-100', 'dark:group-hover:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
+                }
+            }
+        });
+    }
+    
+     // Add click event to address cards
+     addressCards.forEach((card, index) => {
+        card.addEventListener('click', function(e) {
+            // Only handle clicks on the card itself, not on buttons inside it
+            if (e.target.closest('.address-select-btn')) {
+                return; // Let the button handler handle this
+            }
+            
+            updateAddressCardStyling(index);
+            showAddressToast(index);
+        });
     });
     
-    // Cancel button for address form
-    cancelAddAddressBtn.addEventListener('click', function() {
-        addAddressForm.classList.add('hidden');
-        document.getElementById('newAddressForm').reset();
+    addressSelectBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent triggering the card click
+            const index = parseInt(this.dataset.index);
+            updateAddressCardStyling(index);
+            showAddressToast(index);
+        });
     });
+}
+
+// Initialize item removal functionality
+function initItemRemoval() {
+    // Get remove item buttons
+    const removeItemBtns = document.querySelectorAll('.remove-item-btn');
     
-    // Handle address form submission
-    const newAddressForm = document.getElementById('newAddressForm');
-    function validateForm() {
+    // Add event listeners to remove buttons
+    removeItemBtns.forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const productId = this.dataset.productId;
+            const itemElement = this.closest('.checkout-item');
+            
+            // Confirm removal
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
+                // Remove item via AJAX
+                const success = await removeItemAjax(productId);
+                
+                if (success) {
+                    // Animate removal
+                    itemElement.style.opacity = '0';
+                    itemElement.style.height = '0';
+                    itemElement.style.margin = '0';
+                    itemElement.style.padding = '0';
+                    itemElement.style.overflow = 'hidden';
+                    itemElement.style.transition = 'all 0.5s ease';
+                    
+                    // Remove from DOM after animation
+                    setTimeout(() => {
+                        itemElement.remove();
+                        
+                        // Check if cart is empty
+                        const remainingItems = document.querySelectorAll('.checkout-item');
+                        if (remainingItems.length === 0) {
+                            // Reload to show empty cart message
+                            location.reload();
+                        } else {
+                            // Recalculate order summary
+                            calculateOrderSummary();
+                        }
+                    }, 500);
+                }
+            }
+        });
+    });
+}
+
+// Global function to apply coupon (used by coupon cards)
+window.applyCoupon = function(couponCode) {
+    document.getElementById('coupon-code').value = couponCode;
+    const couponManager = new CouponManager();
+    couponManager.applyCoupon();
+};
+
+// Global function to remove coupon
+window.removeCoupon = function() {
+    const couponManager = new CouponManager();
+    couponManager.removeCoupon();
+};
+
+// Add New Address Form Validation
+function validateForm() {
     // Reset any previous error messages
     document.querySelectorAll('.error-message').forEach(el => el.remove());
     
@@ -1127,457 +1588,57 @@ function showError(inputElement, message) {
     inputElement.classList.add('border-red-500', 'focus:ring-red-200');
 }
 
-    newAddressForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
+// Handle new address form submission
+document.getElementById('newAddressForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+        return;
+    }
+    
+    try {
+        // Collect form data
+        const formData = {
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            mobile: document.getElementById('mobile').value,
+            country: document.getElementById('country').value,
+            state: document.getElementById('state').value,
+            address: document.getElementById('address').value,
+            pincode: document.getElementById('pincode').value,
+            landmark: document.getElementById('landmark').value,
+            addressType: document.getElementById('addressType').value,
+        };
         
-        try {
-            
-            // Collect form data
-            const formData = {
-                fullName: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                mobile: document.getElementById('mobile').value,
-                country: document.getElementById('country').value,
-                state: document.getElementById('state').value,
-                address: document.getElementById('address').value,
-                pincode: document.getElementById('pincode').value,
-                landmark: document.getElementById('landmark').value,
-                addressType: document.getElementById('addressType').value,
-              
-            };
-           
-           
-            const userId = document.getElementById('userProfile')?.dataset?.id;  
-            if (!userId) {
-   
-    showToast('User information not available', false);
-    return;
-}
-            const response = await fetch(`/addaddress/${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            
-            const result = await response.json();
-            if(result.success){
-                localStorage.setItem('addressAdded', 'true');
-             // Add the new address to the DOM
-             setTimeout(() => {
+        const userId = document.getElementById('userProfile')?.dataset?.id;  
+        if (!userId) {
+            showToast('User information not available', false);
+            return;
+        }
+        
+        const response = await fetch(`/addaddress/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        if(result.success){
+            localStorage.setItem('addressAdded', 'true');
+            // Add the new address to the DOM
+            setTimeout(() => {
                 window.location.reload();
             }, 1000); 
-
-          
-            }else {
+        } else {
             showToast('Failed to add address: ' + (result.message || 'Unknown error'), false);
         }
-          
-        } catch (error) {
-            console.error('Error:', error);
-            showToast('Failed to add address', false);
-        }
-    });
-
-// Add real-time validation feedback
-const formInputs = newAddressForm.querySelectorAll('input, select');
-formInputs.forEach(input => {
-    input.addEventListener('blur', function() {
-        // Remove any existing error message for this input
-        const existingError = input.parentElement.nextElementSibling;
-        if (existingError && existingError.classList.contains('error-message')) {
-            existingError.remove();
-        }
-        
-        // Remove error styling
-        input.classList.remove('border-red-500', 'focus:ring-red-200');
-        
-        // Validate based on input type
-        switch(input.id) {
-            case 'fullName':
-                if (!input.value.trim()) {
-                    showError(input, 'Full name is required');
-                } else if (!/^[A-Za-z\s]+$/.test(input.value.trim())) {
-                    showError(input, 'Full name should contain only letters and spaces');
-                }
-                break;
-                
-            case 'email':
-                if (input.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) {
-                    showError(input, 'Please enter a valid email address');
-                }
-                break;
-                
-            case 'mobile':
-                if (input.value.trim() && !/^\d{10,15}$/.test(input.value.replace(/\D/g, ''))) {
-                    showError(input, 'Please enter a valid mobile number (10-15 digits)');
-                }
-                break;
-                
-            case 'pincode':
-                if (input.value.trim() && !/^\d{4,10}$/.test(input.value.trim())) {
-                    showError(input, 'Please enter a valid pincode (4-10 digits)');
-                }
-                break;
-                
-            case 'address':
-                if (input.value.trim() && input.value.trim().length < 5) {
-                    showError(input, 'Address should be at least 5 characters');
-                }
-                break;
-        }
-    });
-});
-
-// Handle cancel button
-document.getElementById('cancelAddAddress').addEventListener('click', function() {
-    // Reset form fields
-    newAddressForm.reset();
-    
-    // Remove any error messages
-    document.querySelectorAll('.error-message').forEach(el => el.remove());
-    
-    // Remove error styling from inputs
-    formInputs.forEach(input => {
-        input.classList.remove('border-red-500', 'focus:ring-red-200');
-    });
-    
-    // Hide the form
-    document.getElementById('addAddressForm').classList.add('hidden');
-});
-
-
-    // Function to add a new address to the DOM
-function addAddressToDom(addressData) {
-    const addressesContainer = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.gap-5');
-    
-    // If there's a "no addresses" message, remove it
-    const noAddressesMsg = addressesContainer.querySelector('.col-span-2.text-center');
-    if (noAddressesMsg) {
-        addressesContainer.removeChild(noAddressesMsg);
-    }
-    
-    // Create a new address card
-    const newAddressCard = document.createElement('div');
-    newAddressCard.className = 'address-card bg-white dark:bg-gray-800 border-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border-gray-200 dark:border-gray-700 p-5 cursor-pointer relative overflow-hidden group';
-    
-    // Get the index for the new address (number of existing addresses)
-    const index = document.querySelectorAll('.address-card').length;
-    
-    // Format the address HTML
-    newAddressCard.innerHTML = `
-        <input type="radio" name="address" id="address${index}" class="address-radio hidden" value="${addressData._id}">
-        <label for="address${index}" class="absolute inset-0 cursor-pointer z-10"></label>
-        
-        <!-- Top Section with Badge -->
-        <div class="flex justify-between items-start mb-3">
-            <div class="flex items-center space-x-2">
-                <span class="bg-gray-200 dark:bg-gray-700 group-hover:bg-primary-100 dark:group-hover:bg-gray-600 text-gray-700 dark:text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full transition-colors duration-300">${addressData.addressType || 'Address'}</span>
-            </div>
-            <div class="w-6 h-6 rounded-full border-2 transition-colors duration-300 border-gray-300 dark:border-gray-600 group-hover:border-primary-300 flex items-center justify-center">
-                <div class="w-3 h-3 rounded-full transition-all duration-300 bg-transparent group-hover:bg-primary-200 dark:group-hover:bg-primary-800"></div>
-            </div>
-        </div>
-        
-        <!-- Address Content -->
-        <div class="mt-2 text-sm text-gray-600 dark:text-gray-400 space-y-1.5">
-            <p class="font-medium text-gray-800 dark:text-white text-base mb-2">${addressData.fullName}</p>
-            
-            <div class="grid grid-cols-2 gap-x-3 gap-y-1.5">
-                <div class="flex items-start space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <span class="line-clamp-1">${addressData.email}</span>
-                </div>
-                <div class="flex items-start space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                    <span>${addressData.mobileNum}</span>
-                </div>
-            </div>
-            
-            <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
-                <div class="flex items-start space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <div>
-                        <p>${addressData.address}</p>
-                        ${addressData.landmark ? `<p class="text-gray-500 dark:text-gray-500 text-xs mt-0.5">Landmark: ${addressData.landmark}</p>` : ''}
-                        <p class="mt-1">${addressData.state}, ${addressData.country} - ${addressData.pincode}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Edit/Select Actions -->
-        <div class="absolute bottom-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-2 flex space-x-1">
-            <button type="button" class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                Edit
-            </button>
-            <button type="button" class="address-select-btn text-xs px-2 py-1 bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400 rounded hover:bg-primary-100 dark:hover:bg-primary-800 transition-colors" data-address-id="${addressData._id}" data-index="${index}">
-                Select
-            </button>
-        </div>
-    `;
-    
-    // Add the new card to the container
-    addressesContainer.appendChild(newAddressCard);
-    
-    // Set up event listeners for the new address card
-    const card = newAddressCard;
-    const selectBtn = card.querySelector('.address-select-btn');
-    
-    // Add click event to select button
-    selectBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const index = parseInt(this.dataset.index);
-        updateAddressCardStyling(index);
-        showToast('Delivery address selected');
-    });
-    
-    // Add click event to address card
-    card.addEventListener('click', function() {
-        const allCards = document.querySelectorAll('.address-card');
-        const thisIndex = Array.from(allCards).indexOf(this);
-        updateAddressCardStyling(thisIndex);
-        showToast('Delivery address selected');
-    });
-    
-    // Reinitialize address selection functionality
-    initAddressSelection();
-}
-
-    // Toggle available coupons
-    showAvailableCouponsBtn.addEventListener('click', function() {
-        availableCouponsContainer.classList.toggle('hidden');
-    });
-
-    // Apply coupon button
-    applyCouponBtn.addEventListener('click', function() {
-        const couponCode = couponInput.value.trim();
-        
-        
-        if (couponCode) {
-            applyCoupon(couponCode);
-        } else {
-            showToast('Please enter a coupon code', false);
-        }
-    });
-
-    // Remove coupon button
-    removeCouponBtn.addEventListener('click', function() {
-        removeCoupon();
-    });
-});
-
-// Initialize address selection functionality
-function initAddressSelection() {
-    // Handle address card selection
-    const addressCards = document.querySelectorAll('.address-card');
-    const addressRadios = document.querySelectorAll('.address-radio');
-    const addressSelectBtns = document.querySelectorAll('.address-select-btn');
-    
-
-  // Track if an address selection toast was recently shown
-  let addressToastShown = false;
-
-  function updateAddressCardStyling(selectedIndex) {
-        addressCards.forEach((card, index) => {
-            const radio = card.querySelector('input[type="radio"]');
-            const indicator = card.querySelector('.w-6.h-6 .w-3.h-3');
-            const badge = card.querySelector('.flex.items-center.space-x-2 span:first-child');
-            
-            if (index === selectedIndex) {
-                // Selected card styling
-                card.classList.remove('border-gray-200', 'dark:border-gray-700');
-                card.classList.add('border-primary-500');
-                
-                // Update radio button
-                radio.checked = true;
-                
-                // Update indicator dot
-                indicator.classList.remove('bg-transparent', 'group-hover:bg-primary-200', 'dark:group-hover:bg-primary-800');
-                indicator.classList.add('bg-primary-500');
-                
-                // Update badge
-                if (badge) {
-                    badge.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'group-hover:bg-primary-100', 'dark:group-hover:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
-                    badge.classList.add('bg-primary-500', 'text-white');
-                }
-            } else {
-                // Non-selected card styling
-                card.classList.remove('border-primary-500');
-                card.classList.add('border-gray-200', 'dark:border-gray-700');
-                
-                // Update radio button
-                radio.checked = false;
-                
-                // Update indicator dot
-                indicator.classList.remove('bg-primary-500');
-                indicator.classList.add('bg-transparent', 'group-hover:bg-primary-200', 'dark:group-hover:bg-primary-800');
-                
-                // Update badge
-                if (badge) {
-                    badge.classList.remove('bg-primary-500', 'text-white');
-                    badge.classList.add('bg-gray-200', 'dark:bg-gray-700', 'group-hover:bg-primary-100', 'dark:group-hover:bg-gray-600', 'text-gray-700', 'dark:text-gray-300');
-                }
-            }
-        });
-    }
-    
-     // Add click event to address cards
-     addressCards.forEach((card, index) => {
-        card.addEventListener('click', function(e) {
-            // Only handle clicks on the card itself, not on buttons inside it
-            if (e.target.closest('.address-select-btn')) {
-                return; // Let the button handler handle this
-            }
-            
-            updateAddressCardStyling(index);
-            showAddressToast();
-        });
-    });
-    
-    addressSelectBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Prevent triggering the card click
-            const index = parseInt(this.dataset.index);
-            updateAddressCardStyling(index);
-            showAddressToast();
-        });
-    });
-}
-
-// Initialize item removal functionality
-function initItemRemoval() {
-    // Get remove item buttons
-    const removeItemBtns = document.querySelectorAll('.remove-item-btn');
-    
-    // Add event listeners to remove buttons
-    removeItemBtns.forEach(btn => {
-        btn.addEventListener('click', async function() {
-            const productId = this.dataset.productId;
-            const itemElement = this.closest('.checkout-item');
-            
-            // Confirm removal
-            if (confirm('Are you sure you want to remove this item from your cart?')) {
-                // Remove item via AJAX
-                const success = await removeItemAjax(productId);
-                
-                if (success) {
-                    // Animate removal
-                    itemElement.style.opacity = '0';
-                    itemElement.style.height = '0';
-                    itemElement.style.margin = '0';
-                    itemElement.style.padding = '0';
-                    itemElement.style.overflow = 'hidden';
-                    itemElement.style.transition = 'all 0.5s ease';
-                    
-                    // Remove from DOM after animation
-                    setTimeout(() => {
-                        itemElement.remove();
-                        
-                        // Check if cart is empty
-                        const remainingItems = document.querySelectorAll('.checkout-item');
-                        if (remainingItems.length === 0) {
-                            // Reload to show empty cart message
-                            location.reload();
-                        } else {
-                            // Recalculate order summary
-                            calculateOrderSummary();
-                        }
-                    }, 500);
-                }
-            }
-        });
-    });
-}
-
-window.applyCoupon = async function(couponCode) {
-    document.getElementById('coupon-code').value=couponCode
-    const totalElement = document.getElementById("totalAmount");
-    const totalText = totalElement.textContent; // e.g., "₹75340.00"
-    const totalAmount = parseFloat(totalText.replace(/[^\d.]/g, ""));
-   
-    const shippingElement = document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600");
-    const shippingCharge = shippingElement ? parseFloat(shippingElement.textContent.replace(/[^\d.]/g, "")) || 0 : 0;
-    try {
-        const response = await fetch('/applycoupon', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ couponCode,totalAmount,shippingCharge})
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            document.getElementById('coupon-badge').textContent = couponCode;
-            document.getElementById('remove-coupon-container').classList.remove('hidden');
-            document.getElementById('coupon-input-container').classList.add('hidden');
-            document.getElementById('active-coupon-text').textContent = `Coupon "${couponCode}" applied`;
-
-            document.getElementById('coupon-code').disabled = true;
-            document.getElementById('apply-coupon-btn').disabled = true;
-            document.getElementById('apply-coupon-btn').classList.add('opacity-50', 'cursor-not-allowed');
-
-            // Update Discount and Total
-            document.getElementById('discountAmount').textContent = `-₹${data.discount.toFixed(2)}`;
-            document.getElementById('totalAmount').textContent = `₹${data.total.toFixed(2)}`;
-
-            document.querySelector('dd.text-base.font-bold').textContent = `₹${data.total.toFixed(2)}`;
-
-            showToast(`Coupon "${couponCode}" applied successfully!`);
-        } else {
-            showToast(data.message, false);
-        }
     } catch (error) {
-        console.error("Error applying coupon:", error);
-        showToast("Failed to apply coupon", false);
+        console.error('Error:', error);
+        showToast('Failed to add address', false);
     }
-};
-
-window.removeCoupon = function() {
-    // Get references directly when function is called
-    const couponInputContainer = document.getElementById('coupon-input-container');
-    const removeCouponContainer = document.getElementById('remove-coupon-container');
-    const couponInput = document.getElementById('coupon-code');
-    const couponBadge = document.getElementById('coupon-badge');
-    
-    // Show the input field again
-    couponInputContainer.classList.remove('hidden');
-    removeCouponContainer.classList.add('hidden');
-    
-    // Reset displayed coupon code
-    couponInput.value = '';
-    couponBadge.textContent = '';
-
-    // Re-enable input and button
-    couponInput.disabled = false;
-    document.getElementById('apply-coupon-btn').disabled = false;
-    document.getElementById('apply-coupon-btn').classList.remove('opacity-50', 'cursor-not-allowed');
-
-    // Reset discount to ₹0.00
-    document.getElementById('discountAmount').textContent = '-₹0.00';
-
-    // Recalculate total without the discount
-    const subtotal = parseFloat(document.querySelector('dd.text-sm.font-medium.text-gray-900').textContent.replace(/[^\d.]/g, ""));
-    const tax = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900:last-of-type").textContent.replace(/[^\d.]/g, ""));
-    const shippingCharge = parseFloat(document.querySelector("dd.text-sm.font-medium.text-gray-900, dd.text-sm.font-medium.text-green-600").textContent.replace(/[^\d.]/g, "")) || 0;
-    
-    const newTotal = subtotal + tax + shippingCharge;
-    document.getElementById('totalAmount').textContent = `₹${newTotal.toFixed(2)}`;
-    
-    // Set a flag in localStorage to indicate coupon was removed
-    localStorage.setItem('couponRemoved', 'true');
-    
-    // Now reload the page
-    location.reload();
-};
+});
 
 // Place Order button handler
 document.getElementById('placeOrderBtn').addEventListener('click', async function() {

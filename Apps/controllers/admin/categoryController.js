@@ -179,6 +179,7 @@ addCategory: async (req, res, next) => {
 }
 ,
 
+
   showEditCategrory: async (req,res,next) => {
     try {
       const categoryId = req.params.id;

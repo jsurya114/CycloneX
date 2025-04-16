@@ -125,6 +125,6 @@ router.put('/order/return/:orderId',orderController.returnOrder)
 router.get('/wallet',verifyUser,walletController.getWallet)
 router.post('/order/return/:orderId',walletController.returnWallet)
 router.post('/applycoupon',checkoutController.applyCoupon)
-
+router.get('/coupons',verifyUser,userController.showCoupons)
 
 module.exports = router;
