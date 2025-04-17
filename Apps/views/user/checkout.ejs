@@ -301,6 +301,58 @@
                 transform: rotate(360deg);
             }
         }
+        
+        /* Validation error styles */
+        .validation-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 1px #ef4444 !important;
+        }
+        
+        .error-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+            40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+        
+        /* Warning message styles */
+        .warning-message {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+            opacity: 0;
+        }
+        
+        .warning-message.show {
+            max-height: 100px;
+            opacity: 1;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Coupon used indicator */
+        .coupon-used-indicator {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 0 0 0 8px;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .coupon-used-indicator.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="font-body bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -372,6 +424,20 @@
                            <!-- Saved Addresses -->
                            <div class="mb-8">
                             <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-5 border-b border-gray-200 dark:border-gray-700 pb-2">Select a Delivery Address</h4>
+                            
+                            <!-- Address Selection Warning Message -->
+                            <div id="address-warning" class="warning-message bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-exclamation-circle text-red-500 mt-0.5"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-red-800 dark:text-red-200">Please select a delivery address</h3>
+                                        <p class="text-sm text-red-700 dark:text-red-300 mt-1">You must select a delivery address before proceeding with your order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <% if(address && address.length > 0) { %>
                                     <% address.forEach((addr, index) => { %>
@@ -609,6 +675,20 @@
                                         View Available Coupons
                                     </button>
                                 </div>
+                                
+                                <!-- Coupon Warning Message -->
+                                <div id="coupon-warning" class="warning-message bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-exclamation-circle text-red-500 mt-0.5"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h3 class="text-sm font-medium text-red-800 dark:text-red-200">Coupon already used</h3>
+                                            <p class="text-sm text-red-700 dark:text-red-300 mt-1">This coupon has already been applied and cannot be used again.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                                 <div id="coupon-input-container" class="flex space-x-2">
                                     <input type="text" id="coupon-code" placeholder="Enter coupon code" class="flex-1 min-w-0 block w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
                                     <button type="button" id="apply-coupon-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
@@ -634,7 +714,10 @@
             <% coupons.forEach(coupon => { %>
                 <% if(!coupon.isBlocked && new Date(coupon.expireDate) >= new Date()) { %>
                     <!-- Coupon Card -->
-                    <div class="coupon-card bg-white dark:bg-gray-800 border border-dashed border-primary-300 dark:border-primary-700 rounded-lg p-3 cursor-pointer">
+                    <div class="coupon-card bg-white dark:bg-gray-800 border border-dashed border-primary-300 dark:border-primary-700 rounded-lg p-3 cursor-pointer relative">
+                        <!-- Coupon Used Indicator (Hidden by default) -->
+                        <div class="coupon-used-indicator" id="used-indicator-<%= coupon.couponCode %>">Already Used</div>
+                        
                         <div class="flex justify-between items-start">
                             <div>
                                 <h5 class="font-medium text-gray-800 dark:text-white text-sm"><%= coupon.couponCode %></h5>
@@ -672,19 +755,29 @@
                         </div>
                         
                         <div class="p-6">
+                            <!-- Payment Method Warning Message -->
+                            <div id="payment-warning" class="warning-message bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-exclamation-circle text-red-500 mt-0.5"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-red-800 dark:text-red-200">Please select a payment method</h3>
+                                        <p class="text-sm text-red-700 dark:text-red-300 mt-1">You must select a payment method before proceeding with your order.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <!-- Payment Options -->
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
                                  <!-- Razorpay Payment Card -->
-      <div class="payment-card border border-gray-200 dark:border-gray-700 rounded-xl p-4 cursor-pointer relative flex flex-col items-center justify-center h-24" id="payWithRazorpay">
-        <input type="radio" name="payment" id="razorpay" value="razorpay" class="hidden">
-<label for="razorpay" class="absolute inset-0 cursor-pointer"></label>
+                                <div class="payment-card border border-gray-200 dark:border-gray-700 rounded-xl p-4 cursor-pointer relative flex flex-col items-center justify-center h-24" id="payWithRazorpay">
+                                    <input type="radio" name="payment" id="razorpay" value="razorpay" class="hidden">
+                                    <label for="razorpay" class="absolute inset-0 cursor-pointer"></label>
 
-        <i class="fas fa-credit-card text-gray-600 dark:text-gray-400 text-2xl mb-2"></i>
-        <span class="text-sm font-medium text-gray-800 dark:text-white">Razor Pay</span>
-      </div>
-                           
-                                
-                               
+                                    <i class="fas fa-credit-card text-gray-600 dark:text-gray-400 text-2xl mb-2"></i>
+                                    <span class="text-sm font-medium text-gray-800 dark:text-white">Razor Pay</span>
+                                </div>
                                 
                                 <!-- Cash on Delivery -->
                                 <div class="payment-card border border-gray-200 dark:border-gray-700 rounded-xl p-4 cursor-pointer relative flex flex-col items-center justify-center h-24">
@@ -1093,6 +1186,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize item removal functionality
     initItemRemoval();
 
+    // Hide warning messages initially
+    document.getElementById('address-warning').classList.remove('show');
+    document.getElementById('payment-warning').classList.remove('show');
+    document.getElementById('coupon-warning').classList.remove('show');
+
     // Payment method selection (no default selection)
     const paymentCards = document.querySelectorAll('.payment-card');
     // Ensure no payment is selected on load
@@ -1120,6 +1218,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Check its radio button
             const selectedRadio = this.querySelector('input[name="payment"]');
             if (selectedRadio) selectedRadio.checked = true;
+            
+            // Hide payment warning when a payment method is selected
+            document.getElementById('payment-warning').classList.remove('show');
         });
     });
 
@@ -1169,6 +1270,7 @@ class CouponManager {
     this.removeButton = document.getElementById("remove-coupon-btn")
     this.availableCouponsContainer = document.getElementById("available-coupons-container")
     this.showAvailableCouponsBtn = document.getElementById("show-available-coupons")
+    this.couponWarning = document.getElementById("coupon-warning")
 
     // Order summary elements
     this.subtotalElement = document.getElementById("subtotalAmount")
@@ -1178,6 +1280,9 @@ class CouponManager {
 
     // Track the active coupon
     this.activeCoupon = null
+    
+    // Track used coupons
+    this.usedCoupons = new Set()
 
     // Initialize event listeners
     this.initEventListeners()
@@ -1220,6 +1325,17 @@ class CouponManager {
       showToast("Please enter a coupon code", false)
       return
     }
+    
+    // Check if coupon was already used
+    if (this.usedCoupons.has(code)) {
+      // Show coupon already used warning
+      this.couponWarning.classList.add('show');
+      this.couponCode.classList.add('validation-error', 'error-shake');
+      setTimeout(() => {
+        this.couponCode.classList.remove('error-shake');
+      }, 500);
+      return;
+    }
 
     // Show loading state
     this.applyButton.disabled = true
@@ -1247,12 +1363,28 @@ class CouponManager {
       const result = await response.json()
 
       if (result.success) {
+        // Hide coupon warning if visible
+        this.couponWarning.classList.remove('show');
+        this.couponCode.classList.remove('validation-error');
+        
         // Update UI to show applied coupon
         this.activeCoupon = {
           code,
           discount: result.discount,
           total: result.total,
           couponId: result.couponId,
+        }
+
+        // Add to used coupons set
+        this.usedCoupons.add(code);
+        
+        // Mark coupon as used in the available coupons list
+        const couponCard = document.querySelector(`.coupon-card h5[textContent="${code}"]`)?.closest('.coupon-card');
+        if (couponCard) {
+          const usedIndicator = couponCard.querySelector('.coupon-used-indicator');
+          if (usedIndicator) {
+            usedIndicator.classList.add('show');
+          }
         }
 
         this.updateUIForAppliedCoupon()
@@ -1361,6 +1493,7 @@ function initAddressSelection() {
     const addressCards = document.querySelectorAll('.address-card');
     const addressRadios = document.querySelectorAll('.address-radio');
     const addressSelectBtns = document.querySelectorAll('.address-select-btn');
+    const addressWarning = document.getElementById('address-warning');
     
     // Track last selected address to prevent duplicate toasts
     let lastSelectedIndex = -1;
@@ -1371,6 +1504,9 @@ function initAddressSelection() {
         if (index !== lastSelectedIndex) {
             showToast('Delivery address selected');
             lastSelectedIndex = index;
+            
+            // Hide address warning when an address is selected
+            addressWarning.classList.remove('show');
         }
     }
 
@@ -1642,14 +1778,32 @@ document.getElementById('newAddressForm')?.addEventListener('submit', async func
 
 // Place Order button handler
 document.getElementById('placeOrderBtn').addEventListener('click', async function() {
+    // Validate address selection
     const addressElement = document.querySelector('input[name="address"]:checked');
-    const paymentMethodElement = document.querySelector('input[name="payment"]:checked');
-    
     if (!addressElement) {
+        // Show address warning
+        const addressWarning = document.getElementById('address-warning');
+        addressWarning.classList.add('show');
+        
+        // Scroll to address section
+        const addressSection = document.querySelector('.address-card').closest('section');
+        addressSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
         showToast("Please select a delivery address", false);
         return;
     }
+    
+    // Validate payment method selection
+    const paymentMethodElement = document.querySelector('input[name="payment"]:checked');
     if (!paymentMethodElement) {
+        // Show payment warning
+        const paymentWarning = document.getElementById('payment-warning');
+        paymentWarning.classList.add('show');
+        
+        // Scroll to payment section
+        const paymentSection = document.querySelector('.payment-card').closest('section');
+        paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
         showToast("Please select a payment method", false);
         return;
     }
@@ -1661,7 +1815,7 @@ document.getElementById('placeOrderBtn').addEventListener('click', async functio
     const items = Array.from(document.querySelectorAll('.checkout-item')).map(item => {
         const productId = item.querySelector('input[id^="quantity-"]').id.replace('quantity-', '');
         const quantity = parseInt(item.querySelector('input[id^="quantity-"]').value);
-        const priceText = item.querySelector('.text-sm.font-medium.text-gray-900').textContent;
+        const priceText = item.querySelector('.text-sm.font-medium.text-gray-900, .text-sm.font-medium.text-green-600').textContent;
         const price = parseFloat(priceText.replace('₹', ''));
         
         return { product: productId, quantity, subTotal: quantity * price };

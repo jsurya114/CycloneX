@@ -233,11 +233,53 @@
         .thumbnail-active {
             border: 2px solid #3B82F6;
         }
+
+        /* Auth modal styling */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .auth-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .auth-modal-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .auth-modal-content {
+            background-color: #1E293B;
+            color: white;
+        }
+        
+        .auth-modal.show .auth-modal-content {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="text-gray-800 dark:text-gray-100">
-    <!-- Header -->
     <%- include('partials/header') %>
+      
     
     <!-- Breadcrumbs -->
     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 py-4 md:py-6">
@@ -271,7 +313,7 @@
 
                     <!-- Wishlist Button -->
                     <button 
-                        onclick="addToWishlist('<%= product._id %>', this)" 
+                        onclick="handleWishlistClick('<%= product._id %>', this)" 
                         class="absolute top-4 right-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 wishlist-btn"
                         aria-label="Add to wishlist"
                         data-product-id="<%= product._id %>"
@@ -401,7 +443,7 @@
                 </div>
                 
                 <div class="mt-4 md:mt-6 flex flex-col sm:flex-row items-center gap-3 sm:gap-4"> 
-                    <button onclick="addToCart('<%= product._id %>')" 
+                    <button onclick="handleCartClick('<%= product._id %>')" 
                         class="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -409,7 +451,7 @@
                         <span class="font-medium">Add to Cart</span>         
                     </button>         
                 
-                    <a href="/checkout" class="w-full sm:w-auto"> 
+                    <a href="<%= user ? '/checkout' : '#' %>" class="w-full sm:w-auto" onclick="<%= !user ? 'handleBuyNowClick(event)' : '' %>"> 
                         <button class="w-full px-6 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition-all duration-300">
                             Buy Now
                         </button>   
@@ -582,7 +624,7 @@
                                 </div>
                                 <!-- Wishlist Button -->
                                 <button 
-                                    onclick="addToWishlist('<%= product._id %>', this)" 
+                                    onclick="handleWishlistClick('<%= product._id %>', this)" 
                                     class="absolute top-4 right-4 bg-white dark:bg-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200 wishlist-btn"
                                     aria-label="Add to wishlist"
                                     data-product-id="<%= product._id %>"
@@ -621,7 +663,7 @@
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-xl font-bold text-primary">₹<%= product.price %></span>
-                                    <button onclick="addToCart('<%= product._id %>')" 
+                                    <button onclick="handleCartClick('<%= product._id %>')" 
                                         class="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 group">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">                 
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -655,6 +697,38 @@
     <!-- Toast Notification -->
     <div id="toast">
         <span id="toast-message"></span>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Authentication Required</h3>
+                <button onclick="closeAuthModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+            <div class="mb-6">
+                <div class="flex items-center mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-900/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p class="text-sm text-gray-700 dark:text-gray-300" id="authModalMessage">
+                        You need to be logged in to perform this action.
+                    </p>
+                </div>
+                <div class="flex justify-center space-x-4">
+                    <a href="/login" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Login
+                    </a>
+                    <a href="/signup" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        Sign Up
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Dark Mode Toggle Button -->
@@ -709,6 +783,44 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000); // Hide after 3 seconds
+        }
+
+        // Auth modal functions
+        function showAuthModal(action) {
+            const authModal = document.getElementById('authModal');
+            const authModalMessage = document.getElementById('authModalMessage');
+            
+            // Set appropriate message based on action
+            if (action === 'cart') {
+                authModalMessage.textContent = 'You need to be logged in to add items to your cart.';
+            } else if (action === 'wishlist') {
+                authModalMessage.textContent = 'You need to be logged in to add items to your wishlist.';
+            } else if (action === 'buy') {
+                authModalMessage.textContent = 'You need to be logged in to purchase this item.';
+            } else {
+                authModalMessage.textContent = 'You need to be logged in to perform this action.';
+            }
+            
+            authModal.classList.add('show');
+        }
+        
+        function closeAuthModal() {
+            const authModal = document.getElementById('authModal');
+            authModal.classList.remove('show');
+        }
+
+        // Handle wishlist click with auth check
+        function handleWishlistClick(productId, button) {
+            // Check if user is logged in
+            const isLoggedIn = <%= user ? 'true' : 'false' %>;
+            
+            if (!isLoggedIn) {
+                showAuthModal('wishlist');
+                return;
+            }
+            
+            // If logged in, proceed with wishlist action
+            addToWishlist(productId, button);
         }
 
         function addToWishlist(productId, button) {
@@ -797,6 +909,36 @@
                     showToast('An error occurred.', true);
                 });
             }
+        }
+
+        // Handle cart click with auth check
+        function handleCartClick(productId) {
+            // Check if user is logged in
+            const isLoggedIn = <%= user ? 'true' : 'false' %>;
+            
+            if (!isLoggedIn) {
+                showAuthModal('cart');
+                return;
+            }
+            
+            // If logged in, proceed with add to cart action
+            addToCart(productId);
+        }
+
+        // Handle buy now click with auth check
+        function handleBuyNowClick(event) {
+            event.preventDefault();
+            
+            // Check if user is logged in
+            const isLoggedIn = <%= user ? 'true' : 'false' %>;
+            
+            if (!isLoggedIn) {
+                showAuthModal('buy');
+                return;
+            }
+            
+            // If logged in, proceed to checkout
+            window.location.href = '/checkout';
         }
 
         // Update all wishlist icons for a specific product
@@ -990,5 +1132,7 @@
             evt.currentTarget.classList.add("active");
         }
     </script>
+    
+
 </body>
 </html>
