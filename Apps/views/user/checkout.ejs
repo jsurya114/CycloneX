@@ -1033,69 +1033,54 @@
     <script>
       // Toast notification function - Fixed to prevent duplicate toasts
       let toastQueue = [];
-let isShowingToast = false;
+      let isShowingToast = false;
 
-function showToast(message, type = 'success') {
-    // Check if this message is already in the queue or currently showing
-    if (toastQueue.some(item => item.message === message) || 
-         (isShowingToast && toastQueue[0]?.message === message)) {
-        return; // Skip duplicate toast
-    }
-    
-    // Add to queue
-    toastQueue.push({ message, type });
-    
-    // If not currently showing a toast, show this one
-    if (!isShowingToast) {
-        showNextToast();
-    }
-}
+      function showToast(message, isSuccess = true) {
+          // Check if this message is already in the queue or currently showing
+          if (toastQueue.some(item => item.message === message) || 
+              (isShowingToast && toastQueue[0]?.message === message)) {
+              return; // Skip duplicate toast
+          }
 
-function showNextToast() {
-    if (toastQueue.length === 0) {
-        isShowingToast = false;
-        return;
-    }
-    
-    isShowingToast = true;
-    const { message, type } = toastQueue.shift();
-    
-    // Set color based on message type
-    let backgroundColor;
-    switch (type) {
-        case 'success':
-            backgroundColor = "#4CAF50"; // Green
-            break;
-        case 'warning':
-            backgroundColor = "#FF9800"; // Orange/Amber
-            break;
-        case 'error':
-            backgroundColor = "#F44336"; // Red
-            break;
-        default:
-            backgroundColor = "#4CAF50"; // Default to success green
-    }
-    
-    Toastify({
-        text: message,
-        duration: 3000,
-        gravity: "bottom",
-        position: "center",
-        backgroundColor: backgroundColor,
-        stopOnFocus: true,
-        className: "rounded-lg",
-        style: {
-            boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
-        },
-        callback: function() {
-            // After toast is dismissed, show next toast if any
-            setTimeout(() => {
-                isShowingToast = false;
-                showNextToast();
-            }, 300);
-        }
-    }).showToast();
-}
+          // Add to queue
+          toastQueue.push({ message, isSuccess });
+          
+          // If not currently showing a toast, show this one
+          if (!isShowingToast) {
+              showNextToast();
+          }
+      }
+
+      function showNextToast() {
+          if (toastQueue.length === 0) {
+              isShowingToast = false;
+              return;
+          }
+
+          isShowingToast = true;
+          const { message, isSuccess } = toastQueue.shift();
+          
+          Toastify({
+              text: message,
+              duration: 3000,
+              gravity: "bottom",
+              position: "center",
+              backgroundColor: isSuccess ? "#4CAF50" : "#F44336",
+              stopOnFocus: true,
+              className: "rounded-lg",
+              style: {
+                  boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)"
+              },
+              callback: function() {
+                  // After toast is dismissed, show next toast if any
+                  setTimeout(() => {
+                      isShowingToast = false;
+                      showNextToast();
+                  }, 300);
+              }
+          }).showToast();
+      }
+
 // Function to update order summary
 function updateOrderSummary(subtotal, tax, discount, finalTotal) {
     // Update the displayed values
